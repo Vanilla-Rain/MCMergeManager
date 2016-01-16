@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText android:id="@+id/match_num_field"
+        android:layout_width="100dp"
+        android:layout_height="80dp"
+        android:inputType="number"
+        android:hint="@string/match_number" />
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="20dp">
+    </View>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/scout_btn_height"
+        android:orientation="horizontal">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/scout_btn_height"
+            android:layout_weight="1"
+            android:text="@string/red_alliance"
+            android:background="@color/red_alliance"
+            android:onClick="scoutRed"
+            android:textStyle="bold"
+            android:textSize="28sp" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/scout_btn_height"
+            android:layout_weight="1"
+            android:text="@string/blue_alliance"
+            android:background="@color/blue_alliance"
+            android:textStyle="bold"
+            android:onClick="scoutBlue"
+            android:textSize="28sp" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="20dp">
+    </View>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Best Cycles"
+            android:onClick="bestCyclesBtn"
+            android:id="@+id/bestCyclesBtn"
+            android:enabled="false" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lookup Team#"
+            android:id="@+id/lookupTeamBtn"
+            android:onClick="lookupTeamBtn"
+            android:enabled="false" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <Button android:id="@+id/loadMatchResultsBtn"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Load File"
+            android:onClick="loadMatchFileBtn" />
+
+        <TextView android:id="@+id/loadMatchResultsTV"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="No Match Results have been loaded" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <Button android:id="@+id/loadKnightWatchDataBtn"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Load File"
+            android:onClick="loadKnightWatchFileBtn" />
+
+        <TextView android:id="@+id/loadKnightWatchDataTV"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="No KnightWatch data has been loaded" />
+
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+    </LinearLayout>
+<LinearLayout
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+    <Button android:id="@+id/cool"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Take Picture"
+        android:onClick="takePicture"
+        />
+</LinearLayout>
+
+
+</LinearLayout>

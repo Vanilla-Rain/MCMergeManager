@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.Toolbar
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimaryDark"/>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/scout_btn_height"
+        android:orientation="horizontal">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/scout_btn_height"
+            android:layout_weight="1"
+            android:text="Bet on Red"
+            android:background="@color/red_alliance"
+            android:onClick="scoutRed"
+            android:textStyle="bold"
+            android:textSize="28sp" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/scout_btn_height"
+            android:layout_weight="1"
+            android:text="Bet on Blue"
+            android:background="@color/blue_alliance"
+            android:textStyle="bold"
+            android:onClick="scoutBlue"
+            android:textSize="28sp" />
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,29 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+
+    <item android:title="Team1" > </item>
+    <item android:title="Team2"></item>
+    <item android:title="Team3"> </item>
+
+
+
+    <item android:title="Others">
+        <menu>
+            <item
+                android:title="Updates" android:icon="@drawable/draft"/>
+
+        </menu>
+    </item>
+
+    <group android:id="@+id/shitss">
+
+        <item android:title="Settings" android:icon="@drawable/settings"></item>
+        <item android:title="Help" android:icon="@drawable/help"></item>
+    </group>
+
+
+
+
+
+</menu>

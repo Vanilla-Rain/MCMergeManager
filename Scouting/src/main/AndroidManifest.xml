@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="ca.team2706.scouting.mcmergemanager" >
-
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -15,6 +20,63 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".AutoScouting"
+            android:label="@string/title_activity_auto_scouting2"
+            android:parentActivityName="ca.team2706.scouting.mcmergemanager.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="MainActivity" />
+        </activity>
+        <activity
+            android:name="ca.team2706.scouting.mcmergemanager.TeleopScouting"
+            android:label="@string/title_activity_teleop_scouting"
+            android:parentActivityName=".AutoScouting" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="AutoScouting2" />
+        </activity>
+        <activity
+            android:name="ca.team2706.scouting.mcmergemanager.FileChooser"
+            android:label="FileChooser" >
+        </activity>
+        <activity
+            android:name="ca.team2706.scouting.mcmergemanager.DispBestCycles"
+            android:label="DispBestCycles" >
+        </activity>
+        <activity
+            android:name="ca.team2706.scouting.mcmergemanager.TeamStatsPage"
+            android:label="@string/title_activity_team_stats_page"
+            android:parentActivityName="ca.team2706.scouting.mcmergemanager.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="MainActivity" />
+        </activity>
+        <activity
+            android:name="ca.team2706.scouting.mcmergemanager.TeamCyclesReport"
+            android:label="@string/title_activity_team_cycles_report"
+            android:parentActivityName="ca.team2706.scouting.mcmergemanager.TeamStatsPage" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="TeamStatsPage" />
+        </activity>
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ca.team2706.scouting.mcmergemanager.MainActivity" />
+        </activity>
+        <activity
+            android:name=".AboutActivity"
+            android:label="@string/title_activity_about"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.AppBarOverlay" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ca.team2706.scouting.mcmergemanager.MainActivity" />
         </activity>
     </application>
 

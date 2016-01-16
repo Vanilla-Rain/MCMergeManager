@@ -1,0 +1,946 @@
+package ca.team2706.scouting.mcmergemanager;
+
+import android.Manifest;
+import android.app.Activity;
+import android.content.IntentSender;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.provider.MediaStore;
+import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.util.Log;
+import android.widget.Toast;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.drive.Drive;
+import com.google.android.gms.drive.DriveApi;
+import com.google.android.gms.drive.DriveContents;
+import com.google.android.gms.drive.DriveFile;
+import com.google.android.gms.drive.DriveFolder;
+import com.google.android.gms.drive.DriveId;
+import com.google.android.gms.drive.Metadata;
+import com.google.android.gms.drive.MetadataChangeSet;
+import com.google.android.gms.drive.query.Filters;
+import com.google.android.gms.drive.query.Query;
+import com.google.android.gms.drive.query.SearchableField;
+
+import java.io.File;
+import java.net.URI;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.Date;
+
+
+/**
+ *
+ * This is a helper class to hold common code for accessing shared scouting data files.
+ * This class takes care of keeping a local cache, syncing to Google Drive, and (eventually) sharing with other bluetooth-connected devices also running the app.
+ *
+ * Created by Mike Ounsworth
+ */
+public class FileUtils
+        implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+
+    private static boolean mCanConnect = false;
+    private static boolean mHasUnsyncedMatchScoutingData = false;
+
+    /**
+     * If the user denys the app access to their drive, it asks over and over again and they don't have the chance to go to settings.
+     */
+    private boolean mRequestedAccessAlready = false;
+
+    private boolean mCheckDriveFilesOnNextConnect = false;
+
+    /**
+     *  Grabbed this constant from a tutorial ... seems kinda hacky to be hard-coding API codes, shouldn't there be a place I can reference this??
+     */
+    private static final int REQUEST_CODE_RESOLUTION = 3;
+
+    /** A pointer to myself so that the nested classes can use my ConnectionCallbacks **/
+    FileUtils m_me;
+
+    private static Activity mActivity;
+
+    private GoogleApiClient mGoogleApiClient;
+
+    private static String mRemoteToplevelFolderName;
+    private static String mRemoteTeamFolderName;
+    private static String mRemoteEventFolderName;
+    private static String mRemoteTeamPhotosFolderName;
+
+    private static DriveId mDriveIdToplevelFolder;
+    private static DriveId mDriveIdTeamFolder;
+    private static DriveId mDriveIdEventFolder;
+    private static DriveId mDriveIdTeamPhotosFolder;
+
+    private static String mLocalToplevelFilePath;
+    private static String mLocalTeamFilePath;
+    private static String mLocalEventFilePath;
+    private static String mLocalTeamPhotosFilePath;
+
+
+
+    /**
+     * Constructor
+     *
+     * @param activity This will be used to fetch string contants for file storage and displaying toasts.
+     *                 Also, if this is a MainActivity, then this activity's .updateDataSyncLabel()
+     *                 will be called when a Drive connection either suceeds or fails.
+     */
+    public FileUtils(Activity activity) {
+        mActivity = activity;
+        m_me = this;
+
+        // store string constants and preferences in member variables just for cleanliness
+        // (since the strings are `static`, when any instances of FileUtils update these, all instances will get the updates)
+        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(mActivity.getBaseContext());
+        mRemoteToplevelFolderName = activity.getString(R.string.FILE_TOPLEVEL_DIR);
+        mRemoteTeamFolderName = SP.getString(mActivity.getResources().getString(R.string.PROPERTY_googledrive_teamname), "<Not Set>");
+        mRemoteEventFolderName = SP.getString(mActivity.getResources().getString(R.string.PROPERTY_googledrive_event), "<Not Set>");
+        mRemoteTeamPhotosFolderName = "Team Photos";
+
+        mLocalToplevelFilePath   = "/sdcard/" + mRemoteToplevelFolderName;
+        mLocalTeamFilePath       = mLocalToplevelFilePath + "/" + mRemoteTeamFolderName;
+        mLocalEventFilePath      = mLocalTeamFilePath + "/" + mRemoteEventFolderName;
+        mLocalTeamPhotosFilePath = mLocalTeamFilePath + "/" + mRemoteTeamPhotosFolderName;
+
+        checkLocalFileStructure();
+        reset_mGoogleApiClient();
+    }
+
+    /**
+     * Is there data in the local file `matchScoutingData_UNSYNCED.csv` that needs to be synced to Drive?
+     */
+    public boolean hasUnsyncedMatchScoutingData() {
+        return mHasUnsyncedMatchScoutingData;
+    }
+
+    public boolean canConnectToDrive() {
+        return mCanConnect;
+    }
+
+    /**
+     * Checks if we have the permission read / write to the internal USB STORAGE,
+     * requesting that permission if we do not have it.
+     *
+     * @return whether or not we have the STORAGE permission.
+     */
+    public boolean canWriteToStorage()
+    {
+        if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(mActivity,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    123);
+
+            // check if they clicked Deny
+            if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.READ_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED)
+                return false;
+        }
+
+
+        if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(mActivity,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    123);
+
+            // check if they clicked Deny
+            if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED)
+                return false;
+        }
+
+        return true;
+    }
+
+    public void disconnect() {
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.disconnect();
+        }
+    }
+
+    private void reset_mGoogleApiClient() {
+        // if it's already connected, disconnect it.
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.disconnect();
+        }
+
+        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(mActivity);
+        String driveAccount = SP.getString(mActivity.getResources().getString(R.string.PROPERTY_googledrive_account), "<Not Set>");
+
+        if (driveAccount.equals("<Not Set>"))
+            return;
+
+        mGoogleApiClient = new GoogleApiClient.Builder(mActivity)
+                .addApi(Drive.API)
+                .addScope(Drive.SCOPE_FILE)
+                .setAccountName(driveAccount)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
+    }
+
+
+    /**
+     * Try logging in to the Google Drive useng the saved account.
+     * If that works, make sure the file structure exists and create it if it does not.
+     *
+     * Note that this is not instant, so it spawns a new thread to wait for Drive to respond, and to check the files.
+     * It will set the appropriate members in MainActivity when it completes.
+     */
+    void checkDriveConnectionAndFiles() {
+        // First, test to see if the credentials are even valid
+        reset_mGoogleApiClient();
+
+        if (mGoogleApiClient == null) {
+            mCanConnect = false;
+            return;
+        } else {
+            // force a full check of the files at the next connect
+            mCheckDriveFilesOnNextConnect = true;
+
+            mGoogleApiClient.connect();
+        }
+    }
+
+    /**
+     * This class defines a background process for checking / setting the file structure on Google Drive.
+     *
+     * MCMergeManager/
+     *  - team_name/
+     *      - Team Photos/
+     *      - event/
+     *
+     * Note: run() will close the GoogleApiClient when it exists.
+     */
+    private class CheckDriveFilesThread extends Thread {
+
+        private GoogleApiClient mGooggleDRiveApiClient;
+
+        public CheckDriveFilesThread(GoogleApiClient googleApiClient) {
+            mGoogleApiClient = googleApiClient;
+        }
+        @Override
+        public void run() {
+            Log.i(mActivity.getResources().getString(R.string.app_name),
+                    "Starting the Drive folder sync");
+
+            // check for STORAGE permission
+            if (!canWriteToStorage())
+                return;
+
+            // Check if the file structure exists, and create it if it doesn't
+
+            // check for app-folder
+            DriveFolder rootFolder = Drive.DriveApi.getRootFolder(mGoogleApiClient);
+            DriveFolder topLevelfolder = checkOrCreateRemoteFolder(mGoogleApiClient, rootFolder, mRemoteToplevelFolderName);
+            if (topLevelfolder == null) {
+                // something went wrong, abort
+                mGoogleApiClient.disconnect();
+                return;
+            }
+            mDriveIdToplevelFolder = topLevelfolder.getDriveId();
+
+            // check for teamName folder
+            DriveFolder teamFolder = checkOrCreateRemoteFolder(mGoogleApiClient, topLevelfolder, mRemoteTeamFolderName);
+            if (teamFolder == null) {
+                // something went wrong, abort
+                mGoogleApiClient.disconnect();
+                return;
+            }
+            mDriveIdTeamFolder = teamFolder.getDriveId();
+
+            // check for event folder
+            DriveFolder eventFolder = checkOrCreateRemoteFolder(mGoogleApiClient, teamFolder, mRemoteEventFolderName);
+            if (eventFolder == null) {
+                // something went wrong, abort
+                mGoogleApiClient.disconnect();
+                return;
+            }
+            mDriveIdEventFolder = eventFolder.getDriveId();
+
+            // check for Team Photos folder
+            DriveFolder teamPhotosFolder = checkOrCreateRemoteFolder(mGoogleApiClient, eventFolder, mRemoteTeamPhotosFolderName);
+            if (teamPhotosFolder == null) {
+                // something went wrong, abort
+                mGoogleApiClient.disconnect();
+                return;
+            }
+            mDriveIdTeamPhotosFolder = teamPhotosFolder.getDriveId();
+
+            Log.i(mActivity.getResources().getString(R.string.app_name),
+                    "Drive folder sync finished.");
+
+            mGoogleApiClient.disconnect();
+        }
+
+        /** Helper just to avoid copy&paste'ing code.
+         *
+         * Note: since this contains blocking Drive API calls, this will crash if you try to call it from the main thread,
+         * it can only be called from other threads.
+         *
+         * @return null if the folder can not be found.
+         **/
+        private DriveFolder checkOrCreateRemoteFolder(GoogleApiClient googleApiClient, DriveFolder rootFolder, String folderName)
+        {
+            // check for STORAGE permission
+            if (!canWriteToStorage())
+                return null;
+
+            Query query = new Query.Builder().addFilter(Filters.and(
+                    Filters.eq(SearchableField.TITLE, folderName),
+                    Filters.contains(SearchableField.MIME_TYPE, "folder"))).build();
+
+            DriveApi.MetadataBufferResult result = rootFolder.queryChildren(mGoogleApiClient, query).await();
+
+            if (!result.getStatus().isSuccess()) {
+                Log.e(mActivity.getResources().getString(R.string.app_name),
+                        "Cannot query folders in the root of Google Drive.");
+                return null;
+            } else {
+                for (Metadata m : result.getMetadataBuffer()) {
+                    if (m.getTitle().equals(folderName)) {
+                        // Folder exists - we found it!
+                        DriveFolder folder = m.getDriveId().asDriveFolder();
+                        result.getMetadataBuffer().release();
+                        return folder;
+                    }
+                }
+            }
+
+            result.getMetadataBuffer().release();
+
+            // Folder not found; let's create it.
+            MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
+                    .setTitle(folderName)
+                    .build();
+
+            DriveFolder.DriveFolderResult result1 = rootFolder
+                    .createFolder(googleApiClient, changeSet).await();
+
+            if (!result1.getStatus().isSuccess()) {
+                Log.e(mActivity.getResources().getString(R.string.app_name),
+                        "Error while trying to create the folder \"" + folderName + "\"");
+                return null;
+            }
+
+            return result1.getDriveFolder();
+        }
+    }
+
+
+    /**
+     * This checks the local file system for the appropriate files and folders, creating them if they
+     * are missing.
+     *
+     *
+     * The file structure is:
+     * MCMergeManager/
+     *  - team_name/
+     *      - Team Photos/
+     *      - event/
+     *          - matchResults.csv
+     *          - matchScoutingData.csv
+     *
+     */
+    public void checkLocalFileStructure()
+    {
+        // check for STORAGE permission
+        if (!canWriteToStorage())
+            return;
+
+        File file = new File(mLocalToplevelFilePath);
+        if (!file.isDirectory()) {
+            // in case there's a regular file there with the same name
+            file.delete();
+
+            // create it
+            file.mkdir();
+        }
+
+        file = new File(mLocalTeamFilePath);
+        if (!file.isDirectory()) {
+            // in case there's a regular file there with the same name
+            file.delete();
+
+            // create it
+            file.mkdir();
+        }
+
+        file = new File(mLocalEventFilePath);
+        if (!file.isDirectory()) {
+            // in case there's a regular file there with the same name
+            file.delete();
+
+            // create it
+            file.mkdir();
+        }
+
+        file = new File(mLocalTeamPhotosFilePath);
+        if (!file.isDirectory()) {
+            // in case there's a regular file there with the same name
+            file.delete();
+
+            // create it
+            file.mkdir();
+        }
+    }
+
+
+    @Override
+    public void onConnected(Bundle connectionHint) {
+        Toast.makeText(mActivity, "Connected to Drive!", Toast.LENGTH_SHORT).show();
+
+        mCanConnect = true;
+        if (mActivity != null && mActivity instanceof MainActivity)
+            ((MainActivity) mActivity).updateDataSyncLabel();
+
+        if (mCheckDriveFilesOnNextConnect) {
+            mCheckDriveFilesOnNextConnect = false;
+            (new CheckDriveFilesThread(mGoogleApiClient)).start();
+        }
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
+        if (!connectionResult.hasResolution()) {
+            // show the localized error dialog.
+            GoogleApiAvailability.getInstance().getErrorDialog(mActivity, connectionResult.getErrorCode(), 0).show();
+            return;
+        }
+
+        if(mRequestedAccessAlready)
+            return;
+
+        // The failure has a resolution. Resolve it.
+        // Called typically when the app is not yet authorized, and an
+        // authorization dialog is displayed to the user.
+        try {
+            mRequestedAccessAlready = true;
+            connectionResult.startResolutionForResult(mActivity, REQUEST_CODE_RESOLUTION);
+        } catch (IntentSender.SendIntentException e) {
+            Log.e("MC Merge Manager", "Exception while starting resolution activity", e);
+        }
+
+        mCanConnect = false;
+        if (mActivity != null && mActivity instanceof MainActivity)
+            ((MainActivity) mActivity).updateDataSyncLabel();
+        Toast.makeText(mActivity, "Could not connect to Drive.", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onConnectionSuspended(int cause) {
+        // I'm not gonna do anything here.
+    }
+
+
+    /**
+     * This will return both the matchResultsData, and the matchScoutingData to the DataRequester.
+     *
+     * Since syncing with Drive can take a few seconds, FileUtils will immediately call
+     * the activity's updateData(matchResultsDataCSV, matchScoutingDataCSV) with whatever data is locally cached.
+     * If FileUtils is able to connect to Drive then it will call it again after performing the sync.
+     *
+     */
+    public void getMatchData(DataRequester requester) {
+        // TODO
+    }
+
+
+    /**
+     * Call this when you want to append new mactch scouting data to the shared file.
+     *
+     * The following is the proceedure for syncronizing `matchScoutingData.csv` with Drive:
+     *
+     * It will first append the new lines to a local file `matchScoutingData_UNSYNCED.csv`.
+     * If drive in unavailable, that is all, if Drive is available then it will spawn a background thread to:
+     *
+     *  1. Pull the most recent version of `matchScoutingData.csv` from Drive.
+     *
+     *  2. Check if the file `matchScoutingData.LOCK` exists on Drive.
+     *      2b. If Yes, it means another process is currently uploading data. Set mHasUnsyncedMatchScoutingData = true; and return.
+     *      2b. If No, create a file on Drive named`matchScoutingData.LOCK` so that no other process tries to write to the file at the same time.
+     *
+     *  3. Append the lines in `matchScoutingData_UNSYNCED.csv` to the end of `matchScoutingData.csv`
+     *     and leave `matchScoutingData_UNSYNCED.csv` as as empty file.
+     *
+     *       3b. We should scan for duplicate lines here, but I'm not 100% sure how to do that.
+     *           What if two people scout the same team in the same match, is it right to just throw out one at random?
+     *
+     *  4. Upload `matchScoutingData.csv` to Drive.
+     *
+     *  5. Delete `matchScoutingData.LOCK` from drive.
+     *
+     *  6. Set mHasUnsyncedMatchScoutingData = false;
+     *
+     * @param csvLines
+     */
+    public void appendToMatchScoutingData(String[] csvLines) {
+        // TODO
+    }
+
+    /**
+     * Add a Note for a particular team.
+     *
+     * The intention of Notes is for the drive team to be able to read them quickly.
+     * They should be short and fit on one line, so they will be truncated to 80 characters.
+     */
+    public void addNote(int teamNumber, String note) {
+        // TODO
+    }
+
+    /**
+     * Retrieves the notes for a particular team.
+     *
+     * @param teamNumber
+     * @return All the notes for this team concatenated into a single string, with each note beginning with a bullet "-",
+     *  and ending with a newline (except for the last one).
+     */
+    public String getNotesForTeam(int teamNumber) {
+        // TODO
+
+        return "";
+    }
+
+    /**
+     * If we can connect to Drive, fork a background thread te syncronize photos for the provided
+     * team with Google Drive.
+     *
+     * Note: calling this in a loop is much less efficient that calling {@link #syncAllTeamPhotos()}
+     *
+     * @param teamNumber The team whos photos you want to sync with Drive
+     */
+    public void syncOneTeamsPhotos(int teamNumber) {
+        syncOneTeamsPhotos(teamNumber, null);
+    }
+
+    /**
+     * If we can connect to Drive, fork a background thread te syncronize photos for the provided
+     * team with Google Drive, and call the requester's {@link PhotoRequester#updatePhotos(Bitmap[])} if it succeeds.
+     *
+     * Note: calling this in a loop is much less efficient that calling {@link #syncAllTeamPhotos()}
+     *
+     * @param teamNumber The team whos photos you want to sync with Drive
+     */
+    @Nullable
+    public void syncOneTeamsPhotos(int teamNumber, PhotoRequester requester) {
+        if (! canConnectToDrive() )
+            return;
+
+        (new TeamPhotoSyncerThread(teamNumber, requester)).start();
+    }
+
+
+    /**
+     * If we can connect to Drive, fork a background thread te syncronize photos for all teams.
+     *
+     * Because of the 10 request / second limit to the free Google Drive API subscription,
+     * syncing all the team photos can take a while.
+     * syncTeamPhotos() will spawn a new background thread to synchronize the photos.
+     * It will pop up a Toast when it's done syncronizing.
+     */
+    public void syncAllTeamPhotos() {
+        checkDriveConnectionAndFiles();
+        if (! canConnectToDrive() )
+            return;
+        (new TeamPhotoSyncerThread(-1, null)).start();
+    }
+
+    private class TeamPhotoSyncerThread extends Thread {
+        private int mTeamNumber;
+        private PhotoRequester mRequester;
+
+        /**
+         * teamNumber can = -1, and requester can be null. This is the behaviour of run() depending on whether the parameters are null:
+         *
+         * teamNumber is set, requester is set :
+         *      The photos for that team will be synced and returned to requester.
+         *
+         * teamNumber == -1, requester is set :
+         *      All team photos will be synced, nothing will be returned to the requester
+         *      (because it it meant to enly retun photos for a simgle team).
+         *
+         * teamNumber is set, requester == null :
+         *      The photos for that team will be synced, nothing is returned.
+         *
+         * teamNumber == -1, requester == null :
+         *      All team photos are synced, nothing is returned.
+         *
+         * Note: Since this could be a very long-running thread (several minutes) it created its own GoogleApiClient
+         *  so as not to interfere with other threads.
+         *
+         * @param teamNumber
+         * @param requester
+         */
+        public TeamPhotoSyncerThread(int teamNumber, PhotoRequester requester) {
+            mTeamNumber = teamNumber;
+            mRequester = requester;
+        }
+
+        @Override
+        public void run() {
+            // check for STORAGE permission
+            if (!canWriteToStorage())
+                return;
+
+            SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(mActivity);
+            String driveAccount = SP.getString(mActivity.getResources().getString(R.string.PROPERTY_googledrive_account), "<Not Set>");
+
+            if (driveAccount.equals("<Not Set>"))
+                return;
+            GoogleApiClient googleApiClient = new GoogleApiClient.Builder(mActivity)
+                    .addApi(Drive.API)
+                    .addScope(Drive.SCOPE_FILE)
+                    .setAccountName(driveAccount)
+                    .addConnectionCallbacks(m_me)
+                    .addOnConnectionFailedListener(m_me)
+                    .build();
+
+            googleApiClient.blockingConnect();
+            if (!googleApiClient.isConnected())
+                return;
+
+
+            if (mTeamNumber <= 0) {
+                syncPhotosForTeam(googleApiClient, mTeamNumber);
+            } else {
+                mRequester = null;
+
+                // TODO: loop over all folders in the photos dir
+            }
+        }
+
+        private void syncPhotosForTeam(GoogleApiClient googleApiClient, int teamNumber)
+        {
+            if (mTeamNumber >= 0) {
+
+                Log.i(mActivity.getResources().getString(R.string.app_name),
+                        "Beginning photo sync for team " + teamNumber);
+
+                // get the list of local files
+
+                File photosDir = new File(mLocalTeamPhotosFilePath + "/" + teamNumber);
+                // TODO: generalize this to also handle syncAllPhotos
+
+                /****** get the list of local files ******/
+
+                // check if that folder exists
+                if (!photosDir.isDirectory()) {
+                    // we have no photos for this team
+                    if (mRequester != null)
+                        mRequester.updatePhotos(new Bitmap[0]);
+                    googleApiClient.disconnect();
+                    return;
+                }
+
+                File[] listOfFiles = photosDir.listFiles();
+                ArrayList<String> arrLocalFiles = new ArrayList<String>();
+                for (File file : listOfFiles) {
+                    // make sure it's an image file
+                    Bitmap bitmap = BitmapFactory.decodeFile(file.getPath());
+                    if (bitmap != null) {
+                        arrLocalFiles.add(file.getPath());
+                    }
+                    // else: if it's not a file, then what is it???? .... skip I guess
+                }
+
+
+                // Navigate to the correct folder - there has to be a more efficient way to do this
+
+                DriveFolder rootFolder = Drive.DriveApi.getFolder(googleApiClient, mDriveIdTeamPhotosFolder);
+                Log.i(mActivity.getResources().getString(R.string.app_name),
+                        "Local Files: " + arrLocalFiles);
+
+                Log.i(mActivity.getResources().getString(R.string.app_name),
+                        "Drive rootFolder: " + rootFolder.getMetadata(googleApiClient).await().getMetadata().getTitle());
+
+                Query query = new Query.Builder()
+                        .addFilter(Filters.eq(SearchableField.TITLE, "" + teamNumber))
+                        .build();
+
+                DriveApi.MetadataBufferResult result = rootFolder.queryChildren(googleApiClient, query).await();
+
+                DriveFolder teamPhotosFolder = null;
+                for (Metadata m : result.getMetadataBuffer()) {
+                    teamPhotosFolder = m.getDriveId().asDriveFolder();
+                }
+                result.getMetadataBuffer().close();
+
+
+                ArrayList<PathAndDriveId> arrRemoteFiles = new ArrayList<PathAndDriveId>();
+                if (teamPhotosFolder != null) {
+                    query = new Query.Builder()
+                            .addFilter(Filters.eq(SearchableField.MIME_TYPE, "application/vnd.google-apps.photo"))
+                            .build();
+                    result = teamPhotosFolder.queryChildren(googleApiClient, query).await();
+
+                    for (Metadata m : result.getMetadataBuffer()) {
+                        arrRemoteFiles.add(new PathAndDriveId(
+                                mRemoteToplevelFolderName + "/" + mRemoteTeamFolderName + "/" + mRemoteTeamPhotosFolderName + "/" + mTeamNumber + "/" + m.getTitle(),
+                                m.getDriveId(),
+                                m.getTitle()
+                        ));
+                    }
+                    result.getMetadataBuffer().close();
+                }
+                Log.i(mActivity.getResources().getString(R.string.app_name),
+                        "Remote Files: " + arrRemoteFiles);
+
+                // Remove files that are in both lists - these don't need to be synced.
+                for (PathAndDriveId remoteFile : arrRemoteFiles) {
+                    String remotePath = remoteFile.path;
+                    if (arrLocalFiles.contains(remotePath)) {
+                        arrRemoteFiles.remove(remoteFile);
+                        arrLocalFiles.remove(remotePath);
+                    }
+                }
+
+
+                /****** Download any Files we're missing locally ******/
+
+                for (PathAndDriveId remoteFile : arrRemoteFiles) {
+                    // the Drive API actually makes a local cache of the file, so let's copy the contents into our app's file structure
+                    DriveApi.DriveContentsResult fileResult = remoteFile.driveId.asDriveFile().open(googleApiClient, DriveFile.MODE_READ_ONLY, null).await();
+
+                    if (!fileResult.getStatus().isSuccess()) {
+                        // file can't be opened
+                        continue;
+                    }
+
+                    String localFileToCreate = mLocalTeamPhotosFilePath + "/" + teamNumber + "/" + remoteFile.title;
+                    DriveContents contents = null;
+                    InputStream in = null;
+                    FileOutputStream fout = null;
+                    try {
+                        // DriveContents object contains pointers to the actual byte stream, which we will manually copy
+                        contents = fileResult.getDriveContents();
+                        in = contents.getInputStream();
+                        fout = new FileOutputStream(localFileToCreate);
+
+                        //read bytes from source file and write to destination file
+                        byte[] b = new byte[1024];
+                        int noOfBytes = 0;
+                        while ((noOfBytes = in.read(b)) != -1)
+                            fout.write(b, 0, noOfBytes);
+                        in.close();
+                        fout.close();
+                        contents.discard(googleApiClient);
+                    } catch (FileNotFoundException e) {
+                        // something went wrong, delete the file we were trying to create
+                        (new File(localFileToCreate)).delete();
+                    } catch (IOException e) {
+                        // something went wrong, delete the file we were trying to create
+                        (new File(localFileToCreate)).delete();
+                    }
+                }
+
+
+                /****** Upload any files that are missing remotely ******/
+
+                for (String localFile : arrLocalFiles) {
+
+                    // if the remote folder does not exist, create it. This should only need to be called once.
+                    if (teamPhotosFolder == null) {
+                        MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
+                                .setTitle("" + teamNumber).build();
+                        DriveFolder.DriveFolderResult folderResult = rootFolder.createFolder(googleApiClient, changeSet).await();
+                        teamPhotosFolder = folderResult.getDriveFolder();
+                    }
+
+                    DriveContents contents = null;
+                    try {
+                        FileInputStream in = new FileInputStream(localFile);
+
+                        // create a new file in Drive. This works a little different than normal file IO it that you create the file first,
+                        // then tell it at the end which folder it's part of. Think of "folders" in drive more like "tags" or "labels".
+                        DriveApi.DriveContentsResult contentResult = Drive.DriveApi.newDriveContents(googleApiClient).await();
+                        contents = contentResult.getDriveContents();
+                        OutputStream out = contents.getOutputStream();
+                        //read bytes from source file and write to destination file
+                        byte[] b = new byte[1024];
+                        int noOfBytes = 0;
+                        while ((noOfBytes = in.read(b)) != -1)
+                            out.write(b, 0, noOfBytes);
+                        in.close();
+                        out.close();
+                    } catch (FileNotFoundException e) {
+                        // something went wrong, discard the changes to the Drive file
+                        if (contents != null)
+                            contents.discard(googleApiClient);
+                    } catch (IOException e) {
+                        // something went wrong, discard the changes to the Drive file
+                        if (contents != null)
+                            contents.discard(googleApiClient);
+                    }
+
+                    if (contents != null) {
+                        String[] splitFilename = localFile.split("/");
+                        String filename = splitFilename[splitFilename.length - 1];
+                        MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
+                                .setTitle(filename)
+                                .setMimeType(URLConnection.guessContentTypeFromName(filename))
+                                .build();
+
+                        teamPhotosFolder.createFile(googleApiClient, changeSet, contents).await();
+                    }
+                }
+
+                Log.i(mActivity.getResources().getString(R.string.app_name),
+                        "Finished photo sync for team " + teamNumber);
+                googleApiClient.disconnect();
+
+
+                // hand the photos back to the PhotoRequester
+                if (mRequester != null) {
+                    // first, get the list of image files
+                    listOfFiles = photosDir.listFiles();
+                    ArrayList<Bitmap> arrLocalBitmaps = new ArrayList<Bitmap>();
+                    for (File file : listOfFiles) {
+                        // make sure it's an image file
+                        Bitmap bitmap = BitmapFactory.decodeFile(file.getPath());
+                        if (bitmap != null) {
+                            arrLocalBitmaps.add(bitmap);
+                        }
+                        // else: if it's not a file, then what is it???? .... skip I guess
+                    }
+                    mRequester.updatePhotos((Bitmap[]) arrLocalBitmaps.toArray());
+
+                }
+            }
+        }
+
+        private class PathAndDriveId {
+            public String path;
+            public DriveId driveId;
+            public String title;
+
+            public PathAndDriveId(String path, DriveId driveId, String title) {
+                this.path = path;
+                this.driveId = driveId;
+                this.title = title;
+            }
+        }
+    }
+
+
+    /**
+     * This method takes care of saving a team photo to the local cache and syncing it to Drive if Drive is available.
+     *
+     * @param teamNumber The team number, which will be used as the folder for the photo.
+     *                   Does not have to be a team in the matchResults file,, the photo will get saved regardless.
+     * @param photo The photo to get saved.
+     */
+    public void saveTeamPhoto(int teamNumber, Bitmap photo) {
+        // TODO
+
+        // check for STORAGE permission
+        if (!canWriteToStorage())
+            return;
+    }
+
+
+    public String getTeamPhotoPath(int teamNumber) {
+
+        String photoName = teamNumber + "_" + new Date().getTime() + ".jpg";
+        return mLocalTeamPhotosFilePath+"/"+photoName;
+    }
+
+
+    /**
+     * We take photos by calling the system camera app and telling it where to save the photo.
+     * This function will provide a file name in the correct location in the Team Photos/teamNumber directory.
+     *
+     * If a photos directory does not already exist for this team, this function will create one.
+     *
+     * @param teamNumber
+     * @return Can return NULL if we do not have permission to write to STORAGE.
+     */
+    public Uri getNameForNewPhoto(int teamNumber)
+    {
+        // check if a photo folder exists for this team, and create it if it does not.
+        String dir = mLocalTeamPhotosFilePath +"/"+teamNumber+"/";
+        File file = new File(dir);
+
+        if (!file.isDirectory()) {
+            // in case there's a regular file there with the same name
+            file.delete();
+
+            // create it
+            file.mkdir();
+        }
+
+        String fileName = dir+teamNumber+"_"+(new Date().getTime())+".jpg";
+        return Uri.fromFile(new File(fileName));
+    }
+
+    /**
+     * This method will return you all locally-cached photos for the requested team.
+     * It will then spawn a new background thread, and if Drive is available, it will sync the photos
+     * for the requested team only and then notify the requesting activity that it has new photos.
+     *
+     * Since syncing photos with Drive can take a few seconds, FileUtils.loadTeamPhotos() will immediately call
+     * the PhotoRequester's updatePhotos(Bitmap[]) with whatever photos are locally cached for that team,
+     * and if FileUtils is able to connect to Drive then it will call it again after performing the sync.
+     *
+     * @param teamNumber The team whos photos we want to load.
+     * @param requester The activity that is requesting the photos. This activity's .updatePhotos(Bitmap[])
+     *                  will be called with the loaded photos.
+     * @return It will call requester.updatePhotos(Bitmap[]) with an array of Bitmaps containing all
+     *          photos for that team, or a zero-length array if no photos were found for that team.
+     */
+    public void getTeamPhotos(int teamNumber, PhotoRequester requester)
+    {
+        // check for STORAGE permission
+        if (!canWriteToStorage())
+            return;
+
+        /* First, return the requester any photos we have on the local drive */
+
+        File photosDir = new File(mLocalTeamPhotosFilePath +"/"+teamNumber);
+
+        // check if that folder exists
+        if (!photosDir.isDirectory()) {
+            // we have no photos for this team
+            requester.updatePhotos(new Bitmap[0]);
+            return;
+        }
+
+
+        File[] listOfFiles = photosDir.listFiles();
+        ArrayList<Bitmap> arrBitmaps = new ArrayList<Bitmap>();
+        for (int i = 0; i < listOfFiles.length; i++) {
+            if (listOfFiles[i].isFile()) {
+                // BitmapFactory will return `null` if the file cannot be parsed as an image, so no error-checking needed.
+                Bitmap bitmap = BitmapFactory.decodeFile(listOfFiles[i].getPath());
+                if (bitmap != null)
+                    arrBitmaps.add(bitmap);
+            }
+            // else: if it's not a file, then what is it???? .... skip I guess
+        }
+        requester.updatePhotos( arrBitmaps.toArray(new Bitmap[arrBitmaps.size()]) );
+
+
+        /* Now, attempt to sync with Drive */
+        if (canConnectToDrive()) {
+            (new TeamPhotoSyncerThread(teamNumber, requester)).start();
+        }
+
+    }
+}

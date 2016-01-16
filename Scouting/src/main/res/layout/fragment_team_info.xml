@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent" android:layout_height="fill_parent">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:measureWithLargestChild="false">
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"></LinearLayout>
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/horizontalScrollView"
+            android:layout_gravity="center_horizontal" >
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:layout_width="400dp"
+                    android:layout_height="400dp"
+                    android:id="@+id/imageView"
+                    android:src="@drawable/ic_launcher" />
+
+                <ImageView
+                    android:layout_width="400dp"
+                    android:layout_height="400dp"
+                    android:id="@+id/imageView2"
+                    android:src="@drawable/ic_launcher" />
+
+                <ImageView
+                    android:layout_width="400dp"
+                    android:layout_height="400dp"
+                    android:id="@+id/imageView3"
+                    android:src="@drawable/ic_launcher" />
+
+                <ImageView
+                    android:layout_width="400dp"
+                    android:layout_height="400dp"
+                    android:id="@+id/imageView4"
+                    android:src="@drawable/ic_launcher" />
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="W/L/T: 4/6/0\nOPR: 46.8\nNPR: 14.2\netc"
+            android:id="@+id/textView4"
+            android:layout_gravity="center_horizontal" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Past Performance (from www.theblualliance.com)\n\t2015 GTR Central seeded 10/38\n\t2015 Waterloo seeded 8/32 [Regional Finalist]\n\t2014 North Bay seeded 2/37 [Regional Winner]"
+            android:id="@+id/textView8"
+            android:layout_gravity="center_horizontal" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Notes:\n\t\t- This team is awesome because...\n\t\t-They did this thing I hate.\n\t\t-Their automode is broken"
+            android:id="@+id/textView" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/editText"
+            android:layout_gravity="center_horizontal"
+            android:hint="Add a note..."
+            android:linksClickable="false"
+            android:maxLines="1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Pit Data:"
+            android:id="@+id/textView5" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="# of wheels:"
+                android:id="@+id/textView6" />
+
+            <EditText
+                android:layout_width="77dp"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"
+                android:ems="10"
+                android:id="@+id/editText2" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="1">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Type of wheels:"
+                android:id="@+id/textView7" />
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/editText3"
+                android:layout_weight="0.59" />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

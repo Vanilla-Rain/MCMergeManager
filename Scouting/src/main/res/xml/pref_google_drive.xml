@@ -1,0 +1,29 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ListPreference
+        android:key="@string/PROPERTY_googledrive_account"
+        android:title="Shared Team Account for Syncing"
+        android:defaultValue="mc.merge.conflict@gmail.com"
+        android:persistent="true" />
+
+    <EditTextPreference
+        android:key="@string/PROPERTY_googledrive_teamname"
+        android:title="Team Name"
+        android:defaultValue="Team2706"
+        android:selectAllOnFocus="true"
+        android:inputType="text"
+        android:singleLine="true"
+        android:maxLines="1"
+        android:persistent="true" />
+
+    <EditTextPreference
+        android:key="@string/PROPERTY_googledrive_event"
+        android:title="Event Name"
+        android:defaultValue="Preseason"
+        android:selectAllOnFocus="true"
+        android:inputType="text"
+        android:singleLine="true"
+        android:maxLines="1"
+        android:persistent="true" />
+
+</PreferenceScreen>

@@ -1,0 +1,104 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
+    tools:context="ca.team2706.scouting.mcmergemanager.TeamStatsPage$PlaceholderFragment">
+
+    <TextView android:id="@+id/teamRecordTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Record: 0-0-0"
+        android:layout_gravity="center_horizontal"
+        android:textStyle="bold" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="30dp"></View>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Average Cycle Time:"
+            android:id="@+id/textView2"
+            android:layout_gravity="right"
+            android:layout_weight="1" />
+
+        <TextView android:id="@+id/teamAvgCycleTimeTV"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="0 s"
+            android:layout_gravity="right"
+            android:layout_weight="3" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="30dp"></View>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Average points / second:"
+            android:id="@+id/textView2"
+            android:layout_gravity="right"
+            android:layout_weight="1" />
+
+        <TextView android:id="@+id/teamAvgPtsPerSTV"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="0 pts"
+            android:layout_gravity="right"
+            android:layout_weight="3" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="30dp"></View>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Favourite Cycle:"
+        android:id="@+id/textView3"
+        android:layout_gravity="center_horizontal|left" />
+
+    <TextView android:id="@+id/favCycleTypeTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="[1 Pass] L.G. + Truss + Catch"
+        android:layout_gravity="center_horizontal|right" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="30dp"></View>
+
+    <Button android:id="@+id/showCyclesBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="showCyclesBtn"
+        android:text="Show Cycles"
+        android:layout_gravity="center_horizontal" />
+
+</LinearLayout>
