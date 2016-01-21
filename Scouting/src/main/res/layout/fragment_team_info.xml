@@ -56,7 +56,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="W/L/T: 4/6/0\nOPR: 46.8\nNPR: 14.2\netc"
-            android:id="@+id/textView4"
+            android:id="@+id/textViewScore"
             android:layout_gravity="center_horizontal" />
 
         <TextView
@@ -64,15 +64,14 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Past Performance (from www.theblualliance.com)\n\t2015 GTR Central seeded 10/38\n\t2015 Waterloo seeded 8/32 [Regional Finalist]\n\t2014 North Bay seeded 2/37 [Regional Winner]"
-            android:id="@+id/textView8"
-            android:layout_gravity="center_horizontal" />
+            android:id="@+id/textViewPerformance" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Notes:\n\t\t- This team is awesome because...\n\t\t-They did this thing I hate.\n\t\t-Their automode is broken"
-            android:id="@+id/textView" />
+            android:id="@+id/textViewNotes" />
 
         <EditText
             android:layout_width="match_parent"

@@ -91,7 +91,7 @@ public class AutoScouting extends ActionBarActivity {
     }
 
     public void startTeleop(View view) {
-        Intent intent = new Intent(this, TeleopScouting.class);
+        Intent intent = new Intent(this, NewTeleopScouting.class);
         intent.putExtra(MainActivity.EXTRA_MATCH_NUM, m_matchNum);
         intent.putExtra(MainActivity.EXTRA_ALLIANCE_COLOUR, m_allianceColour);
 

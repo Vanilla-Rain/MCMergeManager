@@ -3,11 +3,15 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <EditText android:id="@+id/match_num_field"
-        android:layout_width="100dp"
-        android:layout_height="80dp"
-        android:inputType="number"
-        android:hint="@string/match_number" />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="18.62"
+        android:text="Scout Match"
+        android:background="?attr/colorPrimaryDark"
+        android:textStyle="bold"
+        android:onClick="scout"
+        android:textSize="28sp" />
 
     <View
         android:layout_width="1dp"
@@ -19,7 +23,7 @@
         android:layout_height="@dimen/scout_btn_height"
         android:orientation="horizontal">
 
-        <Button
+   <!--     <Button
             android:layout_width="wrap_content"
             android:layout_height="@dimen/scout_btn_height"
             android:layout_weight="1"
@@ -27,17 +31,7 @@
             android:background="@color/red_alliance"
             android:onClick="scoutRed"
             android:textStyle="bold"
-            android:textSize="28sp" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/scout_btn_height"
-            android:layout_weight="1"
-            android:text="@string/blue_alliance"
-            android:background="@color/blue_alliance"
-            android:textStyle="bold"
-            android:onClick="scoutBlue"
-            android:textSize="28sp" />
+            android:textSize="28sp" />-->
 
     </LinearLayout>
 

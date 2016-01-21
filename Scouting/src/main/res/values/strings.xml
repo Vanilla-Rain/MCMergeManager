@@ -12,13 +12,29 @@
     <string name="match_scouting_activity_title">Match Scouting</string>
     <string name="title_activity_auto_scouting">AutoScouting</string>
     <string name="title_activity_auto_scouting2">AutoScouting2</string>
+    <string name="title_activity_post_game">Post Game</string>
     <string name="title_activity_teleop_scouting">Teleop Scouting</string>
     <string name="title_activity_file_chooser">FileChooser</string>
     <string name="title_activity_team_stats_page">TeamStatsPage</string>
     <string name="title_activity_team_cycles_report">TeamCyclesReport</string>
     <string name="default_knightWatchData_location">/sdcard/KnightWatchData.csv</string>
-
-
+    <string-array name="year_array">
+        <item>2016</item>
+        <item>2015</item>
+        <item>2014</item>
+        <item>2013</item>
+    </string-array>
+    <string-array name="defense_array">
+        <item>Breached Defense</item>
+        <item>Portcullis</item>
+        <item>Chevar de Frise</item>
+        <item>Moat</item>
+        <item>Ramparts</item>
+        <item>Drawbridge</item>
+        <item>Sally Port</item>
+        <item>Rock Wall</item>
+        <item>Rough Terrain</item>
+    </string-array>
 
     <string name="EXTRA_TEAM_NO">ca.team2706.scouting.mcmergemanager.EXTRA_TEAM_NO</string>
     <string name="EXTRA_MATCHES_HASHTABLE">ca.team2706.scouting.mcmergemanager.EXTRA_MATCHES_HASHTABLE</string>
@@ -33,7 +49,6 @@
     <string name="EXTRA_MATCH_RESULTS_FILE">ca.team2706.scouting.mcmergemanager.EXTRA_MATCH_RESULTS_FILE</string>
     <string name="EXTRA_KNIGHT_WATCH_DATA_FILE">ca.team2706.scouting.mcmergemanager.EXTRA_KNIGHT_WATCH_DATA_FILE</string>
     <string name="title_activity_settings">Settings</string>
-
     <!-- Strings related to properties from the Settings page -->
     <string name="PROPERTY_googledrive_account">ca.team2706.scouting.googledrive_account</string>
     <string name="PROPERTY_googledrive_password">ca.team2706.scouting.googledrive_password</string>
@@ -42,27 +57,7 @@
 
     <!-- Strings related to file storage / retrieval and Google Drive sync -->
     <string name="FILE_TOPLEVEL_DIR">MCMergeManager</string>
-    <string name="title_activity_about">About</string>
-    <string name="about_description">
-        "<font size="18"><b>About MC Merge Manager</b></font>"
-
-        "MC Merge Manager is a scouting app for the 2016 FIRST Robotics Competition game &quot;Stronghold&quot;."
-
-        "MC Merge Manager is developed and maintained by FRC Team 2706 &quot;Merge Conflict&quot;. This project is open source and can be found at\n\t\t\twww.github.com/FRC2706/MCMergeManager."
-
-        "\n\n<font size="16"><b>Syncing Data</b></font>"
-
-        "<b>Team Photos</b> are synced to Google Drive using one of the Google Accounts registered on this Android device. To add a new sync account, please do so through the main Android Accounts menu, you will then be able to select that account in MC Merge Manager\'s Settings / Google Drive Sync. The simplest way to sync data between multiple devices is to create a team google account that everyone has access to. The other way is to let the app create a folder structure in one person\'s Drive, and then share it with everyone else. Because of how the Drive API does quotas, the second method will have faster syncs."
-
-        "\n\n<font size="16"><b>Local Data</b></font>"
-
-        "MC Merge Manager keeps a copy of all data in the root of your phon\'s USB storage (the storage you can see when you connect it to a computer by USB, located at /sdcard on internal file viewers). This is done so that a manual file sync / backep by USB can be done for devices that do not have WiFi or Bluetooth connectivity. If you uninstall the app, you will need to manually remove these files."
-
-        "\n\n<font size="16"><b>Google Drive API</b></font>"
-
-        "MC Merge Manager uses Google Drive APIs, and is required to include their legal notice. But I can\'t find it at the moment."
-    </string>
-
+    <string name="title_activity_about">AboutActivity</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
 
@@ -152,5 +147,8 @@
         "For example, position the FAB to one side of stream of a cards so the FAB won’t interfere "
         "when a user tries to pick up one of cards.\n\n"
     </string>
+    <string name="title_activity_new_teleop_scouting">NewTeleopScouting</string>
+    <string name="title_activity_new_auto_scouting">NewAutoScouting</string>
+    <string name="title_activity_pre_game">PreGameActivity</string>
 
 </resources>

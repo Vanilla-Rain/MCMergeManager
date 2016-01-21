@@ -14,9 +14,5 @@ public class AboutActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
 
-
-        // I have spent way too much time trying to get this stupid back button to work... I'm out of ideas and patients.
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
     }
 }

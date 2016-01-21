@@ -90,6 +90,7 @@ public class TabFragment extends Fragment {
                     return "Match Scouting";
                 case 1 :
                     return "Team Info";
+
             }
             return null;
         }
