@@ -2,8 +2,6 @@ package ca.team2706.scouting.mcmergemanager;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
@@ -19,12 +17,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class NewAutoScouting extends AppCompatActivity {
-private PreGameActivity.PreGameObject preGameObject;
+    private PreGameActivity.PreGameObject preGameObject;
     public ArrayList<Integer> defensesBreached;
     public ArrayList<BallShot> ballsShot;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_new_auto_scouting);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -32,8 +32,9 @@ private PreGameActivity.PreGameObject preGameObject;
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.defense_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-// Apply the adapter to the spinner
-defensesBreached = new ArrayList<Integer>();
+
+        // Apply the adapter to the spinner
+        defensesBreached = new ArrayList<Integer>();
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -110,15 +111,15 @@ defensesBreached = new ArrayList<Integer>();
 
 
         });
-Intent thisIntent = getIntent();
-       preGameObject  = (PreGameActivity.PreGameObject)thisIntent.getSerializableExtra("PreGameData");
+        Intent thisIntent = getIntent();
+        preGameObject  = (PreGameActivity.PreGameObject)thisIntent.getSerializableExtra("PreGameData");
     }
-public void toTeleop(View view) {
-    Intent intent = new Intent(this,NewTeleopScouting.class);
-    intent.putExtra("PreGameData",(Serializable)preGameObject);
-  //  intent.putExtra("AutoScoutingData",(Serializable)new AutoScoutingObject());
-    startActivity(intent);
-}
+    public void toTeleop(View view) {
+        Intent intent = new Intent(this,NewTeleopScouting.class);
+        intent.putExtra("PreGameData",(Serializable)preGameObject);
+        //  intent.putExtra("AutoScoutingData",(Serializable)new AutoScoutingObject());
+        startActivity(intent);
+    }
     public void ballPickup(View view) {
 
     }

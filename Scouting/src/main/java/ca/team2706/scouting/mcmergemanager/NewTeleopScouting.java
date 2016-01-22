@@ -1,22 +1,14 @@
 package ca.team2706.scouting.mcmergemanager;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Matrix;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.Handler;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -55,9 +47,9 @@ public class NewTeleopScouting extends AppCompatActivity {
                     int remainSec = remainTime - minuets * 60;
                     String remainSecString;
                     if(remainSec < 10)
-                         remainSecString = "0" + remainSec;
+                        remainSecString = "0" + remainSec;
                     else
-                    remainSecString = remainSec + "";
+                        remainSecString = remainSec + "";
 
                     tvGameTime.setText(minuets + ":" + remainSecString);
                     m_handler.postDelayed(m_handlerTask, 1000);  // 1 second delay
@@ -71,7 +63,7 @@ public class NewTeleopScouting extends AppCompatActivity {
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.defense_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-// Apply the adapter to the spinner
+        // Apply the adapter to the spinner
 
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -145,27 +137,23 @@ public class NewTeleopScouting extends AppCompatActivity {
         });
     }
 
-
-
-
-
     //Button - Called in XML's onClick
     public void postGame(View view) {
         Intent intent = new Intent(this,PostGameActivity.class);
         startActivity(intent);
     }
+
     public void scalingTower(View view) {
         new TeleopScoutAlertDialog("Scaling Tower...",NewTeleopScouting.this,"Scale Successful","","Scale Failed");
     }
-public void ballPickup(View view) {
-    new TeleopScoutAlertDialog("Picking up ball",NewTeleopScouting.this,"Ground","Wall","Failed");
-}
+
+    public void ballPickup(View view) {
+        new TeleopScoutAlertDialog("Picking up ball",NewTeleopScouting.this,"Ground","Wall","Failed");
+    }
+
     public boolean isRunning = false;
     public void defendingStart(View view) {
-        if(isRunning)
-            isRunning = false;
-        else
-            isRunning = true;
+        isRunning = !isRunning;
 
         final TextView textViewDefending = (TextView)findViewById(R.id.textViewDefending);
         final UpTimer upTimer = new UpTimer();
@@ -180,7 +168,7 @@ public void ballPickup(View view) {
                 textViewDefending.setText("" + formatter.format(upTimer.currentTime()));
 
                 if(upTimer.currentTime() >= 150 || !isRunning) {
-upTimer.cancel();
+                    upTimer.cancel();
                     textViewDefending.setText("Not Currently Defending");
                 } else {
                     m_handlerDefending.postDelayed(m_handlerTaskDefending, 100);  // 1 second delay
@@ -188,7 +176,7 @@ upTimer.cancel();
 
             }
         };
-    m_handlerTaskDefending.run();
+        m_handlerTaskDefending.run();
     }
 
-        }
+}

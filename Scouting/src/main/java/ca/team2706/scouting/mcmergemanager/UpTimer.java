@@ -10,37 +10,39 @@ import java.util.TimerTask;
  * Created by MCSoftware on 2016-01-16.
  */
 public class UpTimer {
-    private Timer timer, _t;
-    private double _count=0;
+    private Timer timer, timer1;
+    private double count = 0;
     public UpTimer() {
 
     }
     public void startTime(final int cancelAfter,int loopTime, final Activity activity) {
-        _t = new Timer();
-        _t.scheduleAtFixedRate(new TimerTask() {
+        timer1 = new Timer();
+        timer1.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                Log.e("here", "" + Math.ceil(_count));
-                _count += 0.1;
+                Log.e("here", "" + Math.ceil(count));
+                count += 0.1;
 
                 activity.runOnUiThread(new Runnable() //run on ui thread
                 {
                     public void run() {
 
-                        if (_count > cancelAfter) {
-                            _t.cancel();
+                        if (count > cancelAfter) {
+                            timer1.cancel();
                         }
 
                     }
                 });
             }
-        }, loopTime,loopTime);
+        }, loopTime, loopTime);
     }
+
     public double currentTime() {
-        return _count;
+        return count;
     }
+
     public void cancel() {
-        _t.cancel();
-        _count = -1;
+        timer1.cancel();
+        count = -1;
     }
 }

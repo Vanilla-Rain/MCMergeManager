@@ -9,14 +9,14 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <android:uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name="MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -26,50 +26,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".AutoScouting"
-            android:label="@string/title_activity_auto_scouting2"
-            android:parentActivityName=".MainActivity"
-            android:screenOrientation="portrait">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="MainActivity" />
-        </activity>
-        <activity
-            android:name=".TeleopScouting"
-            android:label="@string/title_activity_teleop_scouting"
-            android:parentActivityName=".MainActivity"
-            android:screenOrientation="portrait">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
-        </activity>
-        <activity
-            android:name=".FileChooser"
-            android:label="FileChooser"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".DispBestCycles"
-            android:label="DispBestCycles" />
-        <activity
-            android:name=".TeamStatsPage"
-            android:label="@string/title_activity_team_stats_page"
-            android:parentActivityName=".MainActivity"
-            android:screenOrientation="portrait">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="MainActivity" />
-        </activity>
-        <activity
-            android:name=".TeamCyclesReport"
-            android:label="@string/title_activity_team_cycles_report"
-            android:parentActivityName=".TeamStatsPage"
-            android:screenOrientation="portrait">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="TeamStatsPage" />
-        </activity>
-        <activity
-            android:name=".NewTeleopScouting"
+            android:name="NewTeleopScouting"
             android:label="@string/title_activity_new_teleop_scouting"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"
@@ -79,12 +36,12 @@
                 android:value="ca.team2706.scouting.mcmergemanager.MainActivity" />
         </activity>
         <activity
-            android:name=".PostGameActivity"
+            android:name="PostGameActivity"
             android:label="@string/title_activity_post_game"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".PreGameActivity"
+            android:name="PreGameActivity"
             android:label="@string/title_activity_pre_game"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme">
@@ -93,9 +50,9 @@
                 android:value="MainActivity" />
         </activity>
         <activity
-            android:name=".NewAutoScouting"
+            android:name="NewAutoScouting"
             android:label="@string/title_activity_new_auto_scouting"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>

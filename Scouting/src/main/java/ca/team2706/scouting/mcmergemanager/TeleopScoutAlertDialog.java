@@ -2,19 +2,11 @@ package ca.team2706.scouting.mcmergemanager;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.os.CountDownTimer;
 import android.os.Handler;
-import android.os.SystemClock;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.TextView;
-
-import java.util.Timer;
-import java.util.TimerTask;
 
 
 /**
@@ -73,6 +65,7 @@ public class TeleopScoutAlertDialog {
                 }
 
         );
+
         alert.setPositiveButton(button1, new DialogInterface.OnClickListener() {
 
 
@@ -83,15 +76,14 @@ public class TeleopScoutAlertDialog {
                         upTimer.cancel();
                     }
                 }
-
         );
         final AlertDialog dialog = alert.create();
 
         dialog.show();
     }
-public class DialogReturnData {
-    public DialogReturnData() {
+    public class DialogReturnData {
+        public DialogReturnData() {
 
+        }
     }
-}
 }

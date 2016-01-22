@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * Created by MCSoftware on 2016-01-18.
@@ -15,8 +14,8 @@ public class PostGameActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.activity_post_game);
-      final SeekBar seekBar = (SeekBar) findViewById(R.id.seekBar1);
-      final TextView  textView = (TextView) findViewById(R.id.textViewSeekBar);
+        final SeekBar seekBar = (SeekBar) findViewById(R.id.seekBar1);
+        final TextView  textView = (TextView) findViewById(R.id.textViewSeekBar);
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             int progress = 0;
@@ -38,10 +37,12 @@ public class PostGameActivity extends Activity {
             }
         });
     }
-public void returnHome(View view) {
-    Intent intent = new Intent(this,MainActivity.class);
-    startActivity(intent);
-}
+
+    public void returnHome(View view) {
+        Intent intent = new Intent(this,MainActivity.class);
+        startActivity(intent);
+    }
+
     @Override
     public void onBackPressed() {
         // INTENT FOR YOUR HOME ACTIVITY
