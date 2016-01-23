@@ -152,6 +152,10 @@ public class NewTeleopScouting extends AppCompatActivity {
     //Button - Called in XML's onClick
     public void postGame(View view) {
         Intent intent = new Intent(this,PostGameActivity.class);
+        Intent thisIntent = getIntent();
+        intent.putExtra("PreGameData",(PreGameObject)thisIntent.getSerializableExtra("PreGameData"));
+        intent.putExtra("AutoScoutingData",(AutoScoutingObject)thisIntent.getSerializableExtra("AutoScoutingData"));
+        intent.putExtra();
         startActivity(intent);
     }
     public void scalingTower(View view) {
