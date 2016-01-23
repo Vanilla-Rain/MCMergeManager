@@ -1,21 +1,23 @@
 package ca.team2706.scouting.mcmergemanager;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.ProgressBar;
@@ -27,7 +29,10 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.drive.Drive;
 import com.google.android.gms.drive.DriveApi;
+import com.google.android.gms.drive.DriveContents;
+import com.google.android.gms.drive.DriveFile;
 import com.google.android.gms.drive.DriveFolder;
+import com.google.android.gms.drive.DriveId;
 import com.google.android.gms.drive.Metadata;
 import com.google.android.gms.drive.MetadataChangeSet;
 import com.google.android.gms.drive.query.Filters;
@@ -37,14 +42,20 @@ import com.google.android.gms.drive.query.SearchableField;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.OutputStream;
+import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Date;
 
-import static com.google.android.gms.common.api.GoogleApiClient.*;
+import static com.google.android.gms.common.api.GoogleApiClient.Builder;
+import static com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import static com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 
 /**
  *
@@ -53,10 +64,13 @@ import static com.google.android.gms.common.api.GoogleApiClient.*;
  *
  * Created by Mike Ounsworth
  */
+@SuppressWarnings("ResultOfMethodCallIgnored")
 public class FileUtils
         implements ConnectionCallbacks, OnConnectionFailedListener {
 
     private static boolean mCanConnect = false;
+
+    // This is not being used _yet_, but is here for future integration
     private static boolean mHasUnsyncedMatchScoutingData = false;
 
     /**
@@ -83,6 +97,11 @@ public class FileUtils
     private static String mRemoteEventFolderName;
     private static String mRemoteTeamPhotosFolderName;
 
+    private static DriveId mDriveIdToplevelFolder;
+    private static DriveId mDriveIdTeamFolder;
+    private static DriveId mDriveIdEventFolder;
+    private static DriveId mDriveIdTeamPhotosFolder;
+
     private static String mLocalToplevelFilePath;
     private static String mLocalTeamFilePath;
     private static String mLocalEventFilePath;
@@ -103,16 +122,14 @@ public class FileUtils
 
         // store string constants and preferences in member variables just for cleanliness
         // (since the strings are `static`, when any instances of FileUtils update these, all instances will get the updates)
+        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(mActivity.getBaseContext());
+        mRemoteToplevelFolderName = activity.getString(R.string.FILE_TOPLEVEL_DIR);
+        mRemoteTeamFolderName = SP.getString(mActivity.getResources().getString(R.string.PROPERTY_googledrive_teamname), "<Not Set>");
+        mRemoteEventFolderName = SP.getString(mActivity.getResources().getString(R.string.PROPERTY_googledrive_event), "<Not Set>");
+        mRemoteTeamPhotosFolderName = "Team Photos";
 
-            SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(mActivity.getBaseContext());
-            mRemoteToplevelFolderName = activity.getString(R.string.FILE_TOPLEVEL_DIR);
-            mRemoteTeamFolderName = SP.getString(mActivity.getResources().getString(R.string.PROPERTY_googledrive_teamname), "<Not Set>");
-            mRemoteEventFolderName = SP.getString(mActivity.getResources().getString(R.string.PROPERTY_googledrive_event), "<Not Set>");
-            mRemoteTeamPhotosFolderName = "Team Photos";
-
-
-
-        mLocalToplevelFilePath   = "/sdcard/" + mRemoteToplevelFolderName;
+        mLocalToplevelFilePath   = Environment.getExternalStorageDirectory().getPath()
+                                    + mRemoteToplevelFolderName;
         mLocalTeamFilePath       = mLocalToplevelFilePath + "/" + mRemoteTeamFolderName;
         mLocalEventFilePath      = mLocalTeamFilePath + "/" + mRemoteEventFolderName;
         mLocalTeamPhotosFilePath = mLocalEventFilePath + "/" + mRemoteTeamPhotosFolderName;
@@ -130,6 +147,42 @@ public class FileUtils
 
     public boolean canConnectToDrive() {
         return mCanConnect;
+    }
+
+    /**
+     * Checks if we have the permission read / write to the internal USB STORAGE,
+     * requesting that permission if we do not have it.
+     *
+     * @return whether or not we have the STORAGE permission.
+     */
+    public boolean canWriteToStorage()
+    {
+        if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(mActivity,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    123);
+
+            // check if they clicked Deny
+            if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.READ_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED)
+                return false;
+        }
+
+
+        if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(mActivity,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    123);
+
+            // check if they clicked Deny
+            if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED)
+                return false;
+        }
+
+        return true;
     }
 
     public void disconnect() {
@@ -176,16 +229,16 @@ public class FileUtils
      * It will set the appropriate members in MainActivity when it completes.
      */
     void checkDriveConnectionAndFiles() {
-        // force a full check of the files at the next connect
-        mCheckDriveFilesOnNextConnect = true;
-
-        // First test to see if the credentials are even valid
+        // First, test to see if the credentials are even valid
         reset_mGoogleApiClient();
 
         if (mGoogleApiClient == null) {
             mCanConnect = false;
             return;
         } else {
+            // force a full check of the files at the next connect
+            mCheckDriveFilesOnNextConnect = true;
+
             mGoogleApiClient.connect();
         }
     }
@@ -195,22 +248,24 @@ public class FileUtils
      *
      * MCMergeManager/
      *  - team_name/
+     *      - Team Photos/
      *      - event/
-     *          - Team Photos/
      *
      * Note: run() will close the GoogleApiClient when it exists.
      */
     private class CheckDriveFilesThread extends Thread {
 
-        private GoogleApiClient mGooggleDRiveApiClient;
+        public CheckDriveFilesThread() {
 
-        public CheckDriveFilesThread(GoogleApiClient googleApiClient) {
-            mGoogleApiClient = googleApiClient;
         }
         @Override
         public void run() {
             Log.i(mActivity.getResources().getString(R.string.app_name),
                     "Starting the Drive folder sync");
+
+            // check for STORAGE permission
+            if (!canWriteToStorage())
+                return;
 
             // Check if the file structure exists, and create it if it doesn't
 
@@ -222,6 +277,7 @@ public class FileUtils
                 mGoogleApiClient.disconnect();
                 return;
             }
+            mDriveIdToplevelFolder = topLevelfolder.getDriveId();
 
             // check for teamName folder
             DriveFolder teamFolder = checkOrCreateRemoteFolder(mGoogleApiClient, topLevelfolder, mRemoteTeamFolderName);
@@ -230,72 +286,84 @@ public class FileUtils
                 mGoogleApiClient.disconnect();
                 return;
             }
+            mDriveIdTeamFolder = teamFolder.getDriveId();
 
             // check for event folder
             DriveFolder eventFolder = checkOrCreateRemoteFolder(mGoogleApiClient, teamFolder, mRemoteEventFolderName);
-            if (teamFolder == null) {
+            if (eventFolder == null) {
                 // something went wrong, abort
                 mGoogleApiClient.disconnect();
                 return;
             }
+            mDriveIdEventFolder = eventFolder.getDriveId();
 
             // check for Team Photos folder
             DriveFolder teamPhotosFolder = checkOrCreateRemoteFolder(mGoogleApiClient, eventFolder, mRemoteTeamPhotosFolderName);
-            if (teamFolder == null) {
+            if (teamPhotosFolder == null) {
                 // something went wrong, abort
                 mGoogleApiClient.disconnect();
                 return;
             }
+            mDriveIdTeamPhotosFolder = teamPhotosFolder.getDriveId();
 
             Log.i(mActivity.getResources().getString(R.string.app_name),
                     "Drive folder sync finished.");
 
             mGoogleApiClient.disconnect();
         }
-    }
 
-    /** Helper just to avoid copy&paste'ing code
-     * @return null if the folder can not be found.
-     **/
-    private DriveFolder checkOrCreateRemoteFolder(GoogleApiClient googleApiClient, DriveFolder rootFolder, String folderName) {
-        Query query = new Query.Builder().addFilter(Filters.and(
-                Filters.eq(SearchableField.TITLE, folderName),
-                Filters.contains(SearchableField.MIME_TYPE, "folder"))).build();
+        /** Helper just to avoid copy&paste'ing code.
+         *
+         * Note: since this contains blocking Drive API calls, this will crash if you try to call it from the main thread,
+         * it can only be called from other threads.
+         *
+         * @return null if the folder can not be found.
+         **/
+        private DriveFolder checkOrCreateRemoteFolder(GoogleApiClient googleApiClient, DriveFolder rootFolder, String folderName)
+        {
+            // check for STORAGE permission
+            if (!canWriteToStorage())
+                return null;
 
-        DriveApi.MetadataBufferResult result = rootFolder.queryChildren(mGoogleApiClient, query).await();
+            Query query = new Query.Builder().addFilter(Filters.and(
+                    Filters.eq(SearchableField.TITLE, folderName),
+                    Filters.contains(SearchableField.MIME_TYPE, "folder"))).build();
 
-        if (!result.getStatus().isSuccess()) {
-            Log.e(mActivity.getResources().getString(R.string.app_name),
-                    "Cannot create folder in the root of Google Drive.");
-            return null;
-        } else {
-            for (Metadata m : result.getMetadataBuffer()) {
-                if (m.getTitle().equals(folderName)) {
-                    // Folder exists - we found it!
-                    DriveFolder folder = m.getDriveId().asDriveFolder();
-                    result.getMetadataBuffer().release();
-                    return folder;
+            DriveApi.MetadataBufferResult result = rootFolder.queryChildren(mGoogleApiClient, query).await();
+
+            if (!result.getStatus().isSuccess()) {
+                Log.e(mActivity.getResources().getString(R.string.app_name),
+                        "Cannot query folders in the root of Google Drive.");
+                return null;
+            } else {
+                for (Metadata m : result.getMetadataBuffer()) {
+                    if (m.getTitle().equals(folderName)) {
+                        // Folder exists - we found it!
+                        DriveFolder folder = m.getDriveId().asDriveFolder();
+                        result.getMetadataBuffer().release();
+                        return folder;
+                    }
                 }
             }
+
+            result.getMetadataBuffer().release();
+
+            // Folder not found; let's create it.
+            MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
+                    .setTitle(folderName)
+                    .build();
+
+            DriveFolder.DriveFolderResult result1 = rootFolder
+                    .createFolder(googleApiClient, changeSet).await();
+
+            if (!result1.getStatus().isSuccess()) {
+                Log.e(mActivity.getResources().getString(R.string.app_name),
+                        "Error while trying to create the folder \"" + folderName + "\"");
+                return null;
+            }
+
+            return result1.getDriveFolder();
         }
-
-        result.getMetadataBuffer().release();
-
-        // Folder not found; let's create it.
-        MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
-                .setTitle(folderName)
-                .build();
-
-        DriveFolder.DriveFolderResult result1 = rootFolder
-                .createFolder(googleApiClient, changeSet).await();
-
-        if (!result1.getStatus().isSuccess()) {
-            Log.e(mActivity.getResources().getString(R.string.app_name),
-                    "Error while trying to create the folder \"" + folderName + "\"");
-            return null;
-        }
-
-        return result1.getDriveFolder();
     }
 
 
@@ -307,13 +375,18 @@ public class FileUtils
      * The file structure is:
      * MCMergeManager/
      *  - team_name/
+     *      - Team Photos/
      *      - event/
      *          - matchResults.csv
      *          - matchScoutingData.csv
-     *          - teamPhotos/
      *
      */
-    public void checkLocalFileStructure() {
+    public void checkLocalFileStructure()
+    {
+        // check for STORAGE permission
+        if (!canWriteToStorage())
+            return;
+
         File file = new File(mLocalToplevelFilePath);
         if (!file.isDirectory()) {
             // in case there's a regular file there with the same name
@@ -362,7 +435,7 @@ public class FileUtils
 
         if (mCheckDriveFilesOnNextConnect) {
             mCheckDriveFilesOnNextConnect = false;
-            (new CheckDriveFilesThread(mGoogleApiClient)).start();
+            (new CheckDriveFilesThread()).start();
         }
     }
 
@@ -438,15 +511,13 @@ public class FileUtils
      *  5. Delete `matchScoutingData.LOCK` from drive.
      *
      *  6. Set mHasUnsyncedMatchScoutingData = false;
-     *
-     * @param csvLines
      */
     public void appendToMatchScoutingData(String[] csvLines) {
         // TODO
     }
 
     /**
-     * Add a Note for that team.
+     * Add a Note for a particular team.
      *
      * The intention of Notes is for the drive team to be able to read them quickly.
      * They should be short and fit on one line, so they will be truncated to 80 characters.
@@ -454,8 +525,18 @@ public class FileUtils
     public void addNote(int teamNumber, String note) {
         // TODO
     }
-    public void getNote(int teamNumber, String note) {
+
+    /**
+     * Retrieves all the notes for a particular team.
+     *
+     * @param teamNumber the team number you want notes for.
+     * @return All the notes for this team concatenated into a single string, with each note beginning with a bullet "-",
+     *  and ending with a newline (except for the last one).
+     */
+    public String getNotesForTeam(int teamNumber) {
         // TODO
+
+        return "";
     }
 
     /**
@@ -478,13 +559,13 @@ public class FileUtils
      *
      * @param teamNumber The team whos photos you want to sync with Drive
      */
-    @Nullable
     public void syncOneTeamsPhotos(int teamNumber, PhotoRequester requester) {
         if (! canConnectToDrive() )
             return;
 
-
+        (new TeamPhotoSyncerThread(teamNumber, requester)).start();
     }
+
 
     /**
      * If we can connect to Drive, fork a background thread te syncronize photos for all teams.
@@ -499,12 +580,274 @@ public class FileUtils
         if (! canConnectToDrive() )
             return;
 
-        Toast.makeText(mActivity, "Starting Team Photo Sync in background.", Toast.LENGTH_SHORT);
+        // -1 tells TeamPhotoSyncerThread to sync all teams.
+        (new TeamPhotoSyncerThread(-1, null)).start();
+    }
 
-        // spawn a new thread to actually do the sync
+    private class TeamPhotoSyncerThread extends Thread {
+        private int mTeamNumber;
+        private PhotoRequester mRequester;
+
+        /**
+         * teamNumber can = -1, and requester can be null. This is the behaviour of run() depending on whether the parameters are null:
+         *
+         * teamNumber is set, requester is set :
+         *      The photos for that team will be synced and returned to requester.
+         *
+         * teamNumber == -1, requester is set :
+         *      All team photos will be synced, nothing will be returned to the requester
+         *      (because it it meant to enly retun photos for a simgle team).
+         *
+         * teamNumber is set, requester == null :
+         *      The photos for that team will be synced, nothing is returned.
+         *
+         * teamNumber == -1, requester == null :
+         *      All team photos are synced, nothing is returned.
+         *
+         * Note: Since this could be a very long-running thread (several minutes) it created its own GoogleApiClient
+         *  so as not to interfere with other threads.
+         */
+        public TeamPhotoSyncerThread(int teamNumber, PhotoRequester requester) {
+            mTeamNumber = teamNumber;
+            mRequester = requester;
+        }
+
+        @Override
+        public void run() {
+            // check for STORAGE permission
+            if (!canWriteToStorage())
+                return;
+
+            SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(mActivity);
+            String driveAccount = SP.getString(mActivity.getResources().getString(R.string.PROPERTY_googledrive_account), "<Not Set>");
+
+            if (driveAccount.equals("<Not Set>"))
+                return;
+            GoogleApiClient googleApiClient = new GoogleApiClient.Builder(mActivity)
+                    .addApi(Drive.API)
+                    .addScope(Drive.SCOPE_FILE)
+                    .setAccountName(driveAccount)
+                    .addConnectionCallbacks(m_me)
+                    .addOnConnectionFailedListener(m_me)
+                    .build();
+
+            googleApiClient.blockingConnect();
+            if (!googleApiClient.isConnected())
+                return;
 
 
-        Toast.makeText(mActivity, "Done Syncing Team Photos!", Toast.LENGTH_SHORT);
+            if (mTeamNumber <= 0) {
+                syncPhotosForTeam(googleApiClient, mTeamNumber);
+            } else {
+                mRequester = null;
+
+                // TODO: loop over all folders in the photos dir
+            }
+        }
+
+        private void syncPhotosForTeam(GoogleApiClient googleApiClient, int teamNumber)
+        {
+            if (mTeamNumber >= 0) {
+
+                Log.i(mActivity.getResources().getString(R.string.app_name),
+                        "Beginning photo sync for team " + teamNumber);
+
+                // get the list of local files
+
+                File photosDir = new File(mLocalTeamPhotosFilePath + "/" + teamNumber);
+                // TODO: generalize this to also handle syncAllPhotos
+
+                /****** get the list of local files ******/
+
+                // check if that folder exists
+                if (!photosDir.isDirectory()) {
+                    // we have no photos for this team
+                    if (mRequester != null)
+                        mRequester.updatePhotos(new Bitmap[0]);
+                    googleApiClient.disconnect();
+                    return;
+                }
+
+                File[] listOfFiles = photosDir.listFiles();
+                ArrayList<String> arrLocalFiles = new ArrayList<>();
+                for (File file : listOfFiles) {
+                    // make sure it's an image file
+                    Bitmap bitmap = BitmapFactory.decodeFile(file.getPath());
+                    if (bitmap != null) {
+                        arrLocalFiles.add(file.getPath());
+                    }
+                    // else: if it's not a file, then what is it???? .... skip I guess
+                }
+
+
+                // Navigate to the correct folder - there has to be a more efficient way to do this
+
+                DriveFolder rootFolder = Drive.DriveApi.getFolder(googleApiClient, mDriveIdTeamPhotosFolder);
+                Log.i(mActivity.getResources().getString(R.string.app_name),
+                        "Local Files: " + arrLocalFiles);
+
+                Log.i(mActivity.getResources().getString(R.string.app_name),
+                        "Drive rootFolder: " + rootFolder.getMetadata(googleApiClient).await().getMetadata().getTitle());
+
+                Query query = new Query.Builder()
+                        .addFilter(Filters.eq(SearchableField.TITLE, "" + teamNumber))
+                        .build();
+
+                DriveApi.MetadataBufferResult result = rootFolder.queryChildren(googleApiClient, query).await();
+
+                DriveFolder teamPhotosFolder = null;
+                for (Metadata m : result.getMetadataBuffer()) {
+                    teamPhotosFolder = m.getDriveId().asDriveFolder();
+                }
+                result.getMetadataBuffer().close();
+
+
+                ArrayList<PathAndDriveId> arrRemoteFiles = new ArrayList<>();
+                if (teamPhotosFolder != null) {
+                    query = new Query.Builder()
+                            .addFilter(Filters.eq(SearchableField.MIME_TYPE, "application/vnd.google-apps.photo"))
+                            .build();
+                    result = teamPhotosFolder.queryChildren(googleApiClient, query).await();
+
+                    for (Metadata m : result.getMetadataBuffer()) {
+                        arrRemoteFiles.add(new PathAndDriveId(
+                                mRemoteToplevelFolderName + "/" + mRemoteTeamFolderName + "/" + mRemoteTeamPhotosFolderName + "/" + mTeamNumber + "/" + m.getTitle(),
+                                m.getDriveId(),
+                                m.getTitle()
+                        ));
+                    }
+                    result.getMetadataBuffer().close();
+                }
+                Log.i(mActivity.getResources().getString(R.string.app_name),
+                        "Remote Files: " + arrRemoteFiles);
+
+                // Remove files that are in both lists - these don't need to be synced.
+                for (PathAndDriveId remoteFile : arrRemoteFiles) {
+                    String remotePath = remoteFile.path;
+                    if (arrLocalFiles.contains(remotePath)) {
+                        arrRemoteFiles.remove(remoteFile);
+                        arrLocalFiles.remove(remotePath);
+                    }
+                }
+
+
+                /****** Download any Files we're missing locally ******/
+
+                for (PathAndDriveId remoteFile : arrRemoteFiles) {
+                    // the Drive API actually makes a local cache of the file, so let's copy the contents into our app's file structure
+                    DriveApi.DriveContentsResult fileResult = remoteFile.driveId.asDriveFile().open(googleApiClient, DriveFile.MODE_READ_ONLY, null).await();
+
+                    if (!fileResult.getStatus().isSuccess()) {
+                        // file can't be opened
+                        continue;
+                    }
+
+                    String localFileToCreate = mLocalTeamPhotosFilePath + "/" + teamNumber + "/" + remoteFile.title;
+                    DriveContents contents;
+                    InputStream in;
+                    FileOutputStream fout;
+                    try {
+                        // DriveContents object contains pointers to the actual byte stream, which we will manually copy
+                        contents = fileResult.getDriveContents();
+                        in = contents.getInputStream();
+                        fout = new FileOutputStream(localFileToCreate);
+
+                        //read bytes from source file and write to destination file
+                        byte[] b = new byte[1024];
+                        int noOfBytes = 0;
+                        while ((noOfBytes = in.read(b)) != -1)
+                            fout.write(b, 0, noOfBytes);
+                        in.close();
+                        fout.close();
+                        contents.discard(googleApiClient);
+                    } catch (IOException e) {
+                        // something went wrong, delete the file we were trying to create
+                        (new File(localFileToCreate)).delete();
+                    }
+                }
+
+
+                /****** Upload any files that are missing remotely ******/
+
+                for (String localFile : arrLocalFiles) {
+
+                    // if the remote folder does not exist, create it. This should only need to be called once.
+                    if (teamPhotosFolder == null) {
+                        MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
+                                .setTitle("" + teamNumber).build();
+                        DriveFolder.DriveFolderResult folderResult = rootFolder.createFolder(googleApiClient, changeSet).await();
+                        teamPhotosFolder = folderResult.getDriveFolder();
+                    }
+
+                    DriveContents contents = null;
+                    try {
+                        FileInputStream in = new FileInputStream(localFile);
+
+                        // create a new file in Drive. This works a little different than normal file IO it that you create the file first,
+                        // then tell it at the end which folder it's part of. Think of "folders" in drive more like "tags" or "labels".
+                        DriveApi.DriveContentsResult contentResult = Drive.DriveApi.newDriveContents(googleApiClient).await();
+                        contents = contentResult.getDriveContents();
+                        OutputStream out = contents.getOutputStream();
+                        //read bytes from source file and write to destination file
+                        byte[] b = new byte[1024];
+                        int noOfBytes;
+                        while ((noOfBytes = in.read(b)) != -1)
+                            out.write(b, 0, noOfBytes);
+                        in.close();
+                        out.close();
+                    } catch (IOException e) {
+                        // something went wrong, discard the changes to the Drive file
+                        if (contents != null)
+                            contents.discard(googleApiClient);
+                    }
+
+                    if (contents != null) {
+                        String[] splitFilename = localFile.split("/");
+                        String filename = splitFilename[splitFilename.length - 1];
+                        MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
+                                .setTitle(filename)
+                                .setMimeType(URLConnection.guessContentTypeFromName(filename))
+                                .build();
+
+                        teamPhotosFolder.createFile(googleApiClient, changeSet, contents).await();
+                    }
+                }
+
+                Log.i(mActivity.getResources().getString(R.string.app_name),
+                        "Finished photo sync for team " + teamNumber);
+                googleApiClient.disconnect();
+
+
+                // hand the photos back to the PhotoRequester
+                if (mRequester != null) {
+                    // first, get the list of image files
+                    listOfFiles = photosDir.listFiles();
+                    ArrayList<Bitmap> arrLocalBitmaps = new ArrayList<>();
+                    for (File file : listOfFiles) {
+                        // make sure it's an image file
+                        Bitmap bitmap = BitmapFactory.decodeFile(file.getPath());
+                        if (bitmap != null) {
+                            arrLocalBitmaps.add(bitmap);
+                        }
+                        // else: if it's not a file, then what is it???? .... skip I guess
+                    }
+                    mRequester.updatePhotos((Bitmap[]) arrLocalBitmaps.toArray());
+
+                }
+            }
+        }
+
+        private class PathAndDriveId {
+            public String path;
+            public DriveId driveId;
+            public String title;
+
+            public PathAndDriveId(String path, DriveId driveId, String title) {
+                this.path = path;
+                this.driveId = driveId;
+                this.title = title;
+            }
+        }
     }
 
 
@@ -516,9 +859,57 @@ public class FileUtils
      * @param photo The photo to get saved.
      */
     public void saveTeamPhoto(int teamNumber, Bitmap photo) {
+        // check for STORAGE permission
+        if (!canWriteToStorage())
+            return;
+
+
+        // TODO
+
+    }
+
+
+    public String getTeamPhotoPath(int teamNumber) {
+
+        String photoName = teamNumber + "_" + new Date().getTime() + ".jpg";
+        return mLocalTeamPhotosFilePath+"/"+photoName;
+    }
+
+    /**
+     * This deletes a photo from the Drive.
+     *
+     * It loops over all photos for that team, camparing them against the supplied one with Bitmap.sameAs(Bitmap).
+     */
+    public void deletePhoto(int teamNumber, Uri photoURI) {
         // TODO
     }
 
+    /**
+     * We take photos by calling the system camera app and telling it where to save the photo.
+     * This function will provide a file name in the correct location in the Team Photos/teamNumber directory.
+     *
+     * If a photos directory does not already exist for this team, this function will create one.
+     *
+     * @param teamNumber
+     * @return Can return NULL if we do not have permission to write to STORAGE.
+     */
+    public Uri getNameForNewPhoto(int teamNumber)
+    {
+        // check if a photo folder exists for this team, and create it if it does not.
+        String dir = mLocalTeamPhotosFilePath +"/"+teamNumber+"/";
+        File file = new File(dir);
+
+        if (!file.isDirectory()) {
+            // in case there's a regular file there with the same name
+            file.delete();
+
+            // create it
+            file.mkdir();
+        }
+
+        String fileName = dir+teamNumber+"_"+(new Date().getTime())+".jpg";
+        return Uri.fromFile(new File(fileName));
+    }
 
     /**
      * This method will return you all locally-cached photos for the requested team.
@@ -535,7 +926,11 @@ public class FileUtils
      * @return It will call requester.updatePhotos(Bitmap[]) with an array of Bitmaps containing all
      *          photos for that team, or a zero-length array if no photos were found for that team.
      */
-    public void getTeamPhotos(int teamNumber, PhotoRequester requester) {
+    public void getTeamPhotos(int teamNumber, PhotoRequester requester)
+    {
+        // check for STORAGE permission
+        if (!canWriteToStorage())
+            return;
 
         /* First, return the requester any photos we have on the local drive */
 
@@ -550,42 +945,50 @@ public class FileUtils
 
 
         File[] listOfFiles = photosDir.listFiles();
-        ArrayList<Bitmap> arrBitmaps = new ArrayList<Bitmap>();
-        for (int i = 0; i < listOfFiles.length; i++) {
-            if (listOfFiles[i].isFile()) {
+        ArrayList<Bitmap> arrBitmaps = new ArrayList<>();
+//        for (int i = 0; i < listOfFiles.length; i++) {
+        for(File file : listOfFiles) {
+            if (file.isFile()) {
                 // BitmapFactory will return `null` if the file cannot be parsed as an image, so no error-checking needed.
-                Bitmap bitmap = BitmapFactory.decodeFile(listOfFiles[i].getPath());
+                Bitmap bitmap = BitmapFactory.decodeFile(file.getPath());
                 if (bitmap != null)
                     arrBitmaps.add(bitmap);
             }
-            // else: how did that get there ???? .... skip I guess
+            // else: if it's not a file, then what is it???? .... skip I guess
         }
         requester.updatePhotos( arrBitmaps.toArray(new Bitmap[arrBitmaps.size()]) );
 
 
         /* Now, attempt to sync with Drive */
         if (canConnectToDrive()) {
-
+            (new TeamPhotoSyncerThread(teamNumber, requester)).start();
         }
 
     }
+
     /**
-     * Gets you the formatted string of Blue Alliance data for a particular team. If we already have data on this team in
-     * /MCMergeManager/<TeamName>/<EventName>/thebluealliance.json then it will return that data, otherwise it will do an internet fetch and store the results in the file for future offline searches.
+     * Gets you the formatted string of Blue Alliance data for a particular team.
+     * If we already have data on this team in
+     * /MCMergeManager/<TeamName>/<EventName>/thebluealliance.json
+     * then it will return that data, otherwise it will do an internet fetch and store the results
+     * in the file for future offline searches.
      *
      * This should trigger on searching for a team on the Team Info tab.
      */
-    private ArrayList<String> downloadArray;
-    private String joinedDownload;
-    private String joined2015;
-    private String joined2014;
-    private String joined2013;
-    private String joined;
     public String getBlueAllianceDataForTeam(int teamNumber) {
-        store2015 = new ArrayList<>();
-        store2014 = new ArrayList<>();
-        store2013 = new ArrayList<>();
-   /*     if (we already have data on them in the json file) {
+
+        ArrayList<String> downloadArray;
+        String joined2015 = "";
+        String joined2014 = "";
+        String joined2013 = "";
+        String joined = "";
+
+        String combine;
+        ArrayList<String> store2015 = new ArrayList<>();
+        ArrayList<String> store2014 = new ArrayList<>();
+        ArrayList<String> store2013 = new ArrayList<>();
+
+        /* if (we already have data on them in the json file) {
             String data = extract the data from json format and build a pretty-print string
             return data; //TODO
         }*/
@@ -596,52 +999,39 @@ public class FileUtils
             try {
                 downloadArray = new ArrayList<>();
 
-
                 SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(mActivity.getBaseContext());
-                    boolean done = false;
+                boolean done = false;
 
-                    String[] parts = SP.getString("Download Data",null).split("\\.");
+                String[] parts = SP.getString("Download Data",null).split("\\.");
+                for (int g = 0; g < parts.length; g++) {
+                    if (parts[g].contains(Integer.toString(teamNumber))) {
+                        Log.d("Get Data", "Team Data Found");
+                        downloadArray.add(parts[g]);
 
-                    for (int g = 0; g < parts.length; g++) {
-
-
-
-                        if (parts[g].contains(Integer.toString(teamNumber))) {
-                            Log.d("Get Data", "Team Data Found");
-                            downloadArray.add(parts[g]);
-
-                            done = true;
-
-
-                        }
+                        done = true;
                     }
-                    if (!done) {
-
-                        mActivity.runOnUiThread(new Runnable() {
-                            public void run() {
-                                Toast.makeText(mActivity, "No Internet and this team is not downloaded!", Toast.LENGTH_LONG).show();
-                            }
-                        });
-
-
-                    } else {
-                        String returning = TextUtils.join("\n", downloadArray);
-                        String regex =  "\\b" + teamNumber;
-                        returning = returning.replaceAll(regex, "");
-
-
-                        return returning;
-                    }
-
-
                 }
-             catch (java.lang.NullPointerException e) {
+                if (!done) {
+                    mActivity.runOnUiThread(new Runnable() {
+                        public void run() {
+                            Toast.makeText(mActivity, "No Internet and this team is not downloaded!", Toast.LENGTH_LONG).show();
+                        }
+                    });
+
+                } else {
+                    String returning = TextUtils.join("\n", downloadArray);
+                    String regex =  "\\b" + teamNumber;
+                    returning = returning.replaceAll(regex, "");
+
+                    return returning;
+                }
+            }
+            catch (java.lang.NullPointerException e) {
                 mActivity.runOnUiThread(new Runnable() {
                     public void run() {
                         Toast.makeText(mActivity, "No Internet and nothing has been downloaded!", Toast.LENGTH_LONG).show();
                     }
                 });
-
             }
 
             // if (! file exitst(/MCMergeManager/<TeamName>/<EventName>/thebluealliance.json) )
@@ -649,12 +1039,8 @@ public class FileUtils
             ArrayList<String> comps2015 = getBlueAllianceDataArrayAsArray("event_code", "http://www.thebluealliance.com/api/v2/team/frc" + teamNumber + "/2015/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
             ArrayList<String> compsName2015 = getBlueAllianceDataArrayAsArray("name", "http://www.thebluealliance.com/api/v2/team/frc" + teamNumber + "/2015/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
             for (int i = 0; i < comps2015.size(); i++) {
-                String joe = comps2015.get(i);
-
                 ArrayList<String> test = getBlueAllianceDataDoubleArrayAsArray(1, "http://www.thebluealliance.com/api/v2/event/2015" + comps2015.get(i) + "/rankings?X-TBA-App-Id=frc2706:mergemanager:v01/");
                 for (int p = 0; p < test.size(); p++) {
-
-
                     if (test.get(p).equals(Integer.toString(teamNumber))) { // Or use equals() if it actually returns an Object.
                         // Found at index i. Break or return if necessary.
 
@@ -664,22 +1050,13 @@ public class FileUtils
 
                         store2015.add(combine);
                         joined2015 = TextUtils.join("\n ", store2015);
-
-
-
-
                     }
                 }
-
-
             }
-
 
             ArrayList<String> comps2014 = getBlueAllianceDataArrayAsArray("event_code", "http://www.thebluealliance.com/api/v2/team/frc" + teamNumber + "/2014/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
             ArrayList<String> compsName2014 = getBlueAllianceDataArrayAsArray("name", "http://www.thebluealliance.com/api/v2/team/frc" + teamNumber + "/2014/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
             for (int i = 0; i < comps2014.size(); i++) {
-                String joe = comps2014.get(i);
-
                 ArrayList<String> test = getBlueAllianceDataDoubleArrayAsArray(1, "http://www.thebluealliance.com/api/v2/event/2014" + comps2014.get(i) + "/rankings?X-TBA-App-Id=frc2706:mergemanager:v01/");
                 for (int p = 0; p < test.size(); p++) {
                     Log.d("p", test.get(p));
@@ -694,20 +1071,14 @@ public class FileUtils
                         store2014.add(combine);
                         joined2014 = TextUtils.join("\n ", store2014);
 
-
-
-
                     }
                 }
 
             }
 
-
             ArrayList<String> comps2013 = getBlueAllianceDataArrayAsArray("event_code", "http://www.thebluealliance.com/api/v2/team/frc" + teamNumber + "/2013/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
             ArrayList<String> compsName2013 = getBlueAllianceDataArrayAsArray("name", "http://www.thebluealliance.com/api/v2/team/frc" + teamNumber + "/2013/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
             for (int i = 0; i < comps2013.size(); i++) {
-                String joe = comps2013.get(i);
-
                 ArrayList<String> test = getBlueAllianceDataDoubleArrayAsArray(1, "http://www.thebluealliance.com/api/v2/event/2013" + comps2013.get(i) + "/rankings?X-TBA-App-Id=frc2706:mergemanager:v01/");
                 for (int p = 0; p < test.size(); p++) {
 
@@ -721,11 +1092,6 @@ public class FileUtils
 
                         store2013.add(combine);
                         joined2013 = TextUtils.join("\n ", store2013);
-
-
-
-
-
                     }
 
                 }
@@ -736,137 +1102,70 @@ public class FileUtils
         }
         return joined;
     }
+
     /**
-     * This deletes a photo from the Drive.
-     *
-     * It loops over all photos for that team, camparing them against the supplied one with Bitmap.sameAs(Bitmap).
+     * Call a BlueAlliance URL and a key and it will give you the parsed JSON back
      */
-    public void deletePhoto(int teamNumber, Uri photoURI) {
-        // TODO
-    }
-/**
- * Call a BlueAlliance URL and a key and it will give you the parsed JSON back
- */
-public String keyedJson;
-
-    public String keyData;
     public String getBlueAllianceData( final String key, final String url) {
-
-
-
-                BlueAllianceData blue = new BlueAllianceData();
-                try {
-                    JSONObject issueObj = new JSONObject( blue.readUrl(url) );
-
-                    keyedJson =  issueObj.getString(key);
-
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-
-
-
-        return keyedJson;
-
+        String keyedJson = "";
+        BlueAllianceData blue = new BlueAllianceData();
+        try {
+            JSONObject issueObj = new JSONObject( blue.readUrl(url) );
+            keyedJson =  issueObj.getString(key);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-
-    public String getBlueAllianceDataArrayAsString( final String key,final String url) {
-
-
-            BlueAllianceData blue = new BlueAllianceData();
-            try
-
-            {
-                ArrayList<String> array1 = new ArrayList<String>();
-                JSONArray issueArray = new JSONArray(blue.readUrl(url));
-
-                for (int i = 0; i < issueArray.length(); i++) {
-
-                    JSONObject jsonobject = issueArray.getJSONObject(i);
-                    keyData = jsonobject.getString(key);
-                    array1.add(keyData);
-                    String joined = TextUtils.join(", ", array1);
-
-                    keyedJson = joined;
-                }
-            }
-
-            catch(
-            Exception e
-            )
-
-            {
-                e.printStackTrace();
-            }
-
-
         return keyedJson;
     }
-    private  boolean threadFinish = false;
-    public ArrayList<String> getBlueAllianceDataArrayAsArray( final String key, final String url) {
-        ArrayList<String> array1 = new ArrayList<String>();
 
 
-                BlueAllianceData blue = new BlueAllianceData();
-                try {
+    /**
+     * <Some Description>
+     */
+    public String getBlueAllianceDataArrayAsString( final String key,final String url) {
+        String keyedJson = "";
 
-                    JSONArray issueArray = new JSONArray(blue.readUrl(url));
+        BlueAllianceData blue = new BlueAllianceData();
+        try {
+            ArrayList<String> array1 = new ArrayList<>();
+            JSONArray issueArray = new JSONArray(blue.readUrl(url));
 
-                    for (int i = 0; i < issueArray.length(); i++) {
-
-                        JSONObject jsonobject = issueArray.getJSONObject(i);
-                        keyData = jsonobject.getString(key);
-                        array1.add(keyData);
-                        String joined = TextUtils.join(" ", array1);
-
-                        keyedJson = joined;
-                        threadFinish = true;
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-
-            return array1;
-
+            for (int i = 0; i < issueArray.length(); i++) {
+                JSONObject jsonobject = issueArray.getJSONObject(i);
+                String keyData = jsonobject.getString(key);
+                array1.add(keyData);
+                keyedJson = TextUtils.join(", ", array1);
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        return keyedJson;
     }
+
+    // TODO: this variable needs a better name.
+    // Also, it seems that you're setting it, but never reading it, is it even doing anything??
+    private  boolean threadFinish = false;
+
+    /**
+     * <Some Description>
+     */
     public ArrayList<String> getBlueAllianceDataDoubleArrayAsArray( final int key, final String url) {
-        ArrayList<String> array1 = new ArrayList<String>();
-                BlueAllianceData blue = new BlueAllianceData();
-                try {
-
-                    JSONArray issueArray = new JSONArray(blue.readUrl(url));
-
-                    for (int i = 0; i < issueArray.length(); i++) {
-
-                        JSONArray halfArray = issueArray.getJSONArray(i);
-                        keyData = halfArray.getString(key);
-                        array1.add(keyData);
-                        String joined = TextUtils.join(", ", array1);
-
-                        keyedJson = joined;
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-
-
+        ArrayList<String> array1 = new ArrayList<>();
+        BlueAllianceData blue = new BlueAllianceData();
+        try {
+            JSONArray issueArray = new JSONArray(blue.readUrl(url));
+            for (int i = 0; i < issueArray.length(); i++) {
+                JSONArray halfArray = issueArray.getJSONArray(i);
+                String keyData = halfArray.getString(key);
+                array1.add(keyData);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return array1;
     }
-    /**
-     * Convenience method that calls deletePhoto(teamNumber, photo), and then calls requester's updatePhotos(Bitmap[])
-     * with the new set of photos for that team.
-     */
-    public void deletePhate(int teamNumber, Bitmap photo, PhotoRequester requester) {
-        // TODO
-    }
-    public void saveToTeamFolder(int teamNumber, String item) {
-// TODO
-    }
+
+
     /**
      * Fetches Blue Alliance data for all teams who are registered for a particular event and saves the data in
      * /MCMergeManager/<TeamName>/<EventName>/thebluealliance.json
@@ -874,9 +1173,7 @@ public String keyedJson;
      *
      * This should trigger on a button, or maybe a settin+gs-menu item in Settings > Google Drive (we can rename that to something more appropriate).
      */
-    public String eventName;
-    public void downloadBlueAllianceDataForEvent(String eventName, String year,final ProgressBar progressBar, final AlertDialog dialog,final TextView team, int dataYear) {
-        this.eventName = eventName;
+    public void downloadBlueAllianceDataForEvent(String eventName, String year,final ProgressBar progressBar, final AlertDialog dialog, int dataYear) {
         ConnectivityManager cm = (ConnectivityManager) mActivity.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         if (activeNetwork == null) { // not connected to the internet
@@ -889,14 +1186,14 @@ public String keyedJson;
             });
             return;
         }
-        store = new ArrayList<>();
 
         //Get all teams at event
         final ArrayList<String> downloadedCompArray = getBlueAllianceDataArrayAsArray("team_number", "http://www.thebluealliance.com/api/v2/event/"+ year + eventName + "/teams?X-TBA-App-Id=frc2706:mergemanager:v01/");
-        String joined = TextUtils.join(",", downloadedCompArray);
+//        String joined = TextUtils.join(",", downloadedCompArray);
+        // [Mike] ^^^ It looks like that variable is never used.
 
         for (
-                //For each team
+            //For each team
                 int o = 0;
                 o < downloadedCompArray.size(); o++)
 
@@ -909,72 +1206,82 @@ public String keyedJson;
             });
             boolean looped = false;
             String joe = downloadedCompArray.get(o);
+
             //Get their nickname
-            downloadedNickname = getBlueAllianceData("nickname", "http://www.thebluealliance.com/api/v2/team/frc" + joe + "?X-TBA-App-Id=frc2706:mergemanager:v01/");
+            String downloadedNickname = getBlueAllianceData("nickname", "http://www.thebluealliance.com/api/v2/team/frc" + joe + "?X-TBA-App-Id=frc2706:mergemanager:v01/");
+            // [Mike] ^^^ This variable is never used, that means it's doing a slow internet call that we never use...??
+            // We should either save and display that, or get rid of it altogether.
+
             //Get Competitions they went to
-             ArrayList<String> comps2015 = getBlueAllianceDataArrayAsArray("event_code", "http://www.thebluealliance.com/api/v2/team/frc" + joe + "/" + dataYear + "/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
-           //Get Names of Competitions they went to
+            ArrayList<String> comps2015 = getBlueAllianceDataArrayAsArray("event_code", "http://www.thebluealliance.com/api/v2/team/frc" + joe + "/" + dataYear + "/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
+
+            //Get Names of Competitions they went to
             ArrayList<String> compsName2015 = getBlueAllianceDataArrayAsArray("name", "http://www.thebluealliance.com/api/v2/team/frc" + joe + "/" + dataYear + "/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
+
             for (int i = 0; i < comps2015.size(); i++) {
                 //For each competition
 
-
-                String joey = comps2015.get(i);
-
                 //TODO
-
+                // [Mike] ^^^ ??? What's that empty TODO about??
 
                 //Get their ranking
                 ArrayList<String> test = getBlueAllianceDataDoubleArrayAsArray(1, "http://www.thebluealliance.com/api/v2/event/" + dataYear + comps2015.get(i) + "/rankings?X-TBA-App-Id=frc2706:mergemanager:v01/");
                 for (int p = 0; p < test.size(); p++) {
-
-
                     if (test.get(p).equals(Integer.toString(Integer.parseInt(joe)))) {
                         // Found at index i. Break or return if necessary.
 
                         int compAmount = test.size();
                         compAmount -= 1;
-                        combine = dataYear + " "/* //TODO year */ + compsName2015.get(i) + " seeded " + Integer.toString(p) + "/" + compAmount + " " + joe;
+                        String combine = dataYear + " "/* //TODO year */ + compsName2015.get(i) + " seeded " + Integer.toString(p) + "/" + compAmount + " " + joe;
 
+                        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(mActivity);
+                        SharedPreferences.Editor editor = SP.edit();
+                        boolean done = false;
 
-                            SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(mActivity);
-                            SharedPreferences.Editor editor = SP.edit();
-                            boolean done = false;
+                        String[] parts = SP.getString("Download Data", "").split("\\.");
 
-                            String[] parts = SP.getString("Download Data", "").split("\\.");
-
-                            for (int g = 0; g < parts.length; g++) {
-                                if (combine.equals(parts[g])) {
-                                    Log.d("Download Data", "Found Duplicate");
-                                    if(!looped)
+                        for (int g = 0; g < parts.length; g++) {
+                            if (combine.equals(parts[g])) {
+                                Log.d("Download Data", "Found Duplicate");
+                                if(!looped)
                                     done = true;
 
-                                    break;
-
-                                }
+                                break;
                             }
-                            if (!done) {
-
-                                editor.putString("Download Data",SP.getString("Download Data","") + combine + ".").apply();
-                                if (comps2015.size() > 1) {
-                                    looped = true;
-                                }
+                        }
+                        if (!done) {
+                            editor.putString("Download Data",SP.getString("Download Data","") + combine + ".").apply();
+                            if (comps2015.size() > 1) {
+                                looped = true;
                             }
                         }
                     }
                 }
             }
-
-        Log.i("Download Data","Download Finished.");
         }
 
+        Log.i("Download Data","Download Finished.");
+    }
 
+    /**
+     * <Some Description>
+     */
+    public ArrayList<String> getBlueAllianceDataArrayAsArray( final String key, final String url) {
+        ArrayList<String> array1 = new ArrayList<>();
+        BlueAllianceData blue = new BlueAllianceData();
 
+        try {
+            JSONArray issueArray = new JSONArray(blue.readUrl(url));
+            for (int i = 0; i < issueArray.length(); i++) {
+                JSONObject jsonobject = issueArray.getJSONObject(i);
+                String keyData = jsonobject.getString(key);
+                array1.add(keyData);
 
-public String combine;
-public ArrayList<String> store2015;
-    public ArrayList<String> store2014;
-    public ArrayList<String> store2013;
-    public ArrayList<String> store;
-public String downloadedNickname;
+                threadFinish = true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return array1;
+    }
 }

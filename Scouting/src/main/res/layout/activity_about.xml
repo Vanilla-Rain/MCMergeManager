@@ -1,34 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/team_info_tab_lin_layout">
+    android:layout_height="match_parent">
 
-    <TextView
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="About MC Merge Manager" />
+        android:measureWithLargestChild="false"
+        android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="MC Merge Manager is a scouting app for the 2016 FIRST Robotics Competition game &quot;Stronghold&quot;.\nMC Merge Manager is developed and maintained by FRC Team 2706 &quot;Merge Conflict&quot;. This project is open source and can be found at\n\t\t\twww.github.com/FRC2706/MCMergeManager."/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/about_description"
+            android:layout_marginTop="15dp" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="MC Merge Manager uses Google Drive APIs, and is required to include their legal notice. But I can't find it at the moment."
-        android:layout_marginTop="15dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="&lt;Google Drive legal notice goes here&gt;"
+            android:id="@+id/drive_tv" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="&lt;Google Drive legal notice goes here&gt;"
-        android:id="@+id/drive_tv" />
-</LinearLayout>
+    </LinearLayout>
+</ScrollView>

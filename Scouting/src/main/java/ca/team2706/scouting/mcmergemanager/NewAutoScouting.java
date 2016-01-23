@@ -2,9 +2,6 @@ package ca.team2706.scouting.mcmergemanager;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
@@ -25,12 +22,16 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class NewAutoScouting extends AppCompatActivity {
+
 private PreGameObject preGameObject;
+
     public ArrayList<Integer> defensesBreached;
     public ArrayList<BallShot> ballsShot;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_new_auto_scouting);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -38,9 +39,11 @@ private PreGameObject preGameObject;
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.defense_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
 // Apply the adapter to the spinner
         ballsShot = new ArrayList<>();
 defensesBreached = new ArrayList<Integer>();
+
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -124,6 +127,7 @@ defensesBreached = new ArrayList<Integer>();
 
 
         });
+
 Intent thisIntent = getIntent();
        preGameObject  = (PreGameObject)thisIntent.getSerializableExtra("PreGameData");
     }
@@ -136,6 +140,7 @@ public void toTeleop(View view) {
     intent.putExtra("AutoScoutingData",  new AutoScoutingObject(ballsShot, cb.isChecked(), defensesBreached, cb2.isChecked()));
 
     startActivity(intent);
+
 }
     public void ballPickup(View view) {
 

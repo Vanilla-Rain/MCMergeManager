@@ -2,14 +2,10 @@ package ca.team2706.scouting.mcmergemanager;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
-
-import java.io.Serializable;
 
 public class PreGameActivity extends AppCompatActivity {
     private Intent srcIntent;
@@ -23,6 +19,7 @@ public class PreGameActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
+
     //Buttons
     public void startGame(View view) {
         EditText matchNumField = (EditText) findViewById(R.id.match_num_field);
@@ -30,7 +27,7 @@ public class PreGameActivity extends AppCompatActivity {
         int matchNumInt;
         if(matchNum.equals("")) return;
         try {
-             matchNumInt = Integer.parseInt(matchNum);
+            matchNumInt = Integer.parseInt(matchNum);
         } catch(NumberFormatException e) {
             return;
         }
@@ -40,6 +37,5 @@ public class PreGameActivity extends AppCompatActivity {
         intent.putExtra("PreGameData",new PreGameObject(matchNumInt, -1)); //TODO TEAM NUMBERS
         startActivity(intent);
     }
-
 
 }

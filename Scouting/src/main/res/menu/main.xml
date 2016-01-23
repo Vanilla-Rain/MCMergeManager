@@ -19,5 +19,8 @@
         android:title="About"
         android:orderInCategory="200"
         app:showAsAction="never" />
-
+    <item android:id="@+id/action_help"
+        android:title="Help"
+        android:orderInCategory="250"
+        app:showAsAction="never" />
 </menu>

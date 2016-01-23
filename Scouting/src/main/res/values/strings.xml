@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+    <string name="event_id_link"><a href="https://docs.google.com/spreadsheets/d/162LDKU1Lb9MHrbc7uzOrUJRacjPwuV6t04kg8QSOnh0/edit?usp=sharing">Event IDs</a></string>
     <string name="app_name">MC Merge Manager</string>
     <string name="match_number">Match #</string>
     <string name="button_send">Send</string>
@@ -57,7 +57,27 @@
 
     <!-- Strings related to file storage / retrieval and Google Drive sync -->
     <string name="FILE_TOPLEVEL_DIR">MCMergeManager</string>
-    <string name="title_activity_about">AboutActivity</string>
+    <string name="title_activity_about">About</string>
+    <string name="about_description">
+        "<font size="18"><b>About MC Merge Manager</b></font>"
+
+        "MC Merge Manager is a scouting app for the 2016 FIRST Robotics Competition game &quot;Stronghold&quot;."
+
+        "MC Merge Manager is developed and maintained by FRC Team 2706 &quot;Merge Conflict&quot;. This project is open source and can be found at\n\t\t\twww.github.com/FRC2706/MCMergeManager."
+
+        "\n\n<font size="16"><b>Syncing Data</b></font>"
+
+        "<b>Team Photos</b> are synced to Google Drive using one of the Google Accounts registered on this Android device. To add a new sync account, please do so through the main Android Accounts menu, you will then be able to select that account in MC Merge Manager\'s Settings / Google Drive Sync. The simplest way to sync data between multiple devices is to create a team google account that everyone has access to. The other way is to let the app create a folder structure in one person\'s Drive, and then share it with everyone else. Because of how the Drive API does quotas, the second method will have faster syncs."
+
+        "\n\n<font size="16"><b>Local Data</b></font>"
+
+        "MC Merge Manager keeps a copy of all data in the root of your phon\'s USB storage (the storage you can see when you connect it to a computer by USB, located at /sdcard on internal file viewers). This is done so that a manual file sync / backep by USB can be done for devices that do not have WiFi or Bluetooth connectivity. If you uninstall the app, you will need to manually remove these files."
+
+        "\n\n<font size="16"><b>Google Drive API</b></font>"
+
+        "MC Merge Manager uses Google Drive APIs, and is required to include their legal notice. But I can\'t find it at the moment."
+    </string>
+
     <string name="large_text">
         "Material is the metaphor.\n\n"
 

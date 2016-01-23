@@ -1,8 +1,10 @@
 package ca.team2706.scouting.mcmergemanager;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,12 +12,15 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.util.Log;
@@ -43,25 +48,22 @@ import java.util.Vector;
 
 @TargetApi(21)
 public class
-        MainActivity extends ActionBarActivity {
+        MainActivity extends AppCompatActivity {
 
     // TODO: all these EXTRA names should go in the strings.xml file
-    public final static String EXTRA_MATCH_NUM = "com.loyola.robotics.knightwatch.MATCH_NUM_MSG";
-    public final static String EXTRA_ALLIANCE_COLOUR = "com.loyola.robotics.knightwatch.EXTRA_ALLIANCE_COLOUR";
-    public final static String EXTRA_CHOOSE_FILES = "com.loyola.robotics.knightwatch.EXTRA_CHOOSE_FILES";
-    public final static String EXTRA_AVE_CYCLE_TIMES = "com.loyola.robotics.knightwatch.EXTRA_AVE_CYCLE_TIMES";
+    public final static String EXTRA_MATCH_NUM = "ca.team2706.scouting.mcmergemanager.MATCH_NUM_MSG";
+    public final static String EXTRA_ALLIANCE_COLOUR = "ca.team2706.scouting.mcmergemanager.EXTRA_ALLIANCE_COLOUR";
+    public final static String EXTRA_CHOOSE_FILES = "ca.team2706.scouting.mcmergemanager.EXTRA_CHOOSE_FILES";
+    public final static String EXTRA_AVE_CYCLE_TIMES = "ca.team2706.scouting.mcmergemanager.EXTRA_AVE_CYCLE_TIMES";
     public int teamColour = Color.rgb(102, 51, 153);
+
+//    public static final int MEDIA_TYPE_IMAGE = 1;
+//    public static final int MEDIA_TYPE_VIDEO = 2;
+
     Intent globalIntent;
-    public static final int MEDIA_TYPE_IMAGE = 1;
-    public static final int MEDIA_TYPE_VIDEO = 2;
+    MainActivity me;
 
-
-
-    static MainActivity me;
-
-    File matchResultsFile;
     boolean matchResultsLoaded = false;
-    File knightWatchDataFile;
     boolean knightWatchLoaded = false;
 
     /** <matchAllianceKey, {RobotEvent} **/
@@ -80,11 +82,15 @@ public class
     NavigationView mNavigationView;
     FragmentManager mFragmentManager;
     FragmentTransaction mFragmentTransaction;
-private Uri fileUri;
+    private Uri fileUri;
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
 
     FileUtils mFileUtils;
     LayoutInflater inflater;
+
+    /** A flag so that onResume() knows to sync photos for a particular team when we're returning from the camera app */
+    boolean lauchedPhotoApp = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,7 +103,7 @@ private Uri fileUri;
         if (loadMatchButton == null)
           /*  Toast.makeText(this, "WTF!?!?!?!?!", Toast.LENGTH_SHORT).show();*/
             inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View vi = inflater.inflate(R.layout.team_info_tab, null); //log.xml is your file.
+//        View vi = inflater.inflate(R.layout.team_info_tab, null); //log.xml is your file.
 
 
 
@@ -124,6 +130,7 @@ private Uri fileUri;
 
         // try logging into the Google Drive and make sure the correct files are there.
         mFileUtils = new FileUtils(this);
+        mFileUtils.canWriteToStorage();
         mFileUtils.checkDriveConnectionAndFiles();
 launchButtons();
     }
@@ -138,6 +145,12 @@ launchButtons();
         mFileUtils = new FileUtils(this);
         mFileUtils.checkDriveConnectionAndFiles();
 
+        if (lauchedPhotoApp) {
+            FileUtils fileUtils = new FileUtils(this);
+            fileUtils.syncOneTeamsPhotos(enterATeamNumberPopup.getTeamNumber());
+
+            lauchedPhotoApp = false;
+        }
     }
 
     /**
@@ -230,7 +243,6 @@ launchButtons();
                         return;
                     }
 
-
                     // These are things that could be needed further on
                     String strTeam = ""+teamNo;
                     Vector<String> matchesPlayed = matchesPlayedByTeam.get(strTeam);
@@ -259,8 +271,6 @@ launchButtons();
                     int[] counts = CycleAnalyzer.computeCounts(allCycles);
                     double[] times = CycleAnalyzer.computeAverageTimes(allCycles);
 
-
-
                     Intent intent = new Intent(me, TeamStatsPage.class);
                     intent.putExtra(getResources().getString(R.string.EXTRA_TEAM_CYCLE_COUNTS), counts);
                     intent.putExtra(getResources().getString(R.string.EXTRA_TEAM_NO), teamNo);
@@ -275,7 +285,6 @@ launchButtons();
                 } catch (Exception e) {
                     return;
                 }
-
             }
         });
 
@@ -288,14 +297,7 @@ launchButtons();
         alert.show();
     }
 
-//    public void gotoSettings(MenuItem item) {
-//        Toast.makeText(this, "Launching Settings", Toast.LENGTH_SHORT).show();
-//
-////        Intent intent = new Intent(this, SettingsActivity.class);
-////        startActivity(intent);
-//    }
-
-
+    // TODO: this is from the old KnightWatch and needs to be taken out.
     /** Called when the user clicks the ScoutRed button */
     public void scout(View view) {
 
@@ -601,6 +603,10 @@ launchButtons();
                 intent = new Intent(this, AboutActivity.class);
                 startActivity(intent);
                 return true;
+            case R.id.action_help:
+                intent = new Intent(this, HelpActivity.class);
+                startActivity(intent);
+                return true;
             case R.id.betting:
                 intent = new Intent(this,Betting.class);
                 startActivity(intent);
@@ -651,56 +657,88 @@ launchButtons();
 
 
 public  boolean accepted;
+    public GetTeamNumberDialog enterATeamNumberPopup;
+
     public void takePicture(View view) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CAMERA},
+                    123);
+            return; // the popup is non-blocking, so they'll have to click "Take Picture" again.
+        }
 
-   DisplayAlertDialog alert = new DisplayAlertDialog("Team Number","Team Number", 1, this);
-      alert.displayAlertDialog();
+        GetTeamNumberDialog alert = new GetTeamNumberDialog("Team Number","Team Number", 1, this);
+        alert.displayAlertDialog();
+
+        Log.d("heya", Boolean.toString(accepted));
+        enterATeamNumberPopup = new GetTeamNumberDialog("Team Number","Team Number", 1, this);
+        enterATeamNumberPopup.displayAlertDialog();
+
         Timer timer = new Timer();
-        timer.schedule(new CheckVar(), 0, 500);
+        timer.schedule(new CheckPopupHasExited(), 0, 500);
+    }
+
+    public static void startFragmentDialog() {
+
+    }
 
 
+    public String inputResult = "empty";
 
-    Log.d("heya", Boolean.toString(accepted));
-}
-
-public static void startFragmentDialog() {
-
-}
-
-
-public String inputResult = "empty";
     public static String getInputResult() {
         return DisplayAlertDialog.inputResult;
     }
+
     public void setInputResult(String inputResult) {
         this.inputResult = inputResult;
     }
+
     public static boolean getAccepted() {
         return DisplayAlertDialog.accepted;
     }
+
     public void setAccepted(boolean accepted) {
         this.accepted = accepted;
     }
-    class CheckVar extends TimerTask {
+
+    class CheckPopupHasExited extends TimerTask {
         public void run() {
             setAccepted(getAccepted());
             setInputResult(getInputResult());
-          //  Log.d("rekt", inputResult);
             if (accepted) {
-                TakePicture pic = new TakePicture(inputResult, MainActivity.this);
-                pic.capturePicture();
-                Log.d("oof", "oof");
-                DisplayAlertDialog.accepted = false;
+                if(enterATeamNumberPopup.accepted) {
+                    int teamNumber;
+                    try {
+                        teamNumber = Integer.parseInt(enterATeamNumberPopup.inputResult);
+                    } catch (NumberFormatException e) {
+                        // TODO: should probably pop up a toast or something. There seems to be some threading issue with
+                        // doing that from here.
+
+                        Log.d(me.getResources().getString(R.string.app_name),
+                                e.toString());
+                        return;
+                    }
+
+                    FileUtils fileUtils = new FileUtils(me);
+                    TakePicture pic = new TakePicture(fileUtils.getTeamPhotoPath(teamNumber), me);
+                    pic.capturePicture();
+                    DisplayAlertDialog.accepted = false;
+
+                    // otherwise this thread will keep running in the background forever, even if you close the app.
+                    // Every time you take a pic your phone will have more and more processes running making it slower and slower.
+                    this.cancel();
+                }
 
             }
-
+            else if (enterATeamNumberPopup.canceled) {
+                this.cancel();
+            }
         }
     }
 
-public void launchButtons() {
+    public void launchButtons() {
+
+    }
 
 }
-
-}
-
-

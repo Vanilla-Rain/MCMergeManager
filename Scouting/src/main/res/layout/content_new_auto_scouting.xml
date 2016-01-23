@@ -45,7 +45,7 @@
         android:layout_height="wrap_content"
         android:text="Started in Spy Bot Position?"
         android:id="@+id/buttoncheckBox"
-        android:layout_below="@+id/button2"
+        android:layout_above="@+id/map"
         android:layout_centerHorizontal="true" />
 
     <CheckBox
@@ -54,7 +54,7 @@
         android:text="Arrived at a Defense"
         android:onClick="ballPickup"
         android:id="@+id/buttonArrivedAtDefense"
-        android:layout_below="@+id/defense_spinner"
+        android:layout_above="@+id/buttoncheckBox"
         android:layout_centerHorizontal="true" />
 
     <Button
