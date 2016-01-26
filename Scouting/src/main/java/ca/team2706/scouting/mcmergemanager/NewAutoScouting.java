@@ -5,19 +5,26 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class NewAutoScouting extends AppCompatActivity {
-    private PreGameActivity.PreGameObject preGameObject;
+
+private PreGameObject preGameObject;
+
     public ArrayList<Integer> defensesBreached;
     public ArrayList<BallShot> ballsShot;
 
@@ -33,8 +40,10 @@ public class NewAutoScouting extends AppCompatActivity {
                 R.array.defense_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        // Apply the adapter to the spinner
-        defensesBreached = new ArrayList<Integer>();
+// Apply the adapter to the spinner
+        ballsShot = new ArrayList<>();
+defensesBreached = new ArrayList<Integer>();
+
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -101,7 +110,14 @@ public class NewAutoScouting extends AppCompatActivity {
                     pointerImageView.setLayoutParams(params);
                 /*    pointerImageView.setX(event.getX());
                     pointerImageView.setY(event.getY());*/
-                    new TeleopScoutAlertDialog("Shooting...", NewAutoScouting.this, "High Goal", "Low Goal", "Missed");
+                    Timer timer = new Timer();
+                    CheckVar checkVar = new CheckVar();
+                    checkVar.x = (int)event.getX();
+                    checkVar.y = (int)event.getY();
+                    checkVar.t = new TeleopScoutAlertDialog("Shooting...", NewAutoScouting.this, "High Goal", "Low Goal", "Missed");
+                    timer.schedule(checkVar, 0, 1000);
+
+
 
                     imgHolder.addView(pointerImageView);
 
@@ -111,40 +127,37 @@ public class NewAutoScouting extends AppCompatActivity {
 
 
         });
-        Intent thisIntent = getIntent();
-        preGameObject  = (PreGameActivity.PreGameObject)thisIntent.getSerializableExtra("PreGameData");
+
+Intent thisIntent = getIntent();
+       preGameObject  = (PreGameObject)thisIntent.getSerializableExtra("PreGameData");
     }
-    public void toTeleop(View view) {
-        Intent intent = new Intent(this,NewTeleopScouting.class);
-        intent.putExtra("PreGameData",(Serializable)preGameObject);
-        //  intent.putExtra("AutoScoutingData",(Serializable)new AutoScoutingObject());
-        startActivity(intent);
-    }
+public void toTeleop(View view) {
+    CheckBox cb = (CheckBox)findViewById(R.id.buttoncheckBox);
+    CheckBox cb2 = (CheckBox)findViewById(R.id.buttonArrivedAtDefense);
+    Intent intent = new Intent(this,NewTeleopScouting.class);
+
+    intent.putExtra("PreGameData",preGameObject);
+    intent.putExtra("AutoScoutingData",  new AutoScoutingObject(ballsShot, cb.isChecked(), defensesBreached, cb2.isChecked()));
+
+    startActivity(intent);
+
+}
     public void ballPickup(View view) {
 
     }
-    public class AutoScoutingObject {
-        public ArrayList<BallShot> ballsShot;
-        public boolean isSpyBot;
-        public ArrayList<Integer> defensesBreached;
-        public boolean arrivedAtADefense;
-        public AutoScoutingObject(ArrayList<BallShot> ballsShot, boolean isSpyBot, ArrayList<Integer> defensesBreached, boolean arrivedAtADefense) {
-            this.ballsShot = ballsShot;
-            this.isSpyBot = isSpyBot;
-            this.defensesBreached = defensesBreached;
-            this.arrivedAtADefense = arrivedAtADefense;
-        }
-    }
-    public class BallShot {
+
+
+    class CheckVar extends TimerTask {
         public int x;
         public int y;
-        public double shootTime;
-        public int whichGoal; // 0 = failed, 1 = low goal, 2 = high goal
-        public BallShot(int x, int y, double shootTime, int whichGoal) {
-            this.x = x;
-            this.y = y;
-            this.shootTime = shootTime;
-            this.whichGoal = whichGoal;
+        public TeleopScoutAlertDialog t;
+        public void run() {
+
+            if (t.canceled > 0) {
+                ballsShot.add(new BallShot(x,y,t.upTimer.currentTime(),t.canceled));
+            }
+
         }
     }
+
 }

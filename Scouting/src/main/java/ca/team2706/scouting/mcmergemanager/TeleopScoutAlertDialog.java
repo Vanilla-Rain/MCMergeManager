@@ -15,7 +15,8 @@ import android.widget.TextView;
 public class TeleopScoutAlertDialog {
     Handler m_handler;
     Runnable m_handlerTask ;
-    private boolean canceled;
+    public final UpTimer upTimer = new UpTimer();
+    public int canceled;
     public TeleopScoutAlertDialog(String title, Activity activity, String button1,String button2,String button3) {
         createAlert(title,activity, button3,button2,button1);
     }
@@ -30,7 +31,7 @@ public class TeleopScoutAlertDialog {
         final long start = System.currentTimeMillis();
         alert.setView(alertLayout);
         alert.setCancelable(false);
-        final UpTimer upTimer = new UpTimer();
+
         upTimer.startTime(60, 100, activity);
         m_handler = new Handler();
         m_handlerTask = new Runnable() {
@@ -47,7 +48,7 @@ public class TeleopScoutAlertDialog {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
+canceled = 1;
                 upTimer.cancel();
 
             }
@@ -59,7 +60,7 @@ public class TeleopScoutAlertDialog {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        canceled = true;
+                        canceled = 2;
                         upTimer.cancel();
                     }
                 }
@@ -72,7 +73,7 @@ public class TeleopScoutAlertDialog {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        canceled = true;
+                        canceled = 3;
                         upTimer.cancel();
                     }
                 }

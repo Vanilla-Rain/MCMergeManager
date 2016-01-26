@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+    <string name="event_id_link"><a href="https://docs.google.com/spreadsheets/d/162LDKU1Lb9MHrbc7uzOrUJRacjPwuV6t04kg8QSOnh0/edit?usp=sharing">Event IDs</a></string>
     <string name="app_name">MC Merge Manager</string>
     <string name="match_number">Match #</string>
     <string name="button_send">Send</string>
