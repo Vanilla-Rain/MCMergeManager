@@ -603,6 +603,10 @@ launchButtons();
                 intent = new Intent(this, AboutActivity.class);
                 startActivity(intent);
                 return true;
+            case R.id.action_help:
+                intent = new Intent(this, HelpActivity.class);
+                startActivity(intent);
+                return true;
             case R.id.betting:
                 intent = new Intent(this,Betting.class);
                 startActivity(intent);

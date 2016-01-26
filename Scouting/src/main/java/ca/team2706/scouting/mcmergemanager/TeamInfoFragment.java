@@ -132,7 +132,7 @@ progress.setProgress(0);
                                 team.setText("2015");
                             }
                         });
-                        fileUtils.downloadBlueAllianceDataForEvent(args.getString("inputResult"), args.getString("selectedYear"), progress, dialog, team, 2015);
+                        fileUtils.downloadBlueAllianceDataForEvent(args.getString("inputResult"), args.getString("selectedYear"), progress, dialog,  2015);
                         break;
                     case 1:
                         getActivity().runOnUiThread(new Runnable() {
@@ -141,7 +141,7 @@ progress.setProgress(0);
                                 progress.setProgress(0);
                             }
                         });
-                        fileUtils.downloadBlueAllianceDataForEvent(args.getString("inputResult"), args.getString("selectedYear"), progress,dialog,team,2014);
+                        fileUtils.downloadBlueAllianceDataForEvent(args.getString("inputResult"), args.getString("selectedYear"), progress,dialog,2014);
 
                         break;
                     case 2:
@@ -151,7 +151,7 @@ progress.setProgress(0);
                                 progress.setProgress(0);
                             }
                         });
-                        fileUtils.downloadBlueAllianceDataForEvent(args.getString("inputResult"), args.getString("selectedYear"), progress, dialog, team, 2013);
+                        fileUtils.downloadBlueAllianceDataForEvent(args.getString("inputResult"), args.getString("selectedYear"), progress, dialog, 2013);
                         getActivity().runOnUiThread(new Runnable() {
                             public void run() {
                                 dialog.dismiss();
