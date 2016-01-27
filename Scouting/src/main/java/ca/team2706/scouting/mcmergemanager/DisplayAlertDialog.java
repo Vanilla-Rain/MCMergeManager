@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
+// TODO: Should this be removed as it has references
 public class DisplayAlertDialog {
     public Context launchActivity;
     public String title;

@@ -137,30 +137,6 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    /** Called when the user clicks the ScoutBlue button from the Betting screen */
-    // TODO, why is this here when it is not on this screen?
-    public void scoutBlue(View view) {
-
-        EditText matchNumField = (EditText) findViewById(R.id.match_num_field);
-        String matchNum = matchNumField.getText().toString();
-        if(matchNum.equals("")) return;
-
-        Intent intent = new Intent(this, AutoScouting.class);
-        intent.putExtra(EXTRA_MATCH_NUM, matchNum);
-        intent.putExtra(EXTRA_ALLIANCE_COLOUR, getString(R.string.blue_alliance) );
-
-        // copy the file names, if they are there
-        if(globalIntent.hasExtra(getResources().getString(R.string.EXTRA_KNIGHT_WATCH_DATA_FILE)))
-            intent.putExtra(getResources().getString(R.string.EXTRA_KNIGHT_WATCH_DATA_FILE),
-                    globalIntent.getStringExtra(getResources().getString(R.string.EXTRA_KNIGHT_WATCH_DATA_FILE)));
-
-        if(globalIntent.hasExtra(getResources().getString(R.string.EXTRA_MATCH_RESULTS_FILE)))
-            intent.putExtra(getResources().getString(R.string.EXTRA_MATCH_RESULTS_FILE),
-                    globalIntent.getStringExtra(getResources().getString(R.string.EXTRA_MATCH_RESULTS_FILE)));
-
-        startActivity(intent);
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
