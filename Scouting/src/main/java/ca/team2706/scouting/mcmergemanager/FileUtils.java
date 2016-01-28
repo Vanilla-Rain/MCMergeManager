@@ -65,11 +65,9 @@ import static com.google.android.gms.common.api.GoogleApiClient.OnConnectionFail
  * Created by Mike Ounsworth
  */
 @SuppressWarnings("ResultOfMethodCallIgnored")
-public class FileUtils
-        implements ConnectionCallbacks, OnConnectionFailedListener {
+public class FileUtils implements ConnectionCallbacks, OnConnectionFailedListener {
 
     private static boolean mCanConnect = false;
-
     // This is not being used _yet_, but is here for future integration
     private static boolean mHasUnsyncedMatchScoutingData = false;
 
@@ -97,17 +95,12 @@ public class FileUtils
     private static String mRemoteEventFolderName;
     private static String mRemoteTeamPhotosFolderName;
 
-    private static DriveId mDriveIdToplevelFolder;
-    private static DriveId mDriveIdTeamFolder;
-    private static DriveId mDriveIdEventFolder;
     private static DriveId mDriveIdTeamPhotosFolder;
 
     private static String mLocalToplevelFilePath;
     private static String mLocalTeamFilePath;
     private static String mLocalEventFilePath;
     private static String mLocalTeamPhotosFilePath;
-
-
 
     /**
      * Constructor
@@ -135,7 +128,6 @@ public class FileUtils
         mLocalTeamPhotosFilePath = mLocalEventFilePath + "/" + mRemoteTeamPhotosFolderName;
 
         checkLocalFileStructure();
-        reset_mGoogleApiClient();
     }
 
     /**
@@ -155,8 +147,7 @@ public class FileUtils
      *
      * @return whether or not we have the STORAGE permission.
      */
-    public boolean canWriteToStorage()
-    {
+    public boolean canWriteToStorage() {
         if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(mActivity,
@@ -195,38 +186,26 @@ public class FileUtils
         // if it's already connected, disconnect it.
         if (mGoogleApiClient != null) {
             mGoogleApiClient.disconnect();
+        } else {
+            SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(mActivity);
+            String driveAccount = SP.getString(mActivity.getResources().getString(R.string.PROPERTY_googledrive_account), "<Not Set>");
+
+            if (driveAccount.equals("<Not Set>"))
+                return;
+
+            mGoogleApiClient = new Builder(mActivity)
+                    .addApi(Drive.API)
+                    .addScope(Drive.SCOPE_FILE)
+                    .setAccountName(driveAccount)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .build();
         }
-
-        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(mActivity);
-        String driveAccount = SP.getString(mActivity.getResources().getString(R.string.PROPERTY_googledrive_account), "<Not Set>");
-
-        if (driveAccount.equals("<Not Set>"))
-            return;
-
-        mGoogleApiClient = new Builder(mActivity)
-                .addApi(Drive.API)
-                .addScope(Drive.SCOPE_FILE)
-                .setAccountName(driveAccount)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .build();
     }
-
 
     /**
      * Try logging in to the Google Drive useng the saved account.
      * If that works, make sure the file structure exists and create it if it does not.
-     *
-     * The file structure is:
-     * MCMergeManager/
-     *  - team_name/
-     *      - event/
-     *          - matchResults.csv
-     *          - matchScoutingData.csv
-     *          - Team Photos/
-     *
-     * Note that this is not instant, so it spawns a new thread to wait for Drive to respond, and to check the files.
-     * It will set the appropriate members in MainActivity when it completes.
      */
     void checkDriveConnectionAndFiles() {
         // First, test to see if the credentials are even valid
@@ -238,77 +217,43 @@ public class FileUtils
         } else {
             // force a full check of the files at the next connect
             mCheckDriveFilesOnNextConnect = true;
-
             mGoogleApiClient.connect();
         }
     }
 
     /**
      * This class defines a background process for checking / setting the file structure on Google Drive.
+     * It will set the appropriate members in MainActivity when it completes.
+     *
+     * Directory structure:
      *
      * MCMergeManager/
      *  - team_name/
      *      - Team Photos/
      *      - event/
      *
-     * Note: run() will close the GoogleApiClient when it exists.
+     * Note: run() will disconnect the GoogleApiClient when it exists.
      */
     private class CheckDriveFilesThread extends Thread {
 
         public CheckDriveFilesThread() {
-
         }
+
         @Override
         public void run() {
-            Log.i(mActivity.getResources().getString(R.string.app_name),
-                    "Starting the Drive folder sync");
-
-            // check for STORAGE permission
-            if (!canWriteToStorage())
-                return;
+            Log.i(mActivity.getResources().getString(R.string.app_name), "Starting the Drive folder sync");
 
             // Check if the file structure exists, and create it if it doesn't
-
-            // check for app-folder
             DriveFolder rootFolder = Drive.DriveApi.getRootFolder(mGoogleApiClient);
             DriveFolder topLevelfolder = checkOrCreateRemoteFolder(mGoogleApiClient, rootFolder, mRemoteToplevelFolderName);
-            if (topLevelfolder == null) {
-                // something went wrong, abort
-                mGoogleApiClient.disconnect();
-                return;
-            }
-            mDriveIdToplevelFolder = topLevelfolder.getDriveId();
-
-            // check for teamName folder
             DriveFolder teamFolder = checkOrCreateRemoteFolder(mGoogleApiClient, topLevelfolder, mRemoteTeamFolderName);
-            if (teamFolder == null) {
-                // something went wrong, abort
-                mGoogleApiClient.disconnect();
-                return;
-            }
-            mDriveIdTeamFolder = teamFolder.getDriveId();
-
-            // check for event folder
             DriveFolder eventFolder = checkOrCreateRemoteFolder(mGoogleApiClient, teamFolder, mRemoteEventFolderName);
-            if (eventFolder == null) {
-                // something went wrong, abort
-                mGoogleApiClient.disconnect();
-                return;
-            }
-            mDriveIdEventFolder = eventFolder.getDriveId();
-
-            // check for Team Photos folder
             DriveFolder teamPhotosFolder = checkOrCreateRemoteFolder(mGoogleApiClient, eventFolder, mRemoteTeamPhotosFolderName);
-            if (teamPhotosFolder == null) {
-                // something went wrong, abort
-                mGoogleApiClient.disconnect();
-                return;
+            if (teamPhotosFolder != null) {
+                mDriveIdTeamPhotosFolder = teamPhotosFolder.getDriveId();
             }
-            mDriveIdTeamPhotosFolder = teamPhotosFolder.getDriveId();
 
-            Log.i(mActivity.getResources().getString(R.string.app_name),
-                    "Drive folder sync finished.");
-
+            Log.i(mActivity.getResources().getString(R.string.app_name), "Drive folder sync finished.");
             mGoogleApiClient.disconnect();
         }
 
@@ -319,10 +264,9 @@ public class FileUtils
          *
          * @return null if the folder can not be found.
          **/
-        private DriveFolder checkOrCreateRemoteFolder(GoogleApiClient googleApiClient, DriveFolder rootFolder, String folderName)
-        {
-            // check for STORAGE permission
-            if (!canWriteToStorage())
+        private DriveFolder checkOrCreateRemoteFolder(GoogleApiClient googleApiClient, DriveFolder rootFolder, String folderName) {
+            // check for STORAGE permission and client connected
+            if (!canWriteToStorage() || googleApiClient == null  || !googleApiClient.isConnected())
                 return null;
 
             Query query = new Query.Builder().addFilter(Filters.and(
@@ -332,8 +276,7 @@ public class FileUtils
             DriveApi.MetadataBufferResult result = rootFolder.queryChildren(mGoogleApiClient, query).await();
 
             if (!result.getStatus().isSuccess()) {
-                Log.e(mActivity.getResources().getString(R.string.app_name),
-                        "Cannot query folders in the root of Google Drive.");
+                Log.e(mActivity.getResources().getString(R.string.app_name), "Cannot query folders in the root of Google Drive.");
                 return null;
             } else {
                 for (Metadata m : result.getMetadataBuffer()) {
@@ -357,8 +300,7 @@ public class FileUtils
                     .createFolder(googleApiClient, changeSet).await();
 
             if (!result1.getStatus().isSuccess()) {
-                Log.e(mActivity.getResources().getString(R.string.app_name),
-                        "Error while trying to create the folder \"" + folderName + "\"");
+                Log.e(mActivity.getResources().getString(R.string.app_name), "Error while trying to create the folder \"" + folderName + "\"");
                 return null;
             }
 
@@ -366,11 +308,9 @@ public class FileUtils
         }
     }
 
-
     /**
      * This checks the local file system for the appropriate files and folders, creating them if they
      * are missing.
-     *
      *
      * The file structure is:
      * MCMergeManager/
@@ -379,51 +319,27 @@ public class FileUtils
      *      - event/
      *          - matchResults.csv
      *          - matchScoutingData.csv
-     *
      */
-    public void checkLocalFileStructure()
-    {
+    public void checkLocalFileStructure() {
         // check for STORAGE permission
         if (!canWriteToStorage())
             return;
 
-        File file = new File(mLocalToplevelFilePath);
+        makeDirectory(mLocalToplevelFilePath);
+        makeDirectory(mLocalTeamFilePath);
+        makeDirectory(mLocalEventFilePath);
+        makeDirectory(mLocalTeamPhotosFilePath);
+    }
+
+    private void makeDirectory(String directoryName) {
+        File file = new File(directoryName);
         if (!file.isDirectory()) {
             // in case there's a regular file there with the same name
             file.delete();
-
-            // create it
-            file.mkdir();
-        }
-
-        file = new File(mLocalTeamFilePath);
-        if (!file.isDirectory()) {
-            // in case there's a regular file there with the same name
-            file.delete();
-
-            // create it
-            file.mkdir();
-        }
-
-        file = new File(mLocalEventFilePath);
-        if (!file.isDirectory()) {
-            // in case there's a regular file there with the same name
-            file.delete();
-
-            // create it
-            file.mkdir();
-        }
-
-        file = new File(mLocalTeamPhotosFilePath);
-        if (!file.isDirectory()) {
-            // in case there's a regular file there with the same name
-            file.delete();
-
             // create it
             file.mkdir();
         }
     }
-
 
     @Override
     public void onConnected(Bundle connectionHint) {
@@ -458,7 +374,7 @@ public class FileUtils
             mRequestedAccessAlready = true;
             connectionResult.startResolutionForResult(mActivity, REQUEST_CODE_RESOLUTION);
         } catch (IntentSender.SendIntentException e) {
-            Log.e("MC Merge Manager", "Exception while starting resolution activity", e);
+            Log.e(mActivity.getResources().getString(R.string.app_name), "Exception while starting resolution activity", e);
         }
 
         mCanConnect = false;
@@ -683,8 +599,7 @@ public class FileUtils
                 // Navigate to the correct folder - there has to be a more efficient way to do this
 
                 DriveFolder rootFolder = Drive.DriveApi.getFolder(googleApiClient, mDriveIdTeamPhotosFolder);
-                Log.i(mActivity.getResources().getString(R.string.app_name),
-                        "Local Files: " + arrLocalFiles);
+                Log.i(mActivity.getResources().getString(R.string.app_name), "Local Files: " + arrLocalFiles);
 
                 Log.i(mActivity.getResources().getString(R.string.app_name),
                         "Drive rootFolder: " + rootFolder.getMetadata(googleApiClient).await().getMetadata().getTitle());
@@ -718,8 +633,7 @@ public class FileUtils
                     }
                     result.getMetadataBuffer().close();
                 }
-                Log.i(mActivity.getResources().getString(R.string.app_name),
-                        "Remote Files: " + arrRemoteFiles);
+                Log.i(mActivity.getResources().getString(R.string.app_name), "Remote Files: " + arrRemoteFiles);
 
                 // Remove files that are in both lists - these don't need to be synced.
                 for (PathAndDriveId remoteFile : arrRemoteFiles) {
@@ -1005,7 +919,7 @@ public class FileUtils
                 String[] parts = SP.getString("Download Data",null).split("\\.");
                 for (int g = 0; g < parts.length; g++) {
                     if (parts[g].contains(Integer.toString(teamNumber))) {
-                        Log.d("Get Data", "Team Data Found");
+                        Log.d(mActivity.getResources().getString(R.string.app_name), "Team Data Found");
                         downloadArray.add(parts[g]);
 
                         done = true;
@@ -1059,7 +973,7 @@ public class FileUtils
             for (int i = 0; i < comps2014.size(); i++) {
                 ArrayList<String> test = getBlueAllianceDataDoubleArrayAsArray(1, "http://www.thebluealliance.com/api/v2/event/2014" + comps2014.get(i) + "/rankings?X-TBA-App-Id=frc2706:mergemanager:v01/");
                 for (int p = 0; p < test.size(); p++) {
-                    Log.d("p", test.get(p));
+                    Log.d(mActivity.getResources().getString(R.string.app_name), "p:" + test.get(p));
 
                     if (test.get(p).equals(Integer.toString(teamNumber))) { // Or use equals() if it actually returns an Object.
                         // Found at index i. Break or return if necessary.
@@ -1200,7 +1114,7 @@ public class FileUtils
         {
             mActivity.runOnUiThread(new Runnable() {
                 public void run() {
-                    Log.v("ProgressBar", "Current Size: " + progressBar.getProgress());
+                    Log.v(mActivity.getResources().getString(R.string.app_name), "ProgressBar Current Size: " + progressBar.getProgress());
                     progressBar.setProgress(progressBar.getProgress() + (int)(100.0 / downloadedCompArray.size()));
                 }
             });
@@ -1242,7 +1156,7 @@ public class FileUtils
 
                         for (int g = 0; g < parts.length; g++) {
                             if (combine.equals(parts[g])) {
-                                Log.d("Download Data", "Found Duplicate");
+                                Log.d(mActivity.getResources().getString(R.string.app_name), "Download Data: Found Duplicate");
                                 if(!looped)
                                     done = true;
 
@@ -1260,7 +1174,7 @@ public class FileUtils
             }
         }
 
-        Log.i("Download Data","Download Finished.");
+        Log.i(mActivity.getResources().getString(R.string.app_name), "Download Data: Download Finished.");
     }
 
     /**
