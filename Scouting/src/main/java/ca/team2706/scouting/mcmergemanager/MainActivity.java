@@ -98,6 +98,9 @@ public class MainActivity extends AppCompatActivity
             lauchedPhotoApp = false;
         }
 
+        // tell the user where they are syncing their dada to
+        updateDataSyncLabel();
+
         // fetch the match data from TheBlueAlliance to update the scores.
         FileUtils.fetchMatchScheduleAndResults(this);
     }

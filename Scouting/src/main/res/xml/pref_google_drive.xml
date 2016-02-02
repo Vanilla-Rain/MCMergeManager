@@ -16,7 +16,7 @@
         android:maxLines="1"
         android:persistent="true" />
 
-    <EditTextPreference
+    <ListPreference
         android:key="@string/PROPERTY_googledrive_event"
         android:title="Event Name"
         android:defaultValue="Preseason"

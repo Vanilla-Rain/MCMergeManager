@@ -182,9 +182,17 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                     values[i] = entries[i] = accounts[i].name;
                 }
             }
-            ListPreference lp = (ListPreference) findPreference(getResources().getString(R.string.PROPERTY_googledrive_account));
-            lp.setEntries(entries);
-            lp.setEntryValues(values);
+            ListPreference accountsLP = (ListPreference) findPreference(getResources().getString(R.string.PROPERTY_googledrive_account));
+            accountsLP.setEntries(entries);
+            accountsLP.setEntryValues(values);
+
+
+            // populate the list of event codes from TheBlueAlliance
+            ListPreference eventsLP = (ListPreference) findPreference(getResources().getString(R.string.PROPERTY_googledrive_event));
+            eventsLP.setEntries(getResources().getString(R.string.TBA_EVENT_NAMES).split(":") );
+            eventsLP.setEntryValues(getResources().getString(R.string.TBA_EVENT_CODES).split(":"));
+
+            String[] strings = getResources().getString(R.string.TBA_EVENT_CODES).split(":");
 
 
             // Bind the summaries of EditText/List/Dialog/Ringtone preferences
