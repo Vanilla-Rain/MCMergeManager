@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
@@ -20,6 +21,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,9 +34,11 @@ import android.widget.Toast;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import layout.PreMatchReportFragment;
+
 @TargetApi(21)
 public class MainActivity extends AppCompatActivity
-                implements DataRequester {
+                implements DataRequester, PreMatchReportFragment.OnFragmentInteractionListener {
 
     // TODO: all these EXTRA names should go in the strings.xml file
     public final static String EXTRA_MATCH_NUM = "ca.team2706.scouting.mcmergemanager.MATCH_NUM_MSG";
@@ -46,8 +50,6 @@ public class MainActivity extends AppCompatActivity
     Intent globalIntent;
     MainActivity me;
 
-    Button loadMatchButton;
-    TextView loadMatchResultsTV;
     DrawerLayout mDrawerLayout;
     NavigationView mNavigationView;
     FragmentManager mFragmentManager;
@@ -57,7 +59,7 @@ public class MainActivity extends AppCompatActivity
     FileUtils mFileUtils;
     LayoutInflater inflater;
 
-    MatchSchedule matchSchedule;
+    public static MatchSchedule matchSchedule;
 
     /** A flag so that onResume() knows to sync photos for a particular team when we're returning from the camera app */
     boolean lauchedPhotoApp = false;
@@ -68,20 +70,13 @@ public class MainActivity extends AppCompatActivity
         this.setContentView(R.layout.activity_main);
         setNavDrawer();
 
-        this.loadMatchButton = (Button) findViewById(R.id.loadMatchResultsBtn);
-        this.loadMatchResultsTV = (TextView) findViewById(R.id.loadMatchResultsTV);
-
-        if (loadMatchButton == null) {
-            // TODO: find out why this is null
-            inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        }
-
         globalIntent = new Intent();
 
         me = this;
 
         // tell the user where they are syncing their dada to
         updateDataSyncLabel();
+
 
         // try logging into the Google Drive and make sure the correct files are there.
         mFileUtils = new FileUtils(this);
@@ -228,7 +223,6 @@ public class MainActivity extends AppCompatActivity
         mDrawerToggle.syncState();
     }
 
-    public boolean accepted;
     public GetTeamNumberDialog enterATeamNumberPopup;
 
     public void takePicture(View view) {
@@ -246,24 +240,6 @@ public class MainActivity extends AppCompatActivity
         (new Timer()).schedule(new CheckPicturePopupHasExited(), 250);
     }
 
-
-    public String inputResult = "empty";
-
-    public static String getInputResult() {
-        return DisplayAlertDialog.inputResult;
-    }
-
-    public void setInputResult(String inputResult) {
-        this.inputResult = inputResult;
-    }
-
-    public static boolean getAccepted() {
-        return DisplayAlertDialog.accepted;
-    }
-
-    public void setAccepted(boolean accepted) {
-        this.accepted = accepted;
-    }
 
     @Override
     public void updateData(String[] matchResultsDataCSV, String[] matchScoutingDataCSV) {
@@ -292,6 +268,11 @@ public class MainActivity extends AppCompatActivity
 
         TextView tv = (TextView) findViewById(R.id.sync_settings_tv);
         tv.setText(label);
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+        // empty?
     }
 
     class CheckPicturePopupHasExited extends TimerTask {

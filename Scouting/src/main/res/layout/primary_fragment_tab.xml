@@ -1,149 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="18.62"
-        android:text="Scout Match"
-        android:background="?attr/colorPrimaryDark"
-        android:textStyle="bold"
-        android:onClick="scout"
-        android:textSize="28sp" />
+    android:layout_height="fill_parent">
 
     <LinearLayout
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="58dp"
-            android:text="Team Schedule"
-            android:id="@+id/button5"
-            android:layout_gravity="right"
-            android:layout_weight="7.10"
-            android:onClick="onShowTeamScheduleClicked" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="58dp"
-            android:text="Full Schedule"
-            android:id="@+id/button4"
-            android:layout_gravity="right"
-            android:layout_weight="7.10"
-            android:onClick="onShowScheduleClicked" />
-    </LinearLayout>
-
-    <View
-        android:layout_width="1dp"
-        android:layout_height="20dp">
-    </View>
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/scout_btn_height"
-        android:orientation="horizontal">
-
-   <!--     <Button
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/scout_btn_height"
-            android:layout_weight="1"
-            android:text="@string/red_alliance"
-            android:background="@color/red_alliance"
-            android:onClick="scoutRed"
-            android:textStyle="bold"
-            android:textSize="28sp" />-->
-
-    </LinearLayout>
-
-    <View
-        android:layout_width="1dp"
-        android:layout_height="20dp">
-    </View>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Best Cycles"
-            android:onClick="bestCyclesBtn"
-            android:id="@+id/bestCyclesBtn"
-            android:enabled="false" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Lookup Team#"
-            android:id="@+id/lookupTeamBtn"
-            android:onClick="lookupTeamBtn"
-            android:enabled="false" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-
-        <Button android:id="@+id/loadMatchResultsBtn"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Load File"
-            android:onClick="loadMatchFileBtn" />
-
-        <TextView android:id="@+id/loadMatchResultsTV"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="No Match Results have been loaded" />
+            android:orientation="vertical">
 
-    </LinearLayout>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
+                <Button
+                    android:layout_width="fill_parent"
+                    android:layout_height="58dp"
+                    android:text="Team Schedule"
+                    android:id="@+id/button5"
+                    android:layout_gravity="right"
+                    android:layout_weight="7.10"
+                    android:onClick="onShowTeamScheduleClicked"
+                    android:background="?attr/colorPrimaryDark"
+                    android:clickable="false" />
 
-        <Button android:id="@+id/loadKnightWatchDataBtn"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Load File"
-            android:onClick="loadKnightWatchFileBtn" />
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="58dp"
+                    android:text="Full Schedule"
+                    android:id="@+id/button4"
+                    android:layout_gravity="right"
+                    android:layout_weight="7.10"
+                    android:onClick="onShowScheduleClicked"
+                    android:background="?attr/colorPrimaryDark"
+                    android:singleLine="false"
+                    android:clickable="false" />
+            </LinearLayout>
 
-        <TextView android:id="@+id/loadKnightWatchDataTV"
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal">
+
+                <EditText
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:ems="10"
+                    android:id="@+id/matchNoET"
+                    android:hint="Match #"
+                    android:layout_gravity="center_horizontal"
+                    android:textColor="?attr/colorPrimaryDark"
+                    android:gravity="center" />
+
+            </LinearLayout>
+
+            <Button
+                android:layout_width="fill_parent"
+                android:layout_height="150dp"
+                android:text="Scout Match"
+                android:background="?attr/colorPrimaryDark"
+                android:textStyle="bold"
+                android:onClick="scout"
+                android:textSize="28sp" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+
+            </LinearLayout>
+
+            <Button android:id="@+id/takePictureBtn"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Take Picture"
+                android:onClick="takePicture"
+                />
+
+        </LinearLayout>
+
+
+        <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/fragment_container1"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="No KnightWatch data has been loaded" />
+            android:layout_height="match_parent" >
 
+        </FrameLayout>
     </LinearLayout>
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-
-    </LinearLayout>
-<LinearLayout
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal">
-    <Button android:id="@+id/cool"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Take Picture"
-        android:onClick="takePicture"
-        />
-</LinearLayout>
-
-
-</LinearLayout>
+</ScrollView>
