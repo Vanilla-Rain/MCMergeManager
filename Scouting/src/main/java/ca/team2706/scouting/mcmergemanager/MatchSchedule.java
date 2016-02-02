@@ -5,6 +5,7 @@ import android.util.Log;
 import org.json.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -12,11 +13,12 @@ import java.util.List;
  */
 public class MatchSchedule {
 
-    public class Match {
+    public class Match implements Comparable<Match> {
         private int matchNo;
 
         private int red1;
         private int red2;
+
         private int red3;
         private int blue1;
         private int blue2;
@@ -48,6 +50,12 @@ public class MatchSchedule {
         private void setBlue3(int blue3) { this.blue3 = blue3; }
         private void setRedScore(int redScore) { this.redScore = redScore; }
         private void setBlueScore(int blueScore) { this.blueScore = blueScore; }
+
+
+        @Override
+        public int compareTo(Match another) {
+            return this.getMatchNo() - another.getMatchNo();
+        }
     }
 
     private String matchScheduleJSONstr;
@@ -55,6 +63,10 @@ public class MatchSchedule {
     private List<Match> matches = new ArrayList<Match>();
 
     public List<Match> getMatches(){ return matches; }
+
+    public void addMatch(Match match) {
+        matches.add(match);
+    }
 
     public Match getMatchNo(int i){ return matches.get(i); }
 
@@ -71,6 +83,21 @@ public class MatchSchedule {
     public MatchSchedule(String jsonSchedule) {
         super();
         parseTBAData(jsonSchedule);
+    }
+
+    /**
+     * Return a new MatchSchedule object only containing matches that the given team is in,
+     */
+    public MatchSchedule filterByTeam(int teamNo) {
+        MatchSchedule filteredSchedule = new MatchSchedule();
+
+        for(Match m : matches) {
+            if (m.getRed1() == teamNo || m.getRed2() == teamNo || m.getRed3() == teamNo
+                    || m.getBlue1() == teamNo || m.getBlue2() == teamNo || m.getBlue3() == teamNo )
+                filteredSchedule.addMatch(m);
+        }
+
+        return filteredSchedule;
     }
 
     public String toString() { return matchScheduleJSONstr; }
@@ -116,6 +143,8 @@ public class MatchSchedule {
 
                 matches.add(match);
             }
+
+            Collections.sort(matches);
 
         } catch(JSONException e) {
             // something went wrong

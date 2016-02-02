@@ -8,7 +8,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
@@ -27,7 +26,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.content.Intent;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -184,6 +182,18 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    public void onShowTeamScheduleClicked(View view) {
+        if (matchSchedule == null) {
+            Toast.makeText(this, "No Schedule Data to show. No Internet?", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        enterATeamNumberPopup = new GetTeamNumberDialog("View the Schedule for one Team","Team Number", 1, this);
+        enterATeamNumberPopup.displayAlertDialog();
+
+        (new Timer()).schedule(new CheckSchedulePopupHasExited(), 250);
+    }
+
     private void setNavDrawer() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setBackgroundColor(teamColour);
@@ -230,16 +240,12 @@ public class MainActivity extends AppCompatActivity
             return; // the popup is non-blocking, so they'll have to click "Take Picture" again.
         }
 
-        GetTeamNumberDialog alert = new GetTeamNumberDialog("Team Number","Team Number", 1, this);
-        alert.displayAlertDialog();
-
-        Log.d("heya", Boolean.toString(accepted));
         enterATeamNumberPopup = new GetTeamNumberDialog("Team Number","Team Number", 1, this);
         enterATeamNumberPopup.displayAlertDialog();
 
-        Timer timer = new Timer();
-        timer.schedule(new CheckPopupHasExited(), 0, 500);
+        (new Timer()).schedule(new CheckPicturePopupHasExited(), 250);
     }
+
 
     public String inputResult = "empty";
 
@@ -268,7 +274,7 @@ public class MainActivity extends AppCompatActivity
     public void updateMatchSchedule(MatchSchedule matchSchedule) {
         this.matchSchedule = matchSchedule;
     }
-    
+
     /**
      * Set the text for the label "Syncing Data To:" according to the saved preferences.
      *
@@ -288,11 +294,11 @@ public class MainActivity extends AppCompatActivity
         tv.setText(label);
     }
 
-    class CheckPopupHasExited extends TimerTask {
+    class CheckPicturePopupHasExited extends TimerTask {
         public void run() {
-            setAccepted(getAccepted());
-            setInputResult(getInputResult());
-            if (accepted) {
+//            setAccepted(getAccepted());
+//            setInputResult(getInputResult());
+            if (enterATeamNumberPopup.accepted) {
                 if(enterATeamNumberPopup.accepted) {
                     int teamNumber;
                     try {
@@ -310,15 +316,42 @@ public class MainActivity extends AppCompatActivity
                     TakePicture pic = new TakePicture(fileUtils.getTeamPhotoPath(teamNumber), me);
                     pic.capturePicture();
                     DisplayAlertDialog.accepted = false;
-
-                    // otherwise this thread will keep running in the background forever, even if you close the app.
-                    // Every time you take a pic your phone will have more and more processes running making it slower and slower.
-                    this.cancel();
                 }
 
             }
-            else if (enterATeamNumberPopup.canceled) {
-                this.cancel();
+            else if (!enterATeamNumberPopup.canceled) {
+                // schedule me to run again
+                (new Timer()).schedule(new CheckPicturePopupHasExited(), 250);
+            }
+        }
+    }
+
+    class CheckSchedulePopupHasExited extends TimerTask {
+        public void run() {
+            if (enterATeamNumberPopup.accepted) {
+                if(enterATeamNumberPopup.accepted) {
+                    int teamNumber;
+                    try {
+                        teamNumber = Integer.parseInt(enterATeamNumberPopup.inputResult);
+                    } catch (NumberFormatException e) {
+                        Log.d(me.getResources().getString(R.string.app_name),
+                                e.toString());
+                        return;
+                    }
+
+                    // bundle the match data into an intent and launch the schedule activity
+                    Intent intent = new Intent(me, ScheduleActivity.class);
+                    intent.putExtra(getResources().getString(R.string.EXTRA_MATCH_SCHEDULE), matchSchedule.toString());
+                    intent.putExtra(getResources().getString(R.string.EXTRA_TEAM_NO), teamNumber);
+                    startActivity(intent);
+
+                    DisplayAlertDialog.accepted = false;
+                }
+
+            }
+            else if (!enterATeamNumberPopup.canceled) {
+                // schedule me to run again
+                (new Timer()).schedule(new CheckSchedulePopupHasExited(), 250);
             }
         }
     }

@@ -27,12 +27,6 @@ public class GetTeamNumberDialog {
     public boolean canceled = false;
     public String inputResult = "-1";
 
-
-    // INPUT TYPE: 0 = STRING, 1 = NUMBERS, 2 = PASSWORD note: currently busted lol
-    private static final int INPUT_TYPE_STRING = 0;
-    private static final int INPUT_TYPE_NUMBER = 1;
-    private static final int INPUT_TYPE_PASSWORD = 2;
-
     public GetTeamNumberDialog(String title, String inputHint, int inputType, Activity launchActivity) {
         this.title = title;
         this.inputHint = inputHint;
@@ -55,12 +49,6 @@ public class GetTeamNumberDialog {
         //this stuff gets the edittext from the view and sets the hint and the inputtype
         editText =  (EditText) alertLayout.findViewById(R.id.inputHint);
         editText.setHint(inputHint);
-
-        // TODO: does this switch actually do anything??
-        switch (inputType) {
-            case INPUT_TYPE_STRING:   return;
-            case INPUT_TYPE_NUMBER:
-        }
 
 
         alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

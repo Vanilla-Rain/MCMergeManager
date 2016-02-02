@@ -13,14 +13,29 @@
         android:onClick="scout"
         android:textSize="28sp" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Show Schedule"
-        android:id="@+id/button4"
-        android:layout_gravity="right"
-        android:layout_weight="18.62"
-        android:onClick="onShowScheduleClicked" />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="58dp"
+            android:text="Team Schedule"
+            android:id="@+id/button5"
+            android:layout_gravity="right"
+            android:layout_weight="7.10"
+            android:onClick="onShowTeamScheduleClicked" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="58dp"
+            android:text="Full Schedule"
+            android:id="@+id/button4"
+            android:layout_gravity="right"
+            android:layout_weight="7.10"
+            android:onClick="onShowScheduleClicked" />
+    </LinearLayout>
 
     <View
         android:layout_width="1dp"

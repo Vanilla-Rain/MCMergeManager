@@ -5,6 +5,7 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,89 +37,32 @@ public class ScheduleActivity extends ListActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setTitle("Match Schedule");
-
         activity = this;
 
         // unbundle the match schedule from the intent
         Intent intent = getIntent();
-        String matchScheduleStr = intent.getStringExtra( getResources().getString(R.string.EXTRA_MATCH_SCHEDULE) );
+        String matchScheduleStr = intent.getStringExtra(getResources().getString(R.string.EXTRA_MATCH_SCHEDULE));
+        int teamNo = intent.getIntExtra(getResources().getString(R.string.EXTRA_TEAM_NO), -1) ;
+
+
+        TextView titleView = new TextView(activity);
+        titleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 34);
+
         matchSchedule = new MatchSchedule(matchScheduleStr);
 
+        if (teamNo == -1) {
+            titleView.setText("Full Schedule");
+        } else {
+            matchSchedule = matchSchedule.filterByTeam(teamNo);
+            titleView.setText("Schedule for Team "+teamNo);
+        }
+
         MatchesArrayAdapter adapter = new MatchesArrayAdapter(this, R.layout.schedule_row_layout, matchSchedule);
+        this.getListView().addHeaderView(titleView);
         setListAdapter(adapter);
 
-//        // show a default thing in the odd case that there's nothing to show.
-//        matchNos.add("Nothing to display, maybe you don't have an internet connection?");
-//
-//
-//        // initiate the listadapters
-//        setListAdapter( new ArrayAdapter <String>(this,
-//                R.layout.schedule_row_layout, R.id.schedule_matchNoTV, matchNos));
-//
-//        setListAdapter( new ArrayAdapter <String>(this,
-//                R.layout.schedule_row_layout, R.id.schedule_blueAllianceTV, redAlliances));
-//
-//        setListAdapter( new ArrayAdapter <String>(this,
-//                R.layout.schedule_row_layout, R.id.schedule_redAllianceTV, redAlliances));
-//
-//        setListAdapter( new ArrayAdapter <String>(this,
-//                R.layout.schedule_row_layout, R.id.schedule_blueScoreTV, blueScores));
-//
-//        setListAdapter( new ArrayAdapter <String>(this,
-//                R.layout.schedule_row_layout, R.id.schedule_redScoreTV, redScores));
     }
 
-
-//    @Override
-//    public View getView(int position, View convertView, ViewGroup parent) {
-//
-//        LayoutInflater inflater = getLayoutInflater();
-//
-//        if(convertView == null){
-//
-//            convertView=inflater.inflate(R.layout.schedule_row_layout, null);
-//        }
-//
-//        MatchSchedule.Match match = matchSchedule.getMatchNo(position);
-//
-//        TextView matchNoTV=(TextView) convertView.findViewById(R.id.schedule_matchNoTV);
-//        matchNoTV.setText(match.getMatchNo() + " | ");
-//
-//        TextView blueAllianceTV=(TextView) convertView.findViewById(R.id.schedule_blueAllianceTV);
-//        blueAllianceTV.setText(match.getBlue1()+"," +match.getBlue2()+","+match.getBlue3());
-//
-//        TextView redAllianceTV=(TextView) convertView.findViewById(R.id.schedule_redAllianceTV);
-//        redAllianceTV.setText(match.getRed1()+","+match.getRed2()+","+match.getRed3());
-//
-//        TextView blueScoreTV=(TextView) convertView.findViewById(R.id.schedule_blueScoreTV);
-//        blueScoreTV.setText(""+match.getBlueScore());
-//
-//        TextView redScoreTV=(TextView) convertView.findViewById(R.id.schedule_redScoreTV);
-//
-//
-//        return convertView;
-//    }
-
-//    @Override
-//    public void updateData(String[] matchResultsDataCSV, String[] matchScoutingDataCSV) {
-//
-//    }
-
-//    @Override
-//    public void updateMatchSchedule(MatchSchedule matchSchedule) {
-//
-//
-//        List<MatchSchedule.Match> matches = matchSchedule.getMatches();
-//        for(MatchSchedule.Match match : matches) {
-//            matchNos.add(match.getMatchNo() + " | ");
-//            blueAlliances.add(match.getBlue1()+","+match.getBlue2()+","+match.getBlue3());
-//            redAlliances.add(match.getRed1()+","+match.getRed2()+","+match.getRed3());
-//            blueScores.add(""+match.getBlueScore());
-//            redScores.add(""+match.getRedScore());
-//        }
-//
-//    }
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
@@ -150,26 +94,24 @@ public class ScheduleActivity extends ListActivity {
             LayoutInflater inflater = activity.getLayoutInflater();
             if (convertView == null) {
                 convertView = inflater.inflate(R.layout.schedule_row_layout, null);
-//                LayoutInflater vi = (LayoutInflater)c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//                v = vi.inflate(id, null);
             }
 
             final MatchSchedule.Match match = matchSchedule.getMatchNo(position);
             if (match != null) {
                 TextView matchNoTV=(TextView) convertView.findViewById(R.id.schedule_matchNoTV);
-                matchNoTV.setText(match.getMatchNo() + " | ");
+                matchNoTV.setText( String.format("%3s  |", match.getMatchNo()) );
 
                 TextView blueAllianceTV=(TextView) convertView.findViewById(R.id.schedule_blueAllianceTV);
-                blueAllianceTV.setText(match.getBlue1()+"," +match.getBlue2()+","+match.getBlue3());
+                blueAllianceTV.setText( String.format("%4s, %4s, %4s", match.getBlue1(), match.getBlue2(),match.getBlue3()) );
 
                 TextView redAllianceTV=(TextView) convertView.findViewById(R.id.schedule_redAllianceTV);
-                redAllianceTV.setText(match.getRed1()+","+match.getRed2()+","+match.getRed3());
+                redAllianceTV.setText( String.format("%4s, %4s, %4s",match.getRed1(), match.getRed2(), match.getRed3()) );
 
                 TextView blueScoreTV=(TextView) convertView.findViewById(R.id.schedule_blueScoreTV);
-                blueScoreTV.setText(""+match.getBlueScore());
+                blueScoreTV.setText( String.format("%4d", match.getBlueScore()) );
 
                 TextView redScoreTV=(TextView) convertView.findViewById(R.id.schedule_redScoreTV);
-                redScoreTV.setText(""+match.getRedScore());
+                redScoreTV.setText( String.format("%4d", match.getRedScore()) );
             }
 
             return convertView;
