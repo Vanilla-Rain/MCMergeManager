@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -27,12 +29,14 @@ import android.content.Intent;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
 @TargetApi(21)
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+                implements DataRequester {
 
     // TODO: all these EXTRA names should go in the strings.xml file
     public final static String EXTRA_MATCH_NUM = "ca.team2706.scouting.mcmergemanager.MATCH_NUM_MSG";
@@ -54,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
 
     FileUtils mFileUtils;
     LayoutInflater inflater;
+
+    MatchSchedule matchSchedule;
 
     /** A flag so that onResume() knows to sync photos for a particular team when we're returning from the camera app */
     boolean lauchedPhotoApp = false;
@@ -98,6 +104,9 @@ public class MainActivity extends AppCompatActivity {
             mFileUtils.syncOneTeamsPhotos(enterATeamNumberPopup.getTeamNumber());
             lauchedPhotoApp = false;
         }
+
+        // fetch the match data from TheBlueAlliance to update the scores.
+        FileUtils.fetchMatchScheduleAndResults(this);
     }
 
     /**
@@ -112,24 +121,6 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
     }
 
-    /**
-     * Set the text for the label "Syncing Data To:" according to the saved preferences.
-     *
-     * Note: This is called by FileUtils.checkDriveConnectionAndFiles() after it determines if it can connect to Drive
-     */
-    void updateDataSyncLabel() {
-        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        String driveTeam = SP.getString(getResources().getString(R.string.PROPERTY_googledrive_teamname), "<Not Set>");
-        String driveEvent = SP.getString(getResources().getString(R.string.PROPERTY_googledrive_event), "<Not Set>");
-        String driveAccount = SP.getString(getResources().getString(R.string.PROPERTY_googledrive_account), "<Not Set>");
-
-        String label = "Syncing Data with: "+driveTeam+" / "+driveEvent+"\n\t\tusing: "+driveAccount;
-        if (mFileUtils != null && !mFileUtils.canConnectToDrive())
-            label = label + "\n! Cannot connect to Drive";
-
-        TextView tv = (TextView) findViewById(R.id.sync_settings_tv);
-        tv.setText(label);
-    }
 
     /** Called when the user clicks the Scout Match button */
     public void scout(View view) {
@@ -171,7 +162,26 @@ public class MainActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
 
         }
+    }
 
+    /**
+     * Button handler for the Show [Match] Schedule button.
+     */
+    public void onShowScheduleClicked(View view) {
+
+        if (matchSchedule != null) {
+            // bundle the match data into an intent
+            Intent intent = new Intent(this, ScheduleActivity.class);
+            intent.putExtra(getResources().getString(R.string.EXTRA_MATCH_SCHEDULE), matchSchedule.toString());
+            startActivity(intent);
+        } else {
+            ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+            if (activeNetwork == null) { // not connected to the internet
+                Toast.makeText(this, "No Schedule Data to show. No Internet?", Toast.LENGTH_LONG).show();
+                return;
+            }
+        }
     }
 
     private void setNavDrawer() {
@@ -247,6 +257,35 @@ public class MainActivity extends AppCompatActivity {
 
     public void setAccepted(boolean accepted) {
         this.accepted = accepted;
+    }
+
+    @Override
+    public void updateData(String[] matchResultsDataCSV, String[] matchScoutingDataCSV) {
+
+    }
+
+    @Override
+    public void updateMatchSchedule(MatchSchedule matchSchedule) {
+        this.matchSchedule = matchSchedule;
+    }
+    
+    /**
+     * Set the text for the label "Syncing Data To:" according to the saved preferences.
+     *
+     * Note: This is called by FileUtils.checkDriveConnectionAndFiles() after it determines if it can connect to Drive
+     */
+    void updateDataSyncLabel() {
+        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        String driveTeam = SP.getString(getResources().getString(R.string.PROPERTY_googledrive_teamname), "<Not Set>");
+        String driveEvent = SP.getString(getResources().getString(R.string.PROPERTY_googledrive_event), "<Not Set>");
+        String driveAccount = SP.getString(getResources().getString(R.string.PROPERTY_googledrive_account), "<Not Set>");
+
+        String label = "Syncing Data with: "+driveTeam+" / "+driveEvent+"\n\t\tusing: "+driveAccount;
+        if (mFileUtils != null && !mFileUtils.canConnectToDrive())
+            label = label + "\n! Cannot connect to Drive";
+
+        TextView tv = (TextView) findViewById(R.id.sync_settings_tv);
+        tv.setText(label);
     }
 
     class CheckPopupHasExited extends TimerTask {

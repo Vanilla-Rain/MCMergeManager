@@ -36,18 +36,7 @@
         <item>Rough Terrain</item>
     </string-array>
 
-    <string name="EXTRA_TEAM_NO">ca.team2706.scouting.mcmergemanager.EXTRA_TEAM_NO</string>
-    <string name="EXTRA_MATCHES_HASHTABLE">ca.team2706.scouting.mcmergemanager.EXTRA_MATCHES_HASHTABLE</string>
-    <string name="EXTRA_MatchesPlayedByTeam_HASHTABLE">ca.team2706.scouting.mcmergemanager.EXTRA_MatchesPlayedByTeam_HASHTABLE</string>
-    <string name="EXTRA_MATCH_SCORES_HASHTABLE">ca.team2706.scouting.mcmergemanager.EXTRA_MATCH_SCORES_HASHTABLE</string>
-    <string name="EXTRA_TEAM_CYCLE_COUNTS">ca.team2706.scouting.mcmergemanager.EXTRA_TEAM_CYCLE_COUNTS</string>
-    <string name="EXTRA_PTS_PER_S">ca.team2706.scouting.mcmergemanager.EXTRA_PTS_PER_S</string>
-    <string name="EXTRA_TIMES">ca.team2706.scouting.mcmergemanager.EXTRA_TIMES</string>
-    <string name="EXTRA_WINS">ca.team2706.scouting.mcmergemanager.EXTRA_WINS</string>
-    <string name="EXTRA_LOSSES">ca.team2706.scouting.mcmergemanager.EXTRA_LOSSES</string>
-    <string name="EXTRA_TIES">ca.team2706.scouting.mcmergemanager.EXTRA_TIES</string>
-    <string name="EXTRA_MATCH_RESULTS_FILE">ca.team2706.scouting.mcmergemanager.EXTRA_MATCH_RESULTS_FILE</string>
-    <string name="EXTRA_KNIGHT_WATCH_DATA_FILE">ca.team2706.scouting.mcmergemanager.EXTRA_KNIGHT_WATCH_DATA_FILE</string>
+    <string name="EXTRA_MATCH_SCHEDULE">ca.team2706.scouting.matchSchedule</string>
     <string name="title_activity_settings">Settings</string>
     <!-- Strings related to properties from the Settings page -->
     <string name="PROPERTY_googledrive_account">ca.team2706.scouting.googledrive_account</string>

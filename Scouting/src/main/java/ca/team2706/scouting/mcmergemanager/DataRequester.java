@@ -12,4 +12,6 @@ package ca.team2706.scouting.mcmergemanager;
 public interface DataRequester {
 
     public abstract void updateData(String[] matchResultsDataCSV, String[] matchScoutingDataCSV);
+
+    public abstract void updateMatchSchedule(MatchSchedule matchSchedule);
 }

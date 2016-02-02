@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
+
+    <TextView
+        android:id="@+id/schedule_matchNoTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dp"/>
+
+    <TextView
+        android:id="@+id/schedule_blueAllianceTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/blue_alliance"
+        android:padding="5dp"/>
+
+    <TextView
+        android:id="@+id/schedule_redAllianceTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/red_alliance"
+        android:padding="5dp"/>
+
+    <TextView
+        android:id="@+id/schedule_blueScoreTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/blue_alliance"
+        android:padding="5dp"/>
+
+    <TextView
+        android:id="@+id/schedule_dashTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=" - "
+        android:padding="0dp"/>
+
+    <TextView
+        android:id="@+id/schedule_redScoreTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/red_alliance"
+        android:padding="5dp"/>
+
+
+
+</LinearLayout>

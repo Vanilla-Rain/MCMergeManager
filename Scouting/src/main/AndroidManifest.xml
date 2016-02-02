@@ -67,6 +67,10 @@
             android:name="SettingsActivity"
             android:label="Settings"
             android:theme="@style/AppTheme" />
+        <activity
+            android:name="ScheduleActivity"
+            android:label="Schedule"
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>

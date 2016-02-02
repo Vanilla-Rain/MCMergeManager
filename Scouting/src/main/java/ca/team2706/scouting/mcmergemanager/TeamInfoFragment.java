@@ -217,6 +217,10 @@ progress.setProgress(0);
 
     }
 
+    public void updateMatchSchedule(MatchSchedule matchSchedule) {
+
+    }
+
 
     public TextView textViewScore;
     public TextView textViewPerformance;
