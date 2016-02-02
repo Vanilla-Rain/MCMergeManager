@@ -13,48 +13,78 @@ import java.util.List;
  */
 public class MatchSchedule {
 
-    public class Match implements Comparable<Match> {
+    public static class Match implements Comparable<Match> {
         private int matchNo;
 
-        private int red1;
-        private int red2;
-
-        private int red3;
         private int blue1;
         private int blue2;
         private int blue3;
+        private int red1;
+        private int red2;
+        private int red3;
 
         // = -1 if the match has not been played yet.
-        private int redScore;
         private int blueScore;
+        private int redScore;
 
 
         // getters - this is how other classes will access the data (they can read it, but not change it)
         public int getMatchNo() { return matchNo; }
-        public int getRed1() { return red1; }
-        public int getRed2() { return red2; }
-        public int getRed3() { return red3; }
         public int getBlue1() { return blue1; }
         public int getBlue2() { return blue2; }
         public int getBlue3() { return blue3; }
-        public int getRedScore() { return redScore; }
+        public int getRed1() { return red1; }
+        public int getRed2() { return red2; }
+        public int getRed3() { return red3; }
         public int getBlueScore() { return blueScore; }
+        public int getRedScore() { return redScore; }
 
-        // setters (they are private so that other classes can read the data, but not change it)
-        private void setMatchNo(int matchNo) { this.matchNo = matchNo; }
-        private void setRed1(int red1) { this.red1 = red1; }
-        private void setRed2(int red2) { this.red2 = red2; }
-        private void setRed3(int red3) { this.red3 = red3; }
-        private void setBlue1(int blue1) { this.blue1 = blue1; }
-        private void setBlue2(int blue2) { this.blue2 = blue2; }
-        private void setBlue3(int blue3) { this.blue3 = blue3; }
-        private void setRedScore(int redScore) { this.redScore = redScore; }
-        private void setBlueScore(int blueScore) { this.blueScore = blueScore; }
+        // setters - this is how other classes will update data, or make a Match if they only know a few fields
+        public void setMatchNo(int matchNo) { this.matchNo = matchNo; }
+        public void setRed1(int red1) { this.red1 = red1; }
+        public void setRed2(int red2) { this.red2 = red2; }
+        public void setRed3(int red3) { this.red3 = red3; }
+        public void setBlue1(int blue1) { this.blue1 = blue1; }
+        public void setBlue2(int blue2) { this.blue2 = blue2; }
+        public void setBlue3(int blue3) { this.blue3 = blue3; }
+        public void setRedScore(int redScore) { this.redScore = redScore; }
+        public void setBlueScore(int blueScore) { this.blueScore = blueScore; }
 
+
+        /** Default empty constructor **/
+        public Match() {
+
+        }
+
+        /** De-serializing constructor **/
+        public Match(String serializedMatch) {
+            try {
+                String[] tokens = serializedMatch.split(",");
+                matchNo = Integer.parseInt(tokens[0]);
+                blue1 = Integer.parseInt(tokens[1]);
+                blue2 = Integer.parseInt(tokens[2]);
+                blue3 = Integer.parseInt(tokens[3]);
+                red1 = Integer.parseInt(tokens[4]);
+                red2 = Integer.parseInt(tokens[5]);
+                red3 = Integer.parseInt(tokens[6]);
+                blueScore = Integer.parseInt(tokens[7]);
+                redScore = Integer.parseInt(tokens[8]);
+
+            } catch (Exception e) {
+                // the data was in the wrong format, empty everything out
+                matchNo = blue1 = blue2 = blue3 = red1 = red2 = red3 = 0;
+                blueScore = redScore = -1;
+            }
+        }
 
         @Override
         public int compareTo(Match another) {
             return this.getMatchNo() - another.getMatchNo();
+        }
+
+        @Override
+        public String toString(){
+            return matchNo+","+blue1+","+blue2+","+blue3+","+red1+","+red2+","+red3+","+blueScore+","+redScore;
         }
     }
 

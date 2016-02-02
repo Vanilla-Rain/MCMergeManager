@@ -277,8 +277,6 @@ public class MainActivity extends AppCompatActivity
 
     class CheckPicturePopupHasExited extends TimerTask {
         public void run() {
-//            setAccepted(getAccepted());
-//            setInputResult(getInputResult());
             if (enterATeamNumberPopup.accepted) {
                 if(enterATeamNumberPopup.accepted) {
                     int teamNumber;

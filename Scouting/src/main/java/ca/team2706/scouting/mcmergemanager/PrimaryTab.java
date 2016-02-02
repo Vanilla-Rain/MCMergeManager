@@ -51,8 +51,18 @@ public class PrimaryTab extends Fragment {
                 // Create a new Fragment to be placed in the activity layout
                 PreMatchReportFragment fragment = new PreMatchReportFragment();
                 Bundle args = new Bundle();
-                args.putString("MatchSchedule", MainActivity.matchSchedule.toString());
-                args.putInt(PreMatchReportFragment.ARG_MATCHNO, matchNo);
+
+                // bundle up the match
+                MatchSchedule.Match match;
+                if (MainActivity.matchSchedule != null) {
+                    match = MainActivity.matchSchedule.getMatchNo(matchNo-1);
+                } else {
+                    match = new MatchSchedule.Match();
+                    match.setMatchNo(matchNo-1);
+                }
+                args.putString(PreMatchReportFragment.ARG_MATCH, match.toString());
+
+
                 fragment.setArguments(args);
 
                 // Add the fragment to the 'fragment_container' FrameLayout
