@@ -457,6 +457,10 @@
                 android:textStyle="bold" />
         </TableRow>
 
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="20dp" />
+
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -532,6 +536,7 @@
                 android:textColor="@color/red_alliance"
                 android:textStyle="bold" />
         </TableRow>
+
     </TableLayout>
 
 </LinearLayout>

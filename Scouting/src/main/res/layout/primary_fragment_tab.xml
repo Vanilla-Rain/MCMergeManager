@@ -26,7 +26,6 @@
                     android:layout_gravity="right"
                     android:layout_weight="7.10"
                     android:onClick="onShowTeamScheduleClicked"
-                    android:background="?attr/colorPrimaryDark"
                     android:clickable="false" />
 
                 <Button
@@ -37,7 +36,6 @@
                     android:layout_gravity="right"
                     android:layout_weight="7.10"
                     android:onClick="onShowScheduleClicked"
-                    android:background="?attr/colorPrimaryDark"
                     android:singleLine="false"
                     android:clickable="false" />
             </LinearLayout>
