@@ -428,7 +428,7 @@ public class FileUtils implements ConnectionCallbacks, OnConnectionFailedListene
      *
      *  6. Set mHasUnsyncedMatchScoutingData = false;
      */
-    public void appendToMatchScoutingData(String[] csvLines) {
+    public void appendToMatchDataFile(MatchData.Match match) {
         // TODO
     }
 
