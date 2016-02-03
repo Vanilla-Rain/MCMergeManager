@@ -713,13 +713,6 @@ public class FileUtils implements ConnectionCallbacks, OnConnectionFailedListene
         ConnectivityManager cm = (ConnectivityManager) mActivity.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         if (activeNetwork == null) { // not connected to the internet
-//
-//            mActivity.runOnUiThread(new Runnable() {
-//                public void run() {
-//                    Toast.makeText(mActivity, "You expect to download stuff without internet...", Toast.LENGTH_LONG).show();
-//                    dialog.dismiss();
-//                }
-//            });
             return;
         }
 
@@ -727,10 +720,13 @@ public class FileUtils implements ConnectionCallbacks, OnConnectionFailedListene
         {
             public void run() {
                 // Connor's BlueAllianceData class seems to be generic enough that I can reuse it here
+
+                SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(mActivity);
+                String TBA_event = SP.getString(mActivity.getResources().getString(R.string.PROPERTY_googledrive_event), "<Not Set>");
                 BlueAllianceData bad = new BlueAllianceData();
                 String scheduleStr;
                 try {
-                    scheduleStr = bad.readUrl("http://www.thebluealliance.com/api/v2/event/2015onnb/matches?X-TBA-App-Id=frc2706:mergemanager:v01/");
+                    scheduleStr = bad.readUrl("http://www.thebluealliance.com/api/v2/event/"+TBA_event+"/matches?X-TBA-App-Id=frc2706:mergemanager:v01/");
                 } catch (Exception e) {
                     Log.e(mActivity.getResources().getString(R.string.app_name), "Error fetching schedule data from thebluealliance. "+e.getStackTrace());
                     return;
