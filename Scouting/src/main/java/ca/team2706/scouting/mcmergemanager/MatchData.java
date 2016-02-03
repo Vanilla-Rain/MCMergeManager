@@ -17,6 +17,10 @@ public class MatchData {
     public MatchData() {
 
     }
+    
+    public void addMatch(Match match) {
+        matches.add(match);
+    }
 
 
     // String serializers so that it can be easily passed through intents
@@ -35,9 +39,6 @@ public class MatchData {
         // TODO
     }
 
-    public void addMatch(Match match) {
-        matches.add(match);
-    }
 
 
 
