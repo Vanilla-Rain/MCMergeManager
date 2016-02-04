@@ -8,7 +8,12 @@ import java.io.Serializable;
 public class BallPickup implements Serializable {
     public int selection;
     public double time;
+
     // 1 = wall, 2 = ground, 3 = fail
+    public static final int FROM_WALL     = 1;
+    public static final int FROM_GROUND   = 2;
+    public static final int FAIL          = 3;
+
     public BallPickup(int selection, double time) {
 this.selection = selection;
         this.time = time;
