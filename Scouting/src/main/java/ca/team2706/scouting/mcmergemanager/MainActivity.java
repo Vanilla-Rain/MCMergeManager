@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -19,20 +21,24 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.content.Intent;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
+import layout.PreMatchReportFragment;
+
 @TargetApi(21)
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+                implements DataRequester, PreMatchReportFragment.OnFragmentInteractionListener {
 
     // TODO: all these EXTRA names should go in the strings.xml file
     public final static String EXTRA_MATCH_NUM = "ca.team2706.scouting.mcmergemanager.MATCH_NUM_MSG";
@@ -44,8 +50,6 @@ public class MainActivity extends AppCompatActivity {
     Intent globalIntent;
     MainActivity me;
 
-    Button loadMatchButton;
-    TextView loadMatchResultsTV;
     DrawerLayout mDrawerLayout;
     NavigationView mNavigationView;
     FragmentManager mFragmentManager;
@@ -54,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
 
     FileUtils mFileUtils;
     LayoutInflater inflater;
+
+    public static MatchSchedule matchSchedule;
 
     /** A flag so that onResume() knows to sync photos for a particular team when we're returning from the camera app */
     boolean lauchedPhotoApp = false;
@@ -64,20 +70,13 @@ public class MainActivity extends AppCompatActivity {
         this.setContentView(R.layout.activity_main);
         setNavDrawer();
 
-        this.loadMatchButton = (Button) findViewById(R.id.loadMatchResultsBtn);
-        this.loadMatchResultsTV = (TextView) findViewById(R.id.loadMatchResultsTV);
-
-        if (loadMatchButton == null) {
-            // TODO: find out why this is null
-            inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        }
-
         globalIntent = new Intent();
 
         me = this;
 
         // tell the user where they are syncing their dada to
         updateDataSyncLabel();
+
 
         // try logging into the Google Drive and make sure the correct files are there.
         mFileUtils = new FileUtils(this);
@@ -98,6 +97,12 @@ public class MainActivity extends AppCompatActivity {
             mFileUtils.syncOneTeamsPhotos(enterATeamNumberPopup.getTeamNumber());
             lauchedPhotoApp = false;
         }
+
+        // tell the user where they are syncing their dada to
+        updateDataSyncLabel();
+
+        // fetch the match data from TheBlueAlliance to update the scores.
+        FileUtils.fetchMatchScheduleAndResults(this);
     }
 
     /**
@@ -112,24 +117,6 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
     }
 
-    /**
-     * Set the text for the label "Syncing Data To:" according to the saved preferences.
-     *
-     * Note: This is called by FileUtils.checkDriveConnectionAndFiles() after it determines if it can connect to Drive
-     */
-    void updateDataSyncLabel() {
-        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        String driveTeam = SP.getString(getResources().getString(R.string.PROPERTY_googledrive_teamname), "<Not Set>");
-        String driveEvent = SP.getString(getResources().getString(R.string.PROPERTY_googledrive_event), "<Not Set>");
-        String driveAccount = SP.getString(getResources().getString(R.string.PROPERTY_googledrive_account), "<Not Set>");
-
-        String label = "Syncing Data with: "+driveTeam+" / "+driveEvent+"\n\t\tusing: "+driveAccount;
-        if (mFileUtils != null && !mFileUtils.canConnectToDrive())
-            label = label + "\n! Cannot connect to Drive";
-
-        TextView tv = (TextView) findViewById(R.id.sync_settings_tv);
-        tv.setText(label);
-    }
 
     /** Called when the user clicks the Scout Match button */
     public void scout(View view) {
@@ -171,7 +158,38 @@ public class MainActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
 
         }
+    }
 
+    /**
+     * Button handler for the Show [Match] Schedule button.
+     */
+    public void onShowScheduleClicked(View view) {
+
+        if (matchSchedule != null) {
+            // bundle the match data into an intent
+            Intent intent = new Intent(this, ScheduleActivity.class);
+            intent.putExtra(getResources().getString(R.string.EXTRA_MATCH_SCHEDULE), matchSchedule.toString());
+            startActivity(intent);
+        } else {
+            ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+            if (activeNetwork == null) { // not connected to the internet
+                Toast.makeText(this, "No Schedule Data to show. No Internet?", Toast.LENGTH_LONG).show();
+                return;
+            }
+        }
+    }
+
+    public void onShowTeamScheduleClicked(View view) {
+        if (matchSchedule == null) {
+            Toast.makeText(this, "No Schedule Data to show. No Internet?", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        enterATeamNumberPopup = new GetTeamNumberDialog("View the Schedule for one Team","Team Number", 1, this);
+        enterATeamNumberPopup.displayAlertDialog();
+
+        (new Timer()).schedule(new CheckSchedulePopupHasExited(), 250);
     }
 
     private void setNavDrawer() {
@@ -208,7 +226,6 @@ public class MainActivity extends AppCompatActivity {
         mDrawerToggle.syncState();
     }
 
-    public boolean accepted;
     public GetTeamNumberDialog enterATeamNumberPopup;
 
     public void takePicture(View view) {
@@ -220,40 +237,50 @@ public class MainActivity extends AppCompatActivity {
             return; // the popup is non-blocking, so they'll have to click "Take Picture" again.
         }
 
-        GetTeamNumberDialog alert = new GetTeamNumberDialog("Team Number","Team Number", 1, this);
-        alert.displayAlertDialog();
-
-        Log.d("heya", Boolean.toString(accepted));
         enterATeamNumberPopup = new GetTeamNumberDialog("Team Number","Team Number", 1, this);
         enterATeamNumberPopup.displayAlertDialog();
 
-        Timer timer = new Timer();
-        timer.schedule(new CheckPopupHasExited(), 0, 500);
+        (new Timer()).schedule(new CheckPicturePopupHasExited(), 250);
     }
 
-    public String inputResult = "empty";
 
-    public static String getInputResult() {
-        return DisplayAlertDialog.inputResult;
+    @Override
+    public void updateData(String[] matchResultsDataCSV, String[] matchScoutingDataCSV) {
+
     }
 
-    public void setInputResult(String inputResult) {
-        this.inputResult = inputResult;
+    @Override
+    public void updateMatchSchedule(MatchSchedule matchSchedule) {
+        this.matchSchedule = matchSchedule;
     }
 
-    public static boolean getAccepted() {
-        return DisplayAlertDialog.accepted;
+    /**
+     * Set the text for the label "Syncing Data To:" according to the saved preferences.
+     *
+     * Note: This is called by FileUtils.checkDriveConnectionAndFiles() after it determines if it can connect to Drive
+     */
+    void updateDataSyncLabel() {
+        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        String driveTeam = SP.getString(getResources().getString(R.string.PROPERTY_googledrive_teamname), "<Not Set>");
+        String driveEvent = SP.getString(getResources().getString(R.string.PROPERTY_googledrive_event), "<Not Set>");
+        String driveAccount = SP.getString(getResources().getString(R.string.PROPERTY_googledrive_account), "<Not Set>");
+
+        String label = "Syncing Data with: "+driveTeam+" / "+driveEvent+"\n\t\tusing: "+driveAccount;
+        if (mFileUtils != null && !mFileUtils.canConnectToDrive())
+            label = label + "\n! Cannot connect to Drive";
+
+        TextView tv = (TextView) findViewById(R.id.sync_settings_tv);
+        tv.setText(label);
     }
 
-    public void setAccepted(boolean accepted) {
-        this.accepted = accepted;
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+        // empty?
     }
 
-    class CheckPopupHasExited extends TimerTask {
+    class CheckPicturePopupHasExited extends TimerTask {
         public void run() {
-            setAccepted(getAccepted());
-            setInputResult(getInputResult());
-            if (accepted) {
+            if (enterATeamNumberPopup.accepted) {
                 if(enterATeamNumberPopup.accepted) {
                     int teamNumber;
                     try {
@@ -271,15 +298,42 @@ public class MainActivity extends AppCompatActivity {
                     TakePicture pic = new TakePicture(fileUtils.getTeamPhotoPath(teamNumber), me);
                     pic.capturePicture();
                     DisplayAlertDialog.accepted = false;
-
-                    // otherwise this thread will keep running in the background forever, even if you close the app.
-                    // Every time you take a pic your phone will have more and more processes running making it slower and slower.
-                    this.cancel();
                 }
 
             }
-            else if (enterATeamNumberPopup.canceled) {
-                this.cancel();
+            else if (!enterATeamNumberPopup.canceled) {
+                // schedule me to run again
+                (new Timer()).schedule(new CheckPicturePopupHasExited(), 250);
+            }
+        }
+    }
+
+    class CheckSchedulePopupHasExited extends TimerTask {
+        public void run() {
+            if (enterATeamNumberPopup.accepted) {
+                if(enterATeamNumberPopup.accepted) {
+                    int teamNumber;
+                    try {
+                        teamNumber = Integer.parseInt(enterATeamNumberPopup.inputResult);
+                    } catch (NumberFormatException e) {
+                        Log.d(me.getResources().getString(R.string.app_name),
+                                e.toString());
+                        return;
+                    }
+
+                    // bundle the match data into an intent and launch the schedule activity
+                    Intent intent = new Intent(me, ScheduleActivity.class);
+                    intent.putExtra(getResources().getString(R.string.EXTRA_MATCH_SCHEDULE), matchSchedule.toString());
+                    intent.putExtra(getResources().getString(R.string.EXTRA_TEAM_NO), teamNumber);
+                    startActivity(intent);
+
+                    DisplayAlertDialog.accepted = false;
+                }
+
+            }
+            else if (!enterATeamNumberPopup.canceled) {
+                // schedule me to run again
+                (new Timer()).schedule(new CheckSchedulePopupHasExited(), 250);
             }
         }
     }
