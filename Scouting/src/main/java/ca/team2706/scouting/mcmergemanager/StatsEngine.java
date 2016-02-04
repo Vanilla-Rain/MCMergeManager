@@ -21,9 +21,10 @@ public class StatsEngine {
         public int    wins;
         public int    losses;
         public int    ties;
-        public double ORP;
-        public double DPR;
-        public double scheduleToughness;
+        public double ORP;  // Offensive Power Rating, a standard stat in FRC
+        public double DPR;  // Defensive Power Rating, a standard stat in FRC
+        public double scheduleToughness;    // Whether, on average, their opponents were stronger than their allies, or the other way around.
+                                            // ie.: Are they seeded artificially high or artificially low by schedule luck?
 
         // Auto Stats
         public int numTimesReachedInAuto;
