@@ -7,6 +7,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
 
+import ca.team2706.scouting.mcmergemanager.datamodels.PreGameObject;
+
 public class PreGameActivity extends AppCompatActivity {
     private Intent srcIntent;
     @Override

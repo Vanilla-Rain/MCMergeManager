@@ -1,4 +1,4 @@
-package ca.team2706.scouting.mcmergemanager;
+package ca.team2706.scouting.mcmergemanager.datamodels;
 
 import java.io.Serializable;
 
@@ -8,9 +8,10 @@ import java.io.Serializable;
 //The Pre Game Object
 public class PreGameObject implements Serializable {
     public int teamNumber;
-    public int gameNumber;
-    public PreGameObject(int teamNumber,int gameNumber) {
+    public int matchNumber;
+
+    public PreGameObject(int teamNumber,int matchNumber) {
         this.teamNumber = teamNumber;
-        this.gameNumber = gameNumber;
+        this.matchNumber = matchNumber;
     }
 }

@@ -1,4 +1,4 @@
-package ca.team2706.scouting.mcmergemanager;
+package ca.team2706.scouting.mcmergemanager.datamodels;
 
 import java.io.Serializable;
 
@@ -10,6 +10,7 @@ public class BallShot implements Serializable {
     public int y;
     public double shootTime;
     public int whichGoal; // 0 = failed, 1 = low goal, 2 = high goal
+
     public BallShot(int x, int y, double shootTime, int whichGoal) {
         this.x = x;
         this.y = y;

@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -15,11 +14,13 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import ca.team2706.scouting.mcmergemanager.datamodels.AutoScoutingObject;
+import ca.team2706.scouting.mcmergemanager.datamodels.BallShot;
+import ca.team2706.scouting.mcmergemanager.datamodels.PreGameObject;
 
 public class NewAutoScouting extends AppCompatActivity {
 

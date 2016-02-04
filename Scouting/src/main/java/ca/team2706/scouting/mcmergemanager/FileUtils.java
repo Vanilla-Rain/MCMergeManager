@@ -15,13 +15,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -42,16 +40,22 @@ import com.google.android.gms.drive.query.SearchableField;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Date;
+
+import ca.team2706.scouting.mcmergemanager.datamodels.BallPickup;
+import ca.team2706.scouting.mcmergemanager.datamodels.BallShot;
+import ca.team2706.scouting.mcmergemanager.datamodels.MatchData;
+import ca.team2706.scouting.mcmergemanager.datamodels.ScalingTime;
 
 import static com.google.android.gms.common.api.GoogleApiClient.Builder;
 import static com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
@@ -122,7 +126,7 @@ public class FileUtils implements ConnectionCallbacks, OnConnectionFailedListene
         mRemoteTeamPhotosFolderName = "Team Photos";
 
         mLocalToplevelFilePath   = Environment.getExternalStorageDirectory().getPath()
-                                    + mRemoteToplevelFolderName;
+                                    +"/"+ mRemoteToplevelFolderName;
         mLocalTeamFilePath       = mLocalToplevelFilePath + "/" + mRemoteTeamFolderName;
         mLocalEventFilePath      = mLocalTeamFilePath + "/" + mRemoteEventFolderName;
         mLocalTeamPhotosFilePath = mLocalEventFilePath + "/" + mRemoteTeamPhotosFolderName;
@@ -317,7 +321,6 @@ public class FileUtils implements ConnectionCallbacks, OnConnectionFailedListene
      *  - team_name/
      *      - Team Photos/
      *      - event/
-     *          - matchResults.csv
      *          - matchScoutingData.csv
      */
     public void checkLocalFileStructure() {
@@ -332,6 +335,10 @@ public class FileUtils implements ConnectionCallbacks, OnConnectionFailedListene
     }
 
     private void makeDirectory(String directoryName) {
+
+        Log.d(mActivity.getResources().getString(R.string.app_name), "Making directory: "+directoryName);
+
+
         File file = new File(directoryName);
         if (!file.isDirectory()) {
             // in case there's a regular file there with the same name
@@ -428,8 +435,149 @@ public class FileUtils implements ConnectionCallbacks, OnConnectionFailedListene
      *
      *  6. Set mHasUnsyncedMatchScoutingData = false;
      */
+    public void syncMatchData() {
+
+    }
+
+
+    /**
+     * Data format:
+     *
+     * "matchNo<int>,teamNo<int>,isSpyBot<boolean>,reached<boolean>,{autoDefenseBreached<int>;...},{{autoBallShot_X<int>,autoBallShot_Y<int>,autoBallShot_time<.2double>,autoBallshot_which<int>};...},{teleopDefenseBreached<int>;...},{{teleopBallShot_X<int>,teleopBallShot_Y<int>,teleopBallShot_time<.2double>,teleopBallshot_which<int>};...},timeDefending<,2double>,{{ballPickup_selection<int>;ballPickup_time<,2double>};...},{{scaling_time<.2double>;scaling_comelpted<int>};...},notes<String>,challenged<boolean>,timeDead<int>"
+     *
+     * Or, in printf / format strings:
+     * "%d,%d,%b,%b,{%d;...},{{%d;%d;%.2f;%d};...},{%d;...},{{%d;%d;%.2f;%d};...},%,2f,{{%d,%,2f};...},{{%.2f;%d};...},%s,%b,%d"
+     */
     public void appendToMatchDataFile(MatchData.Match match) {
-        // TODO
+
+        /** build the string **/
+        StringBuilder sb = new StringBuilder();
+
+        /** Pre-game **/
+        sb.append( String.format("%d,%d,", match.preGame.matchNumber, match.preGame.teamNumber) );
+
+
+
+        /** Auto Mode **/
+
+        sb.append( String.format("%b,%b,", match.autoMode.isSpyBot, match.autoMode.reachedDefense) );
+
+        // a list of defensesBreached
+        // {defenseBreached<int>;defenseBreached<int>;...}
+        sb.append("{");
+        for(int i=0; i<match.autoMode.defensesBreached.size(); i++) {
+            sb.append(match.autoMode.defensesBreached.get(i)+";");
+
+            if (i < match.autoMode.defensesBreached.size() - 1 )
+                sb.append(";");
+            else
+                sb.append("},");
+        }
+
+        // a list of BallShots
+        // {{ballShot_X<int>,ballShot_Y<int>,ballShot_time<.3double>,ballshot_which<int>};...}
+        sb.append("{");
+        for(int i=0; i<match.autoMode.ballsShot.size(); i++) {
+            BallShot ballShot = match.autoMode.ballsShot.get(i);
+
+            sb.append(String.format("{%d;%d;%.2f;%d}",ballShot.x,ballShot.y,ballShot.shootTime,ballShot.whichGoal));
+
+            if (i < match.autoMode.ballsShot.size() - 1)
+                sb.append(";");
+            else
+                sb.append("},");
+        }
+
+
+
+        /** Teleop Mode **/
+
+        // a list of defensesBreached
+        // {defenseBreached<int>;defenseBreached<int>;...}
+        sb.append("{");
+        for(int i=0; i<match.teleopMode.defensesBreached.size(); i++) {
+            sb.append(match.teleopMode.defensesBreached.get(i)+";");
+
+            if (i < match.teleopMode.defensesBreached.size() - 1 )
+                sb.append(";");
+        }
+        sb.append("},");
+
+        // a list of BallShots
+        // {{ballShot_X<int>,ballShot_Y<int>,ballShot_time<.3double>,ballshot_which<int>};...}
+        sb.append("{");
+        for(int i=0; i<match.teleopMode.ballsShot.size(); i++) {
+            BallShot ballShot = match.teleopMode.ballsShot.get(i);
+
+            sb.append(String.format("{%d;%d;%.2f;%d}",ballShot.x,ballShot.y,ballShot.shootTime,ballShot.whichGoal));
+
+            if (i < match.teleopMode.ballsShot.size() - 1)
+                sb.append(";");
+        }
+        sb.append("},");
+
+        sb.append( String.format("%.2f,",match.teleopMode.timeDefending));
+
+        // Ball Pickup
+        // {{%d,%,2f};...}
+        sb.append("{");
+        for(int i=0; i<match.teleopMode.ballsPickedUp.size(); i++) {
+            BallPickup pickup = match.teleopMode.ballsPickedUp.get(i);
+
+            sb.append( String.format("{%d;%.2f}", pickup.selection, pickup.time));
+
+            if (i < match.teleopMode.ballsPickedUp.size() - 1)
+                sb.append(";");
+            else
+                sb.append("},");
+        }
+
+
+        // Scaling Times
+        // {{%.2f;%d};...}
+        sb.append("{");
+        for(int i=0; i<match.teleopMode.scalingTower.size(); i++) {
+            ScalingTime scale = match.teleopMode.scalingTower.get(i);
+
+            sb.append( String.format("{%.2f;%d}", scale.time, scale.completed));
+
+            if (i < match.teleopMode.scalingTower.size() - 1)
+                sb.append(";");
+        }
+        sb.append("},");
+
+
+        /** Post-Game **/
+
+        // since commas, semi-colons, braces, and <enter> are all special characters for the text file, let's rip those out just to be safe.
+        String cleanedNotes = match.postGame.notes .replaceAll(",","")
+                .replaceAll(";","")
+                .replaceAll("\\{","")
+                .replaceAll("\\}","")
+                .replaceAll("\n","");
+        sb.append(cleanedNotes+",");
+
+        sb.append( String.format("%b,",match.postGame.challenged) );
+        sb.append( String.format("%d",match.postGame.timeDead) );
+
+        sb.append("\n");
+
+
+
+
+        String outFileName = mLocalEventFilePath +"/"+ mActivity.getResources().getString(R.string.matchScoutingDataFileName);
+
+        Log.d(mActivity.getResources().getString(R.string.app_name), "Saving data to file: "+outFileName);
+
+        File outfile = new File(outFileName);
+        try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter(outfile, true));
+            bw.append( sb.toString() );
+            bw.flush();
+            bw.close();
+        } catch (IOException e) {
+
+        }
     }
 
     /**

@@ -22,6 +22,13 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import ca.team2706.scouting.mcmergemanager.datamodels.AutoScoutingObject;
+import ca.team2706.scouting.mcmergemanager.datamodels.BallPickup;
+import ca.team2706.scouting.mcmergemanager.datamodels.BallShot;
+import ca.team2706.scouting.mcmergemanager.datamodels.PreGameObject;
+import ca.team2706.scouting.mcmergemanager.datamodels.ScalingTime;
+import ca.team2706.scouting.mcmergemanager.datamodels.TeleopScoutingObject;
+
 public class NewTeleopScouting extends AppCompatActivity {
     Handler m_handler;
     Runnable m_handlerTask;

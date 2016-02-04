@@ -1,4 +1,4 @@
-package ca.team2706.scouting.mcmergemanager;
+package ca.team2706.scouting.mcmergemanager.datamodels;
 
 import java.io.Serializable;
 
@@ -8,8 +8,9 @@ import java.io.Serializable;
 public class BallPickup implements Serializable {
     public int selection;
     public double time;
+
     public BallPickup(int selection, double time) {
-this.selection = selection;
+        this.selection = selection;
         this.time = time;
     }
 }
