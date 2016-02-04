@@ -1,4 +1,4 @@
-package ca.team2706.scouting.mcmergemanager;
+package ca.team2706.scouting.mcmergemanager.datamodels;
 
 import android.util.Log;
 

@@ -1,5 +1,7 @@
 package ca.team2706.scouting.mcmergemanager;
 
+import ca.team2706.scouting.mcmergemanager.datamodels.MatchSchedule;
+
 /**
  * This interface is meant to be implemented by an activity that requests matchScoutingData and / or MatchResultsData from the FileUtils.
  *

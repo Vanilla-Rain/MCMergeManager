@@ -55,6 +55,7 @@ import java.util.Date;
 import ca.team2706.scouting.mcmergemanager.datamodels.BallPickup;
 import ca.team2706.scouting.mcmergemanager.datamodels.BallShot;
 import ca.team2706.scouting.mcmergemanager.datamodels.MatchData;
+import ca.team2706.scouting.mcmergemanager.datamodels.MatchSchedule;
 import ca.team2706.scouting.mcmergemanager.datamodels.ScalingTime;
 
 import static com.google.android.gms.common.api.GoogleApiClient.Builder;

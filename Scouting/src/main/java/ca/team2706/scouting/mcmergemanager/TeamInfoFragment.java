@@ -18,6 +18,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import ca.team2706.scouting.mcmergemanager.datamodels.MatchSchedule;
+
 
 public class TeamInfoFragment extends Fragment
         implements PhotoRequester, DataRequester {

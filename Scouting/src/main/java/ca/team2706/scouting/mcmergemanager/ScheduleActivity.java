@@ -14,9 +14,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.TooManyListenersException;
+
+import ca.team2706.scouting.mcmergemanager.datamodels.MatchSchedule;
 
 /**
  * Created by mike on 31/01/16.
