@@ -543,22 +543,6 @@ public class FileUtils implements ConnectionCallbacks, OnConnectionFailedListene
         (new TeamPhotoSyncerThread(-1, null)).start();
     }
 
-    /**
-     * This method takes care of saving a team photo to the local cache and syncing it to Drive if Drive is available.
-     *
-     * @param teamNumber The team number, which will be used as the folder for the photo.
-     *                   Does not have to be a team in the matchResults file,, the photo will get saved regardless.
-     * @param photo      The photo to get saved.
-     */
-    public void saveTeamPhoto(int teamNumber, Bitmap photo) {
-        // check for STORAGE permission
-        if (!canWriteToStorage())
-            return;
-
-
-        // TODO
-
-    }
 
     public String getTeamPhotoPath(int teamNumber) {
 
@@ -573,6 +557,12 @@ public class FileUtils implements ConnectionCallbacks, OnConnectionFailedListene
      */
     public void deletePhoto(int teamNumber, Uri photoURI) {
         // TODO
+
+
+        String s = "123345";
+
+        s.substring(3,5);
+
     }
 
     /**
