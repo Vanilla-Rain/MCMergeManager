@@ -9,6 +9,8 @@ public class BallPickup implements Serializable {
     public int selection;
     public double time;
 
+    // 1 = wall, 2 = ground, 3 = fail
+    
     public BallPickup(int selection, double time) {
         this.selection = selection;
         this.time = time;

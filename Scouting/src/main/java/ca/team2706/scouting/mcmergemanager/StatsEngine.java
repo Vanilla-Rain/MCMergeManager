@@ -14,6 +14,8 @@ import ca.team2706.scouting.mcmergemanager.datamodels.MatchSchedule;
 public class StatsEngine {
 
     public class TeamStatsReport {
+
+        // Overall Stats
         public int teamNo;
         public int numMatchesPlayed;
         public int wins;
@@ -23,10 +25,40 @@ public class StatsEngine {
         public double DPR;
         public double scheduleToughness;
 
-        public List<BallShot> missedTeleopShots;
-        public List<BallShot> successfulTeleopShots;
+        // Auto Stats
+        public int numTimesReachedInAuto;
+        public int numTimesBreachedInAuto;
+        public int numTimesSpyBot;
+        public int numSuccHighShotsInAuto;
+        public int numSuccLowShotsInAuto;
+        public int numFailedHighShotsInAuto;
+        public int nemFailedLowShotsInAuto;
 
+        // Teleop Stats
+        public List<BallShot> missedTeleopShots;     // to draw pins on map
+        public List<BallShot> successfulTeleopShots; // to draw pins on map
+        public int numSuccHighShotsInTeleop;
+        public int numSuccLowShotsInTeleop;
+        public int numFailedHighShotsInTeleop;
+        public int numFailedLowShotsInTeleop;
+        public double avgHighShotTime;
+        public double avgLowShotTime;
+        public double avgTimeSpendPlayingDef;
+        public int numSuccPickupsFromGround;
+        public int numSuccPickupsFromWall;
+        public int numFailedPickups;
+        public int numTimesChallenged;
+        public double avgDeadness;  // an int representing % of match spent wich mech problems
+        public double heighestDeadness;
+
+        /** Note that this is an array of 9 items where the 0th item is not used. **/
         public int[] defensesBreached;
+
+        // Scalling
+        public int numSuccessfulScales;
+        public int numFailedScales;
+        public double avgScaleTime;
+
 
     }
 
@@ -91,6 +123,8 @@ public class StatsEngine {
      * This includes both auto and teleop breaches.
      *
      * @return an array of 8 ints holding the counts. The constants in TeleopScoutindObject can be used as indices to this array.
+     *
+     * Note that this is an array of 9 items where the 0th item is not used.
      */
     public int[] getNumberOfBreaches(int teamNo) {
         int[] breaches = new int[8];
