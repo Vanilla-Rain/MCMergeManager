@@ -245,7 +245,7 @@ public class FileUtils implements ConnectionCallbacks, OnConnectionFailedListene
 
     private void makeDirectory(String directoryName) {
 
-        Log.d(mActivity.getResources().getString(R.string.app_name), "Making directory: "+directoryName);
+        Log.d(mActivity.getResources().getString(R.string.app_name), "Making directory: " + directoryName);
 
 
         File file = new File(directoryName);
@@ -561,7 +561,7 @@ public class FileUtils implements ConnectionCallbacks, OnConnectionFailedListene
 
         String s = "123345";
 
-        s.substring(3,5);
+        s.substring(3, 5);
 
     }
 
@@ -876,6 +876,13 @@ public class FileUtils implements ConnectionCallbacks, OnConnectionFailedListene
 
                 // return data to the requester
                 requester.updateMatchSchedule(schedule);
+
+                // just as a test - remove me later
+                StatsEngine stats = new StatsEngine(schedule);
+
+                double OPR3710 = stats.getOPRs().get(1310);
+                Log.d(mActivity.getResources().getString(R.string.app_name), "OPR for 1310: "+OPR3710);
+
             }
         }.start();
 
