@@ -16,6 +16,9 @@ public class TeleopScoutingObject implements Serializable {
     public static final int DEFENSE_SALLYPORT   = 6;
     public static final int DEFENSE_ROCKWALL    = 7;
     public static final int DEFENSE_ROUGHT      = 8;
+    public static final int DEFENSE_LOW_BAR     = 9;
+
+    public static final int NUM_DEFENSES = 10;
 
 
     public List<BallShot> ballsShot;

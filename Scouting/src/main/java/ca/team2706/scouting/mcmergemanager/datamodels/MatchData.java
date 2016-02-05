@@ -46,6 +46,16 @@ public class MatchData {
 
 
 
+    public MatchData filterByTeam(int teamNo) {
+
+        MatchData matchData = new MatchData();
+
+        for(Match match : matches) {
+            if (match.preGame.teamNumber == teamNo)
+                matchData.addMatch(match);
+        }
+        return new MatchData();
+    }
 
 
 
