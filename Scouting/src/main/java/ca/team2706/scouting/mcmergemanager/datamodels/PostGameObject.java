@@ -8,6 +8,10 @@ public class PostGameObject {
     public boolean challenged;
     public int timeDead;
 
+    public PostGameObject() {
+
+    }
+
     public PostGameObject(String notes, boolean challenged, int timeDead) {
         this.notes = notes;
         this.challenged = challenged;

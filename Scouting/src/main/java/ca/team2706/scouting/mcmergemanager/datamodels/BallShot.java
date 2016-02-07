@@ -16,6 +16,10 @@ public class BallShot implements Serializable {
     public double shootTime;
     public int whichGoal; // 0 = failed, 1 = low goal, 2 = high goal
 
+    public BallShot() {
+
+    }
+
     public BallShot(int x, int y, double shootTime, int whichGoal) {
         this.x = x;
         this.y = y;

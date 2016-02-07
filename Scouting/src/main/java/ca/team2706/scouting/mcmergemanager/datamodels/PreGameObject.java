@@ -10,6 +10,10 @@ public class PreGameObject implements Serializable {
     public int teamNumber;
     public int matchNumber;
 
+    public PreGameObject() {
+
+    }
+
     public PreGameObject(int teamNumber,int matchNumber) {
         this.teamNumber = teamNumber;
         this.matchNumber = matchNumber;

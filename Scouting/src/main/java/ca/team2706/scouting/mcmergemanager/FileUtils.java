@@ -344,10 +344,10 @@ public class FileUtils implements ConnectionCallbacks, OnConnectionFailedListene
      * Take one match of data and stick it at the end of the match data file.
      *
      * Data format:
-     * "matchNo<int>,teamNo<int>,isSpyBot<boolean>,reached<boolean>,{autoDefenseBreached<int>;...},{{autoBallShot_X<int>,autoBallShot_Y<int>,autoBallShot_time<.2double>,autoBallshot_which<int>};...},{teleopDefenseBreached<int>;...},{{teleopBallShot_X<int>,teleopBallShot_Y<int>,teleopBallShot_time<.2double>,teleopBallshot_which<int>};...},timeDefending<,2double>,{{ballPickup_selection<int>;ballPickup_time<,2double>};...},{{scaling_time<.2double>;scaling_comelpted<int>};...},notes<String>,challenged<boolean>,timeDead<int>"
+     * "matchNo<int>,teamNo<int>,isSpyBot<boolean>,reached<boolean>,{autoDefenseBreached<int>;...},{{autoBallShot_X<int>;autoBallShot_Y<int>;autoBallShot_time<.2double>;autoBallshot_which<int>}:...},{teleopDefenseBreached<int>;...},{{teleopBallShot_X<int>;teleopBallShot_Y<int>;teleopBallShot_time<.2double>;teleopBallshot_which<int>}:...},timeDefending<,2double>,{{ballPickup_selection<int>;ballPickup_time<,2double>}:...},{{scaling_time<.2double>;scaling_comelpted<int>}:...},notes<String>,challenged<boolean>,timeDead<int>"
      *
      * Or, in printf / format strings:
-     * "%d,%d,%b,%b,{%d;...},{{%d;%d;%.2f;%d};...},{%d;...},{{%d;%d;%.2f;%d};...},%,2f,{{%d,%,2f};...},{{%.2f;%d};...},%s,%b,%d"
+     * "%d,%d,%b,%b,{%d;...},{{%d:%d:%.2f:%d};...},{%d;...},{{%d:%d:%.2f:%d};...},%,2f,{{%d;%,2f}:...},{{%.2f;%d}:...},%s,%b,%d"
      */
     public void appendToMatchDataFile(MatchData.Match match) {
 
@@ -367,16 +367,16 @@ public class FileUtils implements ConnectionCallbacks, OnConnectionFailedListene
         // {defenseBreached<int>;defenseBreached<int>;...}
         sb.append("{");
         for(int i=0; i<match.autoMode.defensesBreached.size(); i++) {
-            sb.append(match.autoMode.defensesBreached.get(i)+";");
+            sb.append(match.autoMode.defensesBreached.get(i));
 
-            if (i < match.autoMode.defensesBreached.size() - 1 )
+            // the last one doesn't get a semi-colon
+            if (i < match.autoMode.defensesBreached.size() - 1)
                 sb.append(";");
-            else
-                sb.append("},");
         }
+        sb.append("},");
 
         // a list of BallShots
-        // {{ballShot_X<int>,ballShot_Y<int>,ballShot_time<.3double>,ballshot_which<int>};...}
+        // {{ballShot_X<int>;ballShot_Y<int>;ballShot_time<.3double>;ballshot_which<int>}:...}
         sb.append("{");
         for(int i=0; i<match.autoMode.ballsShot.size(); i++) {
             BallShot ballShot = match.autoMode.ballsShot.get(i);
@@ -384,66 +384,68 @@ public class FileUtils implements ConnectionCallbacks, OnConnectionFailedListene
             sb.append(String.format("{%d;%d;%.2f;%d}",ballShot.x,ballShot.y,ballShot.shootTime,ballShot.whichGoal));
 
             if (i < match.autoMode.ballsShot.size() - 1)
-                sb.append(";");
-            else
-                sb.append("},");
+                sb.append(":");
         }
+        sb.append("},");
 
 
 
         /** Teleop Mode **/
 
         // a list of defensesBreached
-        // {defenseBreached<int>;defenseBreached<int>;...}
+        // {defenseBreached<int>;...}
         sb.append("{");
         for(int i=0; i<match.teleopMode.defensesBreached.size(); i++) {
-            sb.append(match.teleopMode.defensesBreached.get(i)+";");
+            sb.append(match.teleopMode.defensesBreached.get(i));
 
+            // the last one doesn't get a colon
             if (i < match.teleopMode.defensesBreached.size() - 1 )
                 sb.append(";");
         }
         sb.append("},");
 
         // a list of BallShots
-        // {{ballShot_X<int>,ballShot_Y<int>,ballShot_time<.3double>,ballshot_which<int>};...}
+        // {{ballShot_X<int>;ballShot_Y<int>;ballShot_time<.3double>;ballshot_which<int>}:...}
         sb.append("{");
         for(int i=0; i<match.teleopMode.ballsShot.size(); i++) {
             BallShot ballShot = match.teleopMode.ballsShot.get(i);
 
             sb.append(String.format("{%d;%d;%.2f;%d}",ballShot.x,ballShot.y,ballShot.shootTime,ballShot.whichGoal));
 
+            // the last one doesn't get a colon
             if (i < match.teleopMode.ballsShot.size() - 1)
-                sb.append(";");
+                sb.append(":");
         }
         sb.append("},");
 
         sb.append( String.format("%.2f,",match.teleopMode.timeDefending));
 
         // Ball Pickup
-        // {{%d,%,2f};...}
+        // {{%d;%,2f}:...}
         sb.append("{");
         for(int i=0; i<match.teleopMode.ballsPickedUp.size(); i++) {
             BallPickup pickup = match.teleopMode.ballsPickedUp.get(i);
 
             sb.append( String.format("{%d;%.2f}", pickup.selection, pickup.time));
 
+            // the last one doesn't get a colon
             if (i < match.teleopMode.ballsPickedUp.size() - 1)
-                sb.append(";");
-            else
-                sb.append("},");
+                sb.append(":");
         }
+        sb.append("},");
 
 
         // Scaling Times
-        // {{%.2f;%d};...}
+        // {{%.2f;%d}:...}
         sb.append("{");
         for(int i=0; i<match.teleopMode.scalingTower.size(); i++) {
             ScalingTime scale = match.teleopMode.scalingTower.get(i);
 
             sb.append( String.format("{%.2f;%d}", scale.time, scale.completed));
 
+            // the last one doesn't get a colon
             if (i < match.teleopMode.scalingTower.size() - 1)
-                sb.append(";");
+                sb.append(":");
         }
         sb.append("},");
 
@@ -486,177 +488,148 @@ public class FileUtils implements ConnectionCallbacks, OnConnectionFailedListene
      * Load the entire file of match data into Objects.
      *
      * Data format:
-     * "matchNo<int>,teamNo<int>,isSpyBot<boolean>,reached<boolean>,{autoDefenseBreached<int>;...},{{autoBallShot_X<int>,autoBallShot_Y<int>,autoBallShot_time<.2double>,autoBallshot_which<int>};...},{teleopDefenseBreached<int>;...},{{teleopBallShot_X<int>,teleopBallShot_Y<int>,teleopBallShot_time<.2double>,teleopBallshot_which<int>};...},timeDefending<,2double>,{{ballPickup_selection<int>;ballPickup_time<,2double>};...},{{scaling_time<.2double>;scaling_comelpted<int>};...},notes<String>,challenged<boolean>,timeDead<int>"
+     * "matchNo<int>,teamNo<int>,isSpyBot<boolean>,reached<boolean>,{autoDefenseBreached<int>;...},{{autoBallShot_X<int>;autoBallShot_Y<int>;autoBallShot_time<.2double>;autoBallshot_which<int>}:...},{teleopDefenseBreached<int>;...},{{teleopBallShot_X<int>;teleopBallShot_Y<int>;teleopBallShot_time<.2double>;teleopBallshot_which<int>}:...},timeDefending<,2double>,{{ballPickup_selection<int>;ballPickup_time<,2double>}:...},{{scaling_time<.2double>;scaling_comelpted<int>}:...},notes<String>,challenged<boolean>,timeDead<int>"
      *
      * Or, in printf / format strings:
-     * "%d,%d,%b,%b,{%d;...},{{%d;%d;%.2f;%d};...},{%d;...},{{%d;%d;%.2f;%d};...},%,2f,{{%d,%,2f};...},{{%.2f;%d};...},%s,%b,%d"
-     *
-     *  TODO: change the delimiter between {} blocks to be a colon so I can split properly
+     * "%d,%d,%b,%b,{%d;...},{{%d:%d:%.2f:%d};...},{%d;...},{{%d:%d:%.2f:%d};...},%,2f,{{%d;%,2f}:...},{{%.2f;%d}:...},%s,%b,%d"
      */
-//    public MatchData loadMatchDataFile() {
-//
-//        MatchData matchData = new MatchData();
-//        List<String> matchStrs = new ArrayList<>();
-//
-//        // read the file
-//        try {
-//            BufferedReader br = new BufferedReader(new FileReader("file.txt"));
-//            String line = br.readLine();
-//
-//            while (line != null) {
-//                matchStrs.add(line);
-//                line = br.readLine();
-//            }
-//            br.close();
-//        } catch (Exception e) {
-//            return null;
-//        }
-//
-//
-//        // parse all the matches into the MatchData object
-//        for(String matchStr : matchStrs) {
-//            MatchData.Match match = new MatchData.Match();
-//
-//            String[] tokens = matchStr.split(",");
-//            int idx = 0;
-//
-//            tokens[idx] =
-//
-//
-//            matchData.addMatch(match);
-//        }
-//
-//        /** Pre-game **/
-//        sb.append( String.format("%d,%d,", match.preGame.matchNumber, match.preGame.teamNumber) );
-//
-//
-//
-//        /** Auto Mode **/
-//
-//        sb.append( String.format("%b,%b,", match.autoMode.isSpyBot, match.autoMode.reachedDefense) );
-//
-//        // a list of defensesBreached
-//        // {defenseBreached<int>;defenseBreached<int>;...}
-//        sb.append("{");
-//        for(int i=0; i<match.autoMode.defensesBreached.size(); i++) {
-//            sb.append(match.autoMode.defensesBreached.get(i)+";");
-//
-//            if (i < match.autoMode.defensesBreached.size() - 1 )
-//                sb.append(";");
-//            else
-//                sb.append("},");
-//        }
-//
-//        // a list of BallShots
-//        // {{ballShot_X<int>,ballShot_Y<int>,ballShot_time<.3double>,ballshot_which<int>};...}
-//        sb.append("{");
-//        for(int i=0; i<match.autoMode.ballsShot.size(); i++) {
-//            BallShot ballShot = match.autoMode.ballsShot.get(i);
-//
-//            sb.append(String.format("{%d;%d;%.2f;%d}",ballShot.x,ballShot.y,ballShot.shootTime,ballShot.whichGoal));
-//
-//            if (i < match.autoMode.ballsShot.size() - 1)
-//                sb.append(";");
-//            else
-//                sb.append("},");
-//        }
-//
-//
-//
-//        /** Teleop Mode **/
-//
-//        // a list of defensesBreached
-//        // {defenseBreached<int>;defenseBreached<int>;...}
-//        sb.append("{");
-//        for(int i=0; i<match.teleopMode.defensesBreached.size(); i++) {
-//            sb.append(match.teleopMode.defensesBreached.get(i)+";");
-//
-//            if (i < match.teleopMode.defensesBreached.size() - 1 )
-//                sb.append(";");
-//        }
-//        sb.append("},");
-//
-//        // a list of BallShots
-//        // {{ballShot_X<int>,ballShot_Y<int>,ballShot_time<.3double>,ballshot_which<int>};...}
-//        sb.append("{");
-//        for(int i=0; i<match.teleopMode.ballsShot.size(); i++) {
-//            BallShot ballShot = match.teleopMode.ballsShot.get(i);
-//
-//            sb.append(String.format("{%d;%d;%.2f;%d}",ballShot.x,ballShot.y,ballShot.shootTime,ballShot.whichGoal));
-//
-//            if (i < match.teleopMode.ballsShot.size() - 1)
-//                sb.append(";");
-//        }
-//        sb.append("},");
-//
-//        sb.append( String.format("%.2f,",match.teleopMode.timeDefending));
-//
-//        // Ball Pickup
-//        // {{%d,%,2f};...}
-//        sb.append("{");
-//        for(int i=0; i<match.teleopMode.ballsPickedUp.size(); i++) {
-//            BallPickup pickup = match.teleopMode.ballsPickedUp.get(i);
-//
-//            sb.append( String.format("{%d;%.2f}", pickup.selection, pickup.time));
-//
-//            if (i < match.teleopMode.ballsPickedUp.size() - 1)
-//                sb.append(";");
-//            else
-//                sb.append("},");
-//        }
-//
-//
-//        // Scaling Times
-//        // {{%.2f;%d};...}
-//        sb.append("{");
-//        for(int i=0; i<match.teleopMode.scalingTower.size(); i++) {
-//            ScalingTime scale = match.teleopMode.scalingTower.get(i);
-//
-//            sb.append( String.format("{%.2f;%d}", scale.time, scale.completed));
-//
-//            if (i < match.teleopMode.scalingTower.size() - 1)
-//                sb.append(";");
-//        }
-//        sb.append("},");
-//
-//
-//        /** Post-Game **/
-//
-//        // since commas, semi-colons, braces, and <enter> are all special characters for the text file, let's rip those out just to be safe.
-//        String cleanedNotes = match.postGame.notes .replaceAll(",","")
-//                .replaceAll(";","")
-//                .replaceAll("\\{","")
-//                .replaceAll("\\}","")
-//                .replaceAll("\n","");
-//        sb.append(cleanedNotes+",");
-//
-//        sb.append( String.format("%b,",match.postGame.challenged) );
-//        sb.append( String.format("%d",match.postGame.timeDead) );
-//
-//        sb.append("\n");
-//
-//
-//
-//
-//        String outFileName = mLocalEventFilePath +"/"+ mActivity.getResources().getString(R.string.matchScoutingDataFileName);
-//
-//        Log.d(mActivity.getResources().getString(R.string.app_name), "Saving data to file: "+outFileName);
-//
-//        File outfile = new File(outFileName);
-//        try {
-//            BufferedWriter bw = new BufferedWriter(new FileWriter(outfile, true));
-//            bw.append( sb.toString() );
-//            bw.flush();
-//            bw.close();
-//        } catch (IOException e) {
-//
-//        }
-//
-//
-//
-//
-//        return matchData;
-//    }
+    public MatchData loadMatchDataFile() {
+
+        MatchData matchData = new MatchData();
+        List<String> matchStrs = new ArrayList<>();
+
+        // read the file
+        String inFileName = mLocalEventFilePath +"/"+ mActivity.getResources().getString(R.string.matchScoutingDataFileName);
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(inFileName));
+            String line = br.readLine();
+
+            while (line != null) {
+                // braces are for human readibility, but make parsing harder
+                line = line.replace("{","").replace("}","");
+                matchStrs.add(line);
+                line = br.readLine();
+            }
+            br.close();
+        } catch (Exception e) {
+            Log.e(mActivity.getResources().getString(R.string.app_name), "loadMatchDataFile:: " + e.toString());
+            return null;
+        }
+
+        try {
+            // parse all the matches into the MatchData object
+            for (String matchStr : matchStrs) {
+
+                Log.d(mActivity.getResources().getString(R.string.app_name), "loadMatchDataFile:: parsing line: " + matchStr);
+
+                MatchData.Match match = new MatchData.Match();
+
+                String[] tokens = matchStr.split(",");
+
+
+                /** Pre-game **/
+
+                match.preGame.matchNumber = Integer.valueOf(tokens[0]);
+                match.preGame.teamNumber = Integer.valueOf(tokens[1]);
+
+
+                /** Auto Mode **/
+
+                match.autoMode.isSpyBot = Boolean.valueOf(tokens[2]);
+                match.autoMode.reachedDefense = Boolean.valueOf(tokens[3]);
+
+                // autoDefensesBreached
+                if ( !tokens[4].equals("") ) {
+                    String[] autoDefensesBreachedStrs = tokens[4].split(";");
+                    for (String breach : autoDefensesBreachedStrs)
+                        match.autoMode.defensesBreached.add(Integer.valueOf(breach));
+                }
+
+                // autoBallShots
+                if ( !tokens[5].equals("") ) {
+                    String[] autoShots = tokens[5].split(":");
+                    for (String shot : autoShots) {
+                        String[] shotTokens = shot.split(";");
+                        BallShot ballShot = new BallShot();
+                        ballShot.x = Integer.valueOf(shotTokens[0]);
+                        ballShot.y = Integer.valueOf(shotTokens[1]);
+                        ballShot.shootTime = Double.valueOf(shotTokens[2]);
+                        ballShot.whichGoal = Integer.valueOf(shotTokens[3]);
+
+                        match.autoMode.ballsShot.add(ballShot);
+                    }
+                }
+
+                /** Teleop Mode **/
+
+                // teleopDefensesBreached
+                if ( !tokens[6].equals("") ) {
+                    String[] teleopDefensesBreachedStrs = tokens[6].split(";");
+                    for (String breach : teleopDefensesBreachedStrs)
+                        match.teleopMode.defensesBreached.add(Integer.valueOf(breach));
+                }
+
+                // autoBallShots
+                if ( !tokens[7].equals("") ) {
+                    String[] teleopShots = tokens[7].split(":");
+                    for (String shot : teleopShots) {
+                        String[] shotTokens = shot.split(";");
+                        BallShot ballShot = new BallShot();
+                        ballShot.x = Integer.valueOf(shotTokens[0]);
+                        ballShot.y = Integer.valueOf(shotTokens[1]);
+                        ballShot.shootTime = Double.valueOf(shotTokens[2]);
+                        ballShot.whichGoal = Integer.valueOf(shotTokens[3]);
+
+                        match.autoMode.ballsShot.add(ballShot);
+                    }
+                }
+
+                match.teleopMode.timeDefending = Double.valueOf(tokens[8]);
+
+
+                // Ball Pickup
+                if ( !tokens[9].equals("") ) {
+                    String[] ballPickups = tokens[9].split(":");
+                    for (String pickupStr : ballPickups) {
+                        String[] pickupTokens = pickupStr.split(";");
+                        BallPickup ballPickup = new BallPickup();
+                        ballPickup.selection = Integer.valueOf(pickupTokens[0]);
+                        ballPickup.time = Double.valueOf(pickupTokens[1]);
+
+                        match.teleopMode.ballsPickedUp.add(ballPickup);
+                    }
+                }
+
+                // Scaling Times
+                // {{%.2f;%d}:...}
+                if ( !tokens[10].equals("") ) {
+                    String[] scaleStrs = tokens[10].split(":");
+                    for (String scaleStr : scaleStrs) {
+                        String[] scaleTokens = scaleStr.split(";");
+                        ScalingTime scalingTime = new ScalingTime();
+
+                        scalingTime.time = Double.valueOf(scaleTokens[0]);
+                        scalingTime.completed = Integer.valueOf(scaleTokens[1]);
+                    }
+                }
+
+
+                /** Post-Game **/
+
+                match.postGame.notes = tokens[11];
+                match.postGame.challenged = Boolean.valueOf(tokens[12]);
+                match.postGame.timeDead = Integer.valueOf(tokens[13]);
+
+
+                matchData.addMatch(match);
+            }
+        } catch (Exception e) {
+            Log.e(mActivity.getResources().getString(R.string.app_name), "loadMatchDataFile:: "+e.toString());
+            return null;
+        }
+
+        return matchData;
+    }
 
     /**
      * Add a Note for a particular team.

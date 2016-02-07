@@ -20,28 +20,11 @@ public class MatchData {
 
     /** Empty constructor **/
     public MatchData() {
-
+        matches = new ArrayList<>();
     }
     
     public void addMatch(Match match) {
         matches.add(match);
-    }
-
-
-    // String serializers so that it can be easily passed through intents
-
-    /**
-     * toString() turns it into a string
-     */
-    @Override
-    public String toString() {
-        // TODO
-        return "";
-    }
-
-    /** De-serializing constructor **/
-    public MatchData(String serializedMatchData) {
-        // TODO
     }
 
 
@@ -71,7 +54,10 @@ public class MatchData {
 
         /** Empty constructor **/
         public Match() {
-
+            preGame = new PreGameObject();
+            autoMode = new AutoScoutingObject();
+            teleopMode = new TeleopScoutingObject();
+            postGame = new PostGameObject();
         }
 
 

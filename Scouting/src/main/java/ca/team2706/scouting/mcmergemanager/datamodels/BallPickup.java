@@ -13,7 +13,11 @@ public class BallPickup implements Serializable {
     public static final int WALL   = 1;
     public static final int GROUND = 2;
     public static final int FAIL   = 3;
-    
+
+    public BallPickup() {
+
+    }
+
     public BallPickup(int selection, double time) {
         this.selection = selection;
         this.time = time;

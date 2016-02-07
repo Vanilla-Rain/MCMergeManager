@@ -1,7 +1,10 @@
 package ca.team2706.scouting.mcmergemanager.datamodels;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+
+import ca.team2706.scouting.mcmergemanager.StatsEngine;
 
 /**
  * Created by MCSoftware on 2016-01-22.
@@ -27,8 +30,14 @@ public class TeleopScoutingObject implements Serializable {
     public List<BallPickup> ballsPickedUp;
     public List<ScalingTime> scalingTower;
 
-    public TeleopScoutingObject(List<BallShot> ballsShot,List<Integer> defensesBreached, double timeDefending,List<BallPickup> ballsPickedUp,List<ScalingTime> scalingTower)
-    {
+    public TeleopScoutingObject() {
+        ballsShot = new ArrayList<>();
+        defensesBreached = new ArrayList<>();
+        ballsPickedUp = new ArrayList<>();
+        scalingTower = new ArrayList<>();
+    }
+
+    public TeleopScoutingObject(List<BallShot> ballsShot,List<Integer> defensesBreached, double timeDefending,List<BallPickup> ballsPickedUp,List<ScalingTime> scalingTower) {
         this.ballsShot = ballsShot;
         this.defensesBreached = defensesBreached;
         this.timeDefending = timeDefending;

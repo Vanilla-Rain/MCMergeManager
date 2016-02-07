@@ -32,6 +32,7 @@ import android.widget.Toast;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import ca.team2706.scouting.mcmergemanager.datamodels.MatchData;
 import ca.team2706.scouting.mcmergemanager.datamodels.MatchSchedule;
 import layout.PreMatchReportFragment;
 
@@ -54,6 +55,8 @@ public class MainActivity extends AppCompatActivity
     FragmentManager mFragmentManager;
     FragmentTransaction mFragmentTransaction;
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
+
+    MatchData mMatchData;
 
     FileUtils mFileUtils;
     LayoutInflater inflater;
@@ -102,6 +105,8 @@ public class MainActivity extends AppCompatActivity
 
         // fetch the match data from TheBlueAlliance to update the scores.
         FileUtils.fetchMatchScheduleAndResults(this);
+
+        mMatchData = mFileUtils.loadMatchDataFile();
     }
 
     /**
