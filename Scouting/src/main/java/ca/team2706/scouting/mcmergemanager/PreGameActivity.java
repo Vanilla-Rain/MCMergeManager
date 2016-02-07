@@ -35,7 +35,7 @@ public class PreGameActivity extends AppCompatActivity {
         }
 
 
-        Intent intent = new Intent(this,NewAutoScouting.class);
+        Intent intent = new Intent(this,AutoScouting.class);
         intent.putExtra("PreGameData",new PreGameObject(matchNumInt, -1)); //TODO TEAM NUMBERS
         startActivity(intent);
     }

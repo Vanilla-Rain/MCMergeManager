@@ -29,7 +29,7 @@ import ca.team2706.scouting.mcmergemanager.datamodels.PreGameObject;
 import ca.team2706.scouting.mcmergemanager.datamodels.ScalingTime;
 import ca.team2706.scouting.mcmergemanager.datamodels.TeleopScoutingObject;
 
-public class NewTeleopScouting extends AppCompatActivity {
+public class TeleopScouting extends AppCompatActivity {
     Handler m_handler;
     Runnable m_handlerTask;
     Handler m_handlerDefending;
@@ -56,7 +56,6 @@ public class NewTeleopScouting extends AppCompatActivity {
         m_handlerTask = new Runnable() {
             @Override
             public void run() {
-                Log.e("loop", remainTime + "");
                 if (remainTime == 0) {
                     tvGameTime.setText("Game Over! Please Save and Return");
                 } else {
@@ -142,10 +141,10 @@ public class NewTeleopScouting extends AppCompatActivity {
                     int height = metrics.heightPixels;
                     RelativeLayout imgHolder = (RelativeLayout) findViewById(R.id.relativeLayoutMap);
 
-                    ImageView pointerImageView = new ImageView(NewTeleopScouting.this);
+                    ImageView pointerImageView = new ImageView(TeleopScouting.this);
                     RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(50, 50);
-                    params.leftMargin = (int) event.getX();
-                    params.topMargin = (int) event.getY() + (int) imageViewMap.getY() - 50;
+                    params.leftMargin = (int) event.getX() + (int) imageViewMap.getX() - 25;
+                    params.topMargin = (int) event.getY() + (int) imageViewMap.getY() - 26;
 
                     pointerImageView.setImageResource(R.drawable.pinicon);
                     pointerImageView.setLayoutParams(params);
@@ -157,7 +156,7 @@ public class NewTeleopScouting extends AppCompatActivity {
                     CheckVar checkVar = new CheckVar();
                     checkVar.x = (int) event.getX();
                     checkVar.y = (int) event.getY();
-                    checkVar.t = new TeleopScoutAlertDialog("Shooting...", NewTeleopScouting.this, "High Goal", "Low Goal", "Missed");
+                    checkVar.t = new TeleopScoutAlertDialog("Shooting...", TeleopScouting.this, "High Goal", "Low Goal", "Missed");
                     timer.schedule(checkVar, 0, 1000);
                 }
                 return true;
@@ -180,7 +179,7 @@ public class NewTeleopScouting extends AppCompatActivity {
     public void scalingTower(View view) {
         Timer timer = new Timer();
         CheckVarOther checkVar = new CheckVarOther();
-        checkVar.t = new TeleopScoutAlertDialog("Scaling Tower...", NewTeleopScouting.this, "Scale Successful", "", "Scale Failed");
+        checkVar.t = new TeleopScoutAlertDialog("Scaling Tower...", TeleopScouting.this, "Scale Successful", "", "Scale Failed");
         timer.schedule(checkVar, 0, 1000);
 
     }
@@ -188,7 +187,7 @@ public class NewTeleopScouting extends AppCompatActivity {
     public void ballPickup(View view) {
         Timer timer = new Timer();
         CheckVarOther2 checkVar = new CheckVarOther2();
-        checkVar.t = new TeleopScoutAlertDialog("Picking up ball", NewTeleopScouting.this, "Ground", "Wall", "Failed");
+        checkVar.t = new TeleopScoutAlertDialog("Picking up ball", TeleopScouting.this, "Ground", "Wall", "Failed");
         timer.schedule(checkVar, 0, 1000);
 
     }
@@ -202,7 +201,7 @@ public class NewTeleopScouting extends AppCompatActivity {
         final TextView textViewDefending = (TextView) findViewById(R.id.textViewDefending);
         final UpTimer upTimer = new UpTimer();
 
-        upTimer.startTime(150, 100, NewTeleopScouting.this);
+        upTimer.startTime(150, 100, TeleopScouting.this);
         m_handlerDefending = new Handler();
 
         m_handlerTaskDefending = new Runnable() {

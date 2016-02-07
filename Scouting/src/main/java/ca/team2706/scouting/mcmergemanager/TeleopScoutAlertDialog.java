@@ -48,7 +48,7 @@ public class TeleopScoutAlertDialog {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-canceled = 1;
+                canceled = 1;
                 upTimer.cancel();
 
             }

@@ -20,7 +20,6 @@ public class UpTimer {
         timer1.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                Log.e("here", "" + Math.ceil(count));
                 count += 0.1;
 
                 activity.runOnUiThread(new Runnable() //run on ui thread

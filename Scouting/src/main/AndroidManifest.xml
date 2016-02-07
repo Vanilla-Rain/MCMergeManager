@@ -27,7 +27,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="NewTeleopScouting"
+            android:name=".TeleopScouting"
             android:label="@string/title_activity_new_teleop_scouting"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"
@@ -51,7 +51,7 @@
                 android:value="MainActivity" />
         </activity>
         <activity
-            android:name="NewAutoScouting"
+            android:name=".AutoScouting"
             android:label="@string/title_activity_new_auto_scouting"
             android:theme="@style/AppTheme" />
         <activity

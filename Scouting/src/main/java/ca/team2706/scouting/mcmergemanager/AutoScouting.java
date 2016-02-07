@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -22,9 +23,9 @@ import ca.team2706.scouting.mcmergemanager.datamodels.AutoScoutingObject;
 import ca.team2706.scouting.mcmergemanager.datamodels.BallShot;
 import ca.team2706.scouting.mcmergemanager.datamodels.PreGameObject;
 
-public class NewAutoScouting extends AppCompatActivity {
+public class AutoScouting extends AppCompatActivity {
 
-private PreGameObject preGameObject;
+    private PreGameObject preGameObject;
 
     public ArrayList<Integer> defensesBreached;
     public ArrayList<BallShot> ballsShot;
@@ -41,9 +42,9 @@ private PreGameObject preGameObject;
                 R.array.defense_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-// Apply the adapter to the spinner
+        // Apply the adapter to the spinner
         ballsShot = new ArrayList<>();
-defensesBreached = new ArrayList<Integer>();
+        defensesBreached = new ArrayList<Integer>();
 
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -93,6 +94,7 @@ defensesBreached = new ArrayList<Integer>();
 
             }
         });
+
         final ImageView imageViewMap = (ImageView) findViewById(R.id.map);
         imageViewMap.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
@@ -102,10 +104,10 @@ defensesBreached = new ArrayList<Integer>();
                     int height = metrics.heightPixels;
                     RelativeLayout imgHolder = (RelativeLayout) findViewById(R.id.relativeLayoutMap);
 
-                    ImageView pointerImageView = new ImageView(NewAutoScouting.this);
+                    ImageView pointerImageView = new ImageView(AutoScouting.this);
                     RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(50, 50);
-                    params.leftMargin = (int) event.getX();
-                    params.topMargin = (int) event.getY() + (int) imageViewMap.getY() - 50;
+                    params.leftMargin = (int) event.getX() + (int) imageViewMap.getX() - 25;
+                    params.topMargin = (int) event.getY() + (int) imageViewMap.getY() - 25;
 
                     pointerImageView.setImageResource(R.drawable.pinicon);
                     pointerImageView.setLayoutParams(params);
@@ -115,9 +117,10 @@ defensesBreached = new ArrayList<Integer>();
                     CheckVar checkVar = new CheckVar();
                     checkVar.x = (int)event.getX();
                     checkVar.y = (int)event.getY();
-                    checkVar.t = new TeleopScoutAlertDialog("Shooting...", NewAutoScouting.this, "High Goal", "Low Goal", "Missed");
+                    checkVar.t = new TeleopScoutAlertDialog("Shooting...", AutoScouting.this, "High Goal", "Low Goal", "Missed");
                     timer.schedule(checkVar, 0, 1000);
 
+                    Log.d("MCMergeManager", "X: "+event.getX()+", Y: "+event.getY());
 
 
                     imgHolder.addView(pointerImageView);
@@ -129,20 +132,20 @@ defensesBreached = new ArrayList<Integer>();
 
         });
 
-Intent thisIntent = getIntent();
-       preGameObject  = (PreGameObject)thisIntent.getSerializableExtra("PreGameData");
+        Intent thisIntent = getIntent();
+        preGameObject  = (PreGameObject)thisIntent.getSerializableExtra("PreGameData");
     }
-public void toTeleop(View view) {
-    CheckBox cb = (CheckBox)findViewById(R.id.buttoncheckBox);
-    CheckBox cb2 = (CheckBox)findViewById(R.id.buttonArrivedAtDefense);
-    Intent intent = new Intent(this,NewTeleopScouting.class);
+    public void toTeleop(View view) {
+        CheckBox cb = (CheckBox)findViewById(R.id.buttoncheckBox);
+        CheckBox cb2 = (CheckBox)findViewById(R.id.buttonArrivedAtDefense);
+        Intent intent = new Intent(this,TeleopScouting.class);
 
-    intent.putExtra("PreGameData",preGameObject);
-    intent.putExtra("AutoScoutingData",  new AutoScoutingObject(ballsShot, cb.isChecked(), defensesBreached, cb2.isChecked()));
+        intent.putExtra("PreGameData",preGameObject);
+        intent.putExtra("AutoScoutingData",  new AutoScoutingObject(ballsShot, cb.isChecked(), defensesBreached, cb2.isChecked()));
 
-    startActivity(intent);
+        startActivity(intent);
 
-}
+    }
     public void ballPickup(View view) {
 
     }

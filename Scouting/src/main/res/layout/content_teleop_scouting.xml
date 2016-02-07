@@ -9,16 +9,15 @@
     android:id="@+id/relativeLayoutMap"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/activity_new_teleop_scouting"
-    tools:context="ca.team2706.scouting.mcmergemanager.NewTeleopScouting">
+    tools:context=".TeleopScouting">
 
     <ImageView
-        android:src="@drawable/map"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:src="@drawable/offensive_courtyard"
+        android:layout_width="@dimen/offensive_courtyard_size"
+        android:layout_height="@dimen/offensive_courtyard_size"
         android:id="@+id/map"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="95dp" />
+        android:layout_centerHorizontal="true" />
 
     <Spinner
         android:id="@+id/defense_spinner"
@@ -90,6 +89,17 @@
         android:layout_alignBottom="@+id/button3"
         android:layout_alignLeft="@+id/buttonPostGame"
         android:layout_alignStart="@+id/buttonPostGame" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Shots Taken:"
+        android:id="@+id/textView20"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:layout_centerVertical="true"
+        android:layout_toStartOf="@+id/textViewGameTime" />
 
 
 </RelativeLayout>
