@@ -34,7 +34,7 @@ public class AutoScouting extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_new_auto_scouting);
+        setContentView(R.layout.activity_auto_scouting);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         final Spinner spinner = (Spinner) findViewById(R.id.defense_spinner);

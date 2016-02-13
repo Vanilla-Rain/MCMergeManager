@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="ca.team2706.scouting.mcmergemanager" >
+    package="ca.team2706.scouting.mcmergemanager">
+
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <uses-feature android:name="android.hardware.camera" />
+
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -15,9 +18,12 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
-        <meta-data android:name="com.google.android.apps.drive.APP_ID" android:value="id=661008047959" />
+        <meta-data
+            android:name="com.google.android.apps.drive.APP_ID"
+            android:value="id=661008047959" />
+
         <activity
-            android:name="MainActivity"
+            android:name=".MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -37,12 +43,12 @@
                 android:value="ca.team2706.scouting.mcmergemanager.MainActivity" />
         </activity>
         <activity
-            android:name="PostGameActivity"
+            android:name=".PostGameActivity"
             android:label="@string/title_activity_post_game"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:name="PreGameActivity"
+            android:name=".PreGameActivity"
             android:label="@string/title_activity_pre_game"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme">
@@ -55,21 +61,30 @@
             android:label="@string/title_activity_new_auto_scouting"
             android:theme="@style/AppTheme" />
         <activity
-            android:name="AboutActivity"
+            android:name=".AboutActivity"
             android:label="About"
             android:theme="@style/AppTheme" />
         <activity
-            android:name="HelpActivity"
+            android:name=".HelpActivity"
             android:label="Help"
             android:theme="@style/AppTheme" />
         <activity
-            android:name="SettingsActivity"
+            android:name=".SettingsActivity"
             android:label="Settings"
             android:theme="@style/AppTheme" />
         <activity
-            android:name="ScheduleActivity"
+            android:name=".ScheduleActivity"
             android:label="Schedule"
             android:theme="@style/AppTheme" />
+        <activity
+            android:name=".TeamStatsActivity"
+            android:label="@string/title_activity_team_stats"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ca.team2706.scouting.mcmergemanager.MainActivity" />
+        </activity>
     </application>
 
 </manifest>
