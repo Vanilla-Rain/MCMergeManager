@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Stats Report for Team ####"
-            android:id="@+id/Title"
+            android:id="@+id/fullStatsReportTitle"
             android:layout_gravity="center_horizontal"
             android:textSize="28sp" />
 
@@ -34,7 +34,14 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Record (W/L/T): 0/0/0"
-            android:id="@+id/recordTV" />
+            android:id="@+id/fullStatsReportRecordTV" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Matches Played: 0"
+            android:id="@+id/numMatchesPlayedTV" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -89,6 +96,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="0 / 0 (0)"
+                android:id="@+id/reachesTV"
+                android:layout_row="0"
+                android:layout_column="1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Breaches:"
                 android:id="@+id/breachesLBL"
                 android:layout_row="1"
@@ -99,7 +115,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="0 / 0 (0)"
-                android:id="@+id/textView21"
+                android:id="@+id/breachesTV"
                 android:layout_row="1"
                 android:layout_column="1" />
 
@@ -117,7 +133,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="0 / 0 (0)"
-                android:id="@+id/textView26"
+                android:id="@+id/spyBotTV"
                 android:layout_row="2"
                 android:layout_column="1" />
 
@@ -135,7 +151,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="0 / 0 (0)"
-                android:id="@+id/textView27"
+                android:id="@+id/autoHighGoalsTV"
                 android:layout_row="3"
                 android:layout_column="1" />
 
@@ -153,7 +169,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="0 / 0 (0)"
-                android:id="@+id/textView28"
+                android:id="@+id/autoLowGoalsTV"
                 android:layout_row="4"
                 android:layout_column="1" />
 
@@ -171,16 +187,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="0 / 0 (0)"
-                android:id="@+id/reachesTV"
-                android:layout_row="0"
-                android:layout_column="1" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="0 / 0 (0)"
-                android:id="@+id/textView29"
+                android:id="@+id/autoMissedShotsTV"
                 android:layout_row="5"
                 android:layout_column="1" />
         </GridLayout>

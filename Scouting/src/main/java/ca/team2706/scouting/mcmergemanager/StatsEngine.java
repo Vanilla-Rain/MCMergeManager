@@ -29,7 +29,7 @@ public class StatsEngine implements Serializable{
         public int    wins;
         public int    losses;
         public int    ties;
-        public double ORP;  // Offensive Power Rating, a standard stat in FRC
+        public double OPR;  // Offensive Power Rating, a standard stat in FRC
         public double DPR;  // Defensive Power Rating, a standard stat in FRC
         // could also include CCWM, and PMR, see http://www.chiefdelphi.com/media/papers/2174
         public double scheduleToughness;    // Whether, on average, their opponents were stronger than their allies, or the other way around.
@@ -386,7 +386,7 @@ public class StatsEngine implements Serializable{
      * public int    wins;
      * public int    losses;
      * public int    ties;
-     * public double ORP;
+     * public double OPR;
      * public double DPR;
      * public double scheduleToughness;
      */
@@ -413,7 +413,7 @@ public class StatsEngine implements Serializable{
             computeOPRs();
 
         Double opr = OPRs.get(teamNo);
-        teamStatsReport.ORP = opr==null ? 0 : opr;
+        teamStatsReport.OPR = opr==null ? 0 : opr;
 
         if (DPRs == null)
             computeDPRs();
