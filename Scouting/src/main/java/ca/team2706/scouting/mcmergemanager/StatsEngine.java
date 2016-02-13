@@ -19,7 +19,7 @@ import ca.team2706.scouting.mcmergemanager.datamodels.TeleopScoutingObject;
 /**
  * Created by mike on 04/02/16.
  */
-public class StatsEngine {
+public class StatsEngine implements Serializable{
 
     public class TeamStatsReport implements Serializable {
 
@@ -126,7 +126,7 @@ public class StatsEngine {
     private Map<Integer, WLT> records;  // need for computation of schedule toughness
 
 
-    private class WLT {
+    private class WLT implements Serializable {
         int wins;
         int losses;
         int ties;
@@ -338,8 +338,12 @@ public class StatsEngine {
      */
     private void fillInAutoStats(TeamStatsReport teamStatsReport, int teamNo) {
 
-        if (teamStatsReport.teamMatchData == null)
+        if (teamStatsReport.teamMatchData == null) {
+            if (matchData == null)
+                return;
+
             teamStatsReport.teamMatchData = matchData.filterByTeam(teamNo);
+        }
 
         for(MatchData.Match match : teamStatsReport.teamMatchData.matches) {
             teamStatsReport.numTimesReachedInAuto += match.autoMode.reachedDefense ? 1 : 0;
@@ -389,8 +393,12 @@ public class StatsEngine {
     private void fillInOverallStats(TeamStatsReport teamStatsReport, int teamNo) {
         teamStatsReport.teamNo = teamNo;
 
-        if (teamStatsReport.teamMatcheSchedule == null)
+        if (teamStatsReport.teamMatcheSchedule == null) {
+            if (matchSchedule == null)
+                return;
+
             teamStatsReport.teamMatcheSchedule = matchSchedule.filterByTeam(teamNo);
+        }
 
         teamStatsReport.numMatchesPlayed = teamStatsReport.teamMatcheSchedule.getMatches().size();
 
@@ -442,8 +450,11 @@ public class StatsEngine {
     private void fillInTeleopStats(TeamStatsReport teamStatsReport, int teamNo) {
         // assumption: the teamStatsReport starts zeroed out.
 
-        if (teamStatsReport.teamMatchData == null)
+        if (teamStatsReport.teamMatchData == null) {
+            if (matchData == null)
+                return;
             teamStatsReport.teamMatchData = matchData.filterByTeam(teamNo);
+        }
 
         for(MatchData.Match match : teamStatsReport.teamMatchData.matches) {
             for (BallShot shot : match.teleopMode.ballsShot) {

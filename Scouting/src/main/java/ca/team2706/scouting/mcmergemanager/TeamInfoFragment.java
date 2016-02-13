@@ -3,6 +3,7 @@ package ca.team2706.scouting.mcmergemanager;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -13,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -29,9 +31,11 @@ public class TeamInfoFragment extends Fragment
     private View m_view;
     public  FileUtils fileUtils;
     private String textViewPerformanceString;
-    private String textViewScoreString;
+    private String nicknameString;
     public String name;
     public AlertDialog.Builder alert;
+
+    public StatsEngine.TeamStatsReport m_teamStatsReport;
 
     public TeamInfoFragment() {
         // Required empty public constructor
@@ -49,9 +53,6 @@ public class TeamInfoFragment extends Fragment
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         m_view = inflater.inflate(R.layout.fragment_team_info, null);
-        textViewScore = (TextView) m_view.findViewById(R.id.textViewScore);
-        textViewPerformance = (TextView) m_view.findViewById(R.id.textViewPerformance);
-
 
 
         fileUtils = new FileUtils(getActivity());
@@ -67,14 +68,17 @@ public class TeamInfoFragment extends Fragment
                     ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
                     NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
                     if (activeNetwork != null) { // not connected to the internet
-                        textViewScoreString = fileUtils.getBlueAllianceData("nickname", "http://www.thebluealliance.com/api/v2/team/frc" + m_teamNumber + "?X-TBA-App-Id=frc2706:mergemanager:v01/");
+                        nicknameString = fileUtils.getBlueAllianceData("nickname", "http://www.thebluealliance.com/api/v2/team/frc" + m_teamNumber + "?X-TBA-App-Id=frc2706:mergemanager:v01/");
                     }
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            textViewPerformance.setText(textViewPerformanceString);
-                            textViewScore.setText(textViewScoreString);
                             //stuff that updates ui
+                            TextView textViewPerformance = (TextView) m_view.findViewById(R.id.textViewPerformance);
+                            textViewPerformance.setText(textViewPerformanceString);
+
+                            TextView nicknameTV = (TextView) m_view.findViewById(R.id.nicknameTV);
+                            nicknameTV.setText(nicknameString);
 
                         }
                     });
@@ -83,6 +87,15 @@ public class TeamInfoFragment extends Fragment
             };
             Thread getStuffThread = new Thread(getStuff);
             getStuffThread.start();
+
+            m_teamStatsReport = (StatsEngine.TeamStatsReport) args.getSerializable(getString(R.string.EXTRA_TEAM_STATS_REPORT));
+            if (m_teamStatsReport != null) {
+                fillStatsData();
+                m_view.findViewById(R.id.fullStatsBtn).setEnabled(true);
+            }
+
+
+
 
         }
         Log.d("accepted", "" + args.getBoolean("accepted"));
@@ -156,13 +169,25 @@ public class TeamInfoFragment extends Fragment
             args.putBoolean("accepted", false);
         }
 
-
-
+        Button fullStatsBtn = (Button) m_view.findViewById(R.id.fullStatsBtn);
+        fullStatsBtn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            //On click function
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), TeamStatsActivity.class);
+                intent.putExtra(getString(R.string.EXTRA_TEAM_STATS_REPORT), m_teamStatsReport);
+                startActivity(intent);
+            }
+        });
 
 
 
 
         return m_view;
+    }
+
+    private void fillStatsData() {
+
     }
 
     @Override
@@ -202,21 +227,5 @@ public class TeamInfoFragment extends Fragment
     public void updateMatchSchedule(MatchSchedule matchSchedule) {
 
     }
-
-
-    public TextView textViewScore;
-    public TextView textViewPerformance;
-
-    public boolean accepted;
-
-    private static String STORETEXT;
-
-    public String inputResult;
-
-
-
-
-
-
 
 }

@@ -1,5 +1,6 @@
 package ca.team2706.scouting.mcmergemanager.datamodels;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import ca.team2706.scouting.mcmergemanager.datamodels.AutoScoutingObject;
@@ -13,7 +14,7 @@ import ca.team2706.scouting.mcmergemanager.datamodels.TeleopScoutingObject;
  *
  * Created by mike on 03/02/16.
  */
-public class MatchData {
+public class MatchData implements Serializable {
     
     // Member Variables
     public ArrayList<Match> matches;

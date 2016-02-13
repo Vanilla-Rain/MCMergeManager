@@ -52,12 +52,28 @@
         </HorizontalScrollView>
 
         <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Nickname"
+            android:id="@+id/nicknameTV"
+            android:layout_gravity="center_horizontal" />
+
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="W/L/T: 4/6/0\nOPR: 46.8\nNPR: 14.2\netc"
-            android:id="@+id/textViewScore"
+            android:id="@+id/statsTV"
             android:layout_gravity="center_horizontal" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Full Stats"
+            android:id="@+id/fullStatsBtn"
+            android:layout_gravity="right"
+            android:enabled="false" />
 
         <TextView
             android:layout_width="match_parent"

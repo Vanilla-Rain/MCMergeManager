@@ -4,6 +4,7 @@ import android.util.Log;
 
 import org.json.*;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -11,9 +12,9 @@ import java.util.List;
 /**
  * Created by mike on 31/01/16.
  */
-public class MatchSchedule {
+public class MatchSchedule implements Serializable {
 
-    public static class Match implements Comparable<Match> {
+    public static class Match implements Comparable<Match>, Serializable {
         private int matchNo;
 
         private int blue1;

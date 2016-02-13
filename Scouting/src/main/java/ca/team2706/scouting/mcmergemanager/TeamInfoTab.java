@@ -2,6 +2,7 @@ package ca.team2706.scouting.mcmergemanager;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -22,6 +23,8 @@ public class TeamInfoTab extends Fragment {
 
     private Bundle m_savedInstanceState = null;
     public View view;
+    public TeamInfoFragment m_teamInfoFragment;
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         m_savedInstanceState = savedInstanceState;
 
@@ -52,14 +55,16 @@ public class TeamInfoTab extends Fragment {
                         }
 
                         // Create a new Fragment to be placed in the activity layout
-                        TeamInfoFragment fragment = new TeamInfoFragment();
+                        m_teamInfoFragment = new TeamInfoFragment();
                         Bundle args = new Bundle();
                         args.putInt("teamNumber", teamNumber);
-                        fragment.setArguments(args);
+                        StatsEngine statsEngine = new StatsEngine(MainActivity.m_matchData, MainActivity.m_matchSchedule);
+                        args.putSerializable(getString(R.string.EXTRA_TEAM_STATS_REPORT), statsEngine.getTeamStatsReport(teamNumber));
+                        m_teamInfoFragment.setArguments(args);
 
                         // Add the fragment to the 'fragment_container' FrameLayout
                         getActivity().getFragmentManager().beginTransaction()
-                                .replace(R.id.fragment_container, fragment).commit();
+                                .replace(R.id.fragment_container, m_teamInfoFragment).commit();
                         return false;
                     }
 
@@ -112,14 +117,18 @@ public class TeamInfoTab extends Fragment {
                 spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        switch(position) {
-                            case 0: args.putString("selectedYear","2016");
+                        switch (position) {
+                            case 0:
+                                args.putString("selectedYear", "2016");
                                 break;
-                            case 1: args.putString("selectedYear","2015");
+                            case 1:
+                                args.putString("selectedYear", "2015");
                                 break;
-                            case 2: args.putString("selectedYear","2014");
+                            case 2:
+                                args.putString("selectedYear", "2014");
                                 break;
-                            case 3: args.putString("selectedYear","2013");
+                            case 3:
+                                args.putString("selectedYear", "2013");
                                 break;
                         }
                     }
@@ -138,11 +147,6 @@ public class TeamInfoTab extends Fragment {
                 if (edit instanceof EditText) {
                     editText = (EditText) edit;
                     editText.setHint("Competition ID - See Help for more");
-                      /*  Log.d("inputType", Integer.toString(inputType));
-                        switch (inputType) {
-                            case 0:   return;
-                            case 1: editText.setInputType(InputType.TYPE_CLASS_NUMBER);
-                                Log.d("kk", "here");*/
 
                 }
 
@@ -165,7 +169,7 @@ public class TeamInfoTab extends Fragment {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 accepted = true;
-                                Log.e("accepted","" + accepted);
+                                Log.e("accepted", "" + accepted);
                                 inputResult = editText.getText().toString();
                                 TeamInfoFragment fragment1 = new TeamInfoFragment();
 

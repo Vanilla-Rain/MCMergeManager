@@ -21,7 +21,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -54,14 +53,13 @@ public class MainActivity extends AppCompatActivity
     NavigationView mNavigationView;
     FragmentManager mFragmentManager;
     FragmentTransaction mFragmentTransaction;
-    private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
+//    private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
 
-    MatchData mMatchData;
+    public static MatchData m_matchData;
+    public static MatchSchedule m_matchSchedule;
 
     FileUtils mFileUtils;
-    LayoutInflater inflater;
 
-    public static MatchSchedule matchSchedule;
 
     /** A flag so that onResume() knows to sync photos for a particular team when we're returning from the camera app */
     boolean lauchedPhotoApp = false;
@@ -75,9 +73,6 @@ public class MainActivity extends AppCompatActivity
         globalIntent = new Intent();
 
         me = this;
-
-        // tell the user where they are syncing their dada to
-        updateDataSyncLabel();
 
 
         // try logging into the Google Drive and make sure the correct files are there.
@@ -105,8 +100,7 @@ public class MainActivity extends AppCompatActivity
 
         // fetch the match data from TheBlueAlliance to update the scores.
         FileUtils.fetchMatchScheduleAndResults(this);
-
-        mMatchData = mFileUtils.loadMatchDataFile();
+        m_matchData = mFileUtils.loadMatchDataFile();
     }
 
     /**
@@ -169,10 +163,10 @@ public class MainActivity extends AppCompatActivity
      */
     public void onShowScheduleClicked(View view) {
 
-        if (matchSchedule != null) {
+        if (m_matchSchedule != null) {
             // bundle the match data into an intent
             Intent intent = new Intent(this, ScheduleActivity.class);
-            intent.putExtra(getResources().getString(R.string.EXTRA_MATCH_SCHEDULE), matchSchedule.toString());
+            intent.putExtra(getResources().getString(R.string.EXTRA_MATCH_SCHEDULE), m_matchSchedule.toString());
             startActivity(intent);
         } else {
             ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -185,7 +179,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void onShowTeamScheduleClicked(View view) {
-        if (matchSchedule == null) {
+        if (m_matchSchedule == null) {
             Toast.makeText(this, "No Schedule Data to show. No Internet?", Toast.LENGTH_LONG).show();
             return;
         }
@@ -255,7 +249,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void updateMatchSchedule(MatchSchedule matchSchedule) {
-        this.matchSchedule = matchSchedule;
+        this.m_matchSchedule = matchSchedule;
     }
 
     /**
@@ -327,7 +321,7 @@ public class MainActivity extends AppCompatActivity
 
                     // bundle the match data into an intent and launch the schedule activity
                     Intent intent = new Intent(me, ScheduleActivity.class);
-                    intent.putExtra(getResources().getString(R.string.EXTRA_MATCH_SCHEDULE), matchSchedule.toString());
+                    intent.putExtra(getResources().getString(R.string.EXTRA_MATCH_SCHEDULE), m_matchSchedule.toString());
                     intent.putExtra(getResources().getString(R.string.EXTRA_TEAM_NO), teamNumber);
                     startActivity(intent);
 

@@ -52,8 +52,8 @@ public class PrimaryTab extends Fragment {
 
                 // bundle up the match
                 MatchSchedule.Match match;
-                if (MainActivity.matchSchedule != null) {
-                    match = MainActivity.matchSchedule.getMatchNo(matchNo-1);
+                if (MainActivity.m_matchSchedule != null) {
+                    match = MainActivity.m_matchSchedule.getMatchNo(matchNo-1);
                 } else {
                     match = new MatchSchedule.Match();
                     match.setMatchNo(matchNo-1);

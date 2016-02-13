@@ -16,8 +16,6 @@ public class TeamStatsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_team_stats);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
         // unbundle the stats data from the intent
         Intent intent = getIntent();
@@ -29,8 +27,6 @@ public class TeamStatsActivity extends AppCompatActivity {
             // Nothing to display then
             m_teamStastReport = null;
         }
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
 

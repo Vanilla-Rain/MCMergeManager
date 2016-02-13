@@ -520,8 +520,6 @@ public class FileUtils implements ConnectionCallbacks, OnConnectionFailedListene
             // parse all the matches into the MatchData object
             for (String matchStr : matchStrs) {
 
-                Log.d(mActivity.getResources().getString(R.string.app_name), "loadMatchDataFile:: parsing line: " + matchStr);
-
                 MatchData.Match match = new MatchData.Match();
 
                 String[] tokens = matchStr.split(",");
@@ -1035,10 +1033,6 @@ public class FileUtils implements ConnectionCallbacks, OnConnectionFailedListene
 
                 // just as a test - remove me later
                 StatsEngine stats = new StatsEngine(schedule);
-
-                double OPR3710 = stats.getOPRs().get(1310);
-                Log.d(mActivity.getResources().getString(R.string.app_name), "OPR for 1310: "+OPR3710);
-
             }
         }.start();
 
