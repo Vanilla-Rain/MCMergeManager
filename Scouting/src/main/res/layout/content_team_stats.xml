@@ -11,7 +11,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:id="@+id/teamStatsLinearLayout">
 
 
         <TextView
@@ -215,6 +216,24 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="High Goals:"
+                android:id="@+id/textView35"
+                android:layout_row="0"
+                android:layout_column="0" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="0 / 0 (0)"
+                android:id="@+id/teleopHighGoalsTV"
+                android:layout_row="0"
+                android:layout_column="1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="\tAvg setup time:"
                 android:id="@+id/teleopHighSetupTimeLBL"
                 android:layout_row="1"
@@ -285,27 +304,9 @@
                 android:layout_row="5"
                 android:layout_column="1" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="High Goals:"
-                android:id="@+id/textView35"
-                android:layout_row="0"
-                android:layout_column="0" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="0 / 0 (0)"
-                android:id="@+id/teleopHighGoalsTV"
-                android:layout_row="0"
-                android:layout_column="1" />
-
             <Space
                 android:layout_width="20px"
-                android:layout_height="20px"
+                android:layout_height="10dp"
                 android:layout_row="6"
                 android:layout_column="0" />
 
@@ -322,6 +323,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="0 / 0 (0)"
+                android:id="@+id/teleopGroundPickupsTV"
+                android:layout_row="7"
+                android:layout_column="1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Wall Pickups: "
                 android:id="@+id/textView32"
                 android:layout_row="8"
@@ -332,8 +342,8 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="0 / 0 (0)"
-                android:id="@+id/teleopGroundPickupsTV"
-                android:layout_row="7"
+                android:id="@+id/teleopWallPickupsTV"
+                android:layout_row="8"
                 android:layout_column="1" />
 
             <TextView
@@ -350,9 +360,15 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="0 / 0 (0)"
-                android:id="@+id/teleopWallPickupsTV"
-                android:layout_row="8"
+                android:id="@+id/teleopFailedPickupsTV"
+                android:layout_row="9"
                 android:layout_column="1" />
+
+            <Space
+                android:layout_width="20px"
+                android:layout_height="10dp"
+                android:layout_row="10"
+                android:layout_column="0" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -361,30 +377,6 @@
                 android:text="Avg Time Playing D: "
                 android:id="@+id/textView34"
                 android:layout_row="11"
-                android:layout_column="0" />
-
-            <Space
-                android:layout_width="20px"
-                android:layout_height="20px"
-                android:layout_row="10"
-                android:layout_column="0" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="0 / 0 (0)"
-                android:id="@+id/teleopFailedPickupsTV"
-                android:layout_row="9"
-                android:layout_column="1" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Avg Deadness:  "
-                android:id="@+id/textView36"
-                android:layout_row="12"
                 android:layout_column="0" />
 
             <TextView
@@ -401,9 +393,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="\tHighest:  "
-                android:id="@+id/textView38"
-                android:layout_row="13"
+                android:text="Avg Deadness:  "
+                android:id="@+id/textView36"
+                android:layout_row="12"
                 android:layout_column="0" />
 
             <TextView
@@ -415,20 +407,31 @@
                 android:layout_row="12"
                 android:layout_column="1" />
 
-            <Space
-                android:layout_width="20px"
-                android:layout_height="20px"
-                android:layout_row="14"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="\tHighest:  "
+                android:id="@+id/textView38"
+                android:layout_row="13"
                 android:layout_column="0" />
+
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="\t0%"
-                android:id="@+id/textView40"
+                android:id="@+id/highestDeadnessTV"
                 android:layout_row="13"
                 android:layout_column="1" />
+
+            <Space
+                android:layout_width="20px"
+                android:layout_height="10dp"
+                android:layout_row="14"
+                android:layout_column="0" />
+
 
             <TextView
                 android:layout_width="wrap_content"
@@ -437,15 +440,6 @@
                 android:text="Challenges: "
                 android:id="@+id/textView41"
                 android:layout_row="15"
-                android:layout_column="0" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Scales"
-                android:id="@+id/textView42"
-                android:layout_row="16"
                 android:layout_column="0" />
 
             <TextView
@@ -461,9 +455,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="\tFailed: "
-                android:id="@+id/textView43"
-                android:layout_row="17"
+                android:text="Scales"
+                android:id="@+id/textView42"
+                android:layout_row="16"
                 android:layout_column="0" />
 
             <TextView
@@ -481,6 +475,24 @@
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="\tAvg Time: "
                 android:id="@+id/textView44"
+                android:layout_row="17"
+                android:layout_column="0" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="\t0 s"
+                android:id="@+id/scaleTimeTV"
+                android:layout_row="17"
+                android:layout_column="1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="\tFailed: "
+                android:id="@+id/textView43"
                 android:layout_row="18"
                 android:layout_column="0" />
 
@@ -489,18 +501,11 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="\t0 / 0 (0)"
-                android:id="@+id/textView100"
-                android:layout_row="17"
-                android:layout_column="1" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="\t0%"
                 android:id="@+id/failedScalesTV"
                 android:layout_row="18"
                 android:layout_column="1" />
+
+
         </GridLayout>
 
         <Space
@@ -535,85 +540,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Portcullis: "
-                android:id="@+id/textView48"
-                android:layout_row="1"
-                android:layout_column="0" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Chevale de frise: "
-                android:id="@+id/textView49"
-                android:layout_row="2"
-                android:layout_column="0" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Moat: "
-                android:id="@+id/textView50"
-                android:layout_row="3"
-                android:layout_column="0" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Rampart: "
-                android:id="@+id/textView51"
-                android:layout_row="4"
-                android:layout_column="0" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Drawbridge: "
-                android:id="@+id/textView52"
-                android:layout_row="5"
-                android:layout_column="0" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Sally Port: "
-                android:id="@+id/textView53"
-                android:layout_row="6"
-                android:layout_column="0" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Rock Wall: "
-                android:id="@+id/textView54"
-                android:layout_row="7"
-                android:layout_column="0" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Rough Terrain: "
-                android:id="@+id/textView55"
-                android:layout_row="8"
-                android:layout_column="0" />
-
-
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="0 / 0 (0)"
                 android:id="@+id/lowBarTV"
                 android:layout_row="0"
                 android:layout_column="1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Portcullis: "
+                android:id="@+id/textView48"
+                android:layout_row="1"
+                android:layout_column="0" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -628,10 +567,28 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Chevale de frise: "
+                android:id="@+id/textView49"
+                android:layout_row="2"
+                android:layout_column="0" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="0 / 0 (0)"
                 android:id="@+id/chevaleTV"
                 android:layout_row="2"
                 android:layout_column="1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Moat: "
+                android:id="@+id/textView50"
+                android:layout_row="3"
+                android:layout_column="0" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -646,10 +603,28 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Rampart: "
+                android:id="@+id/textView51"
+                android:layout_row="4"
+                android:layout_column="0" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="0 / 0 (0)"
                 android:id="@+id/rampartTV"
                 android:layout_row="4"
                 android:layout_column="1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Drawbridge: "
+                android:id="@+id/textView52"
+                android:layout_row="5"
+                android:layout_column="0" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -664,6 +639,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Sally Port: "
+                android:id="@+id/textView53"
+                android:layout_row="6"
+                android:layout_column="0" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="0 / 0 (0)"
                 android:id="@+id/sallyportTV"
                 android:layout_row="6"
@@ -673,10 +657,28 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Rock Wall: "
+                android:id="@+id/textView54"
+                android:layout_row="7"
+                android:layout_column="0" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="0 / 0 (0)"
                 android:id="@+id/rockWallTV"
                 android:layout_row="7"
                 android:layout_column="1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Rough Terrain: "
+                android:id="@+id/textView55"
+                android:layout_row="8"
+                android:layout_column="0" />
 
             <TextView
                 android:layout_width="wrap_content"

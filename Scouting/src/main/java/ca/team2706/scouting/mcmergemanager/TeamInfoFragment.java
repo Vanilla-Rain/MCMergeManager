@@ -24,7 +24,7 @@ import ca.team2706.scouting.mcmergemanager.datamodels.MatchSchedule;
 
 
 public class TeamInfoFragment extends Fragment
-        implements PhotoRequester, DataRequester {
+        implements PhotoRequester {
 
     private OnFragmentInteractionListener mListener;
     private int m_teamNumber;
@@ -220,12 +220,12 @@ public class TeamInfoFragment extends Fragment
     }
 
 
-    public void updateData(String[] matchResultsDataCSV, String[] matchScoutingDataCSV) {
-
-    }
-
-    public void updateMatchSchedule(MatchSchedule matchSchedule) {
-
-    }
+//    public void updateData(String[] matchResultsDataCSV, String[] matchScoutingDataCSV) {
+//
+//    }
+//
+//    public void updateMatchSchedule(MatchSchedule matchSchedule) {
+//
+//    }
 
 }

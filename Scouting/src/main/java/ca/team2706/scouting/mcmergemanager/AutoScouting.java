@@ -99,9 +99,8 @@ public class AutoScouting extends AppCompatActivity {
         imageViewMap.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    DisplayMetrics metrics = new DisplayMetrics();
-                    int width = metrics.widthPixels;
-                    int height = metrics.heightPixels;
+
+                    // draw a new pin on the map
                     RelativeLayout imgHolder = (RelativeLayout) findViewById(R.id.relativeLayoutMap);
 
                     ImageView pointerImageView = new ImageView(AutoScouting.this);
@@ -111,8 +110,8 @@ public class AutoScouting extends AppCompatActivity {
 
                     pointerImageView.setImageResource(R.drawable.pinicon);
                     pointerImageView.setLayoutParams(params);
-                /*    pointerImageView.setX(event.getX());
-                    pointerImageView.setY(event.getY());*/
+                    imgHolder.addView(pointerImageView);
+
                     Timer timer = new Timer();
                     CheckVar checkVar = new CheckVar();
                     checkVar.x = (int)event.getX();
@@ -120,11 +119,7 @@ public class AutoScouting extends AppCompatActivity {
                     checkVar.t = new TeleopScoutAlertDialog("Shooting...", AutoScouting.this, "High Goal", "Low Goal", "Missed");
                     timer.schedule(checkVar, 0, 1000);
 
-                    Log.d("MCMergeManager", "X: "+event.getX()+", Y: "+event.getY());
-
-
-                    imgHolder.addView(pointerImageView);
-
+//                    Log.d("MCMergeManager", "X: "+event.getX()+", Y: "+event.getY());
                 }
                 return true;
             }

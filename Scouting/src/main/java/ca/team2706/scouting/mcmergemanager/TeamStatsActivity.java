@@ -3,7 +3,14 @@ package ca.team2706.scouting.mcmergemanager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import ca.team2706.scouting.mcmergemanager.datamodels.BallShot;
+
+import static ca.team2706.scouting.mcmergemanager.datamodels.TeleopScoutingObject.*;
 
 public class TeamStatsActivity extends AppCompatActivity {
 
@@ -58,7 +65,8 @@ public class TeamStatsActivity extends AppCompatActivity {
         /** Auto Mode **/
 
 
-        if (m_teamStastReport.numMatchesPlayed != 0) {
+        if (m_teamStastReport.numMatchesPlayed != 0) {  // protects against divide-by-zero
+
             ((TextView) findViewById(R.id.reachesTV)).setText(String.format("%d / %d (%.2f)",
                                                                             m_teamStastReport.numTimesReachedInAuto,
                                                                             m_teamStastReport.numMatchesPlayed,
@@ -94,5 +102,176 @@ public class TeamStatsActivity extends AppCompatActivity {
                                                                                 ((double) m_teamStastReport.numMissedShotsInAuto) / m_teamStastReport.numMatchesPlayed));
 
         }
+
+
+        /** Teleop Mode **/
+
+
+        if (m_teamStastReport.numMatchesPlayed != 0) {  // protects against divide-by-zero
+
+            ((TextView) findViewById(R.id.teleopHighGoalsTV)).setText(String.format("%d / %d (%.2f)",
+                                                                            m_teamStastReport.numSuccHighShotsInTeleop,
+                                                                            m_teamStastReport.numMatchesPlayed,
+                                                                            ((double) m_teamStastReport.numSuccHighShotsInTeleop) / m_teamStastReport.numMatchesPlayed));
+
+
+            ((TextView) findViewById(R.id.teleopHighSetupTimeTV)).setText(String.format("\t%.1f s",
+                                                                            m_teamStastReport.avgHighShotTime) );
+
+
+            ((TextView) findViewById(R.id.teleopLowGoalsTV)).setText(String.format("%d / %d (%.2f)",
+                                                                            m_teamStastReport.numSuccLowShotsInTeleop,
+                                                                            m_teamStastReport.numMatchesPlayed,
+                                                                            ((double) m_teamStastReport.numSuccLowShotsInTeleop) / m_teamStastReport.numMatchesPlayed));
+
+
+            ((TextView) findViewById(R.id.teleopLowSetupTimeTV)).setText(String.format("\t%.1f s",
+                                                                            m_teamStastReport.avgLowShotTime) );
+
+
+            ((TextView) findViewById(R.id.teleopMissedShotsTV)).setText(String.format("%d / %d (%.2f)",
+                                                                            m_teamStastReport.numMissedShotsInTeleop,
+                                                                            m_teamStastReport.numMatchesPlayed,
+                                                                            ((double) m_teamStastReport.numMissedShotsInTeleop) / m_teamStastReport.numMatchesPlayed));
+
+
+            ((TextView) findViewById(R.id.teleopGroundPickupsTV)).setText(String.format("%d / %d (%.2f)",
+                                                                            m_teamStastReport.numSuccPickupsFromGround,
+                                                                            m_teamStastReport.numMatchesPlayed,
+                                                                            ((double) m_teamStastReport.numSuccPickupsFromGround) / m_teamStastReport.numMatchesPlayed));
+
+
+            ((TextView) findViewById(R.id.teleopWallPickupsTV)).setText(String.format("%d / %d (%.2f)",
+                                                                            m_teamStastReport.numSuccPickupsFromWall,
+                                                                            m_teamStastReport.numMatchesPlayed,
+                                                                            ((double) m_teamStastReport.numSuccPickupsFromWall) / m_teamStastReport.numMatchesPlayed));
+
+            ((TextView) findViewById(R.id.teleopFailedPickupsTV)).setText(String.format("%d / %d (%.2f)",
+                                                                            m_teamStastReport.numFailedPickups,
+                                                                            m_teamStastReport.numMatchesPlayed,
+                                                                            ((double) m_teamStastReport.numFailedPickups) / m_teamStastReport.numMatchesPlayed));
+
+            ((TextView) findViewById(R.id.teleopTimePlayingDTV)).setText(String.format("\t%.1f s",
+                                                                            m_teamStastReport.avgTimeSpentPlayingDef) );
+
+            ((TextView) findViewById(R.id.avgDeadnessTV)).setText(String.format("%d%%",
+                                                                            m_teamStastReport.avgDeadness) );
+
+            ((TextView) findViewById(R.id.highestDeadnessTV)).setText(String.format("\t%d%%",
+                                                                            m_teamStastReport.highestDeadness) );
+
+            ((TextView) findViewById(R.id.challengesTV)).setText(String.format("%d / %d (%.2f)",
+                                                                            m_teamStastReport.numTimesChallenged,
+                                                                            m_teamStastReport.numMatchesPlayed,
+                                                                            ((double) m_teamStastReport.numTimesChallenged) / m_teamStastReport.numMatchesPlayed));
+
+            ((TextView) findViewById(R.id.scalesTV)).setText(String.format("%d / %d (%.2f)",
+                                                                            m_teamStastReport.numSuccessfulScales,
+                                                                            m_teamStastReport.numMatchesPlayed,
+                                                                            ((double) m_teamStastReport.numSuccessfulScales) / m_teamStastReport.numMatchesPlayed));
+
+            ((TextView) findViewById(R.id.scaleTimeTV)).setText(String.format("\t%.1f s",
+                                                                            m_teamStastReport.avgScaleTime) );
+
+            ((TextView) findViewById(R.id.failedScalesTV)).setText(String.format("%d / %d (%.2f)",
+                                                                            m_teamStastReport.numFailedScales,
+                                                                            m_teamStastReport.numMatchesPlayed,
+                                                                            ((double) m_teamStastReport.numFailedScales) / m_teamStastReport.numMatchesPlayed));
+        }
+
+
+
+        /** Defenses Breached **/
+
+        if (m_teamStastReport.numMatchesPlayed != 0) {  // protects against divide-by-zero
+
+            // I'm aware I could do this with a for-loop, but I think this makes the code easier to read
+
+            ((TextView) findViewById(R.id.lowBarTV)).setText(String.format("%d / %d (%.2f)",
+                                                                            m_teamStastReport.defensesBreached[DEFENSE_LOW_BAR],
+                                                                            m_teamStastReport.numMatchesPlayed,
+                                                                            ((double) m_teamStastReport.defensesBreached[DEFENSE_LOW_BAR]) / m_teamStastReport.numMatchesPlayed));
+
+            ((TextView) findViewById(R.id.portcullisTV)).setText(String.format("%d / %d (%.2f)",
+                                                                            m_teamStastReport.defensesBreached[DEFENSE_PORTCULLIS],
+                                                                            m_teamStastReport.numMatchesPlayed,
+                                                                            ((double) m_teamStastReport.defensesBreached[DEFENSE_PORTCULLIS]) / m_teamStastReport.numMatchesPlayed));
+
+            ((TextView) findViewById(R.id.chevaleTV)).setText(String.format("%d / %d (%.2f)",
+                                                                            m_teamStastReport.defensesBreached[DEFENSE_CHEVAL],
+                                                                            m_teamStastReport.numMatchesPlayed,
+                                                                            ((double) m_teamStastReport.defensesBreached[DEFENSE_CHEVAL]) / m_teamStastReport.numMatchesPlayed));
+
+            ((TextView) findViewById(R.id.moatTV)).setText(String.format("%d / %d (%.2f)",
+                                                                            m_teamStastReport.defensesBreached[DEFENSE_MOAT],
+                                                                            m_teamStastReport.numMatchesPlayed,
+                                                                            ((double) m_teamStastReport.defensesBreached[DEFENSE_MOAT]) / m_teamStastReport.numMatchesPlayed));
+
+            ((TextView) findViewById(R.id.rampartTV)).setText(String.format("%d / %d (%.2f)",
+                                                                            m_teamStastReport.defensesBreached[DEFENSE_RAMPART],
+                                                                            m_teamStastReport.numMatchesPlayed,
+                                                                            ((double) m_teamStastReport.defensesBreached[DEFENSE_RAMPART]) / m_teamStastReport.numMatchesPlayed));
+
+            ((TextView) findViewById(R.id.drawbridgeTV)).setText(String.format("%d / %d (%.2f)",
+                                                                            m_teamStastReport.defensesBreached[DEFENSE_DRAWBRIDGE],
+                                                                            m_teamStastReport.numMatchesPlayed,
+                                                                            ((double) m_teamStastReport.defensesBreached[DEFENSE_DRAWBRIDGE]) / m_teamStastReport.numMatchesPlayed));
+
+            ((TextView) findViewById(R.id.sallyportTV)).setText(String.format("%d / %d (%.2f)",
+                                                                            m_teamStastReport.defensesBreached[DEFENSE_SALLYPORT],
+                                                                            m_teamStastReport.numMatchesPlayed,
+                                                                            ((double) m_teamStastReport.defensesBreached[DEFENSE_SALLYPORT]) / m_teamStastReport.numMatchesPlayed));
+
+            ((TextView) findViewById(R.id.rockWallTV)).setText(String.format("%d / %d (%.2f)",
+                                                                            m_teamStastReport.defensesBreached[DEFENSE_ROCKWALL],
+                                                                            m_teamStastReport.numMatchesPlayed,
+                                                                            ((double) m_teamStastReport.defensesBreached[DEFENSE_ROCKWALL]) / m_teamStastReport.numMatchesPlayed));
+
+            ((TextView) findViewById(R.id.roughTerrainTV)).setText(String.format("%d / %d (%.2f)",
+                                                                            m_teamStastReport.defensesBreached[DEFENSE_ROUGH_TERRAIN],
+                                                                            m_teamStastReport.numMatchesPlayed,
+                                                                            ((double) m_teamStastReport.defensesBreached[DEFENSE_ROUGH_TERRAIN]) / m_teamStastReport.numMatchesPlayed));
+
+        }
+
+
+
+        /** High Shots Map **/
+
+        final ImageView highGoalMap = (ImageView) findViewById(R.id.mapHigh);
+        for (BallShot shot : m_teamStastReport.successfulTeleopHighShots) {
+
+            // draw a new pin on the map
+            LinearLayout imgHolder = (LinearLayout) findViewById(R.id.teamStatsLinearLayout);
+
+            ImageView pointerImageView = new ImageView(this);
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(50, 50);
+            params.leftMargin = shot.x + (int) highGoalMap.getX() - 25;
+            params.topMargin = shot.y + (int) highGoalMap.getY() - 25;
+
+            pointerImageView.setImageResource(R.drawable.pinicon);
+            pointerImageView.setLayoutParams(params);
+            imgHolder.addView(pointerImageView);
+        }
+
+
+        /** Low Shots Map **/
+
+        final ImageView lowGoalMap = (ImageView) findViewById(R.id.mapLow);
+        for (BallShot shot : m_teamStastReport.successfulTeleopHighShots) {
+
+            // draw a new pin on the map
+            LinearLayout imgHolder = (LinearLayout) findViewById(R.id.teamStatsLinearLayout);
+
+            ImageView pointerImageView = new ImageView(this);
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(50, 50);
+            params.leftMargin = shot.x + (int) lowGoalMap.getX() - 25;
+            params.topMargin = shot.y + (int) lowGoalMap.getY() - 25;
+
+            pointerImageView.setImageResource(R.drawable.pinicon);
+            pointerImageView.setLayoutParams(params);
+            imgHolder.addView(pointerImageView);
+        }
+
     }
 }
