@@ -46,6 +46,7 @@ public class PrimaryTab extends Fragment {
                     return false;
                 }
 
+
                 // Create a new Fragment to be placed in the activity layout
                 PreMatchReportFragment fragment = new PreMatchReportFragment();
                 Bundle args = new Bundle();

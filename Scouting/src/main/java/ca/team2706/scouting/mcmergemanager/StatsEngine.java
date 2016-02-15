@@ -327,7 +327,14 @@ public class StatsEngine implements Serializable{
             }
         }
 
-        return (((double) opponentsWins*2) / (alliesWins*3));
+        if (alliesWins == 0) {
+            if (opponentsWins == 0)
+                return 1.0;
+            else
+                return Double.POSITIVE_INFINITY;
+        }
+
+        return (((double) opponentsWins * 2) / (alliesWins * 3));
     }
 
 
@@ -406,21 +413,23 @@ public class StatsEngine implements Serializable{
         if (records == null)
             computeRecords();
 
-        teamStatsReport.wins = records.get(teamNo).wins;
-        teamStatsReport.losses = records.get(teamNo).losses;
-        teamStatsReport.ties = records.get(teamNo).ties;
+        if (records.get(teamNo) != null) {
+            teamStatsReport.wins = records.get(teamNo).wins;
+            teamStatsReport.losses = records.get(teamNo).losses;
+            teamStatsReport.ties = records.get(teamNo).ties;
+        }
 
         if (OPRs == null)
             computeOPRs();
 
-        Double opr = OPRs.get(teamNo);
-        teamStatsReport.OPR = opr==null ? 0 : opr;
+        if (OPRs.get(teamNo) != null)
+            teamStatsReport.OPR = OPRs.get(teamNo);
 
         if (DPRs == null)
             computeDPRs();
 
-        Double dpr = DPRs.get(teamNo);
-        teamStatsReport.DPR = dpr==null ? 0 : dpr;
+        if (DPRs.get(teamNo) != null)
+            teamStatsReport.DPR = DPRs.get(teamNo);
 
         teamStatsReport.scheduleToughness = computeScheduleToughness(teamNo);
 
@@ -519,11 +528,13 @@ public class StatsEngine implements Serializable{
 
         } // end loop over matches
 
-        teamStatsReport.avgHighShotTime /= teamStatsReport.numSuccHighShotsInTeleop;
-        teamStatsReport.avgLowShotTime /= teamStatsReport.numSuccLowShotsInTeleop;
-        teamStatsReport.avgTimeSpentPlayingDef /= teamStatsReport.teamMatchData.matches.size();
-        teamStatsReport.avgDeadness /= teamStatsReport.teamMatchData.matches.size();
-        teamStatsReport.avgScaleTime /= teamStatsReport.numSuccessfulScales + teamStatsReport.numFailedScales;
+        if (teamStatsReport.teamMatchData.matches.size() != 0) {
+            teamStatsReport.avgHighShotTime /= teamStatsReport.numSuccHighShotsInTeleop;
+            teamStatsReport.avgLowShotTime /= teamStatsReport.numSuccLowShotsInTeleop;
+            teamStatsReport.avgTimeSpentPlayingDef /= teamStatsReport.teamMatchData.matches.size();
+            teamStatsReport.avgDeadness /= teamStatsReport.teamMatchData.matches.size();
+            teamStatsReport.avgScaleTime /= teamStatsReport.numSuccessfulScales + teamStatsReport.numFailedScales;
+        }
     }
 
 }

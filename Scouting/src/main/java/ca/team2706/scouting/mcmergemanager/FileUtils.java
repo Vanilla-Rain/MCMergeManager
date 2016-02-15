@@ -15,11 +15,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.provider.MediaStore;
+import android.util.DisplayMetrics;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -129,7 +130,7 @@ public class FileUtils implements ConnectionCallbacks, OnConnectionFailedListene
                                     +"/"+ mRemoteToplevelFolderName;
         mLocalTeamFilePath       = mLocalToplevelFilePath + "/" + mRemoteTeamFolderName;
         mLocalEventFilePath      = mLocalTeamFilePath + "/" + mRemoteEventFolderName;
-        mLocalTeamPhotosFilePath = mLocalEventFilePath + "/" + mRemoteTeamPhotosFolderName;
+        mLocalTeamPhotosFilePath = mLocalTeamFilePath + "/" + mRemoteTeamPhotosFolderName;
 
         checkLocalFileStructure();
     }
@@ -704,20 +705,6 @@ public class FileUtils implements ConnectionCallbacks, OnConnectionFailedListene
         return mLocalTeamPhotosFilePath + "/" + photoName;
     }
 
-    /**
-     * This deletes a photo from the Drive.
-     * <p/>
-     * It loops over all photos for that team, camparing them against the supplied one with Bitmap.sameAs(Bitmap).
-     */
-    public void deletePhoto(int teamNumber, Uri photoURI) {
-        // TODO
-
-
-        String s = "123345";
-
-        s.substring(3, 5);
-
-    }
 
     /**
      * We take photos by calling the system camera app and telling it where to save the photo.
@@ -782,7 +769,7 @@ public class FileUtils implements ConnectionCallbacks, OnConnectionFailedListene
         for (File file : listOfFiles) {
             if (file.isFile()) {
                 // BitmapFactory will return `null` if the file cannot be parsed as an image, so no error-checking needed.
-                Bitmap bitmap = BitmapFactory.decodeFile(file.getPath());
+                Bitmap bitmap = loadScaledDownImage(file.getPath());
                 if (bitmap != null)
                     arrBitmaps.add(bitmap);
             }
@@ -797,6 +784,46 @@ public class FileUtils implements ConnectionCallbacks, OnConnectionFailedListene
         }
 
     }
+
+    /**
+     * Calculates how much to scale the image based on the size of the screen and then loads
+     * a scaled down version into memory.
+     */
+    private static Bitmap loadScaledDownImage(String imagePath) {
+
+        // First decode with inJustDecodeBounds=true to check dimensions
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(imagePath);
+
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        WindowManager wm = (WindowManager) mActivity.getSystemService(Context.WINDOW_SERVICE);
+        wm.getDefaultDisplay().getMetrics(displayMetrics);
+        int reqSize = displayMetrics.widthPixels / 4;
+
+        if (height > reqSize || width > reqSize) {
+
+        final int halfHeight = height / 2;
+        final int halfWidth = width / 2;
+
+        // Calculate the largest inSampleSize value that is a power of 2 and keeps
+        // height or width larger than the requested size.
+        while ((halfHeight / inSampleSize) > reqSize
+        || (halfWidth / inSampleSize) > reqSize) {
+        inSampleSize *= 2;
+        }
+        }
+
+        // Decode bitmap with inSampleSize set
+        options.inSampleSize = inSampleSize;
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeFile(imagePath);
+        }
 
     /**
      * Gets you the formatted string of Blue Alliance data for a particular team.

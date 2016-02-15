@@ -38,6 +38,7 @@
 
     <!-- EXTRAS -->
     <string name="EXTRA_TEAM_NO">ca.team2706.scouting.teamNo</string>
+    <string name="EXTRA_MATCH_NO">ca.team2706.scouting.matchno</string>
     <string name="EXTRA_MATCH_SCHEDULE">ca.team2706.scouting.matchSchedule</string>
     <string name="EXTRA_TEAM_STATS_REPORT">ca.team2706.scouting.teamStatsReport</string>
 

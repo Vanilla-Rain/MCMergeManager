@@ -25,6 +25,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.content.Intent;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,11 +40,6 @@ import layout.PreMatchReportFragment;
 public class MainActivity extends AppCompatActivity
                 implements DataRequester, PreMatchReportFragment.OnFragmentInteractionListener {
 
-    // TODO: all these EXTRA names should go in the strings.xml file
-    public final static String EXTRA_MATCH_NUM = "ca.team2706.scouting.mcmergemanager.MATCH_NUM_MSG";
-    public final static String EXTRA_ALLIANCE_COLOUR = "ca.team2706.scouting.mcmergemanager.EXTRA_ALLIANCE_COLOUR";
-    public final static String EXTRA_CHOOSE_FILES = "ca.team2706.scouting.mcmergemanager.EXTRA_CHOOSE_FILES";
-    public final static String EXTRA_AVE_CYCLE_TIMES = "ca.team2706.scouting.mcmergemanager.EXTRA_AVE_CYCLE_TIMES";
     public int teamColour = Color.rgb(102, 51, 153);
 
     Intent globalIntent;
@@ -73,7 +69,6 @@ public class MainActivity extends AppCompatActivity
         globalIntent = new Intent();
 
         me = this;
-
 
         // try logging into the Google Drive and make sure the correct files are there.
         mFileUtils = new FileUtils(this);
@@ -118,7 +113,19 @@ public class MainActivity extends AppCompatActivity
 
     /** Called when the user clicks the Scout Match button */
     public void scout(View view) {
+
+        // if they've entered a Match Number in the box, pass that along.
+        EditText matchNoET = (EditText) findViewById(R.id.matchNoET);
+        int matchNo;
+        try {
+            matchNo = Integer.parseInt(matchNoET.getText().toString());
+        } catch (NumberFormatException e) {
+            matchNo = -1;
+        }
+
         Intent intent = new Intent(this, PreGameActivity.class);
+        intent.putExtra( getString(R.string.EXTRA_MATCH_NO), matchNo);
+        intent.putExtra( getString(R.string.EXTRA_MATCH_SCHEDULE), m_matchSchedule);
         startActivity(intent);
     }
 
@@ -230,8 +237,7 @@ public class MainActivity extends AppCompatActivity
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.CAMERA},
-                    123);
+                    new String[]{Manifest.permission.CAMERA}, 123);
             return; // the popup is non-blocking, so they'll have to click "Take Picture" again.
         }
 
@@ -287,13 +293,16 @@ public class MainActivity extends AppCompatActivity
                         // TODO: should probably pop up a toast or something. There seems to be some threading issue with
                         // doing that from here.
 
-                        Log.d(me.getResources().getString(R.string.app_name),
-                                e.toString());
+                        Log.e(me.getResources().getString(R.string.app_name), e.toString());
                         return;
                     }
 
                     FileUtils fileUtils = new FileUtils(me);
-                    TakePicture pic = new TakePicture(fileUtils.getTeamPhotoPath(teamNumber), me);
+
+                    String teamPhotoPath = fileUtils.getTeamPhotoPath(teamNumber);
+                    Log.e(me.getResources().getString(R.string.app_name), "Saving to \""+teamPhotoPath+"\"");
+
+                    TakePicture pic = new TakePicture(teamPhotoPath, me);
                     pic.capturePicture();
                     DisplayAlertDialog.accepted = false;
                 }

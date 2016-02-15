@@ -10,12 +10,15 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.os.StrictMode;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -215,8 +218,21 @@ public class TeamInfoFragment extends Fragment
             return;
         }
 
-        ImageView imageView = (ImageView) m_view.findViewById(R.id.imageView);
-        imageView.setImageBitmap(photos[0]);
+        //Crazy amount of work for single variable
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        WindowManager wm = (WindowManager) m_view.getContext().getSystemService(Context.WINDOW_SERVICE);
+        wm.getDefaultDisplay().getMetrics(displayMetrics);
+        int screenWidth = displayMetrics.widthPixels;
+
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(screenWidth,screenWidth);
+        LinearLayout linearLayout = (LinearLayout) m_view.findViewById(R.id.teamPhotosLinearLayout);
+
+        for (int i = 0; i < photos.length; i++) {
+            ImageView imageView = new ImageView(m_view.getContext());
+            imageView.setImageBitmap(photos[i]);
+            imageView.setLayoutParams(layoutParams);
+            linearLayout.addView(imageView);
+        }
     }
 
 
