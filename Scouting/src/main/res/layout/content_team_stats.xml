@@ -699,15 +699,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="High Shots:"
+            android:text="High Shots in Teleop:"
             android:id="@+id/textView22" />
 
-        <ImageView
-            android:src="@drawable/offensive_courtyard"
-            android:layout_width="@dimen/offensive_courtyard_image_size"
-            android:layout_height="@dimen/offensive_courtyard_image_size"
-            android:id="@+id/mapHigh"
-            android:layout_gravity="center" />
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/mapHighLayout"
+            android:layout_gravity="center">
+
+            <ImageView
+                android:src="@drawable/offensive_courtyard"
+                android:layout_width="@dimen/offensive_courtyard_image_size"
+                android:layout_height="@dimen/offensive_courtyard_image_size"
+                android:id="@+id/mapHigh"
+                android:layout_gravity="center"
+                android:layout_centerInParent="true" />
+        </RelativeLayout>
 
 
         <!-- LOW SHOTS -->
@@ -715,15 +723,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Low Shots:"
+            android:text="Low Shots in Teleop:"
             android:id="@+id/textView23" />
 
-        <ImageView
-            android:src="@drawable/offensive_courtyard"
-            android:layout_width="@dimen/offensive_courtyard_image_size"
-            android:layout_height="@dimen/offensive_courtyard_image_size"
-            android:id="@+id/mapLow"
-            android:layout_gravity="center" />
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/mapLowLayout"
+            android:layout_gravity="center">
+
+            <ImageView
+                android:src="@drawable/offensive_courtyard"
+                android:layout_width="@dimen/offensive_courtyard_image_size"
+                android:layout_height="@dimen/offensive_courtyard_image_size"
+                android:id="@+id/mapLow"
+                android:layout_gravity="center"
+                android:layout_centerInParent="true" />
+        </RelativeLayout>
 
     </LinearLayout>
 

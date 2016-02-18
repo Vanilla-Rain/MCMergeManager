@@ -46,7 +46,7 @@ public class TeamInfoTab extends Fragment {
                             return false;
                         }
 
-                        int teamNumber = 0;
+                        int teamNumber;
                         try {
                             teamNumber = Integer.parseInt(query);
                         } catch (NumberFormatException e) {
@@ -59,6 +59,7 @@ public class TeamInfoTab extends Fragment {
                         Bundle args = new Bundle();
                         args.putInt("teamNumber", teamNumber);
                         StatsEngine statsEngine = new StatsEngine(MainActivity.m_matchData, MainActivity.m_matchSchedule);
+
                         StatsEngine.TeamStatsReport teamStatsReport = statsEngine.getTeamStatsReport(teamNumber);  // just so I can look at it in bebug
                         args.putSerializable(getString(R.string.EXTRA_TEAM_STATS_REPORT), teamStatsReport);
                         m_teamInfoFragment.setArguments(args);
@@ -181,10 +182,8 @@ public class TeamInfoTab extends Fragment {
                                 // Add the fragment to the 'fragment_container' FrameLayout
                                 getActivity().getFragmentManager().beginTransaction()
                                         .replace(R.id.fragment_container, fragment1).commit();
-
                             }
                         }
-
                 );
                 AlertDialog dialog = alert.create();
                 dialog.show();

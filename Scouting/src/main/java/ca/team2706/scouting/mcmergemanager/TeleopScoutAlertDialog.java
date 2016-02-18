@@ -16,11 +16,14 @@ public class TeleopScoutAlertDialog {
     Handler m_handler;
     Runnable m_handlerTask ;
     public final UpTimer upTimer = new UpTimer();
-    public int canceled;
-    public TeleopScoutAlertDialog(String title, Activity activity, String button1,String button2,String button3) {
-        createAlert(title,activity, button3,button2,button1);
+    public int canceled = -1;
+
+    public TeleopScoutAlertDialog(String title, Activity activity, String button1, int b1Code, String button2, int b2Code, String button3, int b3Code) {
+        createAlert(title,activity, button3, b3Code, button2, b2Code, button1, b1Code);
     }
-    private void createAlert(String title,final Activity activity, String button1, String button2, String button3) {
+
+    private void createAlert(String title,final Activity activity, String button1, final int b1Code, String button2, final int b2Code, String button3, final int b3Code) {
+
         LayoutInflater myinflater = activity.getLayoutInflater();
         View alertLayout = myinflater.inflate(R.layout.alert_teleop_timer, null);
 
@@ -48,7 +51,7 @@ public class TeleopScoutAlertDialog {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                canceled = 1;
+                canceled = b2Code;
                 upTimer.cancel();
 
             }
@@ -59,12 +62,10 @@ public class TeleopScoutAlertDialog {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
-                        canceled = 2;
+                        canceled = b3Code;
                         upTimer.cancel();
                     }
                 }
-
         );
 
         alert.setPositiveButton(button1, new DialogInterface.OnClickListener() {
@@ -72,8 +73,7 @@ public class TeleopScoutAlertDialog {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
-                        canceled = 3;
+                        canceled = b1Code;
                         upTimer.cancel();
                     }
                 }
@@ -81,10 +81,5 @@ public class TeleopScoutAlertDialog {
         final AlertDialog dialog = alert.create();
 
         dialog.show();
-    }
-    public class DialogReturnData {
-        public DialogReturnData() {
-
-        }
     }
 }

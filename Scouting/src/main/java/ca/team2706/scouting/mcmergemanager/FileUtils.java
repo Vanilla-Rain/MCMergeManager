@@ -568,7 +568,7 @@ public class FileUtils implements ConnectionCallbacks, OnConnectionFailedListene
                         match.teleopMode.defensesBreached.add(Integer.valueOf(breach));
                 }
 
-                // autoBallShots
+                // teleopBallShots
                 if ( !tokens[7].equals("") ) {
                     String[] teleopShots = tokens[7].split(":");
                     for (String shot : teleopShots) {
@@ -579,7 +579,7 @@ public class FileUtils implements ConnectionCallbacks, OnConnectionFailedListene
                         ballShot.shootTime = Double.valueOf(shotTokens[2]);
                         ballShot.whichGoal = Integer.valueOf(shotTokens[3]);
 
-                        match.autoMode.ballsShot.add(ballShot);
+                        match.teleopMode.ballsShot.add(ballShot);
                     }
                 }
 

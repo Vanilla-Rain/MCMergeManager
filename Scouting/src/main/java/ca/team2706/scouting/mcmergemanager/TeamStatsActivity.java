@@ -38,6 +38,9 @@ public class TeamStatsActivity extends AppCompatActivity {
 
     private void displayStats() {
 
+        if (m_teamStastReport == null)
+            return;
+
         /** Title **/
         ((TextView) findViewById(R.id.fullStatsReportTitle)).setText("Stats Report for Team "+m_teamStastReport.teamNo);
 
@@ -242,12 +245,12 @@ public class TeamStatsActivity extends AppCompatActivity {
         for (BallShot shot : m_teamStastReport.successfulTeleopHighShots) {
 
             // draw a new pin on the map
-            LinearLayout imgHolder = (LinearLayout) findViewById(R.id.teamStatsLinearLayout);
+            RelativeLayout imgHolder = (RelativeLayout) findViewById(R.id.mapHighLayout);
 
             ImageView pointerImageView = new ImageView(this);
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(50, 50);
-            params.leftMargin = shot.x + (int) highGoalMap.getX() - 25;
-            params.topMargin = shot.y + (int) highGoalMap.getY() - 25;
+            params.leftMargin = (int) highGoalMap.getX() + shot.x - 25;
+            params.topMargin =  (int) highGoalMap.getY() + shot.y - 25;
 
             pointerImageView.setImageResource(R.drawable.pinicon);
             pointerImageView.setLayoutParams(params);
@@ -258,15 +261,15 @@ public class TeamStatsActivity extends AppCompatActivity {
         /** Low Shots Map **/
 
         final ImageView lowGoalMap = (ImageView) findViewById(R.id.mapLow);
-        for (BallShot shot : m_teamStastReport.successfulTeleopHighShots) {
+        for (BallShot shot : m_teamStastReport.successfulTeleopLowShots) {
 
             // draw a new pin on the map
-            LinearLayout imgHolder = (LinearLayout) findViewById(R.id.teamStatsLinearLayout);
+            RelativeLayout imgHolder = (RelativeLayout) findViewById(R.id.mapLowLayout);
 
             ImageView pointerImageView = new ImageView(this);
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(50, 50);
-            params.leftMargin = shot.x + (int) lowGoalMap.getX() - 25;
-            params.topMargin = shot.y + (int) lowGoalMap.getY() - 25;
+            params.leftMargin = (int) lowGoalMap.getX() + shot.x - 25;
+            params.topMargin = (int) lowGoalMap.getY() + shot.y - 25;
 
             pointerImageView.setImageResource(R.drawable.pinicon);
             pointerImageView.setLayoutParams(params);

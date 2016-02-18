@@ -50,43 +50,11 @@ public class AutoScouting extends AppCompatActivity {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                switch (position) {
-                    case 0:
-                        spinner.setSelection(0);
-                        break;
-                    case 1:
-                        defensesBreached.add(1);
-                        spinner.setSelection(0);
-                        break;
-                    case 2:
-                        defensesBreached.add(2);
-                        spinner.setSelection(0);
-                        break;
-                    case 3:
-                        defensesBreached.add(3);
-                        spinner.setSelection(0);
-                        break;
-                    case 4:
-                        defensesBreached.add(4);
-                        spinner.setSelection(0);
-                        break;
-                    case 5:
-                        defensesBreached.add(5);
-                        spinner.setSelection(0);
-                        break;
-                    case 6:
-                        defensesBreached.add(6);
-                        spinner.setSelection(0);
-                        break;
-                    case 7:
-                        defensesBreached.add(7);
-                        spinner.setSelection(0);
-                        break;
-                    case 8:
-                        defensesBreached.add(8);
-                        spinner.setSelection(0);
-                        break;
-                }
+
+                if (position != 0)
+                    defensesBreached.add(position);
+
+                spinner.setSelection(0);
             }
 
             @Override
@@ -116,10 +84,8 @@ public class AutoScouting extends AppCompatActivity {
                     CheckVar checkVar = new CheckVar();
                     checkVar.x = (int)event.getX();
                     checkVar.y = (int)event.getY();
-                    checkVar.t = new TeleopScoutAlertDialog("Shooting...", AutoScouting.this, "High Goal", "Low Goal", "Missed");
+                    checkVar.t = new TeleopScoutAlertDialog("Shooting...", AutoScouting.this, "High Goal", BallShot.HIGH_GOAL, "Low Goal", BallShot.LOW_GOAL, "Missed", BallShot.MISS);
                     timer.schedule(checkVar, 0, 1000);
-
-//                    Log.d("MCMergeManager", "X: "+event.getX()+", Y: "+event.getY());
                 }
                 return true;
             }
@@ -139,9 +105,10 @@ public class AutoScouting extends AppCompatActivity {
         intent.putExtra("AutoScoutingData",  new AutoScoutingObject(ballsShot, cb.isChecked(), defensesBreached, cb2.isChecked()));
 
         startActivity(intent);
-
     }
+
     public void ballPickup(View view) {
+        // TODO: this is connected to buttonArrivedAtDefense ?? which currently won't do anything.
 
     }
 
@@ -151,11 +118,10 @@ public class AutoScouting extends AppCompatActivity {
         public int y;
         public TeleopScoutAlertDialog t;
         public void run() {
-
-            if (t.canceled > 0) {
-                ballsShot.add(new BallShot(x,y,t.upTimer.currentTime(),t.canceled));
+            if (t.canceled >= 0) {
+                ballsShot.add(new BallShot(x, y, t.upTimer.currentTime(), t.canceled));
+                this.cancel();
             }
-
         }
     }
 

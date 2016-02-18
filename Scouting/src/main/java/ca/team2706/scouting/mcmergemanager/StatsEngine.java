@@ -349,12 +349,12 @@ public class StatsEngine implements Serializable{
      */
     private void fillInAutoStats(TeamStatsReport teamStatsReport, int teamNo) {
 
-        if (teamStatsReport.teamMatchData == null) {
+//        if (teamStatsReport.teamMatchData == null) {
             if (matchData == null)
                 return;
 
             teamStatsReport.teamMatchData = matchData.filterByTeam(teamNo);
-        }
+//        }
 
         for(MatchData.Match match : teamStatsReport.teamMatchData.matches) {
             teamStatsReport.numTimesReachedInAuto += match.autoMode.reachedDefense ? 1 : 0;
@@ -401,12 +401,12 @@ public class StatsEngine implements Serializable{
     private void fillInOverallStats(TeamStatsReport teamStatsReport, int teamNo) {
         teamStatsReport.teamNo = teamNo;
 
-        if (teamStatsReport.teamMatcheSchedule == null) {
+//        if (teamStatsReport.teamMatcheSchedule == null) {
             if (matchSchedule == null)
                 return;
 
             teamStatsReport.teamMatcheSchedule = matchSchedule.filterByTeam(teamNo);
-        }
+//        }
 
         teamStatsReport.numMatchesPlayed = teamStatsReport.teamMatcheSchedule.getMatches().size();
 
@@ -461,11 +461,12 @@ public class StatsEngine implements Serializable{
     private void fillInTeleopStats(TeamStatsReport teamStatsReport, int teamNo) {
         // assumption: the teamStatsReport starts zeroed out.
 
-        if (teamStatsReport.teamMatchData == null) {
+//        if (teamStatsReport.teamMatchData == null) {
             if (matchData == null)
                 return;
+
             teamStatsReport.teamMatchData = matchData.filterByTeam(teamNo);
-        }
+//        }
 
         for(MatchData.Match match : teamStatsReport.teamMatchData.matches) {
             for (BallShot shot : match.teleopMode.ballsShot) {

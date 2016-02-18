@@ -47,11 +47,13 @@ public class TeleopScouting extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         final Spinner spinner = (Spinner) findViewById(R.id.defense_spinner);
         final TextView tvGameTime = (TextView) findViewById(R.id.textViewGameTime);
+
         defensesBreached = new ArrayList<>();
         ballsShot = new ArrayList<>();
         ballPickups = new ArrayList<>();
         scalingTimes = new ArrayList<>();
         m_handler = new Handler();
+
         m_handlerTask = new Runnable() {
             @Override
             public void run() {
@@ -75,7 +77,6 @@ public class TeleopScouting extends AppCompatActivity {
         m_handlerTask.run();
 
 
-        int selectedCurrent = spinner.getSelectedItemPosition();
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.defense_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -85,43 +86,11 @@ public class TeleopScouting extends AppCompatActivity {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                switch (position) {
-                    case 0:
-                        spinner.setSelection(0);
-                        break;
-                    case 1:
-                        defensesBreached.add(1);
-                        spinner.setSelection(0);
-                        break;
-                    case 2:
-                        defensesBreached.add(2);
-                        spinner.setSelection(0);
-                        break;
-                    case 3:
-                        defensesBreached.add(3);
-                        spinner.setSelection(0);
-                        break;
-                    case 4:
-                        defensesBreached.add(4);
-                        spinner.setSelection(0);
-                        break;
-                    case 5:
-                        defensesBreached.add(5);
-                        spinner.setSelection(0);
-                        break;
-                    case 6:
-                        defensesBreached.add(6);
-                        spinner.setSelection(0);
-                        break;
-                    case 7:
-                        defensesBreached.add(7);
-                        spinner.setSelection(0);
-                        break;
-                    case 8:
-                        defensesBreached.add(8);
-                        spinner.setSelection(0);
-                        break;
-                }
+
+                if (position != 0 )
+                    defensesBreached.add(position);
+
+                spinner.setSelection(0);
             }
 
             @Override
@@ -155,7 +124,7 @@ public class TeleopScouting extends AppCompatActivity {
                     CheckVar checkVar = new CheckVar();
                     checkVar.x = (int) event.getX();
                     checkVar.y = (int) event.getY();
-                    checkVar.t = new TeleopScoutAlertDialog("Shooting...", TeleopScouting.this, "High Goal", "Low Goal", "Missed");
+                    checkVar.t = new TeleopScoutAlertDialog("Shooting...", TeleopScouting.this, "High Goal", BallShot.HIGH_GOAL, "Low Goal", BallShot.LOW_GOAL, "Missed", BallShot.MISS);
                     timer.schedule(checkVar, 0, 1000);
                 }
                 return true;
@@ -178,7 +147,7 @@ public class TeleopScouting extends AppCompatActivity {
     public void scalingTower(View view) {
         Timer timer = new Timer();
         CheckVarOther checkVar = new CheckVarOther();
-        checkVar.t = new TeleopScoutAlertDialog("Scaling Tower...", TeleopScouting.this, "Scale Successful", "", "Scale Failed");
+        checkVar.t = new TeleopScoutAlertDialog("Scaling Tower...", TeleopScouting.this, "Scale Successful", ScalingTime.COMPLETED, "", 0, "Scale Failed", ScalingTime.FAILED);
         timer.schedule(checkVar, 0, 1000);
 
     }
@@ -186,7 +155,7 @@ public class TeleopScouting extends AppCompatActivity {
     public void ballPickup(View view) {
         Timer timer = new Timer();
         CheckVarOther2 checkVar = new CheckVarOther2();
-        checkVar.t = new TeleopScoutAlertDialog("Picking up ball", TeleopScouting.this, "Ground", "Wall", "Failed");
+        checkVar.t = new TeleopScoutAlertDialog("Picking up ball", TeleopScouting.this, "Ground", BallPickup.GROUND, "Wall", BallPickup.WALL, "Failed", BallPickup.FAIL);
         timer.schedule(checkVar, 0, 1000);
 
     }
@@ -230,8 +199,9 @@ public class TeleopScouting extends AppCompatActivity {
 
         public void run() {
 
-            if (t.canceled > 0) {
+            if (t.canceled >= 0) {
                 ballsShot.add(new BallShot(x, y, t.upTimer.currentTime(), t.canceled));
+                this.cancel();
             }
 
         }
@@ -242,8 +212,9 @@ public class TeleopScouting extends AppCompatActivity {
 
         public void run() {
 
-            if (t.canceled > 0) {
+            if (t.canceled >= 0) {
                 scalingTimes.add(new ScalingTime(t.upTimer.currentTime(), t.canceled));
+                this.cancel();
             }
 
         }
@@ -254,8 +225,9 @@ public class TeleopScouting extends AppCompatActivity {
 
         public void run() {
 
-            if (t.canceled > 0) {
+            if (t.canceled >= 0) {
                 ballPickups.add(new BallPickup(t.canceled,t.upTimer.currentTime()));
+                this.cancel();
             }
 
         }

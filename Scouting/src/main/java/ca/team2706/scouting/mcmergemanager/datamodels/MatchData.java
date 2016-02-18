@@ -38,14 +38,14 @@ public class MatchData implements Serializable {
             if (match.preGame.teamNumber == teamNo)
                 matchData.addMatch(match);
         }
-        return new MatchData();
+        return matchData;
     }
 
 
 
 
     /** An inner-class encapsulating the data from a single robot from a single match. **/
-    public static class Match {
+    public static class Match implements Serializable {
 
         public PreGameObject preGame;
         public AutoScoutingObject autoMode;
