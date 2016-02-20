@@ -177,6 +177,13 @@
         android:textStyle="bold"
         android:textSize="22sp" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="(By total number of breaches by opposing alliance)"
+        android:id="@+id/textView2" />
+
     <Space
         android:layout_width="match_parent"
         android:layout_height="20dp" />
@@ -233,12 +240,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Portcullis*"
+                android:text="Portcullis"
                 android:id="@+id/bluePortcullisTV"
                 android:textSize="18sp"
-                android:layout_weight="0.5"
-                android:textStyle="bold"
-                android:textColor="@color/blue_alliance" />
+                android:layout_weight="0.5" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -268,13 +273,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Rampart*"
+                android:text="Rampart"
                 android:id="@+id/blueRampartTV"
                 android:textSize="18sp"
                 android:layout_column="1"
-                android:layout_weight="0.5"
-                android:textColor="@color/blue_alliance"
-                android:textStyle="bold" />
+                android:layout_weight="0.5" />
         </TableRow>
 
         <Space
@@ -313,12 +316,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Drawbridge*"
+                android:text="Drawbridge"
                 android:id="@+id/blueDrawbridgeTV"
                 android:textSize="18sp"
-                android:layout_weight="0.5"
-                android:textStyle="bold"
-                android:textColor="@color/blue_alliance" />
+                android:layout_weight="0.5" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -348,13 +349,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Rough Terrain*"
+                android:text="Rough Terrain"
                 android:id="@+id/blueRoughTV"
                 android:textSize="18sp"
                 android:layout_column="1"
-                android:layout_weight="0.5"
-                android:textColor="@color/blue_alliance"
-                android:textStyle="bold" />
+                android:layout_weight="0.5" />
         </TableRow>
     </TableLayout>
 
@@ -412,12 +411,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Portcullis*"
+                android:text="Portcullis"
                 android:id="@+id/redPortcullisTV"
                 android:textSize="18sp"
-                android:layout_weight="0.5"
-                android:textStyle="bold"
-                android:textColor="@color/red_alliance" />
+                android:layout_weight="0.5" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -447,13 +444,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Rampart*"
+                android:text="Rampart"
                 android:id="@+id/redRampartTV"
                 android:textSize="18sp"
                 android:layout_column="1"
-                android:layout_weight="0.5"
-                android:textColor="@color/red_alliance"
-                android:textStyle="bold" />
+                android:layout_weight="0.5" />
         </TableRow>
 
         <Space
@@ -492,19 +487,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Drawbridge*"
+                android:text="Drawbridge"
                 android:id="@+id/redDrawbridgeTV"
                 android:textSize="18sp"
-                android:layout_weight="0.5"
-                android:textStyle="bold"
-                android:textColor="@color/red_alliance" />
+                android:layout_weight="0.5" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="Rock Wall"
-                android:id="@+id/redRockWall"
+                android:id="@+id/redRockwallTV"
                 android:textSize="18sp"
                 android:layout_column="1"
                 android:layout_weight="0.5" />
@@ -527,13 +520,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Rough Terrain*"
-                android:id="@+id/redRoughtTV"
+                android:text="Rough Terrain"
+                android:id="@+id/redRoughTV"
                 android:textSize="18sp"
                 android:layout_column="1"
-                android:layout_weight="0.5"
-                android:textColor="@color/red_alliance"
-                android:textStyle="bold" />
+                android:layout_weight="0.5" />
         </TableRow>
 
     </TableLayout>

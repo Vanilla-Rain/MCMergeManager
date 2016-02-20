@@ -59,7 +59,9 @@ public class PrimaryTab extends Fragment {
                     match = MainActivity.m_matchSchedule.getMatchNo(matchNo-1);
                     args.putString(PreMatchReportFragment.ARG_MATCH, match.toString());  // if match == null, this will throw an exception and be caught
                     if (MainActivity.m_matchSchedule == null) return false;
-                    args.putSerializable(PreMatchReportFragment.ARG_SCHEDULE, MainActivity.m_matchSchedule);
+
+                    StatsEngine statsEngine = new StatsEngine(MainActivity.m_matchData, MainActivity.m_matchSchedule);
+                    args.putSerializable(PreMatchReportFragment.ARG_STATS, statsEngine);
 
                     fragment.setArguments(args);
 

@@ -167,6 +167,12 @@ public class MatchSchedule implements Serializable {
                     match.setRedScore(-1);
                 }
 
+                // TODO: Just for testing
+                if (match.getMatchNo() == 3) {
+                    match.setBlueScore(-1);
+                    match.setRedScore(-1);
+                }
+
 
                 JSONArray blueTeams = jsonBlueAlliance.getJSONArray("teams");
                 match.setBlue1(Integer.parseInt(blueTeams.getString(0).substring(3))); // TBA gives it to us as "frc2706", so skip the first 3 characters

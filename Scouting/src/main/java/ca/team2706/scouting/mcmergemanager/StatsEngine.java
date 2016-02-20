@@ -141,6 +141,9 @@ public class StatsEngine implements Serializable{
     }
 
     public Map<Integer, Double> getOPRs() {
+        if (OPRs == null)
+            computeOPRs();
+
         return OPRs;
     }
 
