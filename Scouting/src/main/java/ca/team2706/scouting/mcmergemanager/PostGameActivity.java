@@ -59,7 +59,7 @@ public class PostGameActivity extends AppCompatActivity {
         AutoScoutingObject a = (AutoScoutingObject) thisIntent.getSerializableExtra("AutoScoutingData");
         TeleopScoutingObject t  = (TeleopScoutingObject) thisIntent.getSerializableExtra("TeleopScoutingData");
         EditText e = (EditText)findViewById(R.id.editTextPost);
-        CheckBox c = (CheckBox)findViewById(R.id.challenged);
+        CheckBox c = (CheckBox)findViewById(R.id.challengedCB);
         PostGameObject post = new PostGameObject(e.getText().toString(),c.isChecked(),progress);
         Intent intent = new Intent(this,MainActivity.class);
 

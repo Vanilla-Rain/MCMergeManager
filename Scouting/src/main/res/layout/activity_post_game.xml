@@ -56,16 +56,6 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
-    <CheckBox
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Challenged?"
-        android:id="@+id/challenged"
-        android:layout_above="@+id/editText"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="61dp"
-        android:checked="false" />
-
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -73,5 +63,14 @@
         android:id="@+id/returnHome"
         android:onClick="returnHome"
         android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Challenged"
+        android:id="@+id/challengedCB"
+        android:checked="false"
+        android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
 </RelativeLayout>
