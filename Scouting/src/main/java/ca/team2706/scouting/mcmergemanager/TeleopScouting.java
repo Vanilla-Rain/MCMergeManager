@@ -121,7 +121,7 @@ public class TeleopScouting extends AppCompatActivity {
 
                     imgHolder.addView(pointerImageView);
                     Timer timer = new Timer();
-                    CheckVar checkVar = new CheckVar();
+                    CheckVarShot checkVar = new CheckVarShot();
                     checkVar.x = (int) event.getX();
                     checkVar.y = (int) event.getY();
                     checkVar.t = new TeleopScoutAlertDialog("Shooting...", TeleopScouting.this, "High Goal", BallShot.HIGH_GOAL, "Low Goal", BallShot.LOW_GOAL, "Missed", BallShot.MISS);
@@ -146,15 +146,15 @@ public class TeleopScouting extends AppCompatActivity {
 
     public void scalingTower(View view) {
         Timer timer = new Timer();
-        CheckVarOther checkVar = new CheckVarOther();
-        checkVar.t = new TeleopScoutAlertDialog("Scaling Tower...", TeleopScouting.this, "Scale Successful", ScalingTime.COMPLETED, "", 0, "Scale Failed", ScalingTime.FAILED);
+        CheckVarScale checkVar = new CheckVarScale();
+        checkVar.t = new TeleopScoutAlertDialog("Scaling Tower...", TeleopScouting.this, "Scale Successful", ScalingTime.COMPLETED, "", -1, "Scale Failed", ScalingTime.FAILED);
         timer.schedule(checkVar, 0, 1000);
 
     }
 
     public void ballPickup(View view) {
         Timer timer = new Timer();
-        CheckVarOther2 checkVar = new CheckVarOther2();
+        CheckVarPickup checkVar = new CheckVarPickup();
         checkVar.t = new TeleopScoutAlertDialog("Picking up ball", TeleopScouting.this, "Ground", BallPickup.GROUND, "Wall", BallPickup.WALL, "Failed", BallPickup.FAIL);
         timer.schedule(checkVar, 0, 1000);
 
@@ -192,7 +192,7 @@ public class TeleopScouting extends AppCompatActivity {
     }
 
 
-    class CheckVar extends TimerTask {
+    class CheckVarShot extends TimerTask {
         public int x;
         public int y;
         public TeleopScoutAlertDialog t;
@@ -207,7 +207,7 @@ public class TeleopScouting extends AppCompatActivity {
         }
     }
 
-    class CheckVarOther extends TimerTask {
+    class CheckVarScale extends TimerTask {
         public TeleopScoutAlertDialog t;
 
         public void run() {
@@ -220,7 +220,7 @@ public class TeleopScouting extends AppCompatActivity {
         }
     }
 
-    class CheckVarOther2 extends TimerTask {
+    class CheckVarPickup extends TimerTask {
         public TeleopScoutAlertDialog t;
 
         public void run() {

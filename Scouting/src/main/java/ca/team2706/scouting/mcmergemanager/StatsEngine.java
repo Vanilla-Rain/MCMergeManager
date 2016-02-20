@@ -522,12 +522,17 @@ public class StatsEngine implements Serializable{
 
             // scales
             for(ScalingTime scale : match.teleopMode.scalingTower) {
-                if (scale.completed != 0)
-                    teamStatsReport.numSuccessfulScales++;
-                else
-                    teamStatsReport.numFailedScales++;
+                switch (scale.completed) {
+                    case ScalingTime.COMPLETED:
+                        teamStatsReport.numSuccessfulScales++;
+                        teamStatsReport.avgScaleTime += scale.time;
+                        break;
 
-                teamStatsReport.avgScaleTime += scale.time;
+                    case ScalingTime.FAILED:
+                        teamStatsReport.numFailedScales++;
+                        teamStatsReport.avgScaleTime += scale.time;
+                        break;
+                }
             }
 
         } // end loop over matches

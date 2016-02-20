@@ -609,6 +609,8 @@ public class FileUtils implements ConnectionCallbacks, OnConnectionFailedListene
 
                         scalingTime.time = Double.valueOf(scaleTokens[0]);
                         scalingTime.completed = Integer.valueOf(scaleTokens[1]);
+
+                        match.teleopMode.scalingTower.add(scalingTime);
                     }
                 }
 
