@@ -107,10 +107,14 @@ public class ScheduleActivity extends ListActivity {
                 redAllianceTV.setText( String.format("%4s, %4s, %4s",match.getRed1(), match.getRed2(), match.getRed3()) );
 
                 TextView blueScoreTV=(TextView) convertView.findViewById(R.id.schedule_blueScoreTV);
-                blueScoreTV.setText( String.format("%4d", match.getBlueScore()) );
-
                 TextView redScoreTV=(TextView) convertView.findViewById(R.id.schedule_redScoreTV);
-                redScoreTV.setText( String.format("%4d", match.getRedScore()) );
+                if (match.getBlueScore() >= 0 && match.getRedScore() >= 0) {
+                    blueScoreTV.setText(String.format("%4d", match.getBlueScore()));
+                    redScoreTV.setText( String.format("%4d", match.getRedScore()) );
+                } else {
+                    blueScoreTV.setText("    ");
+                    redScoreTV.setText ("    ");
+                }
             }
 
             return convertView;

@@ -159,8 +159,14 @@ public class MatchSchedule implements Serializable {
                 JSONObject jsonBlueAlliance = jsonMatch.getJSONObject("alliances").getJSONObject("blue");
                 JSONObject jsonRedAlliance = jsonMatch.getJSONObject("alliances").getJSONObject("red");
 
-                match.setBlueScore(jsonBlueAlliance.getInt("score"));
-                match.setRedScore(jsonRedAlliance.getInt("score"));
+                try {
+                    match.setBlueScore(jsonBlueAlliance.getInt("score"));
+                    match.setRedScore(jsonRedAlliance.getInt("score"));
+                } catch (Exception e) {
+                    match.setBlueScore(-1);
+                    match.setRedScore(-1);
+                }
+
 
                 JSONArray blueTeams = jsonBlueAlliance.getJSONArray("teams");
                 match.setBlue1(Integer.parseInt(blueTeams.getString(0).substring(3))); // TBA gives it to us as "frc2706", so skip the first 3 characters

@@ -49,24 +49,27 @@ public class PrimaryTab extends Fragment {
 
                 // Create a new Fragment to be placed in the activity layout
                 PreMatchReportFragment fragment = new PreMatchReportFragment();
-                Bundle args = new Bundle();
 
-                // bundle up the match
-                MatchSchedule.Match match;
-                if (MainActivity.m_matchSchedule != null) {
+                try {
+                    // this is a little convoluted, since we're sending the whole schedule, we could just send the match number rather than a copy of that match
+
+                    // bundle up the data it needs
+                    Bundle args = new Bundle();
+                    MatchSchedule.Match match;
                     match = MainActivity.m_matchSchedule.getMatchNo(matchNo-1);
-                } else {
-                    match = new MatchSchedule.Match();
-                    match.setMatchNo(matchNo-1);
+                    args.putString(PreMatchReportFragment.ARG_MATCH, match.toString());  // if match == null, this will throw an exception and be caught
+                    if (MainActivity.m_matchSchedule == null) return false;
+                    args.putSerializable(PreMatchReportFragment.ARG_SCHEDULE, MainActivity.m_matchSchedule);
+
+                    fragment.setArguments(args);
+
+                    // Add the fragment to the 'fragment_container' FrameLayout
+                    getActivity().getFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_container1, fragment).commit();
+                } catch (Exception e) {
+                    // if we don't have the data, don't display it
                 }
-                args.putString(PreMatchReportFragment.ARG_MATCH, match.toString());
 
-
-                fragment.setArguments(args);
-
-                // Add the fragment to the 'fragment_container' FrameLayout
-                getActivity().getFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container1, fragment).commit();
                 return false;
             }
         });

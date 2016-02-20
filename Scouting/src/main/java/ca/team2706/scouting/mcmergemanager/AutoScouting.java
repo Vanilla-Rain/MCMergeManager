@@ -107,12 +107,6 @@ public class AutoScouting extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void ballPickup(View view) {
-        // TODO: this is connected to buttonArrivedAtDefense ?? which currently won't do anything.
-
-    }
-
-
     class CheckVar extends TimerTask {
         public int x;
         public int y;
