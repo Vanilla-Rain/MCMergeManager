@@ -44,4 +44,28 @@ public class TeleopScoutingObject implements Serializable {
         this.ballsPickedUp = ballsPickedUp;
         this.scalingTower = scalingTower;
     }
+
+    public static String getDefenseName(int i) {
+        switch (i) {
+            case DEFENSE_PORTCULLIS:
+                return "Portcullis";
+            case DEFENSE_CHEVAL:
+                return "Chavale de Frise";
+            case DEFENSE_MOAT:
+                return "Moat";
+            case DEFENSE_RAMPART:
+                return "Rampart";
+            case DEFENSE_DRAWBRIDGE:
+                return "Drawbridge";
+            case DEFENSE_SALLYPORT:
+                return  "Sallyport";
+            case DEFENSE_ROCKWALL:
+                return "Rock Wall";
+            case DEFENSE_ROUGH_TERRAIN:
+                return "Rough Terrain";
+            case DEFENSE_LOW_BAR:
+                return "Low Bar";
+        }
+        return "";
+    }
 }

@@ -37,6 +37,7 @@ public class AutoScouting extends AppCompatActivity {
         setContentView(R.layout.activity_auto_scouting);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         final Spinner spinner = (Spinner) findViewById(R.id.defense_spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.defense_array, android.R.layout.simple_spinner_item);

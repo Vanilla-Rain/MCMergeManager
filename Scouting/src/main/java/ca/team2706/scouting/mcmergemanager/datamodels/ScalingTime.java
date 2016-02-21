@@ -8,7 +8,7 @@ import java.io.Serializable;
 public class ScalingTime implements Serializable {
     public double time;
     public int completed;
-    
+
     //1 = failed, 0 = completed
     public static final int COMPLETED   = 0;
     public static final int FAILED      = 1;

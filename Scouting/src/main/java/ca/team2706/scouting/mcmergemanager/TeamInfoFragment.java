@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import ca.team2706.scouting.mcmergemanager.datamodels.MatchSchedule;
+import ca.team2706.scouting.mcmergemanager.datamodels.TeleopScoutingObject;
 
 
 public class TeamInfoFragment extends Fragment
@@ -190,7 +191,33 @@ public class TeamInfoFragment extends Fragment
     }
 
     private void fillStatsData() {
+        String statsText = "";
 
+        statsText += "W/L/T:\t\t " + m_teamStatsReport.wins + "/" + m_teamStatsReport.losses + "/" + m_teamStatsReport.ties + "\n";
+        statsText += "OPR:\t\t " + String.format("%.2f",m_teamStatsReport.OPR) + "\n";
+        statsText += "High Goals:\t\t " + m_teamStatsReport.numSuccHighShotsInTeleop + "\n";
+        statsText += "Low Goals:\t\t " + m_teamStatsReport.numSuccLowShotsInTeleop + "\n";
+        statsText += "Missed shots:\t\t " + m_teamStatsReport.missedTeleopShots.size() + "\n";
+        statsText += "Scales:\t\t " + m_teamStatsReport.numSuccessfulScales + "\n";
+
+        // comupte their favourite defense and ave breaches per match
+        int max=0, fav=0, num=0;
+        for(int i=1; i< TeleopScoutingObject.NUM_DEFENSES; i++) {
+            if (m_teamStatsReport.defensesBreached[i] > max) {
+                max = m_teamStatsReport.defensesBreached[i];
+                fav = i;
+            }
+            num += m_teamStatsReport.defensesBreached[i];
+        }
+        statsText += "Fav Defense:\t\t " + TeleopScoutingObject.getDefenseName(fav) + "\n";
+
+        if (m_teamStatsReport.numMatchesPlayed != 0)
+            statsText += "Breaches per match:\t\t " + String.format("%.1f", (double) num / m_teamStatsReport.numMatchesPlayed);
+        else
+            statsText += "Breaches per match:\t\t 0";
+
+        TextView statsTV = (TextView) m_view.findViewById(R.id.statsTV);
+        statsTV.setText(statsText);
     }
 
     @Override
