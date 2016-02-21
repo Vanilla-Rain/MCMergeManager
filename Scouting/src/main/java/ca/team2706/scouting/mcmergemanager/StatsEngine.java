@@ -69,6 +69,8 @@ public class StatsEngine implements Serializable{
         public int    numFailedScales;
         public double avgScaleTime;
 
+        public String notes = "";
+
 
         public MatchSchedule teamMatcheSchedule;
         public MatchData teamMatchData;
@@ -534,6 +536,9 @@ public class StatsEngine implements Serializable{
                         break;
                 }
             }
+
+            if (! match.postGame.notes.equals("") )
+                teamStatsReport.notes += "\t\t- " + match.postGame.notes + "\n";
 
         } // end loop over matches
 

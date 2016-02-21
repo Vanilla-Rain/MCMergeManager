@@ -95,6 +95,7 @@ public class TeamInfoFragment extends Fragment
             m_teamStatsReport = (StatsEngine.TeamStatsReport) args.getSerializable(getString(R.string.EXTRA_TEAM_STATS_REPORT));
             if (m_teamStatsReport != null) {
                 fillStatsData();
+                fillNotes();
                 m_view.findViewById(R.id.fullStatsBtn).setEnabled(true);
             }
 
@@ -174,7 +175,7 @@ public class TeamInfoFragment extends Fragment
         }
 
         Button fullStatsBtn = (Button) m_view.findViewById(R.id.fullStatsBtn);
-        fullStatsBtn.setOnClickListener(new View.OnClickListener(){
+        fullStatsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             //On click function
             public void onClick(View view) {
@@ -218,6 +219,11 @@ public class TeamInfoFragment extends Fragment
 
         TextView statsTV = (TextView) m_view.findViewById(R.id.statsTV);
         statsTV.setText(statsText);
+    }
+
+    private void fillNotes() {
+        TextView notesTV = (TextView) m_view.findViewById(R.id.textViewNotes);
+        notesTV.setText(m_teamStatsReport.notes);
     }
 
     @Override

@@ -64,7 +64,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="2015 GTR Central seeded 10/38\n\t2015 Waterloo seeded 8/32 [Regional Finalist]\n\t2014 North Bay seeded 2/37 [Regional Winner]"
             android:id="@+id/textViewPerformance" />
 
         <Space
@@ -72,10 +71,17 @@
             android:layout_height="20dp" />
 
         <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Notes:"
+            android:id="@+id/textView5" />
+
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Notes:\n\t\t- This team is awesome because...\n\t\t-They did this thing I hate.\n\t\t-Their automode is broken"
+            android:text="\t\t- This team is awesome because...\n\t\t-They did this thing I hate.\n\t\t-Their automode is broken"
             android:id="@+id/textViewNotes" />
 
     </LinearLayout>
