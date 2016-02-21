@@ -906,10 +906,11 @@ public class FileUtils implements ConnectionCallbacks, OnConnectionFailedListene
 
                         int compAmount = test.size();
                         compAmount -= 1;
-                        combine = "2015 " + compsName2015.get(i) + " seeded " + Integer.toString(p) + "/" + compAmount;
+//                        combine = "2015 " + compsName2015.get(i) + " seeded " + Integer.toString(p) + "/" + compAmount;
+                        combine = Integer.toString(p) + "/" + compAmount + " - 2015 " + compsName2015.get(i);
 
                         store2015.add(combine);
-                        joined2015 = TextUtils.join("\n ", store2015);
+                        joined2015 = TextUtils.join("\n", store2015);
                     }
                 }
             }
@@ -925,10 +926,11 @@ public class FileUtils implements ConnectionCallbacks, OnConnectionFailedListene
 
                         int compAmount = test.size();
                         compAmount -= 1;
-                        combine = "2014 " + compsName2014.get(i) + " seeded " + Integer.toString(p) + "/" + compAmount;
+//                        combine = "2014 " + compsName2014.get(i) + " seeded " + Integer.toString(p) + "/" + compAmount;
+                        combine = "\t\t" + Integer.toString(p) + "/" + compAmount + " - 2014 " + compsName2014.get(i);
 
                         store2014.add(combine);
-                        joined2014 = TextUtils.join("\n ", store2014);
+                        joined2014 = TextUtils.join("\n", store2014);
 
                     }
                 }
@@ -947,10 +949,11 @@ public class FileUtils implements ConnectionCallbacks, OnConnectionFailedListene
 
                         int compAmount = test.size();
                         compAmount -= 1;
-                        combine = "2013 " + compsName2013.get(i) + " seeded " + Integer.toString(p) + "/" + compAmount;
+//                        combine = "2013 " + compsName2013.get(i) + " seeded " + Integer.toString(p) + "/" + compAmount;
+                        combine = Integer.toString(p) + "/" + compAmount + " - 2013 " + compsName2013.get(i);
 
                         store2013.add(combine);
-                        joined2013 = TextUtils.join("\n ", store2013);
+                        joined2013 = TextUtils.join("\n", store2013);
                     }
 
                 }
