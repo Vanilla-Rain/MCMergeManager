@@ -18,6 +18,7 @@
     <string name="title_activity_team_stats_page">TeamStatsPage</string>
     <string name="title_activity_team_cycles_report">TeamCyclesReport</string>
     <string name="matchScoutingDataFileName">matchScoutingData.csv</string>
+    <string name="matchScoutingDataFileNameUNSYNCHED">matchScoutingData_UNSYNCHED.csv</string>
     <string-array name="year_array">
         <item>2016</item>
         <item>2015</item>

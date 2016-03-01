@@ -482,6 +482,21 @@ public class FileUtils implements ConnectionCallbacks, OnConnectionFailedListene
         } catch (IOException e) {
 
         }
+
+
+        outFileName = mLocalEventFilePath +"/"+ mActivity.getResources().getString(R.string.matchScoutingDataFileNameUNSYNCHED);
+
+        Log.d(mActivity.getResources().getString(R.string.app_name), "Saving data to file: "+outFileName);
+
+        outfile = new File(outFileName);
+        try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter(outfile, true));
+            bw.append( sb.toString() );
+            bw.flush();
+            bw.close();
+        } catch (IOException e) {
+
+        }
     }
 
 
@@ -689,7 +704,6 @@ public class FileUtils implements ConnectionCallbacks, OnConnectionFailedListene
      * Because of the 10 request / second limit to the free Google Drive API subscription,
      * syncing all the team photos can take a while.
      * syncTeamPhotos() will spawn a new background thread to synchronize the photos.
-     * It will pop up a Toast when it's done syncronizing.
      */
     public void syncAllTeamPhotos() {
         checkDriveConnectionAndFiles();
