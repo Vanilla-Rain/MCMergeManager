@@ -235,18 +235,36 @@ public class StatsEngine implements Serializable{
             }
         }
 
-        Matrix M = new Matrix(Mdbl);
-        Matrix Y = new Matrix(allScores, allScores.length);
+        if(allScores.length == 0) {
+            // we don't have scores for any match
+            OPRs = new HashMap<>();
+            for (int i = 0; i < teams.size(); i++) {
+                OPRs.put(teams.get(i), 0d);
+            }
 
-        Matrix MatOPRs = M.transpose().times(M).inverse().times(M.transpose()).times(Y);
+        } else {
+            Matrix M = new Matrix(Mdbl);
+            Matrix Y = new Matrix(allScores, allScores.length);
 
+            try {
 
-        // now that we have the data, fill in the hashmap
-        OPRs = new HashMap<>();
-        for(int i=0; i<teams.size(); i++) {
-            OPRs.put(teams.get(i), MatOPRs.get(i, 0));
+                Matrix MatOPRs = M.transpose().times(M).inverse().times(M.transpose()).times(Y);
+
+                // now that we have the data, fill in the hashmap
+                OPRs = new HashMap<>();
+                for (int i = 0; i < teams.size(); i++) {
+                    OPRs.put(teams.get(i), MatOPRs.get(i, 0));
+                }
+            } catch (Exception e) {
+                // probably a Singular Matrix exception -- means we don't have enough data yet
+
+                // we don't have scores for any match
+                OPRs = new HashMap<>();
+                for (int i = 0; i < teams.size(); i++) {
+                    OPRs.put(teams.get(i), 0d);
+                }
+            }
         }
-
     }
 
     private void computeRecords() {
@@ -300,38 +318,40 @@ public class StatsEngine implements Serializable{
         int alliesWins = 0;
         int opponentsWins = 0;
 
-        for(MatchSchedule.Match match : matchSchedule.filterByTeam(teamNo).getMatches()) {
-            // am I blue or red?
-            if (match.getBlue1() == teamNo || match.getBlue2() == teamNo || match.getBlue3() == teamNo) {
-                if (match.getBlue1() != teamNo)
-                    alliesWins += records.get(match.getBlue1()).wins;
+        try {
+            for (MatchSchedule.Match match : matchSchedule.filterByTeam(teamNo).getMatches()) {
+                // am I blue or red?
+                if (match.getBlue1() == teamNo || match.getBlue2() == teamNo || match.getBlue3() == teamNo) {
+                    if (match.getBlue1() != teamNo)
+                        alliesWins += records.get(match.getBlue1()).wins;
 
-                if (match.getBlue2() != teamNo)
-                    alliesWins += records.get(match.getBlue2()).wins;
+                    if (match.getBlue2() != teamNo)
+                        alliesWins += records.get(match.getBlue2()).wins;
 
-                if (match.getBlue3() != teamNo)
-                    alliesWins += records.get(match.getBlue3()).wins;
+                    if (match.getBlue3() != teamNo)
+                        alliesWins += records.get(match.getBlue3()).wins;
 
-                opponentsWins += records.get(match.getRed1()).wins;
-                opponentsWins += records.get(match.getRed2()).wins;
-                opponentsWins += records.get(match.getRed3()).wins;
+                    opponentsWins += records.get(match.getRed1()).wins;
+                    opponentsWins += records.get(match.getRed2()).wins;
+                    opponentsWins += records.get(match.getRed3()).wins;
+                } else {
+                    if (match.getRed1() != teamNo)
+                        alliesWins += records.get(match.getRed1()).wins;
+
+                    if (match.getRed2() != teamNo)
+                        alliesWins += records.get(match.getRed2()).wins;
+
+                    if (match.getRed3() != teamNo)
+                        alliesWins += records.get(match.getRed3()).wins;
+
+                    opponentsWins += records.get(match.getBlue1()).wins;
+                    opponentsWins += records.get(match.getBlue2()).wins;
+                    opponentsWins += records.get(match.getBlue3()).wins;
+                }
             }
-            else {
-                if (match.getRed1() != teamNo)
-                    alliesWins += records.get(match.getRed1()).wins;
-
-                if (match.getRed2() != teamNo)
-                    alliesWins += records.get(match.getRed2()).wins;
-
-                if (match.getRed3() != teamNo)
-                    alliesWins += records.get(match.getRed3()).wins;
-
-                opponentsWins += records.get(match.getBlue1()).wins;
-                opponentsWins += records.get(match.getBlue2()).wins;
-                opponentsWins += records.get(match.getBlue3()).wins;
-            }
+        } catch (NullPointerException e) {
+            //nothing
         }
-
         if (alliesWins == 0) {
             if (opponentsWins == 0)
                 return 1.0;

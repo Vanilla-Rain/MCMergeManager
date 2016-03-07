@@ -126,7 +126,8 @@ public class FileUtils implements ConnectionCallbacks, OnConnectionFailedListene
         mRemoteEventFolderName = SP.getString(mActivity.getResources().getString(R.string.PROPERTY_googledrive_event), "<Not Set>");
         mRemoteTeamPhotosFolderName = "Team Photos";
 
-        mLocalToplevelFilePath   = Environment.getExternalStorageDirectory().getPath()
+//        mLocalToplevelFilePath   = Environment.getInternalStorageDirectory().getPath()
+        mLocalToplevelFilePath = "/sdcard"
                                     +"/"+ mRemoteToplevelFolderName;
         mLocalTeamFilePath       = mLocalToplevelFilePath + "/" + mRemoteTeamFolderName;
         mLocalEventFilePath      = mLocalTeamFilePath + "/" + mRemoteEventFolderName;
