@@ -7,6 +7,7 @@
     <dimen name="app_bar_height">180dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="text_margin">16dp</dimen>
-    <dimen name="offensive_courtyard_image_size">300dp</dimen>
+    <dimen name="offensive_courtyard_image_width">300dp</dimen>
+    <dimen name="offensive_courtyard_image_height">226dp</dimen>
 
 </resources>

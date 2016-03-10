@@ -13,10 +13,10 @@
 
     <ImageView
         android:src="@drawable/offensive_courtyard"
-        android:layout_width="@dimen/offensive_courtyard_image_size"
-        android:layout_height="@dimen/offensive_courtyard_image_size"
+        android:layout_width="@dimen/offensive_courtyard_image_width"
+        android:layout_height="@dimen/offensive_courtyard_image_height"
         android:id="@+id/map"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/textView20"
         android:layout_centerHorizontal="true" />
 
     <Spinner
@@ -42,10 +42,9 @@
         android:layout_height="wrap_content"
         android:text="Post Game"
         android:id="@+id/buttonPostGame"
-        android:layout_alignTop="@+id/textViewGameTime"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:onClick="postGame"/>
+        android:onClick="postGame"
+        android:layout_below="@+id/map"
+        android:layout_toEndOf="@+id/textViewGameTime" />
 
     <Button
         android:layout_width="wrap_content"
@@ -53,8 +52,8 @@
         android:text="Scaling Tower"
         android:onClick="scalingTower"
         android:id="@+id/button"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignTop="@+id/button2"
+        android:layout_alignParentEnd="true" />
 
     <Button
         android:layout_width="wrap_content"
@@ -62,11 +61,8 @@
         android:text="Ball Pickup"
         android:onClick="ballPickup"
         android:id="@+id/button2"
-        android:layout_above="@+id/button"
-        android:layout_alignLeft="@+id/button"
-        android:layout_alignStart="@+id/button"
-        android:layout_alignRight="@+id/button"
-        android:layout_alignEnd="@+id/button" />
+        android:layout_below="@+id/button3"
+        android:layout_alignStart="@+id/button3" />
 
     <Button
         android:layout_width="wrap_content"
@@ -74,21 +70,16 @@
         android:text="Defending"
         android:onClick="defendingStart"
         android:id="@+id/button3"
-        android:layout_above="@+id/button2"
-        android:layout_alignRight="@+id/button2"
-        android:layout_alignEnd="@+id/button2"
-        android:layout_alignLeft="@+id/button2"
-        android:layout_alignStart="@+id/button2" />
+        android:layout_below="@+id/defense_spinner"
+        android:layout_alignStart="@+id/textView20" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Not Currently Defending"
         android:id="@+id/textViewDefending"
-        android:layout_alignBaseline="@+id/button3"
-        android:layout_alignBottom="@+id/button3"
-        android:layout_alignLeft="@+id/buttonPostGame"
-        android:layout_alignStart="@+id/buttonPostGame" />
+        android:layout_alignTop="@+id/button3"
+        android:layout_toEndOf="@+id/button2" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -98,7 +89,7 @@
         android:id="@+id/textView20"
         android:textStyle="bold"
         android:textSize="20sp"
-        android:layout_centerVertical="true"
+        android:layout_below="@+id/button2"
         android:layout_toStartOf="@+id/textViewGameTime" />
 
 

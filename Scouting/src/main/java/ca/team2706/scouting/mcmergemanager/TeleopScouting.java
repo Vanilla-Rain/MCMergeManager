@@ -33,7 +33,7 @@ public class TeleopScouting extends AppCompatActivity {
     Runnable m_handlerTask;
     Handler m_handlerDefending;
     Runnable m_handlerTaskDefending;
-    private int remainTime = 150;
+    private int remainTime = 135;
 
     public ArrayList<Integer> defensesBreached;
     public ArrayList<BallShot> ballsShot;

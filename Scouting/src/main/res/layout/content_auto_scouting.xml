@@ -15,8 +15,8 @@
 
     <ImageView
         android:src="@drawable/offensive_courtyard"
-        android:layout_width="@dimen/offensive_courtyard_image_size"
-        android:layout_height="@dimen/offensive_courtyard_image_size"
+        android:layout_width="@dimen/offensive_courtyard_image_width"
+        android:layout_height="@dimen/offensive_courtyard_image_width"
         android:id="@+id/map"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
