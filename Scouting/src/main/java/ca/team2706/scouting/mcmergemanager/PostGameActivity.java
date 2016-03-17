@@ -69,6 +69,9 @@ public class PostGameActivity extends AppCompatActivity {
         public void run() {
 
             if (t.canceled >= 0) {
+                if (t.canceled == ScalingTime.FAILED) // I'm using this as a cancel button
+                    this.cancel();
+
                 scalingTimes.add(new ScalingTime(t.upTimer.currentTime(), t.canceled));
                 this.cancel();
             }
@@ -79,7 +82,7 @@ public class PostGameActivity extends AppCompatActivity {
     public void scalingTower(View view) {
         Timer timer = new Timer();
         CheckVarScale checkVar = new CheckVarScale();
-        checkVar.t = new TeleopScoutAlertDialog("Scaling Tower...", this, "Scale Successful", ScalingTime.COMPLETED, "", -1, "Scale Failed", ScalingTime.FAILED);
+        checkVar.t = new TeleopScoutAlertDialog("Scaling Tower...", this, "Scale Successful", ScalingTime.COMPLETED, "", -1, "Cancel", ScalingTime.FAILED);
         timer.schedule(checkVar, 0, 1000);
     }
 

@@ -85,7 +85,7 @@ public class AutoScouting extends AppCompatActivity {
                     CheckVar checkVar = new CheckVar();
                     checkVar.x = (int)event.getX();
                     checkVar.y = (int)event.getY();
-                    checkVar.t = new TeleopScoutAlertDialog("Shooting...", AutoScouting.this, "High Goal", BallShot.HIGH_GOAL, "Low Goal", BallShot.LOW_GOAL, "Missed", BallShot.MISS);
+                    checkVar.t = new TeleopScoutAlertDialog("Shooting...", AutoScouting.this, "High Goal", BallShot.HIGH_GOAL, "Low Goal", BallShot.LOW_GOAL, "Cancel", BallShot.MISS);
                     timer.schedule(checkVar, 0, 1000);
                 }
                 return true;
@@ -114,6 +114,9 @@ public class AutoScouting extends AppCompatActivity {
         public TeleopScoutAlertDialog t;
         public void run() {
             if (t.canceled >= 0) {
+                if(t.canceled == BallShot.MISS) // I'm using this as a cancel button
+                    this.cancel();
+
                 ballsShot.add(new BallShot(x, y, t.upTimer.currentTime(), t.canceled));
                 this.cancel();
             }

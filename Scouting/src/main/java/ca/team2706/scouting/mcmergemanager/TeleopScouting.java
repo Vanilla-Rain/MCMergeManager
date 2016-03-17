@@ -122,7 +122,7 @@ public class TeleopScouting extends AppCompatActivity {
                     CheckVarShot checkVar = new CheckVarShot();
                     checkVar.x = (int) event.getX();
                     checkVar.y = (int) event.getY();
-                    checkVar.t = new TeleopScoutAlertDialog("Shooting...", TeleopScouting.this, "High Goal", BallShot.HIGH_GOAL, "Low Goal", BallShot.LOW_GOAL, "Missed", BallShot.MISS);
+                    checkVar.t = new TeleopScoutAlertDialog("Shooting...", TeleopScouting.this, "High Goal", BallShot.HIGH_GOAL, "Low Goal", BallShot.LOW_GOAL, "Cancel", BallShot.MISS);
                     timer.schedule(checkVar, 0, 1000);
                 }
                 return true;
@@ -145,7 +145,7 @@ public class TeleopScouting extends AppCompatActivity {
     public void ballPickup(View view) {
         Timer timer = new Timer();
         CheckVarPickup checkVar = new CheckVarPickup();
-        checkVar.t = new TeleopScoutAlertDialog("Picking up ball", TeleopScouting.this, "Ground", BallPickup.GROUND, "Wall", BallPickup.WALL, "Failed", BallPickup.FAIL);
+        checkVar.t = new TeleopScoutAlertDialog("Picking up ball", TeleopScouting.this, "Ground", BallPickup.GROUND, "Wall", BallPickup.WALL, "Cancel", BallPickup.FAIL);
         timer.schedule(checkVar, 0, 1000);
 
     }
@@ -190,6 +190,9 @@ public class TeleopScouting extends AppCompatActivity {
         public void run() {
 
             if (t.canceled >= 0) {
+                if (t.canceled == BallShot.MISS) // I'm using this as a cancel
+                    this.cancel();
+
                 ballsShot.add(new BallShot(x, y, t.upTimer.currentTime(), t.canceled));
                 this.cancel();
             }
@@ -204,6 +207,9 @@ public class TeleopScouting extends AppCompatActivity {
         public void run() {
 
             if (t.canceled >= 0) {
+                if (t.canceled == BallPickup.FAIL) // I'm using this as a cancel button
+                    this.cancel();
+
                 ballPickups.add(new BallPickup(t.canceled,t.upTimer.currentTime()));
                 this.cancel();
             }
