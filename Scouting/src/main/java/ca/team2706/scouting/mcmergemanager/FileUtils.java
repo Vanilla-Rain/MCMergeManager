@@ -439,13 +439,13 @@ public class FileUtils implements ConnectionCallbacks, OnConnectionFailedListene
         // Scaling Times
         // {{%.2f;%d}:...}
         sb.append("{");
-        for(int i=0; i<match.teleopMode.scalingTower.size(); i++) {
-            ScalingTime scale = match.teleopMode.scalingTower.get(i);
+        for(int i=0; i<match.postGame.scalingTower.size(); i++) {
+            ScalingTime scale = match.postGame.scalingTower.get(i);
 
             sb.append( String.format("{%.2f;%d}", scale.time, scale.completed));
 
             // the last one doesn't get a colon
-            if (i < match.teleopMode.scalingTower.size() - 1)
+            if (i < match.postGame.scalingTower.size() - 1)
                 sb.append(":");
         }
         sb.append("},");
@@ -625,7 +625,7 @@ public class FileUtils implements ConnectionCallbacks, OnConnectionFailedListene
                         scalingTime.time = Double.valueOf(scaleTokens[0]);
                         scalingTime.completed = Integer.valueOf(scaleTokens[1]);
 
-                        match.teleopMode.scalingTower.add(scalingTime);
+                        match.postGame.scalingTower.add(scalingTime);
                     }
                 }
 

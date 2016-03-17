@@ -11,10 +11,15 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import ca.team2706.scouting.mcmergemanager.datamodels.AutoScoutingObject;
 import ca.team2706.scouting.mcmergemanager.datamodels.MatchData;
 import ca.team2706.scouting.mcmergemanager.datamodels.PostGameObject;
 import ca.team2706.scouting.mcmergemanager.datamodels.PreGameObject;
+import ca.team2706.scouting.mcmergemanager.datamodels.ScalingTime;
 import ca.team2706.scouting.mcmergemanager.datamodels.TeleopScoutingObject;
 
 /**
@@ -23,7 +28,9 @@ import ca.team2706.scouting.mcmergemanager.datamodels.TeleopScoutingObject;
 public class PostGameActivity extends AppCompatActivity {
     public int progress = 0;
     public SeekBar seekBar;
+
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.activity_post_game);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -31,6 +38,8 @@ public class PostGameActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         seekBar = (SeekBar) findViewById(R.id.seekBar1);
         final TextView  textView = (TextView) findViewById(R.id.textViewSeekBar);
+
+        scalingTimes = new ArrayList<>();
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
@@ -53,6 +62,27 @@ public class PostGameActivity extends AppCompatActivity {
         });
     }
 
+    public ArrayList<ScalingTime> scalingTimes;
+    class CheckVarScale extends TimerTask {
+        public TeleopScoutAlertDialog t;
+
+        public void run() {
+
+            if (t.canceled >= 0) {
+                scalingTimes.add(new ScalingTime(t.upTimer.currentTime(), t.canceled));
+                this.cancel();
+            }
+
+        }
+    }
+
+    public void scalingTower(View view) {
+        Timer timer = new Timer();
+        CheckVarScale checkVar = new CheckVarScale();
+        checkVar.t = new TeleopScoutAlertDialog("Scaling Tower...", this, "Scale Successful", ScalingTime.COMPLETED, "", -1, "Scale Failed", ScalingTime.FAILED);
+        timer.schedule(checkVar, 0, 1000);
+    }
+
     public void returnHome(View view) {
         Intent thisIntent = getIntent();
         PreGameObject p = (PreGameObject) thisIntent.getSerializableExtra("PreGameData");
@@ -60,7 +90,7 @@ public class PostGameActivity extends AppCompatActivity {
         TeleopScoutingObject t  = (TeleopScoutingObject) thisIntent.getSerializableExtra("TeleopScoutingData");
         EditText e = (EditText)findViewById(R.id.editTextPost);
         CheckBox c = (CheckBox)findViewById(R.id.challengedCB);
-        PostGameObject post = new PostGameObject(e.getText().toString(),c.isChecked(),progress);
+        PostGameObject post = new PostGameObject(e.getText().toString(),c.isChecked(),progress, scalingTimes);
         Intent intent = new Intent(this,MainActivity.class);
 
         // SAVING STUFF

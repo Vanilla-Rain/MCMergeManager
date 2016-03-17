@@ -543,7 +543,7 @@ public class StatsEngine implements Serializable{
                 teamStatsReport.defensesBreached[breach]++;
 
             // scales
-            for(ScalingTime scale : match.teleopMode.scalingTower) {
+            for(ScalingTime scale : match.postGame.scalingTower) {
                 switch (scale.completed) {
                     case ScalingTime.COMPLETED:
                         teamStatsReport.numSuccessfulScales++;

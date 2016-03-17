@@ -38,7 +38,6 @@ public class TeleopScouting extends AppCompatActivity {
     public ArrayList<Integer> defensesBreached;
     public ArrayList<BallShot> ballsShot;
     public ArrayList<BallPickup> ballPickups;
-    public ArrayList<ScalingTime> scalingTimes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +50,6 @@ public class TeleopScouting extends AppCompatActivity {
         defensesBreached = new ArrayList<>();
         ballsShot = new ArrayList<>();
         ballPickups = new ArrayList<>();
-        scalingTimes = new ArrayList<>();
         m_handler = new Handler();
 
         m_handlerTask = new Runnable() {
@@ -140,16 +138,8 @@ public class TeleopScouting extends AppCompatActivity {
         Intent thisIntent = getIntent();
         intent.putExtra("PreGameData", (PreGameObject) thisIntent.getSerializableExtra("PreGameData"));
         intent.putExtra("AutoScoutingData", (AutoScoutingObject) thisIntent.getSerializableExtra("AutoScoutingData"));
-        intent.putExtra("TeleopScoutingData", new TeleopScoutingObject(ballsShot, defensesBreached, defendingTime,ballPickups,scalingTimes));
+        intent.putExtra("TeleopScoutingData", new TeleopScoutingObject(ballsShot, defensesBreached, defendingTime,ballPickups));
         startActivity(intent);
-    }
-
-    public void scalingTower(View view) {
-        Timer timer = new Timer();
-        CheckVarScale checkVar = new CheckVarScale();
-        checkVar.t = new TeleopScoutAlertDialog("Scaling Tower...", TeleopScouting.this, "Scale Successful", ScalingTime.COMPLETED, "", -1, "Scale Failed", ScalingTime.FAILED);
-        timer.schedule(checkVar, 0, 1000);
-
     }
 
     public void ballPickup(View view) {
@@ -207,18 +197,6 @@ public class TeleopScouting extends AppCompatActivity {
         }
     }
 
-    class CheckVarScale extends TimerTask {
-        public TeleopScoutAlertDialog t;
-
-        public void run() {
-
-            if (t.canceled >= 0) {
-                scalingTimes.add(new ScalingTime(t.upTimer.currentTime(), t.canceled));
-                this.cancel();
-            }
-
-        }
-    }
 
     class CheckVarPickup extends TimerTask {
         public TeleopScoutAlertDialog t;
