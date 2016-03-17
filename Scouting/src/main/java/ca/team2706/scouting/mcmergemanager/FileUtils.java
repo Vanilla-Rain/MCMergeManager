@@ -127,8 +127,7 @@ public class FileUtils implements ConnectionCallbacks, OnConnectionFailedListene
         mRemoteTeamPhotosFolderName = "Team Photos";
 
 //        mLocalToplevelFilePath   = Environment.getInternalStorageDirectory().getPath()
-        mLocalToplevelFilePath = "/sdcard"
-                                    +"/"+ mRemoteToplevelFolderName;
+        mLocalToplevelFilePath = "/sdcard/"+ mRemoteToplevelFolderName;
         mLocalTeamFilePath       = mLocalToplevelFilePath + "/" + mRemoteTeamFolderName;
         mLocalEventFilePath      = mLocalTeamFilePath + "/" + mRemoteEventFolderName;
         mLocalTeamPhotosFilePath = mLocalTeamFilePath + "/" + mRemoteTeamPhotosFolderName;
@@ -717,9 +716,7 @@ public class FileUtils implements ConnectionCallbacks, OnConnectionFailedListene
 
 
     public String getTeamPhotoPath(int teamNumber) {
-
-        String photoName = teamNumber + "_" + new Date().getTime() + ".jpg";
-        return mLocalTeamPhotosFilePath + "/" + photoName;
+        return mLocalTeamPhotosFilePath + "/" + teamNumber;
     }
 
 

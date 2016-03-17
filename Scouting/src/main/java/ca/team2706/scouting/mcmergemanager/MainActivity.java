@@ -29,6 +29,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.net.URI;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -299,7 +300,8 @@ public class MainActivity extends AppCompatActivity
 
                     FileUtils fileUtils = new FileUtils(me);
 
-                    String teamPhotoPath = fileUtils.getTeamPhotoPath(teamNumber);
+                    Uri teamPhotoUri = fileUtils.getNameForNewPhoto(teamNumber);
+                    String teamPhotoPath = teamPhotoUri.getPath();
                     Log.e(me.getResources().getString(R.string.app_name), "Saving to \""+teamPhotoPath+"\"");
 
                     TakePicture pic = new TakePicture(teamPhotoPath, me);

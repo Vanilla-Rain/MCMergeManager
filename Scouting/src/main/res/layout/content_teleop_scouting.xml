@@ -44,7 +44,7 @@
         android:id="@+id/buttonPostGame"
         android:onClick="postGame"
         android:layout_below="@+id/map"
-        android:layout_toEndOf="@+id/textViewGameTime" />
+        android:layout_alignParentEnd="true" />
 
     <Button
         android:layout_width="wrap_content"
@@ -89,8 +89,7 @@
         android:id="@+id/textView20"
         android:textStyle="bold"
         android:textSize="20sp"
-        android:layout_below="@+id/button2"
-        android:layout_toStartOf="@+id/textViewGameTime" />
+        android:layout_below="@+id/button2" />
 
 
 </RelativeLayout>
