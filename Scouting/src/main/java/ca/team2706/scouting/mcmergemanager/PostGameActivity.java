@@ -71,8 +71,4 @@ public class PostGameActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    @Override
-    public void onBackPressed() {
-        Toast.makeText(this, "Nice try lol",Toast.LENGTH_SHORT).show();
-    }
 }
