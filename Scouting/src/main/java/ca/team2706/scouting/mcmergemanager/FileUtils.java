@@ -851,12 +851,14 @@ public class FileUtils implements ConnectionCallbacks, OnConnectionFailedListene
     public String getBlueAllianceDataForTeam(int teamNumber) {
 
         ArrayList<String> downloadArray;
+        String joined2016 = "";
         String joined2015 = "";
         String joined2014 = "";
         String joined2013 = "";
         String joined = "";
 
         String combine;
+        ArrayList<String> store2016 = new ArrayList<>();
         ArrayList<String> store2015 = new ArrayList<>();
         ArrayList<String> store2014 = new ArrayList<>();
         ArrayList<String> store2013 = new ArrayList<>();
@@ -908,6 +910,25 @@ public class FileUtils implements ConnectionCallbacks, OnConnectionFailedListene
 
             // if (! file exitst(/MCMergeManager/<TeamName>/<EventName>/thebluealliance.json) )
         } else {
+            ArrayList<String> comps2016 = getBlueAllianceDataArrayAsArray("event_code", "http://www.thebluealliance.com/api/v2/team/frc" + teamNumber + "/2016/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
+            ArrayList<String> compsName2016 = getBlueAllianceDataArrayAsArray("name", "http://www.thebluealliance.com/api/v2/team/frc" + teamNumber + "/2016/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
+            for (int i = 0; i < comps2016.size(); i++) {
+                ArrayList<String> test = getBlueAllianceDataDoubleArrayAsArray(1, "http://www.thebluealliance.com/api/v2/event/2016" + comps2016.get(i) + "/rankings?X-TBA-App-Id=frc2706:mergemanager:v01/");
+                for (int p = 0; p < test.size(); p++) {
+                    if (test.get(p).equals(Integer.toString(teamNumber))) { // Or use equals() if it actually returns an Object.
+                        // Found at index i. Break or return if necessary.
+
+                        int compAmount = test.size();
+                        compAmount -= 1;
+//                        combine = "2016 " + compsName2015.get(i) + " seeded " + Integer.toString(p) + "/" + compAmount;
+                        combine = Integer.toString(p) + "/" + compAmount + " - 2016 " + compsName2016.get(i);
+
+                        store2015.add(combine);
+                        joined2015 = TextUtils.join("\n", store2015);
+                    }
+                }
+            }
+
             ArrayList<String> comps2015 = getBlueAllianceDataArrayAsArray("event_code", "http://www.thebluealliance.com/api/v2/team/frc" + teamNumber + "/2015/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
             ArrayList<String> compsName2015 = getBlueAllianceDataArrayAsArray("name", "http://www.thebluealliance.com/api/v2/team/frc" + teamNumber + "/2015/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
             for (int i = 0; i < comps2015.size(); i++) {
@@ -919,7 +940,7 @@ public class FileUtils implements ConnectionCallbacks, OnConnectionFailedListene
                         int compAmount = test.size();
                         compAmount -= 1;
 //                        combine = "2015 " + compsName2015.get(i) + " seeded " + Integer.toString(p) + "/" + compAmount;
-                        combine = Integer.toString(p) + "/" + compAmount + " - 2015 " + compsName2015.get(i);
+                        combine = "\t\t" + Integer.toString(p) + "/" + compAmount + " - 2015 " + compsName2015.get(i);
 
                         store2015.add(combine);
                         joined2015 = TextUtils.join("\n", store2015);
@@ -939,7 +960,7 @@ public class FileUtils implements ConnectionCallbacks, OnConnectionFailedListene
                         int compAmount = test.size();
                         compAmount -= 1;
 //                        combine = "2014 " + compsName2014.get(i) + " seeded " + Integer.toString(p) + "/" + compAmount;
-                        combine = "\t\t" + Integer.toString(p) + "/" + compAmount + " - 2014 " + compsName2014.get(i);
+                        combine = Integer.toString(p) + "/" + compAmount + " - 2014 " + compsName2014.get(i);
 
                         store2014.add(combine);
                         joined2014 = TextUtils.join("\n", store2014);
@@ -962,7 +983,7 @@ public class FileUtils implements ConnectionCallbacks, OnConnectionFailedListene
                         int compAmount = test.size();
                         compAmount -= 1;
 //                        combine = "2013 " + compsName2013.get(i) + " seeded " + Integer.toString(p) + "/" + compAmount;
-                        combine = Integer.toString(p) + "/" + compAmount + " - 2013 " + compsName2013.get(i);
+                        combine = "\t\t" + Integer.toString(p) + "/" + compAmount + " - 2013 " + compsName2013.get(i);
 
                         store2013.add(combine);
                         joined2013 = TextUtils.join("\n", store2013);
