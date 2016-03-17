@@ -433,7 +433,11 @@ public class StatsEngine implements Serializable{
             teamStatsReport.teamMatcheSchedule = matchSchedule.filterByTeam(teamNo);
 //        }
 
-        teamStatsReport.numMatchesPlayed = teamStatsReport.teamMatcheSchedule.getMatches().size();
+        teamStatsReport.numMatchesPlayed = 0;
+        for(MatchSchedule.Match match : teamStatsReport.teamMatcheSchedule.getMatches() ) {
+            if (match.getBlueScore() > 0 && match.getRedScore() > 0)
+                teamStatsReport.numMatchesPlayed++;
+        }
 
         if (records == null)
             computeRecords();
