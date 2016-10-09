@@ -32,12 +32,14 @@ import android.widget.Toast;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import ca.team2706.scouting.mcmergemanager.miscBackend.DataRequester;
-import ca.team2706.scouting.mcmergemanager.miscBackend.FileUtils;
+import ca.team2706.scouting.mcmergemanager.backend.BlueAllianceUtils;
+import ca.team2706.scouting.mcmergemanager.backend.GoogleDriveUtils;
+import ca.team2706.scouting.mcmergemanager.backend.interfaces.DataRequester;
+import ca.team2706.scouting.mcmergemanager.backend.FileUtils;
 import ca.team2706.scouting.mcmergemanager.R;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.MatchData;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.MatchSchedule;
-import ca.team2706.scouting.mcmergemanager.miscBackend.TakePicture;
+import ca.team2706.scouting.mcmergemanager.backend.TakePicture;
 
 @TargetApi(21)
 public class MainActivity extends AppCompatActivity
@@ -52,12 +54,12 @@ public class MainActivity extends AppCompatActivity
     NavigationView mNavigationView;
     FragmentManager mFragmentManager;
     FragmentTransaction mFragmentTransaction;
-//    private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
 
     public static MatchData m_matchData;
     public static MatchSchedule m_matchSchedule;
 
     FileUtils mFileUtils;
+    GoogleDriveUtils mGoogleDriveUtils;
 
 
     /** A flag so that onResume() knows to sync photos for a particular team when we're returning from the camera app */
@@ -86,10 +88,10 @@ public class MainActivity extends AppCompatActivity
         if (mFileUtils == null) {
             mFileUtils = new FileUtils(this);
         }
-        mFileUtils.checkDriveConnectionAndFiles();
+        mGoogleDriveUtils.checkDriveConnectionAndFiles();
 
         if (lauchedPhotoApp) {
-            mFileUtils.syncOneTeamsPhotos(enterATeamNumberPopup.getTeamNumber());
+            mGoogleDriveUtils.syncOneTeamsPhotos(enterATeamNumberPopup.getTeamNumber());
             lauchedPhotoApp = false;
         }
 
@@ -97,7 +99,7 @@ public class MainActivity extends AppCompatActivity
         updateDataSyncLabel();
 
         // fetch the match data from TheBlueAlliance to update the scores.
-        FileUtils.fetchMatchScheduleAndResults(this);
+        BlueAllianceUtils.fetchMatchScheduleAndResults(this);
         m_matchData = mFileUtils.loadMatchDataFile();
     }
 
@@ -108,7 +110,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onPause() {
         if(mFileUtils != null)
-            mFileUtils.disconnect();
+            mGoogleDriveUtils.disconnect();
 
         super.onPause();
     }
@@ -269,7 +271,7 @@ public class MainActivity extends AppCompatActivity
         String driveAccount = SP.getString(getResources().getString(R.string.PROPERTY_googledrive_account), "<Not Set>");
 
         String label = "Syncing Data with: "+driveTeam+" / "+driveEvent+"\n\t\tusing: "+driveAccount;
-        if (mFileUtils != null && !mFileUtils.canConnectToDrive())
+        if (mFileUtils != null && !mGoogleDriveUtils.canConnectToDrive())
             label = label + "\n! Cannot connect to Drive";
 
         TextView tv = (TextView) findViewById(R.id.sync_settings_tv);

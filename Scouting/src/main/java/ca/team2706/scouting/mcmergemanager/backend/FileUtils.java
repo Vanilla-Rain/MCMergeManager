@@ -1,0 +1,612 @@
+package ca.team2706.scouting.mcmergemanager.backend;
+
+import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.preference.PreferenceManager;
+import android.util.DisplayMetrics;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.util.Log;
+import android.view.WindowManager;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import ca.team2706.scouting.mcmergemanager.R;
+import ca.team2706.scouting.mcmergemanager.backend.interfaces.PhotoRequester;
+import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.BallPickup;
+import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.BallShot;
+import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.MatchData;
+import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.ScalingTime;
+
+/**
+ * This is a helper class to hold common code for accessing shared scouting data files.
+ * This class takes care of keeping a local cache, syncing to Google Drive, and (eventually) sharing with other bluetooth-connected devices also running the app.
+ * <p/>
+ * Created by Mike Ounsworth
+ */
+public class FileUtils {
+
+
+    private static Activity mActivity;
+
+    /**
+     * A pointer to myself so that the nested classes can use my ConnectionCallbacks
+     **/
+    FileUtils m_me;
+
+    GoogleDriveUtils mGoogleDriveUtils;
+    public static String sLocalToplevelFilePath;
+    public static String sLocalTeamFilePath;
+    public static String sLocalEventFilePath;
+    public static String sLocalTeamPhotosFilePath;
+
+    /* Static initializer */
+    {
+        // store string constants and preferences in member variables just for cleanliness
+        // (since the strings are `static`, when any instances of FileUtils update these, all instances will get the updates)
+        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(App.getContext());
+        sLocalToplevelFilePath = "/sdcard/"+ App.getContext().getString(R.string.FILE_TOPLEVEL_DIR);
+        sLocalTeamFilePath = sLocalToplevelFilePath + "/" + SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_googledrive_teamname), "<Not Set>");
+        sLocalEventFilePath = sLocalTeamFilePath + "/" + SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_googledrive_event), "<Not Set>");
+        sLocalTeamPhotosFilePath = sLocalTeamFilePath + "/" + "Team Photos";
+    }
+
+    /**
+     * Constructor
+     *
+     * @param activity This will be used to fetch string contants for file storage and displaying toasts.
+     *                 Also, if this is a MainActivity, then this activity's .updateDataSyncLabel()
+     *                 will be called when a Drive connection either suceeds or fails.
+     */
+    public FileUtils(Activity activity) {
+        mActivity = activity;
+        m_me = this;
+
+        mGoogleDriveUtils = new GoogleDriveUtils(activity);
+
+
+        checkLocalFileStructure();
+    }
+
+
+    /**
+     * Checks if we have the permission read / write to the internal USB STORAGE,
+     * requesting that permission if we do not have it.
+     *
+     * @return whether or not we have the STORAGE permission.
+     */
+    public static boolean canWriteToStorage() {
+        if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(mActivity,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    123);
+
+            // check if they clicked Deny
+            if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.READ_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED)
+                return false;
+        }
+
+
+        if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(mActivity,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    123);
+
+            // check if they clicked Deny
+            if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED)
+                return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * This checks the local file system for the appropriate files and folders, creating them if they
+     * are missing.
+     * <p/>
+     * The file structure is:
+     * MCMergeManager/
+     *  - team_name/
+     *      - Team Photos/
+     *      - event/
+     *          - matchScoutingData.csv
+     */
+    public void checkLocalFileStructure() {
+        // check for STORAGE permission
+        if (!canWriteToStorage())
+            return;
+
+        makeDirectory(sLocalToplevelFilePath);
+        makeDirectory(sLocalTeamFilePath);
+        makeDirectory(sLocalEventFilePath);
+        makeDirectory(sLocalTeamPhotosFilePath);
+    }
+
+
+    private void makeDirectory(String directoryName) {
+
+        Log.d(App.getContext().getResources().getString(R.string.app_name), "Making directory: " + directoryName);
+
+
+        File file = new File(directoryName);
+        if (!file.isDirectory()) {
+            // in case there's a regular file there with the same name
+            file.delete();
+            // create it
+            file.mkdir();
+        }
+    }
+
+    /**
+     * Take one match of data and stick it at the end of the match data file.
+     *
+     * Data format:
+     * "matchNo<int>,teamNo<int>,isSpyBot<boolean>,reached<boolean>,{autoDefenseBreached<int>;...},{{autoBallShot_X<int>;autoBallShot_Y<int>;autoBallShot_time<.2double>;autoBallshot_which<int>}:...},{teleopDefenseBreached<int>;...},{{teleopBallShot_X<int>;teleopBallShot_Y<int>;teleopBallShot_time<.2double>;teleopBallshot_which<int>}:...},timeDefending<,2double>,{{ballPickup_selection<int>;ballPickup_time<,2double>}:...},{{scaling_time<.2double>;scaling_comelpted<int>}:...},notes<String>,challenged<boolean>,timeDead<int>"
+     *
+     * Or, in printf / format strings:
+     * "%d,%d,%b,%b,{%d;...},{{%d:%d:%.2f:%d};...},{%d;...},{{%d:%d:%.2f:%d};...},%,2f,{{%d;%,2f}:...},{{%.2f;%d}:...},%s,%b,%d"
+     */
+    public void appendToMatchDataFile(MatchData.Match match) {
+
+        /** build the string **/
+        StringBuilder sb = new StringBuilder();
+
+        /** Pre-game **/
+        sb.append( String.format("%d,%d,", match.preGame.matchNumber, match.preGame.teamNumber) );
+
+
+
+        /** Auto Mode **/
+
+        sb.append( String.format("%b,%b,", match.autoMode.isSpyBot, match.autoMode.reachedDefense) );
+
+        // a list of defensesBreached
+        // {defenseBreached<int>;defenseBreached<int>;...}
+        sb.append("{");
+        for(int i=0; i<match.autoMode.defensesBreached.size(); i++) {
+            sb.append(match.autoMode.defensesBreached.get(i));
+
+            // the last one doesn't get a semi-colon
+            if (i < match.autoMode.defensesBreached.size() - 1)
+                sb.append(";");
+        }
+        sb.append("},");
+
+        // a list of BallShots
+        // {{ballShot_X<int>;ballShot_Y<int>;ballShot_time<.3double>;ballshot_which<int>}:...}
+        sb.append("{");
+        for(int i=0; i<match.autoMode.ballsShot.size(); i++) {
+            BallShot ballShot = match.autoMode.ballsShot.get(i);
+
+            sb.append(String.format("{%d;%d;%.2f;%d}",ballShot.x,ballShot.y,ballShot.shootTime,ballShot.whichGoal));
+
+            if (i < match.autoMode.ballsShot.size() - 1)
+                sb.append(":");
+        }
+        sb.append("},");
+
+
+
+        /** Teleop Mode **/
+
+        // a list of defensesBreached
+        // {defenseBreached<int>;...}
+        sb.append("{");
+        for(int i=0; i<match.teleopMode.defensesBreached.size(); i++) {
+            sb.append(match.teleopMode.defensesBreached.get(i));
+
+            // the last one doesn't get a colon
+            if (i < match.teleopMode.defensesBreached.size() - 1 )
+                sb.append(";");
+        }
+        sb.append("},");
+
+        // a list of BallShots
+        // {{ballShot_X<int>;ballShot_Y<int>;ballShot_time<.3double>;ballshot_which<int>}:...}
+        sb.append("{");
+        for(int i=0; i<match.teleopMode.ballsShot.size(); i++) {
+            BallShot ballShot = match.teleopMode.ballsShot.get(i);
+
+            sb.append(String.format("{%d;%d;%.2f;%d}",ballShot.x,ballShot.y,ballShot.shootTime,ballShot.whichGoal));
+
+            // the last one doesn't get a colon
+            if (i < match.teleopMode.ballsShot.size() - 1)
+                sb.append(":");
+        }
+        sb.append("},");
+
+        sb.append( String.format("%.2f,",match.teleopMode.timeDefending));
+
+        // Ball Pickup
+        // {{%d;%,2f}:...}
+        sb.append("{");
+        for(int i=0; i<match.teleopMode.ballsPickedUp.size(); i++) {
+            BallPickup pickup = match.teleopMode.ballsPickedUp.get(i);
+
+            sb.append( String.format("{%d;%.2f}", pickup.selection, pickup.time));
+
+            // the last one doesn't get a colon
+            if (i < match.teleopMode.ballsPickedUp.size() - 1)
+                sb.append(":");
+        }
+        sb.append("},");
+
+
+        // Scaling Times
+        // {{%.2f;%d}:...}
+        sb.append("{");
+        for(int i=0; i<match.postGame.scalingTower.size(); i++) {
+            ScalingTime scale = match.postGame.scalingTower.get(i);
+
+            sb.append( String.format("{%.2f;%d}", scale.time, scale.completed));
+
+            // the last one doesn't get a colon
+            if (i < match.postGame.scalingTower.size() - 1)
+                sb.append(":");
+        }
+        sb.append("},");
+
+
+        /** Post-Game **/
+
+        // since commas, semi-colons, braces, and <enter> are all special characters for the text file, let's rip those out just to be safe.
+        String cleanedNotes = match.postGame.notes .replaceAll(",","")
+                .replaceAll(";","")
+                .replaceAll("\\{","")
+                .replaceAll("\\}","")
+                .replaceAll("\n","");
+        sb.append(cleanedNotes+",");
+
+        sb.append( String.format("%b,",match.postGame.challenged) );
+        sb.append( String.format("%d",match.postGame.timeDead) );
+
+        sb.append("\n");
+
+
+
+
+        String outFileName = sLocalEventFilePath +"/"+ App.getContext().getResources().getString(R.string.matchScoutingDataFileName);
+
+        Log.d(App.getContext().getResources().getString(R.string.app_name), "Saving data to file: "+outFileName);
+
+        File outfile = new File(outFileName);
+        try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter(outfile, true));
+            bw.append( sb.toString() );
+            bw.flush();
+            bw.close();
+        } catch (IOException e) {
+
+        }
+
+
+        outFileName = sLocalEventFilePath +"/"+ App.getContext().getResources().getString(R.string.matchScoutingDataFileNameUNSYNCHED);
+
+        Log.d(App.getContext().getResources().getString(R.string.app_name), "Saving data to file: "+outFileName);
+
+        outfile = new File(outFileName);
+        try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter(outfile, true));
+            bw.append( sb.toString() );
+            bw.flush();
+            bw.close();
+        } catch (IOException e) {
+
+        }
+    }
+
+
+    /**
+     * Load the entire file of match data into Objects.
+     *
+     * Data format:
+     * "matchNo<int>,teamNo<int>,isSpyBot<boolean>,reached<boolean>,{autoDefenseBreached<int>;...},{{autoBallShot_X<int>;autoBallShot_Y<int>;autoBallShot_time<.2double>;autoBallshot_which<int>}:...},{teleopDefenseBreached<int>;...},{{teleopBallShot_X<int>;teleopBallShot_Y<int>;teleopBallShot_time<.2double>;teleopBallshot_which<int>}:...},timeDefending<,2double>,{{ballPickup_selection<int>;ballPickup_time<,2double>}:...},{{scaling_time<.2double>;scaling_comelpted<int>}:...},notes<String>,challenged<boolean>,timeDead<int>"
+     *
+     * Or, in printf / format strings:
+     * "%d,%d,%b,%b,{%d;...},{{%d:%d:%.2f:%d};...},{%d;...},{{%d:%d:%.2f:%d};...},%,2f,{{%d;%,2f}:...},{{%.2f;%d}:...},%s,%b,%d"
+     */
+    public MatchData loadMatchDataFile() {
+
+        MatchData matchData = new MatchData();
+        List<String> matchStrs = new ArrayList<>();
+
+        // read the file
+        String inFileName = sLocalEventFilePath +"/"+ App.getContext().getResources().getString(R.string.matchScoutingDataFileName);
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(inFileName));
+            String line = br.readLine();
+
+            while (line != null) {
+                // braces are for human readibility, but make parsing harder
+                line = line.replace("{","").replace("}","");
+                matchStrs.add(line);
+                line = br.readLine();
+            }
+            br.close();
+        } catch (Exception e) {
+            Log.e(App.getContext().getResources().getString(R.string.app_name), "loadMatchDataFile:: " + e.toString());
+            return null;
+        }
+
+        try {
+            // parse all the matches into the MatchData object
+            for (String matchStr : matchStrs) {
+
+                MatchData.Match match = new MatchData.Match();
+
+                String[] tokens = matchStr.split(",");
+
+
+                /** Pre-game **/
+
+                match.preGame.matchNumber = Integer.valueOf(tokens[0]);
+                match.preGame.teamNumber = Integer.valueOf(tokens[1]);
+
+
+                /** Auto Mode **/
+
+                match.autoMode.isSpyBot = Boolean.valueOf(tokens[2]);
+                match.autoMode.reachedDefense = Boolean.valueOf(tokens[3]);
+
+                // autoDefensesBreached
+                if ( !tokens[4].equals("") ) {
+                    String[] autoDefensesBreachedStrs = tokens[4].split(";");
+                    for (String breach : autoDefensesBreachedStrs)
+                        match.autoMode.defensesBreached.add(Integer.valueOf(breach));
+                }
+
+                // autoBallShots
+                if ( !tokens[5].equals("") ) {
+                    String[] autoShots = tokens[5].split(":");
+                    for (String shot : autoShots) {
+                        String[] shotTokens = shot.split(";");
+                        BallShot ballShot = new BallShot();
+                        ballShot.x = Integer.valueOf(shotTokens[0]);
+                        ballShot.y = Integer.valueOf(shotTokens[1]);
+                        ballShot.shootTime = Double.valueOf(shotTokens[2]);
+                        ballShot.whichGoal = Integer.valueOf(shotTokens[3]);
+
+                        match.autoMode.ballsShot.add(ballShot);
+                    }
+                }
+
+                /** Teleop Mode **/
+
+                // teleopDefensesBreached
+                if ( !tokens[6].equals("") ) {
+                    String[] teleopDefensesBreachedStrs = tokens[6].split(";");
+                    for (String breach : teleopDefensesBreachedStrs)
+                        match.teleopMode.defensesBreached.add(Integer.valueOf(breach));
+                }
+
+                // teleopBallShots
+                if ( !tokens[7].equals("") ) {
+                    String[] teleopShots = tokens[7].split(":");
+                    for (String shot : teleopShots) {
+                        String[] shotTokens = shot.split(";");
+                        BallShot ballShot = new BallShot();
+                        ballShot.x = Integer.valueOf(shotTokens[0]);
+                        ballShot.y = Integer.valueOf(shotTokens[1]);
+                        ballShot.shootTime = Double.valueOf(shotTokens[2]);
+                        ballShot.whichGoal = Integer.valueOf(shotTokens[3]);
+
+                        match.teleopMode.ballsShot.add(ballShot);
+                    }
+                }
+
+                match.teleopMode.timeDefending = Double.valueOf(tokens[8]);
+
+
+                // Ball Pickup
+                if ( !tokens[9].equals("") ) {
+                    String[] ballPickups = tokens[9].split(":");
+                    for (String pickupStr : ballPickups) {
+                        String[] pickupTokens = pickupStr.split(";");
+                        BallPickup ballPickup = new BallPickup();
+                        ballPickup.selection = Integer.valueOf(pickupTokens[0]);
+                        ballPickup.time = Double.valueOf(pickupTokens[1]);
+
+                        match.teleopMode.ballsPickedUp.add(ballPickup);
+                    }
+                }
+
+                // Scaling Times
+                // {{%.2f;%d}:...}
+                if ( !tokens[10].equals("") ) {
+                    String[] scaleStrs = tokens[10].split(":");
+                    for (String scaleStr : scaleStrs) {
+                        String[] scaleTokens = scaleStr.split(";");
+                        ScalingTime scalingTime = new ScalingTime();
+
+                        scalingTime.time = Double.valueOf(scaleTokens[0]);
+                        scalingTime.completed = Integer.valueOf(scaleTokens[1]);
+
+                        match.postGame.scalingTower.add(scalingTime);
+                    }
+                }
+
+
+                /** Post-Game **/
+
+                match.postGame.notes = tokens[11];
+                match.postGame.challenged = Boolean.valueOf(tokens[12]);
+                match.postGame.timeDead = Integer.valueOf(tokens[13]);
+
+
+                matchData.addMatch(match);
+            }
+        } catch (Exception e) {
+            Log.e(App.getContext().getResources().getString(R.string.app_name), "loadMatchDataFile:: "+e.toString());
+            return null;
+        }
+
+        return matchData;
+    }
+
+    /**
+     * Add a Note for a particular team.
+     * <p/>
+     * The intention of Notes is for the drive team to be able to read them quickly.
+     * They should be short and fit on one line, so they will be truncated to 80 characters.
+     */
+    public void addNote(int teamNumber, String note) {
+        // TODO
+    }
+
+    /**
+     * Retrieves all the notes for a particular team.
+     *
+     * @param teamNumber the team number you want notes for.
+     * @return All the notes for this team concatenated into a single string, with each note beginning with a bullet "-",
+     * and ending with a newline (except for the last one).
+     */
+    public String getNotesForTeam(int teamNumber) {
+        // TODO
+
+        return "";
+    }
+
+
+    /**
+     * We take photos by calling the system camera app and telling it where to save the photo.
+     * This function will provide a file name in the correct location in the Team Photos/teamNumber directory.
+     * <p/>
+     * If a photos directory does not already exist for this team, this function will create one.
+     *
+     * @param teamNumber
+     * @return Can return NULL if we do not have permission to write to STORAGE.
+     */
+    public Uri getNameForNewPhoto(int teamNumber) {
+        // check if a photo folder exists for this team, and create it if it does not.
+        String dir = sLocalTeamPhotosFilePath + "/" + teamNumber + "/";
+        File file = new File(dir);
+
+        if (!file.isDirectory()) {
+            // in case there's a regular file there with the same name
+            file.delete();
+
+            // create it
+            file.mkdir();
+        }
+
+        String fileName = dir + teamNumber + "_" + (new Date().getTime()) + ".jpg";
+        return Uri.fromFile(new File(fileName));
+    }
+
+
+    public String getTeamPhotoPath(int teamNumber) {
+        return sLocalTeamPhotosFilePath + "/" + teamNumber;
+    }
+
+
+    /**
+     * This method will return you all locally-cached photos for the requested team.
+     * It will then spawn a new background thread, and if Drive is available, it will sync the photos
+     * for the requested team only and then notify the requesting activity that it has new photos.
+     * <p/>
+     * Since syncing photos with Drive can take a few seconds, FileUtils.loadTeamPhotos() will immediately call
+     * the PhotoRequester's updatePhotos(Bitmap[]) with whatever photos are locally cached for that team,
+     * and if FileUtils is able to connect to Drive then it will call it again after performing the sync.
+     *
+     * @param teamNumber The team whos photos we want to load.
+     * @param requester  The activity that is requesting the photos. This activity's .updatePhotos(Bitmap[])
+     *                   will be called with the loaded photos.
+     * @return It will call requester.updatePhotos(Bitmap[]) with an array of Bitmaps containing all
+     * photos for that team, or a zero-length array if no photos were found for that team.
+     */
+    public void getTeamPhotos(int teamNumber, PhotoRequester requester) {
+        // check for STORAGE permission
+        if (!canWriteToStorage())
+            return;
+
+        /* First, return the requester any photos we have on the local drive */
+
+        File photosDir = new File(sLocalTeamPhotosFilePath + "/" + teamNumber);
+
+        // check if that folder exists
+        if (!photosDir.isDirectory()) {
+            // we have no photos for this team
+            requester.updatePhotos(new Bitmap[0]);
+            return;
+        }
+
+
+        File[] listOfFiles = photosDir.listFiles();
+        ArrayList<Bitmap> arrBitmaps = new ArrayList<>();
+        for (File file : listOfFiles) {
+            if (file.isFile()) {
+                // BitmapFactory will return `null` if the file cannot be parsed as an image, so no error-checking needed.
+                Bitmap bitmap = loadScaledDownImage(file.getPath());
+                if (bitmap != null)
+                    arrBitmaps.add(bitmap);
+            }
+            // else: if it's not a file, then what is it???? .... skip I guess
+        }
+        requester.updatePhotos(arrBitmaps.toArray(new Bitmap[arrBitmaps.size()]));
+
+
+        /* Now, attempt to sync with Drive */
+        mGoogleDriveUtils.syncOneTeamsPhotos(teamNumber, requester);
+
+    }
+
+    /**
+     * Calculates how much to scale the image based on the size of the screen and then loads
+     * a scaled down version into memory.
+     */
+    private static Bitmap loadScaledDownImage(String imagePath) {
+
+        // First decode with inJustDecodeBounds=true to check dimensions
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(imagePath);
+
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        WindowManager wm = (WindowManager) App.getContext().getSystemService(Context.WINDOW_SERVICE);
+        wm.getDefaultDisplay().getMetrics(displayMetrics);
+        int reqSize = displayMetrics.widthPixels / 4;
+
+        if (height > reqSize || width > reqSize) {
+
+        final int halfHeight = height / 2;
+        final int halfWidth = width / 2;
+
+        // Calculate the largest inSampleSize value that is a power of 2 and keeps
+        // height or width larger than the requested size.
+        while ((halfHeight / inSampleSize) > reqSize
+        || (halfWidth / inSampleSize) > reqSize) {
+        inSampleSize *= 2;
+        }
+        }
+
+        // Decode bitmap with inSampleSize set
+        options.inSampleSize = inSampleSize;
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeFile(imagePath);
+        }
+
+
+}

@@ -1,4 +1,4 @@
-package ca.team2706.scouting.mcmergemanager.miscBackend;
+package ca.team2706.scouting.mcmergemanager.backend;
 
 import android.app.Activity;
 import android.content.Intent;

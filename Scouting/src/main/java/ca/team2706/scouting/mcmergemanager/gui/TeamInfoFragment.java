@@ -23,8 +23,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import ca.team2706.scouting.mcmergemanager.miscBackend.FileUtils;
-import ca.team2706.scouting.mcmergemanager.miscBackend.PhotoRequester;
+import ca.team2706.scouting.mcmergemanager.backend.FileUtils;
+import ca.team2706.scouting.mcmergemanager.backend.interfaces.PhotoRequester;
 import ca.team2706.scouting.mcmergemanager.R;
 import ca.team2706.scouting.mcmergemanager.miscBackend.StatsEngine;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.TeleopScoutingObject;

@@ -1,4 +1,4 @@
-package ca.team2706.scouting.mcmergemanager.miscBackend;
+package ca.team2706.scouting.mcmergemanager.backend.interfaces;
 
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.MatchSchedule;
 
