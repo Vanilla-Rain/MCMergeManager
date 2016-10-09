@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="ca.team2706.scouting.mcmergemanager.TeamStatsActivity">
+    tools:context="ca.team2706.scouting.mcmergemanager.stronghold2016.gui.TeamStatsActivity">
 
 
 

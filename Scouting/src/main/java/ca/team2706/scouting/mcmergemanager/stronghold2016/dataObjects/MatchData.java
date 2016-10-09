@@ -1,0 +1,87 @@
+package ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+
+/**
+ * A class to encapsulate all the data collected during a match so that it can be easily
+ * passed around, saved to file, loaded from file, etc.
+ *
+ * Created by mike on 03/02/16.
+ */
+public class MatchData implements Serializable {
+    
+    // Member Variables
+    public ArrayList<Match> matches;
+
+    /** Empty constructor **/
+    public MatchData() {
+        matches = new ArrayList<>();
+    }
+    
+    public void addMatch(Match match) {
+        matches.add(match);
+    }
+
+
+
+    public MatchData filterByTeam(int teamNo) {
+
+        MatchData matchData = new MatchData();
+
+        for(Match match : matches) {
+            if (match.preGame.teamNumber == teamNo)
+                matchData.addMatch(match);
+        }
+        return matchData;
+    }
+
+
+
+
+    /** An inner-class encapsulating the data from a single robot from a single match. **/
+    public static class Match implements Serializable {
+
+        public PreGameObject preGame;
+        public AutoScoutingObject autoMode;
+        public TeleopScoutingObject teleopMode;
+        public PostGameObject postGame;
+
+
+        /** Empty constructor **/
+        public Match() {
+            preGame = new PreGameObject();
+            autoMode = new AutoScoutingObject();
+            teleopMode = new TeleopScoutingObject();
+            postGame = new PostGameObject();
+        }
+
+
+        /** All the things costructor **/
+        public Match(PreGameObject preGame, AutoScoutingObject autoMode, TeleopScoutingObject teleopMode, PostGameObject postGame) {
+            this.preGame = preGame;
+            this.autoMode = autoMode;
+            this.teleopMode = teleopMode;
+            this.postGame = postGame;
+        }
+
+
+        // String serializers so that it can be easily passed through intents
+
+        /**
+         * toString() turns it into a string
+         */
+        @Override
+        public String toString() {
+            // TODO
+            return "";
+        }
+
+        /** De-serializing constructor **/
+        public Match(String serializedMatchData) {
+            // TODO
+        }
+
+    }
+
+}

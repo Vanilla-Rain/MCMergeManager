@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="ca.team2706.scouting.mcmergemanager.MainActivity$PlaceholderFragment">
+    tools:context="ca.team2706.scouting.mcmergemanager.gui.MainActivity$PlaceholderFragment">
 
     <android.support.v7.widget.Toolbar
         xmlns:android="http://schemas.android.com/apk/res/android"
