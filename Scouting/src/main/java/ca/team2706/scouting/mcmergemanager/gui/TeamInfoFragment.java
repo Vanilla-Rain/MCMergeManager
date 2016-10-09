@@ -26,7 +26,7 @@ import android.widget.Toast;
 import ca.team2706.scouting.mcmergemanager.miscBackend.FileUtils;
 import ca.team2706.scouting.mcmergemanager.miscBackend.PhotoRequester;
 import ca.team2706.scouting.mcmergemanager.R;
-import ca.team2706.scouting.mcmergemanager.miscBackend.StatsEngine;
+import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.StatsEngine;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.TeleopScoutingObject;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.gui.TeamStatsActivity;
 

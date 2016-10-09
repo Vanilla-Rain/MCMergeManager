@@ -1,4 +1,4 @@
-package ca.team2706.scouting.mcmergemanager.miscBackend;
+package ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects;
 
 import java.io.Serializable;
 import java.util.ArrayList;

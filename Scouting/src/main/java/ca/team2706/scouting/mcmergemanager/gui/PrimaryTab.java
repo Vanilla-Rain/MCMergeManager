@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import ca.team2706.scouting.mcmergemanager.R;
-import ca.team2706.scouting.mcmergemanager.miscBackend.StatsEngine;
+import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.StatsEngine;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.MatchSchedule;
 
 

@@ -64,6 +64,7 @@ import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.MatchSched
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.ScalingTime;
 import ca.team2706.scouting.mcmergemanager.blueAlliance.BlueAllianceData;
 import ca.team2706.scouting.mcmergemanager.gui.MainActivity;
+import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.StatsEngine;
 
 import static com.google.android.gms.common.api.GoogleApiClient.Builder;
 import static com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;

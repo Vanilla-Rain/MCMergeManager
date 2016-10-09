@@ -16,7 +16,7 @@ import android.widget.SearchView;
 import android.widget.Spinner;
 
 import ca.team2706.scouting.mcmergemanager.R;
-import ca.team2706.scouting.mcmergemanager.miscBackend.StatsEngine;
+import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.StatsEngine;
 
 /**
  * Created by cnnr2 on 2015-10-31.
