@@ -22,15 +22,12 @@ import java.net.URL;
 import java.util.ArrayList;
 
 import ca.team2706.scouting.mcmergemanager.R;
-import ca.team2706.scouting.mcmergemanager.backend.App;
 import ca.team2706.scouting.mcmergemanager.backend.interfaces.DataRequester;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.MatchSchedule;
-import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.StatsEngine;
 
 public class BlueAllianceUtils {
 
-
-    private static Activity mActivity;
+    private Activity mActivity;
 
     /* ~~~ Constructor ~~~ */
     public BlueAllianceUtils(Activity activity) {
@@ -96,7 +93,7 @@ public class BlueAllianceUtils {
             try {
                 downloadArray = new ArrayList<>();
 
-                SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(App.getContext());
+                SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(mActivity);
                 boolean done = false;
 
                 String[] parts = SP.getString("Download Data", null).split("\\.");
@@ -364,7 +361,7 @@ public class BlueAllianceUtils {
                         compAmount -= 1;
                         String combine = dataYear + " "/* //TODO year */ + compsName2015.get(i) + " seeded " + Integer.toString(p) + "/" + compAmount + " " + joe;
 
-                        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(App.getContext());
+                        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(mActivity);
                         SharedPreferences.Editor editor = SP.edit();
                         boolean done = false;
 
@@ -396,7 +393,7 @@ public class BlueAllianceUtils {
     /**
      * <Some Description>
      */
-    public ArrayList<String> getBlueAllianceDataArrayAsArray(final String key, final String url) {
+    public static ArrayList<String> getBlueAllianceDataArrayAsArray(final String key, final String url) {
         ArrayList<String> array1 = new ArrayList<>();
 
         try {

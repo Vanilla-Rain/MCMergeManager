@@ -9,9 +9,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.preference.PreferenceManager;
-import android.util.DisplayMetrics;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.WindowManager;
 
@@ -591,22 +591,20 @@ public class FileUtils {
 
         if (height > reqSize || width > reqSize) {
 
-        final int halfHeight = height / 2;
-        final int halfWidth = width / 2;
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
 
-        // Calculate the largest inSampleSize value that is a power of 2 and keeps
-        // height or width larger than the requested size.
-        while ((halfHeight / inSampleSize) > reqSize
-        || (halfWidth / inSampleSize) > reqSize) {
-        inSampleSize *= 2;
-        }
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps
+            // height or width larger than the requested size.
+            while ((halfHeight / inSampleSize) > reqSize
+            || (halfWidth / inSampleSize) > reqSize) {
+            inSampleSize *= 2;
+            }
         }
 
         // Decode bitmap with inSampleSize set
         options.inSampleSize = inSampleSize;
         options.inJustDecodeBounds = false;
         return BitmapFactory.decodeFile(imagePath);
-        }
-
-
+    }
 }

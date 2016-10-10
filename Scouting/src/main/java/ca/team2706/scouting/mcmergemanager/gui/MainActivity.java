@@ -78,6 +78,8 @@ public class MainActivity extends AppCompatActivity
         // try logging into the Google Drive and make sure the correct files are there.
         mFileUtils = new FileUtils(this);
         mFileUtils.canWriteToStorage();
+
+        mGoogleDriveUtils = new GoogleDriveUtils(this);
     }
 
     @Override

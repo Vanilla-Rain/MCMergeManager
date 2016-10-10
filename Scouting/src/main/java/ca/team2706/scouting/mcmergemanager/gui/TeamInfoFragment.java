@@ -23,10 +23,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import ca.team2706.scouting.mcmergemanager.backend.App;
+import ca.team2706.scouting.mcmergemanager.backend.BlueAllianceUtils;
 import ca.team2706.scouting.mcmergemanager.backend.FileUtils;
 import ca.team2706.scouting.mcmergemanager.backend.interfaces.PhotoRequester;
 import ca.team2706.scouting.mcmergemanager.R;
-import ca.team2706.scouting.mcmergemanager.miscBackend.StatsEngine;
+import ca.team2706.scouting.mcmergemanager.stronghold2016.StatsEngine;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.TeleopScoutingObject;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.gui.TeamStatsActivity;
 
@@ -34,7 +36,6 @@ import ca.team2706.scouting.mcmergemanager.stronghold2016.gui.TeamStatsActivity;
 public class TeamInfoFragment extends Fragment
         implements PhotoRequester {
 
-    private OnFragmentInteractionListener mListener;
     private int m_teamNumber;
     private View m_view;
     public FileUtils fileUtils;
@@ -72,11 +73,12 @@ public class TeamInfoFragment extends Fragment
 
             Runnable getStuff = new Runnable() {
                 public void run() {
-                    textViewPerformanceString =  fileUtils.getBlueAllianceDataForTeam(m_teamNumber);
+                    BlueAllianceUtils blueAllianceUtils = new BlueAllianceUtils(getActivity());
+                    textViewPerformanceString =  blueAllianceUtils.getBlueAllianceDataForTeam(m_teamNumber);
                     ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
                     NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
                     if (activeNetwork != null) { // not connected to the internet
-                        nicknameString = fileUtils.getBlueAllianceData("nickname", "http://www.thebluealliance.com/api/v2/team/frc" + m_teamNumber + "?X-TBA-App-Id=frc2706:mergemanager:v01/");
+                        nicknameString = BlueAllianceUtils.getBlueAllianceData("nickname", "http://www.thebluealliance.com/api/v2/team/frc" + m_teamNumber + "?X-TBA-App-Id=frc2706:mergemanager:v01/");
                     }
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
@@ -125,8 +127,10 @@ public class TeamInfoFragment extends Fragment
             progress.setMax(100);
             progress.setProgress(0);
 
+
             Runnable downloadStuff = new Runnable() {
                 public void run() {
+                    BlueAllianceUtils blueAllianceUtils = new BlueAllianceUtils(getActivity());
                     for(int i = 0; i < 3; i++)
                         switch(i) {
 
@@ -137,7 +141,7 @@ public class TeamInfoFragment extends Fragment
                                     }
                                 });
 
-                                fileUtils.downloadBlueAllianceDataForEvent(args.getString("inputResult"), args.getString("selectedYear"), progress, dialog, 2015);
+                                blueAllianceUtils.downloadBlueAllianceDataForEvent(args.getString("inputResult"), args.getString("selectedYear"), progress, dialog, 2015);
 
                                 break;
                             case 1:
@@ -147,7 +151,7 @@ public class TeamInfoFragment extends Fragment
                                         progress.setProgress(0);
                                     }
                                 });
-                                fileUtils.downloadBlueAllianceDataForEvent(args.getString("inputResult"), args.getString("selectedYear"), progress,dialog,2014);
+                                blueAllianceUtils.downloadBlueAllianceDataForEvent(args.getString("inputResult"), args.getString("selectedYear"), progress,dialog,2014);
 
                                 break;
                             case 2:
@@ -158,7 +162,7 @@ public class TeamInfoFragment extends Fragment
                                     }
                                 });
 
-                                fileUtils.downloadBlueAllianceDataForEvent(args.getString("inputResult"), args.getString("selectedYear"), progress, dialog,2013);
+                                blueAllianceUtils.downloadBlueAllianceDataForEvent(args.getString("inputResult"), args.getString("selectedYear"), progress, dialog,2013);
 
 
                                 getActivity().runOnUiThread(new Runnable() {

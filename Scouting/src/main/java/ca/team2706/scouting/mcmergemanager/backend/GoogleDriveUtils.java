@@ -85,7 +85,7 @@ public class GoogleDriveUtils implements GoogleApiClient.ConnectionCallbacks, Go
 
         // store string constants and preferences in member variables just for cleanliness
         // (since the strings are `static`, when any instances of FileUtils update these, all instances will get the updates)
-        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(App.getContext());
+        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(mActivity);
         mRemoteToplevelFolderName = App.getContext().getString(R.string.FILE_TOPLEVEL_DIR);
         mRemoteTeamFolderName = SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_googledrive_teamname), "<Not Set>");
         mRemoteEventFolderName = SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_googledrive_event), "<Not Set>");
@@ -116,7 +116,7 @@ public class GoogleDriveUtils implements GoogleApiClient.ConnectionCallbacks, Go
         if (mGoogleApiClient != null) {
             mGoogleApiClient.disconnect();
         } else {
-            SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(App.getContext());
+            SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(mActivity);
             String driveAccount = SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_googledrive_account), "<Not Set>");
 
             if (driveAccount.equals("<Not Set>"))
@@ -410,7 +410,7 @@ public class GoogleDriveUtils implements GoogleApiClient.ConnectionCallbacks, Go
             if (!FileUtils.canWriteToStorage())
                 return;
 
-            SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(App.getContext());
+            SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(mActivity);
             String driveAccount = SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_googledrive_account), "<Not Set>");
 
             if (driveAccount.equals("<Not Set>"))
