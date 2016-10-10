@@ -1,7 +1,6 @@
-package ca.team2706.scouting.mcmergemanager.miscBackend;
+package ca.team2706.scouting.mcmergemanager.backend.interfaces;
 
 import android.graphics.Bitmap;
-import android.net.Uri;
 
 /**
  * This interface is meant to be implemented by an activity that requests team photos from the FileUtils.
