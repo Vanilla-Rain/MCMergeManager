@@ -4,17 +4,11 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.os.Bundle;
-import android.provider.MediaStore;
 import android.text.InputType;
-import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import ca.team2706.scouting.mcmergemanager.R;
 
@@ -32,7 +26,7 @@ public EditText editText;
     public DisplayAlertDialog(String title, String inputHint, int inputType, Context launchActivity) {
         this.title = title;
         this.inputHint = inputHint;
-        this.inputType = inputType;
+        DisplayAlertDialog.inputType = inputType;
         this.launchActivity = launchActivity;
 
     }

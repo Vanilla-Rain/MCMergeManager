@@ -14,15 +14,15 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import ca.team2706.scouting.mcmergemanager.backend.FileUtils;
 import ca.team2706.scouting.mcmergemanager.R;
+import ca.team2706.scouting.mcmergemanager.backend.FileUtils;
+import ca.team2706.scouting.mcmergemanager.gui.MainActivity;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.AutoScoutingObject;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.MatchData;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.PostGameObject;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.PreGameObject;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.ScalingTime;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.TeleopScoutingObject;
-import ca.team2706.scouting.mcmergemanager.gui.MainActivity;
 
 /**
  * Created by MCSoftware on 2016-01-18.

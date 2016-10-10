@@ -1,6 +1,7 @@
 package ca.team2706.scouting.mcmergemanager.gui;
 
 
+import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -11,17 +12,15 @@ import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
-import android.support.v7.app.ActionBar;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.view.MenuItem;
 import android.support.v4.app.NavUtils;
-
-import java.util.List;
+import android.support.v7.app.ActionBar;
+import android.view.MenuItem;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 
-import android.accounts.Account;
+import java.util.List;
 
 import ca.team2706.scouting.mcmergemanager.R;
 

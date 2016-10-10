@@ -2,13 +2,13 @@ package ca.team2706.scouting.mcmergemanager.gui;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.os.StrictMode;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -23,10 +23,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import ca.team2706.scouting.mcmergemanager.R;
 import ca.team2706.scouting.mcmergemanager.backend.BlueAllianceUtils;
 import ca.team2706.scouting.mcmergemanager.backend.FileUtils;
 import ca.team2706.scouting.mcmergemanager.backend.interfaces.PhotoRequester;
-import ca.team2706.scouting.mcmergemanager.R;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.StatsEngine;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.TeleopScoutingObject;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.gui.TeamStatsActivity;

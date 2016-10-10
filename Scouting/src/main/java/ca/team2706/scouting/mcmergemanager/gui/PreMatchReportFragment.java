@@ -12,9 +12,9 @@ import android.widget.TextView;
 
 import java.util.Map;
 
+import ca.team2706.scouting.mcmergemanager.R;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.StatsEngine;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.MatchSchedule;
-import ca.team2706.scouting.mcmergemanager.R;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.TeleopScoutingObject;
 
 public class PreMatchReportFragment extends Fragment {

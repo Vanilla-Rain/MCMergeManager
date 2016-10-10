@@ -14,6 +14,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -166,123 +167,6 @@ public class FileUtils {
      */
     public void appendToMatchDataFile(MatchData.Match match) {
 
-        /** build the string **/
-        StringBuilder sb = new StringBuilder();
-
-        /** Pre-game **/
-        sb.append( String.format("%d,%d,", match.preGame.matchNumber, match.preGame.teamNumber) );
-
-
-
-        /** Auto Mode **/
-
-        sb.append( String.format("%b,%b,", match.autoMode.isSpyBot, match.autoMode.reachedDefense) );
-
-        // a list of defensesBreached
-        // {defenseBreached<int>;defenseBreached<int>;...}
-        sb.append("{");
-        for(int i=0; i<match.autoMode.defensesBreached.size(); i++) {
-            sb.append(match.autoMode.defensesBreached.get(i));
-
-            // the last one doesn't get a semi-colon
-            if (i < match.autoMode.defensesBreached.size() - 1)
-                sb.append(";");
-        }
-        sb.append("},");
-
-        // a list of BallShots
-        // {{ballShot_X<int>;ballShot_Y<int>;ballShot_time<.3double>;ballshot_which<int>}:...}
-        sb.append("{");
-        for(int i=0; i<match.autoMode.ballsShot.size(); i++) {
-            BallShot ballShot = match.autoMode.ballsShot.get(i);
-
-            sb.append(String.format("{%d;%d;%.2f;%d}",ballShot.x,ballShot.y,ballShot.shootTime,ballShot.whichGoal));
-
-            if (i < match.autoMode.ballsShot.size() - 1)
-                sb.append(":");
-        }
-        sb.append("},");
-
-
-
-        /** Teleop Mode **/
-
-        // a list of defensesBreached
-        // {defenseBreached<int>;...}
-        sb.append("{");
-        for(int i=0; i<match.teleopMode.defensesBreached.size(); i++) {
-            sb.append(match.teleopMode.defensesBreached.get(i));
-
-            // the last one doesn't get a colon
-            if (i < match.teleopMode.defensesBreached.size() - 1 )
-                sb.append(";");
-        }
-        sb.append("},");
-
-        // a list of BallShots
-        // {{ballShot_X<int>;ballShot_Y<int>;ballShot_time<.3double>;ballshot_which<int>}:...}
-        sb.append("{");
-        for(int i=0; i<match.teleopMode.ballsShot.size(); i++) {
-            BallShot ballShot = match.teleopMode.ballsShot.get(i);
-
-            sb.append(String.format("{%d;%d;%.2f;%d}",ballShot.x,ballShot.y,ballShot.shootTime,ballShot.whichGoal));
-
-            // the last one doesn't get a colon
-            if (i < match.teleopMode.ballsShot.size() - 1)
-                sb.append(":");
-        }
-        sb.append("},");
-
-        sb.append( String.format("%.2f,",match.teleopMode.timeDefending));
-
-        // Ball Pickup
-        // {{%d;%,2f}:...}
-        sb.append("{");
-        for(int i=0; i<match.teleopMode.ballsPickedUp.size(); i++) {
-            BallPickup pickup = match.teleopMode.ballsPickedUp.get(i);
-
-            sb.append( String.format("{%d;%.2f}", pickup.selection, pickup.time));
-
-            // the last one doesn't get a colon
-            if (i < match.teleopMode.ballsPickedUp.size() - 1)
-                sb.append(":");
-        }
-        sb.append("},");
-
-
-        // Scaling Times
-        // {{%.2f;%d}:...}
-        sb.append("{");
-        for(int i=0; i<match.postGame.scalingTower.size(); i++) {
-            ScalingTime scale = match.postGame.scalingTower.get(i);
-
-            sb.append( String.format("{%.2f;%d}", scale.time, scale.completed));
-
-            // the last one doesn't get a colon
-            if (i < match.postGame.scalingTower.size() - 1)
-                sb.append(":");
-        }
-        sb.append("},");
-
-
-        /** Post-Game **/
-
-        // since commas, semi-colons, braces, and <enter> are all special characters for the text file, let's rip those out just to be safe.
-        String cleanedNotes = match.postGame.notes .replaceAll(",","")
-                .replaceAll(";","")
-                .replaceAll("\\{","")
-                .replaceAll("\\}","")
-                .replaceAll("\n","");
-        sb.append(cleanedNotes+",");
-
-        sb.append( String.format("%b,",match.postGame.challenged) );
-        sb.append( String.format("%d",match.postGame.timeDead) );
-
-        sb.append("\n");
-
-
-
-
         String outFileName = sLocalEventFilePath +"/"+ App.getContext().getResources().getString(R.string.matchScoutingDataFileName);
 
         Log.d(App.getContext().getResources().getString(R.string.app_name), "Saving data to file: "+outFileName);
@@ -290,7 +174,7 @@ public class FileUtils {
         File outfile = new File(outFileName);
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(outfile, true));
-            bw.append( sb.toString() );
+            bw.append( match.toString() );
             bw.flush();
             bw.close();
         } catch (IOException e) {
@@ -305,7 +189,7 @@ public class FileUtils {
         outfile = new File(outFileName);
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(outfile, true));
-            bw.append( sb.toString() );
+            bw.append( match.toString() );
             bw.flush();
             bw.close();
         } catch (IOException e) {
@@ -346,116 +230,21 @@ public class FileUtils {
             return null;
         }
 
-        try {
-            // parse all the matches into the MatchData object
-            for (String matchStr : matchStrs) {
+        // parse all the matches into the MatchData object
+        boolean parseFailure = false;
+        for (String matchStr : matchStrs) {
 
-                MatchData.Match match = new MatchData.Match();
-
-                String[] tokens = matchStr.split(",");
-
-
-                /** Pre-game **/
-
-                match.preGame.matchNumber = Integer.valueOf(tokens[0]);
-                match.preGame.teamNumber = Integer.valueOf(tokens[1]);
-
-
-                /** Auto Mode **/
-
-                match.autoMode.isSpyBot = Boolean.valueOf(tokens[2]);
-                match.autoMode.reachedDefense = Boolean.valueOf(tokens[3]);
-
-                // autoDefensesBreached
-                if ( !tokens[4].equals("") ) {
-                    String[] autoDefensesBreachedStrs = tokens[4].split(";");
-                    for (String breach : autoDefensesBreachedStrs)
-                        match.autoMode.defensesBreached.add(Integer.valueOf(breach));
-                }
-
-                // autoBallShots
-                if ( !tokens[5].equals("") ) {
-                    String[] autoShots = tokens[5].split(":");
-                    for (String shot : autoShots) {
-                        String[] shotTokens = shot.split(";");
-                        BallShot ballShot = new BallShot();
-                        ballShot.x = Integer.valueOf(shotTokens[0]);
-                        ballShot.y = Integer.valueOf(shotTokens[1]);
-                        ballShot.shootTime = Double.valueOf(shotTokens[2]);
-                        ballShot.whichGoal = Integer.valueOf(shotTokens[3]);
-
-                        match.autoMode.ballsShot.add(ballShot);
-                    }
-                }
-
-                /** Teleop Mode **/
-
-                // teleopDefensesBreached
-                if ( !tokens[6].equals("") ) {
-                    String[] teleopDefensesBreachedStrs = tokens[6].split(";");
-                    for (String breach : teleopDefensesBreachedStrs)
-                        match.teleopMode.defensesBreached.add(Integer.valueOf(breach));
-                }
-
-                // teleopBallShots
-                if ( !tokens[7].equals("") ) {
-                    String[] teleopShots = tokens[7].split(":");
-                    for (String shot : teleopShots) {
-                        String[] shotTokens = shot.split(";");
-                        BallShot ballShot = new BallShot();
-                        ballShot.x = Integer.valueOf(shotTokens[0]);
-                        ballShot.y = Integer.valueOf(shotTokens[1]);
-                        ballShot.shootTime = Double.valueOf(shotTokens[2]);
-                        ballShot.whichGoal = Integer.valueOf(shotTokens[3]);
-
-                        match.teleopMode.ballsShot.add(ballShot);
-                    }
-                }
-
-                match.teleopMode.timeDefending = Double.valueOf(tokens[8]);
-
-
-                // Ball Pickup
-                if ( !tokens[9].equals("") ) {
-                    String[] ballPickups = tokens[9].split(":");
-                    for (String pickupStr : ballPickups) {
-                        String[] pickupTokens = pickupStr.split(";");
-                        BallPickup ballPickup = new BallPickup();
-                        ballPickup.selection = Integer.valueOf(pickupTokens[0]);
-                        ballPickup.time = Double.valueOf(pickupTokens[1]);
-
-                        match.teleopMode.ballsPickedUp.add(ballPickup);
-                    }
-                }
-
-                // Scaling Times
-                // {{%.2f;%d}:...}
-                if ( !tokens[10].equals("") ) {
-                    String[] scaleStrs = tokens[10].split(":");
-                    for (String scaleStr : scaleStrs) {
-                        String[] scaleTokens = scaleStr.split(";");
-                        ScalingTime scalingTime = new ScalingTime();
-
-                        scalingTime.time = Double.valueOf(scaleTokens[0]);
-                        scalingTime.completed = Integer.valueOf(scaleTokens[1]);
-
-                        match.postGame.scalingTower.add(scalingTime);
-                    }
-                }
-
-
-                /** Post-Game **/
-
-                match.postGame.notes = tokens[11];
-                match.postGame.challenged = Boolean.valueOf(tokens[12]);
-                match.postGame.timeDead = Integer.valueOf(tokens[13]);
-
-
+            try {
+                MatchData.Match match = new MatchData.Match(matchStr);
                 matchData.addMatch(match);
+            } catch (Exception e) {
+                Log.e(App.getContext().getResources().getString(R.string.app_name), "loadMatchDataFile:: "+e.toString());
+                parseFailure = true;
+                continue;
             }
-        } catch (Exception e) {
-            Log.e(App.getContext().getResources().getString(R.string.app_name), "loadMatchDataFile:: "+e.toString());
-            return null;
+        }
+        if (parseFailure) {
+            Toast.makeText(App.getContext(), "Warning: match data may be corrupted or malformed.", Toast.LENGTH_SHORT).show();
         }
 
         return matchData;

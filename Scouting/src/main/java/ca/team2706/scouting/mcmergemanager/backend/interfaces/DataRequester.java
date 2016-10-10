@@ -13,7 +13,7 @@ import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.MatchSched
  */
 public interface DataRequester {
 
-    public abstract void updateData(String[] matchResultsDataCSV, String[] matchScoutingDataCSV);
+    void updateData(String[] matchResultsDataCSV, String[] matchScoutingDataCSV);
 
-    public abstract void updateMatchSchedule(MatchSchedule matchSchedule);
+    void updateMatchSchedule(MatchSchedule matchSchedule);
 }

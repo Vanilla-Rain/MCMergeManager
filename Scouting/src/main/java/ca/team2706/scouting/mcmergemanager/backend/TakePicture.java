@@ -20,7 +20,7 @@ public class TakePicture {
     Activity launchActivity;
 
     public TakePicture(String picName, Activity launchActivity) {
-        this.picName = picName;
+        TakePicture.picName = picName;
         this.launchActivity = launchActivity;
     }
 

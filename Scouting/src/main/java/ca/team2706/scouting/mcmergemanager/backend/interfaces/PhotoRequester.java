@@ -18,5 +18,5 @@ public interface PhotoRequester {
      * @param photos "Bitmap" is the generic image class in Android, it can hold any type of image.
      *               Use `imageView.setImageBitmap(photos[i]);` to display an image in an ImageView.
      */
-    public abstract void updatePhotos(Bitmap[] photos);
+    void updatePhotos(Bitmap[] photos);
 }

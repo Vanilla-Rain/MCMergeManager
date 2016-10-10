@@ -3,6 +3,7 @@ package ca.team2706.scouting.mcmergemanager.gui;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -24,7 +25,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.content.Intent;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,14 +32,14 @@ import android.widget.Toast;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import ca.team2706.scouting.mcmergemanager.backend.BlueAllianceUtils;
-import ca.team2706.scouting.mcmergemanager.backend.GoogleDriveUtils;
-import ca.team2706.scouting.mcmergemanager.backend.interfaces.DataRequester;
-import ca.team2706.scouting.mcmergemanager.backend.FileUtils;
 import ca.team2706.scouting.mcmergemanager.R;
+import ca.team2706.scouting.mcmergemanager.backend.BlueAllianceUtils;
+import ca.team2706.scouting.mcmergemanager.backend.FileUtils;
+import ca.team2706.scouting.mcmergemanager.backend.GoogleDriveUtils;
+import ca.team2706.scouting.mcmergemanager.backend.TakePicture;
+import ca.team2706.scouting.mcmergemanager.backend.interfaces.DataRequester;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.MatchData;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.MatchSchedule;
-import ca.team2706.scouting.mcmergemanager.backend.TakePicture;
 
 @TargetApi(21)
 public class MainActivity extends AppCompatActivity
@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity
 
         // try logging into the Google Drive and make sure the correct files are there.
         mFileUtils = new FileUtils(this);
-        mFileUtils.canWriteToStorage();
+        FileUtils.canWriteToStorage();
 
         mGoogleDriveUtils = new GoogleDriveUtils(this);
     }
@@ -258,7 +258,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void updateMatchSchedule(MatchSchedule matchSchedule) {
-        this.m_matchSchedule = matchSchedule;
+        m_matchSchedule = matchSchedule;
     }
 
     /**

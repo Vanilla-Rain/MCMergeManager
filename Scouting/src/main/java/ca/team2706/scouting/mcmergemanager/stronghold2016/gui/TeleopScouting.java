@@ -22,10 +22,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import ca.team2706.scouting.mcmergemanager.R;
-import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.AutoScoutingObject;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.BallPickup;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.BallShot;
-import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.PreGameObject;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.TeleopScoutingObject;
 
 public class TeleopScouting extends AppCompatActivity {
@@ -136,8 +134,8 @@ public class TeleopScouting extends AppCompatActivity {
     public void postGame(View view) {
         Intent intent = new Intent(this, PostGameActivity.class);
         Intent thisIntent = getIntent();
-        intent.putExtra("PreGameData", (PreGameObject) thisIntent.getSerializableExtra("PreGameData"));
-        intent.putExtra("AutoScoutingData", (AutoScoutingObject) thisIntent.getSerializableExtra("AutoScoutingData"));
+        intent.putExtra("PreGameData", thisIntent.getSerializableExtra("PreGameData"));
+        intent.putExtra("AutoScoutingData", thisIntent.getSerializableExtra("AutoScoutingData"));
         intent.putExtra("TeleopScoutingData", new TeleopScoutingObject(ballsShot, defensesBreached, defendingTime,ballPickups));
         startActivity(intent);
     }

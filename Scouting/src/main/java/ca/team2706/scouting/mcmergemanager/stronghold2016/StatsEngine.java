@@ -7,8 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import Jama.*;
-
+import Jama.Matrix;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.BallPickup;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.BallShot;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.MatchData;

@@ -8,11 +8,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import ca.team2706.scouting.mcmergemanager.R;
-<<<<<<< HEAD
-import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.StatsEngine;
-=======
 import ca.team2706.scouting.mcmergemanager.stronghold2016.StatsEngine;
->>>>>>> massiveCleanup
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.BallShot;
 
 import static ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.TeleopScoutingObject.*;
