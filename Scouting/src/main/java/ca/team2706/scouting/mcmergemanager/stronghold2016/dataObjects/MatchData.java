@@ -192,6 +192,13 @@ public class MatchData implements Serializable {
 
         /** De-serializing constructor **/
         public Match(String matchStr) {
+
+            preGame = new PreGameObject();
+            autoMode = new AutoScoutingObject();
+            teleopMode = new TeleopScoutingObject();
+            postGame = new PostGameObject();
+
+
             String[] tokens = matchStr.split(",");
 
 

@@ -20,7 +20,7 @@ public class TeamStatsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_team_stats);
+        setContentView(R.layout.stronghold2016_activity_team_stats);
 
         // unbundle the stats data from the intent
         Intent intent = getIntent();
