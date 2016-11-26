@@ -1,8 +1,8 @@
 <preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
 
     <header
-        android:fragment="ca.team2706.scouting.mcmergemanager.gui.SettingsActivity$GoogleDrivePreferenceFragment"
-        android:title="Google Drive Sync"
+        android:fragment="ca.team2706.scouting.mcmergemanager.gui.SettingsActivity$TeamSettingsPreferenceFragment"
+        android:title="Team Settings"
         android:icon="@drawable/ic_sync_black_24dp" />
 
     <header

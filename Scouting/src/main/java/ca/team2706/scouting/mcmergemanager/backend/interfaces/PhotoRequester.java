@@ -4,9 +4,9 @@ import android.graphics.Bitmap;
 
 /**
  * This interface is meant to be implemented by an activity that requests team photos from the FileUtils.
- * Since syncing with Drive can take a few seconds, FileUtils will immediately call
+ * Since syncing with the server can take a few seconds, FileUtils will immediately call
  * the activity's updatePhotos(photos) with whatever photos are locally cached for that team.
- * If FileUtils is able to connect to Drive then it will call it again after performing the sync.
+ * If FileUtils is able to connect to server then it will call it again after performing the sync.
  *
  * Created by Mike Ounsworth
  */

@@ -35,12 +35,11 @@ import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.ScalingTim
 
 /**
  * This is a helper class to hold common code for accessing shared scouting data files.
- * This class takes care of keeping a local cache, syncing to Google Drive, and (eventually) sharing with other bluetooth-connected devices also running the app.
+ * This class takes care of keeping a local cache, syncing to the server, and (eventually) sharing with other bluetooth-connected devices also running the app.
  * <p/>
  * Created by Mike Ounsworth
  */
 public class FileUtils {
-
 
     private static Activity mActivity;
 
@@ -49,7 +48,6 @@ public class FileUtils {
      **/
     FileUtils m_me;
 
-    GoogleDriveUtils mGoogleDriveUtils;
     public static String sLocalToplevelFilePath;
     public static String sLocalTeamFilePath;
     public static String sLocalEventFilePath;
@@ -61,24 +59,19 @@ public class FileUtils {
         // (since the strings are `static`, when any instances of FileUtils update these, all instances will get the updates)
         SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(App.getContext());
         sLocalToplevelFilePath = "/sdcard/"+ App.getContext().getString(R.string.FILE_TOPLEVEL_DIR);
-        sLocalTeamFilePath = sLocalToplevelFilePath + "/" + SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_googledrive_teamname), "<Not Set>");
-        sLocalEventFilePath = sLocalTeamFilePath + "/" + SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_googledrive_event), "<Not Set>");
+        sLocalTeamFilePath = sLocalToplevelFilePath + "/" + SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_teamname), "<Not Set>");
+        sLocalEventFilePath = sLocalTeamFilePath + "/" + SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_event), "<Not Set>");
         sLocalTeamPhotosFilePath = sLocalTeamFilePath + "/" + "Team Photos";
     }
 
     /**
      * Constructor
      *
-     * @param activity This will be used to fetch string contants for file storage and displaying toasts.
-     *                 Also, if this is a MainActivity, then this activity's .updateDataSyncLabel()
-     *                 will be called when a Drive connection either suceeds or fails.
+     * @param activity This will be used to fetch string constants for file storage and displaying toasts.
      */
     public FileUtils(Activity activity) {
         mActivity = activity;
         m_me = this;
-
-        mGoogleDriveUtils = new GoogleDriveUtils(activity);
-
 
         checkLocalFileStructure();
     }
@@ -308,12 +301,12 @@ public class FileUtils {
 
     /**
      * This method will return you all locally-cached photos for the requested team.
-     * It will then spawn a new background thread, and if Drive is available, it will sync the photos
+     * It will then spawn a new background thread, and if <photo server> is available, it will sync the photos
      * for the requested team only and then notify the requesting activity that it has new photos.
      * <p/>
-     * Since syncing photos with Drive can take a few seconds, FileUtils.loadTeamPhotos() will immediately call
+     * Since syncing photos with the server can take a few seconds, FileUtils.loadTeamPhotos() will immediately call
      * the PhotoRequester's updatePhotos(Bitmap[]) with whatever photos are locally cached for that team,
-     * and if FileUtils is able to connect to Drive then it will call it again after performing the sync.
+     * and if FileUtils is able to connect to the server then it will call it again after performing the sync.
      *
      * @param teamNumber The team whos photos we want to load.
      * @param requester  The activity that is requesting the photos. This activity's .updatePhotos(Bitmap[])
@@ -352,8 +345,8 @@ public class FileUtils {
         requester.updatePhotos(arrBitmaps.toArray(new Bitmap[arrBitmaps.size()]));
 
 
-        /* Now, attempt to sync with Drive */
-        mGoogleDriveUtils.syncOneTeamsPhotos(teamNumber, requester);
+        /* This used to sync with Google Drive, now we need something different */
+        // TODO
 
     }
 
