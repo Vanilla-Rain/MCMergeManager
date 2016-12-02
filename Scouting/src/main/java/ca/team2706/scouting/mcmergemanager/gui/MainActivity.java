@@ -35,7 +35,6 @@ import java.util.TimerTask;
 import ca.team2706.scouting.mcmergemanager.R;
 import ca.team2706.scouting.mcmergemanager.backend.BlueAllianceUtils;
 import ca.team2706.scouting.mcmergemanager.backend.FileUtils;
-import ca.team2706.scouting.mcmergemanager.backend.GoogleDriveUtils;
 import ca.team2706.scouting.mcmergemanager.backend.TakePicture;
 import ca.team2706.scouting.mcmergemanager.backend.interfaces.DataRequester;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.MatchData;
@@ -59,8 +58,6 @@ public class MainActivity extends AppCompatActivity
     public static MatchSchedule m_matchSchedule;
 
     FileUtils mFileUtils;
-    GoogleDriveUtils mGoogleDriveUtils;
-
 
     /** A flag so that onResume() knows to sync photos for a particular team when we're returning from the camera app */
     boolean lauchedPhotoApp = false;
@@ -75,25 +72,24 @@ public class MainActivity extends AppCompatActivity
 
         me = this;
 
-        // try logging into the Google Drive and make sure the correct files are there.
         mFileUtils = new FileUtils(this);
         FileUtils.canWriteToStorage();
-
-        mGoogleDriveUtils = new GoogleDriveUtils(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        // try logging into the Google Drive and make sure the correct files are there.
+        //  This used to be needed for Google Drive, might not serve any purpose now...
         if (mFileUtils == null) {
             mFileUtils = new FileUtils(this);
         }
-        mGoogleDriveUtils.checkDriveConnectionAndFiles();
 
         if (lauchedPhotoApp) {
-            mGoogleDriveUtils.syncOneTeamsPhotos(enterATeamNumberPopup.getTeamNumber());
+            // TODO
+            // This used to call Google Drive. This need to be replaced with something else
+            //mGoogleDriveUtils.syncOneTeamsPhotos(enterATeamNumberPopup.getTeamNumber());
+
             lauchedPhotoApp = false;
         }
 
@@ -106,14 +102,10 @@ public class MainActivity extends AppCompatActivity
     }
 
     /**
-     * Called when activity gets invisible. Connection to Drive service needs to
-     * be disconnected as soon as an activity is invisible.
+     * Called when activity gets invisible.
      */
     @Override
     protected void onPause() {
-        if(mFileUtils != null)
-            mGoogleDriveUtils.disconnect();
-
         super.onPause();
     }
 
@@ -263,18 +255,12 @@ public class MainActivity extends AppCompatActivity
 
     /**
      * Set the text for the label "Syncing Data To:" according to the saved preferences.
-     *
-     * Note: This is called by FileUtils.checkDriveConnectionAndFiles() after it determines if it can connect to Drive
      */
     public void updateDataSyncLabel() {
         SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        String driveTeam = SP.getString(getResources().getString(R.string.PROPERTY_googledrive_teamname), "<Not Set>");
-        String driveEvent = SP.getString(getResources().getString(R.string.PROPERTY_googledrive_event), "<Not Set>");
-        String driveAccount = SP.getString(getResources().getString(R.string.PROPERTY_googledrive_account), "<Not Set>");
+        String event = SP.getString(getResources().getString(R.string.PROPERTY_event), "<Not Set>");
 
-        String label = "Syncing Data with: "+driveTeam+" / "+driveEvent+"\n\t\tusing: "+driveAccount;
-        if (mFileUtils != null && !mGoogleDriveUtils.canConnectToDrive())
-            label = label + "\n! Cannot connect to Drive";
+        String label = "Event:"+event;
 
         TextView tv = (TextView) findViewById(R.id.sync_settings_tv);
         tv.setText(label);

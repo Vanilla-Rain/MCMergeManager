@@ -152,7 +152,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
      */
     protected boolean isValidFragment(String fragmentName) {
         return PreferenceFragment.class.getName().equals(fragmentName)
-                || GoogleDrivePreferenceFragment.class.getName().equals(fragmentName)
+                || TeamSettingsPreferenceFragment.class.getName().equals(fragmentName)
                 || NotificationPreferenceFragment.class.getName().equals(fragmentName);
     }
 
@@ -161,45 +161,25 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
      * activity is showing a two-pane settings UI.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static class GoogleDrivePreferenceFragment extends PreferenceFragment {
+    public static class TeamSettingsPreferenceFragment extends PreferenceFragment {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_google_drive);
+            addPreferencesFromResource(R.xml.pref_team_settings);
             setHasOptionsMenu(true);
 
-            // populate the list of Google Accounts on this device:
-            AccountManager accountManager = AccountManager.get(getActivity());
-            Account[] accounts = accountManager.getAccountsByType("com.google");
-
-            String[] entries = new String[accounts.length];
-            String[] values = new String[accounts.length];
-            for ( int i = 0; i < accounts.length; i++ )
-            {
-                if(accounts[i].type.equals("com.google")) {
-                    values[i] = entries[i] = accounts[i].name;
-                }
-            }
-            ListPreference accountsLP = (ListPreference) findPreference(getResources().getString(R.string.PROPERTY_googledrive_account));
-            accountsLP.setEntries(entries);
-            accountsLP.setEntryValues(values);
-
-
             // populate the list of event codes from TheBlueAlliance
-            ListPreference eventsLP = (ListPreference) findPreference(getResources().getString(R.string.PROPERTY_googledrive_event));
+            ListPreference eventsLP = (ListPreference) findPreference(getResources().getString(R.string.PROPERTY_event));
             eventsLP.setEntries(getResources().getString(R.string.TBA_EVENT_NAMES).split(":") );
             eventsLP.setEntryValues(getResources().getString(R.string.TBA_EVENT_CODES).split(":"));
-
-            String[] strings = getResources().getString(R.string.TBA_EVENT_CODES).split(":");
 
 
             // Bind the summaries of EditText/List/Dialog/Ringtone preferences
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
-            bindPreferenceSummaryToValue(findPreference(getResources().getString(R.string.PROPERTY_googledrive_account)));
-            bindPreferenceSummaryToValue(findPreference(getResources().getString(R.string.PROPERTY_googledrive_teamname)));
-            bindPreferenceSummaryToValue(findPreference(getResources().getString(R.string.PROPERTY_googledrive_event)));
+            bindPreferenceSummaryToValue(findPreference(getResources().getString(R.string.PROPERTY_teamname)));
+            bindPreferenceSummaryToValue(findPreference(getResources().getString(R.string.PROPERTY_event)));
         }
 
         @Override
@@ -209,8 +189,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 startActivity(new Intent(getActivity(), SettingsActivity.class));
                 return true;
             }
-            boolean toRet = super.onOptionsItemSelected(item);
-            return toRet;
+            return super.onOptionsItemSelected(item);
         }
     }
 

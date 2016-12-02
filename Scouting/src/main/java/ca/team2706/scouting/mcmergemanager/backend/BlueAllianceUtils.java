@@ -287,7 +287,7 @@ public class BlueAllianceUtils {
         {
             public void run() {
                 SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(App.getContext());
-                String TBA_event = SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_googledrive_event), "<Not Set>");
+                String TBA_event = SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_event), "<Not Set>");
                 String scheduleStr;
                 try {
                     scheduleStr = readUrl("http://www.thebluealliance.com/api/v2/event/"+TBA_event+"/matches?X-TBA-App-Id=frc2706:mergemanager:v01/");
@@ -310,7 +310,7 @@ public class BlueAllianceUtils {
      * /MCMergeManager/<TeamName>/<EventName>/thebluealliance.json
      * so that the data is still accessible later, even if there's no internet connection later.
      * <p/>
-     * This should trigger on a button, or maybe a settin+gs-menu item in Settings > Google Drive (we can rename that to something more appropriate).
+     * This should trigger on a button, or maybe a settin+gs-menu item in Settings.
      */
     public void downloadBlueAllianceDataForEvent(String eventName, String year, final ProgressBar progressBar, final AlertDialog dialog, int dataYear) {
         ConnectivityManager cm = (ConnectivityManager) App.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
