@@ -9,6 +9,7 @@ import java.util.List;
 
 public class TeleopScoutingObject {
 
+
     public static double MATCH_TIME = 0; // TODO: get match time in milliseconds?
 
     public List<FuelPickup> fuelPickups;
@@ -67,4 +68,6 @@ public class TeleopScoutingObject {
         gearCycleTime = gearPickupCycleTime + gearDeliveryCycleTime;
         fuelCycleTime = fuelPickupCycleTime + fuelShotCycleTime;
     }
+
+
 }

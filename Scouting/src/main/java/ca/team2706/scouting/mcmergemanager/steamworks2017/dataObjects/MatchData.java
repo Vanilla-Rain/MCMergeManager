@@ -38,12 +38,12 @@ public class MatchData {
                      AutoScoutingObject autoScoutingObject) {
             this.preGameObject = preGameObject;
             this.autoScoutingObject = autoScoutingObject;
-            this.postGameObject = postGameObject;
             this.teleopScoutingObject = teleopScoutingObject;
+            this.autoScoutingObject = autoScoutingObject;
         }
 
-        // TODO: test this code to make sure it works
 
+        // TODO: test this code to make sure it works
         @Override
         public String toString() {
             StringBuilder sb = new StringBuilder();

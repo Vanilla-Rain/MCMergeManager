@@ -13,6 +13,5 @@ public class Defensing {
     public Defensing(double startTime, double endTime, int skill) {
         this.startTime = startTime;
         this.endTime = endTime;
-        this.skill = skill;
     }
 }
