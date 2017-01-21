@@ -3,66 +3,40 @@ package ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects;
 import java.util.ArrayList;
 import java.util.List;
 
-import ca.team2706.scouting.mcmergemanager.stronghold2016.gui.TeleopScouting;
-
 /**
  * Created by dwall on 16/01/17.
  */
 
 public class TeleopScoutingObject {
 
-    public List<FuelPickup> fuelPickups;
-    public List<FuelShot> fuelShots;
-    public List<GearPickup> gearPickups;
-    public List<GearDropoff> gearDropoffs;
+    public List<Fuel> fuels;
+    public List<Gear> gears;
 
     public double fuelCycleTime;
     public double gearCycleTime;
 
     public TeleopScoutingObject() {
-        fuelPickups = new ArrayList<FuelPickup>();
-        fuelShots = new ArrayList<FuelShot>();
-        gearPickups = new ArrayList<GearPickup>();
-        gearDropoffs = new ArrayList<GearDropoff>();
+        fuels = new ArrayList<Fuel>();
+        gears = new ArrayList<Gear>();
     }
 
-    public TeleopScoutingObject(List<FuelPickup> fuelPickups, List<FuelShot> fuelShots, List<GearPickup> gearPickups, List<GearDropoff> gearDropoffs) {
-        this.fuelShots = fuelShots;
-        this.fuelPickups = fuelPickups;
-        this.gearDropoffs = gearDropoffs;
-        this.gearPickups = gearPickups;
+    public TeleopScoutingObject(List<Fuel> fuels, List<Gear> gears) {
+        this.fuels = fuels;
+        this.gears = gears;
     }
 
     public void cycleTime() {
-        double fuelPickupCycleTime = 0;
-        for(FuelPickup f : fuelPickups) {
-            fuelPickupCycleTime += f.time;
+
+        double fuelCycleTime = 0;
+        for(Fuel f : fuels) {
+            fuelCycleTime += f.time;
         }
-        fuelPickupCycleTime /= fuelPickups.size();
+        fuelCycleTime /= fuels.size();
 
-        double fuelShootCycleTime = 0;
-        for(FuelShot f : fuelShots) {
-            fuelShootCycleTime += f.time;
+        double gearCycleTime = 0;
+        for(Gear g : gears) {
+            gearCycleTime += g.time;
         }
-        fuelShootCycleTime /= fuelShots.size();
-
-        // TODO how to combine fuel cycle times?
-        // A) keep them separate, B) add them together???
-
-        double gearPickupCycleTime = 0;
-        for(GearPickup g : gearPickups) {
-            gearPickupCycleTime += g.time;
-        }
-        gearPickupCycleTime /= gearPickups.size();
-
-        double gearDropoffCycleTime = 0;
-        for(GearDropoff g : gearDropoffs) {
-            gearDropoffCycleTime += g.time;
-        }
-        gearDropoffCycleTime /= gearDropoffs.size();
-
-        // combine stuff together
-        fuelCycleTime = fuelPickupCycleTime + fuelShootCycleTime;
-        gearCycleTime = gearDropoffCycleTime + gearPickupCycleTime;
+        gearCycleTime /= gears.size();
     }
 }
