@@ -9,10 +9,7 @@ public class Fuel {
     public double time;
     public int accuracy;
     public int amount;
-    public int boiler;
-
-    public static final int LOW = 0;
-    public static final int HIGH = 1;
+    public boolean boiler; // true is high, false is low
 
     public int x;
     public int y;
@@ -22,7 +19,7 @@ public class Fuel {
     public static final int PLAYER_STATION = 1;
     public static final int GROUND = 2;
 
-    public Fuel(double time, int accuracy, int amount, int boiler, int x, int y, int pickupLocation){
+    public Fuel(double time, int pickupLocation, int amount, boolean boiler, int accuracy, int x, int y){
         this.time = time;
         this.accuracy = accuracy;
         this.amount = amount;

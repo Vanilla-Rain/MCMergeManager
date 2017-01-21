@@ -4,7 +4,7 @@ package ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects;
  * Created by dwall on 16/01/17.
  */
 
-public class AutoModeObject {
+public class AutoScoutingObject {
 
     public boolean start_gear;
     public boolean start_fuel;
@@ -18,8 +18,11 @@ public class AutoModeObject {
     public static final int fail_delivery = 1;
     public static final int success_delivered = 2;
 
-    public AutoModeObject(boolean start_gear, boolean start_fuel, int open_hopper, int gear_delivered, boolean boiler,
-                          int accuracy) {
+    // empty constructor
+    public AutoScoutingObject() {}
+
+    public AutoScoutingObject(boolean start_gear, boolean start_fuel, int open_hopper, int gear_delivered, boolean boiler,
+                              int accuracy) {
         this.start_fuel = start_fuel;
         this.start_gear = start_gear;
         this.open_hopper = open_hopper;

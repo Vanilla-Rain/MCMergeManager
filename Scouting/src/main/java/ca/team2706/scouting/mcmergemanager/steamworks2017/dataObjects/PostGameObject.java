@@ -14,6 +14,9 @@ public class PostGameObject {
     public static final int FAIL_CLIMB = 1;
     public static final int SUCCESS_CLIMB = 2;
 
+    // empty constructor
+    public PostGameObject() {}
+
     public PostGameObject(String notes, int climb, double climb_time, double time_dead) {
         this.climb = climb;
         this.notes = notes;
