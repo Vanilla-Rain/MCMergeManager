@@ -40,7 +40,7 @@ public class TeleopScouting extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.stronghold2016_activity_teleop_scouting);
+        setContentView(R.layout.steamworks2017_activity_teleop_scouting);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         final Spinner spinner = (Spinner) findViewById(R.id.defense_spinner);
         final TextView tvGameTime = (TextView) findViewById(R.id.textViewGameTime);
