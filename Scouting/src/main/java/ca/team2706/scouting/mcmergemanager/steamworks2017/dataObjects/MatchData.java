@@ -64,13 +64,13 @@ public class MatchData {
 
             // fuel cycles
             sb.append("{");
-            for(int i = 0; i < teleopScoutingObject.fuels.size(); i++) {
-                Fuel fuel = teleopScoutingObject.fuels.get(i);
+            for(int i = 0; i < teleopScoutingObject.fuelShots.size(); i++) {
+                FuelShot fuelShot = teleopScoutingObject.fuelShots.get(i);
 
-                sb.append(String.format("{%.2f;%d;%d;%b;%d;%d;%d}", fuel.time, fuel.pickupLocation, fuel.amount, fuel.boiler,
-                        fuel.accuracy, fuel.x, fuel.y));
+                sb.append(String.format("{%.2f;%d;%d;%b;%d;%d;%d}", fuelShot.time, fuelShot.pickupLocation, fuelShot.amount, fuelShot.boiler,
+                        fuelShot.accuracy, fuelShot.x, fuelShot.y));
 
-                if(i < teleopScoutingObject.fuels.size())
+                if(i < teleopScoutingObject.fuelShots.size())
                     sb.append(":");
             }
             sb.append("},");
@@ -133,7 +133,7 @@ public class MatchData {
                 String[] fuel = tokens[9].split(":");
                 for(String s : fuel) {
                     String[] fuelTokens = s.split(";");
-                    teleopScoutingObject.fuels.add(new Fuel(Double.valueOf(fuelTokens[0]),
+                    teleopScoutingObject.fuelShots.add(new FuelShot(Double.valueOf(fuelTokens[0]),
                             Integer.valueOf(fuelTokens[1]), Integer.valueOf(fuelTokens[2]),
                             Boolean.valueOf(fuelTokens[3]), Integer.valueOf(fuelTokens[4]),
                             Integer.valueOf(fuelTokens[5]), Integer.valueOf(fuelTokens[6])));

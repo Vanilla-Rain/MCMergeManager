@@ -6,11 +6,13 @@ package ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects;
 
 public class Defensing {
 
-    public double time;
+    public double startTime;
+    public double endTime;
     public int skill;
 
-    public Defensing(double time, int skill) {
-        this.time = time;
+    public Defensing(double startTime, double endTime, int skill) {
+        this.startTime = startTime;
+        this.endTime = endTime;
         this.skill = skill;
     }
 }

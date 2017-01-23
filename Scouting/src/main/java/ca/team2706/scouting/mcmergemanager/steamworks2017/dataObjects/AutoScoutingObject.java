@@ -14,9 +14,9 @@ public class AutoScoutingObject {
     public int open_hopper; // 0 if none, 1+ store how many opened
 
     public int gear_delivered;
-    public static final int not_delivered = 0;
-    public static final int fail_delivery = 1;
-    public static final int success_delivered = 2;
+    public static final int NOT_DELIVERED = 0;
+    public static final int FAIL_DELIVERY = 1;
+    public static final int SUCCESS_DELIVERY = 2;
 
     // empty constructor
     public AutoScoutingObject() {}
