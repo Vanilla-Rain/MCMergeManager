@@ -37,7 +37,6 @@ public class TeleopScoutingObject {
     }
 
     // TODO probably not going to be moved to stat engine
-    // TODO: change so that times are in timestamps
     public void cycleTime() {
 
         double fuelPickupCycleTime = 0;
