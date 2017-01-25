@@ -12,7 +12,7 @@ public class GearPickup {
     public boolean pickupLocation; // true is from wall, false is from ground
     public boolean successful; // true if no difficulty, false if had some difficulty
 
-    public GearPickup(boolean pickupLocation, boolean successful) {
+    public GearPickup(double startTime, double endTime, boolean pickupLocation, boolean successful) {
         this.startTime = startTime;
         this.endTime = endTime;
         this.pickupLocation = pickupLocation;
