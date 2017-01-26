@@ -13,21 +13,6 @@
     tools:context=".stronghold2016.gui.AutoScouting"
     tools:showIn="@layout/stronghold2016_activity_auto_scouting">
 
-    <ImageView
-        android:src="@drawable/offensive_courtyard"
-        android:layout_width="@dimen/offensive_courtyard_image_width"
-        android:layout_height="@dimen/offensive_courtyard_image_width"
-        android:id="@+id/map"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
-
-    <Spinner
-        android:id="@+id/defense_spinner"
-        android:text="Breached Defense"
-
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -40,23 +25,6 @@
         android:layout_marginTop="480dp" />
 
 
-
-    <CheckBox
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Started in Spy Bot Position?"
-        android:id="@+id/buttoncheckBox"
-        android:layout_above="@+id/map"
-        android:layout_centerHorizontal="true" />
-
-    <CheckBox
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Arrived at a Defense"
-        android:id="@+id/buttonArrivedAtDefense"
-        android:layout_above="@+id/buttoncheckBox"
-        android:layout_centerHorizontal="true" />
-
     <Button
         android:layout_width="match_parent"
         android:background="?attr/colorPrimaryDark"
@@ -67,14 +35,50 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
 
-    <TextView
+    <CheckBox
+        android:text="Crossed Baseline?"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Shots Taken:"
-        android:id="@+id/textView9"
-        android:textStyle="bold"
-        android:textSize="20sp"
-        android:layout_below="@+id/buttoncheckBox"
-        android:layout_alignStart="@+id/map" />
+        android:layout_marginTop="23dp"
+        android:id="@+id/crossedBaselineCheckBox"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
+
+    <CheckBox
+        android:text="Started with gear?"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="22dp"
+        android:layout_alignBaseline="@+id/crossedBaselineCheckBox"
+        android:layout_alignBottom="@+id/crossedBaselineCheckBox"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/startingGearCheckBox" />
+
+    <SeekBar
+        android:layout_height="wrap_content"
+        android:id="@+id/autoBallSeekBar"
+        android:layout_width="500dp"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="134dp"
+        android:max="100"
+        android:progress="60"
+        />
+
+    <CheckBox
+        android:text="Started with balls?"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="11dp"
+        android:id="@+id/startingBallsCheckBox"
+        android:layout_below="@+id/crossedBaselineCheckBox"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:id="@+id/autoBallScoredTextView"
+        android:layout_below="@+id/autoBallSeekBar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="74dp"
+        android:layout_height="wrap_content" />
+
 </RelativeLayout>

@@ -21,7 +21,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/stronghold2016_content_auto_scouting" />
+    <include layout="@layout/steamworks2017_content_auto_scouting" />
 
 
 
