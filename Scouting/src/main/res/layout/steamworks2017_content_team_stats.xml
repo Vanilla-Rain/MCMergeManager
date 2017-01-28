@@ -7,7 +7,7 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="ca.team2706.scouting.mcmergemanager.stronghold2016.gui.TeamStatsActivity"
     tools:showIn="@layout/stronghold2016_activity_team_stats"
-    tools:ignore="HardcodedText, TooManyViews">
+    tools:ignore="HardcodedText">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -26,7 +26,6 @@
             android:layout_gravity="center_horizontal"
             android:textSize="28sp" />
 
-        <!-- HIGH SHOTS -->
         <Space
             android:layout_width="match_parent"
             android:layout_height="20dp"
@@ -83,20 +82,17 @@
             android:layout_width="match_parent"
             android:layout_height="30dp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Auto Mode:"
-            android:id="@+id/AutoTitle" />
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="10dp" />
-
+        <!-- Auto mode info -->
         <GridLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Auto Mode:"
+                android:id="@+id/AutoTitle" />
 
             <CheckBox
                 android:text="Crossed Base Line"
@@ -106,6 +102,8 @@
                 android:focusable="false"
                 android:clickable="false"
                 android:textColor="?android:attr/textColorSecondary"
+                android:layout_row="1"
+                android:layout_column="0"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <CheckBox
@@ -116,7 +114,7 @@
                 android:focusable="false"
                 android:clickable="false"
                 android:textColor="?android:attr/textColorSecondary"
-                android:layout_row="1"
+                android:layout_row="2"
                 android:layout_column="0"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -124,27 +122,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="0 / 0 (0)"
-                android:id="@+id/autoHighGoalsTV"
-                android:layout_row="3"
-                android:layout_column="1" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="0 / 0 (0)"
-                android:id="@+id/autoLowGoalsTV"
+                android:text="High Goals:"
+                android:id="@+id/autoHighGoalsLBL"
                 android:layout_row="4"
-                android:layout_column="1" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Missed Shots: "
-                android:id="@+id/autoMissedShotsLBL"
-                android:layout_row="5"
                 android:layout_column="0" />
 
             <TextView
@@ -152,8 +132,8 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="0 / 0 (0)"
-                android:id="@+id/autoMissedShotsTV"
-                android:layout_row="5"
+                android:id="@+id/autoHighGoalsTV"
+                android:layout_row="4"
                 android:layout_column="1" />
 
             <TextView
@@ -162,33 +142,53 @@
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Low Goals:"
                 android:id="@+id/autoLowGoalsLBL"
-                android:layout_row="4"
+                android:layout_row="5"
                 android:layout_column="0" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="High Goals:"
-                android:id="@+id/autoHighGoalsLBL"
-                android:layout_row="3"
+                android:text="0 / 0 (0)"
+                android:id="@+id/autoLowGoalsTV"
+                android:layout_row="5"
+                android:layout_column="1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Missed Shots: "
+                android:id="@+id/autoMissedShotsLBL"
+                android:layout_row="6"
                 android:layout_column="0" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="0 / 0 (0)"
+                android:id="@+id/autoMissedShotsTV"
+                android:layout_row="6"
+                android:layout_column="1" />
+
         </GridLayout>
 
         <Space
             android:layout_width="match_parent"
             android:layout_height="30dp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Teleop Mode:"
-            android:id="@+id/teleopTitleTV" />
-
+        <!-- General Teleop Info -->
         <GridLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Teleop Mode:"
+                android:id="@+id/teleopTitleTV" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -239,6 +239,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="0 / 0 (0)"
+                android:id="@+id/hopperPickupsTV"
+                android:layout_row="9"
+                android:layout_column="1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Failed Pickups: "
                 android:id="@+id/failedPickups"
                 android:layout_row="10"
@@ -252,6 +261,25 @@
                 android:id="@+id/teleopFailedPickupsTV"
                 android:layout_row="10"
                 android:layout_column="1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Avg Time\n    Playing D: "
+                android:id="@+id/avgTimeBeingDead"
+                android:layout_row="11"
+                android:layout_column="0" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="0.0 s"
+                android:id="@+id/teleopTimePlayingDTV"
+                android:layout_row="11"
+                android:layout_column="1"
+                android:gravity="end" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -271,6 +299,14 @@
                 android:layout_row="12"
                 android:layout_column="1" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Highest:  "
+                android:id="@+id/textView38"
+                android:layout_row="13"
+                android:layout_column="0" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -300,8 +336,7 @@
                 android:text="    Avg Time: "
                 android:id="@+id/climbTime"
                 android:layout_row="17"
-                android:layout_column="0"
-                />
+                android:layout_column="0" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -310,15 +345,6 @@
                 android:text="0 s"
                 android:id="@+id/climbTimeTV"
                 android:layout_row="17"
-                android:layout_column="1" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="0 / 0 (0)"
-                android:id="@+id/failedClimbsTV"
-                android:layout_row="18"
                 android:layout_column="1" />
 
             <TextView
@@ -335,41 +361,14 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="0 / 0 (0)"
-                android:id="@+id/hopperPickupsTV"
-                android:layout_row="9"
+                android:id="@+id/failedClimbsTV"
+                android:layout_row="18"
                 android:layout_column="1" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Avg Time\n    Playing D: "
-                android:id="@+id/avgTimeBeingDead"
-                android:layout_row="11"
-                android:layout_column="0" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="0.0 s"
-                android:id="@+id/teleopTimePlayingDTV"
-                android:layout_row="11"
-                android:layout_column="1"
-                android:gravity="end" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Highest:  "
-                android:id="@+id/textView38"
-                android:layout_row="13"
-                android:layout_column="0" />
 
 
         </GridLayout>
 
+        <!-- Gears info -->
         <GridLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -386,19 +385,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="0 / 0 (0)"
-                android:id="@+id/teleopMissedGearsTV"
-                android:layout_row="6"
-                android:layout_column="1" />
+                android:text="Gears\n    Installed:"
+                android:id="@+id/gearsInstalled"
+                android:layout_row="4"
+                android:layout_column="0" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Gears\n    Installed:"
-                android:id="@+id/gearsInstalled"
+                android:text="0 / 0 (0)"
+                android:id="@+id/teleopGearsInstalledTV"
                 android:layout_row="4"
-                android:layout_column="0" />
+                android:layout_column="1" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -414,8 +413,8 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="0 / 0 (0)"
-                android:id="@+id/teleopGearsInstalledTV"
-                android:layout_row="4"
+                android:id="@+id/teleopMissedGearsTV"
+                android:layout_row="6"
                 android:layout_column="1" />
 
             <TextView
@@ -455,6 +454,7 @@
                 android:layout_column="1" />
         </GridLayout>
 
+        <!-- Low Goal -->
         <GridLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -470,9 +470,27 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Missed\n    Shots: "
-                android:id="@+id/lowMissedShots"
-                android:layout_row="5"
+                android:text="Low Goals:"
+                android:id="@+id/lowGoals"
+                android:layout_row="2"
+                android:layout_column="0" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="0 / 0 (0)"
+                android:id="@+id/teleopLowGoalsTV"
+                android:layout_row="2"
+                android:layout_column="1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Avg setup\n    time:"
+                android:id="@+id/lowGoalSetupTime"
+                android:layout_row="3"
                 android:layout_column="0" />
 
             <TextView
@@ -489,27 +507,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Avg setup\n    time:"
-                android:id="@+id/lowGoalSetupTime"
-                android:layout_row="3"
-                android:layout_column="0" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="0 / 0 (0)"
-                android:id="@+id/teleopLowGoalsTV"
-                android:layout_row="2"
-                android:layout_column="1" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Low Goals:"
-                android:id="@+id/lowGoals"
-                android:layout_row="2"
+                android:text="Missed\n    Shots: "
+                android:id="@+id/lowMissedShots"
+                android:layout_row="5"
                 android:layout_column="0" />
 
             <TextView
@@ -541,6 +541,7 @@
 
         </GridLayout>
 
+        <!-- High Goal -->
         <GridLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent" >
@@ -556,19 +557,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="0.0 s"
-                android:id="@+id/teleopHighSetupTimeTV"
-                android:layout_row="2"
-                android:layout_column="1"
-                android:gravity="end" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Avg setup\n    time:"
-                android:id="@+id/teleopHighSetupTimeLBL"
-                android:layout_row="2"
+                android:text="High Goals:"
+                android:id="@+id/highGoals"
+                android:layout_row="1"
                 android:layout_column="0" />
 
             <TextView
@@ -584,10 +575,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="High Goals:"
-                android:id="@+id/highGoals"
-                android:layout_row="1"
+                android:text="Avg setup\n    time:"
+                android:id="@+id/teleopHighSetupTimeLBL"
+                android:layout_row="2"
                 android:layout_column="0" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="0.0 s"
+                android:id="@+id/teleopHighSetupTimeTV"
+                android:layout_row="2"
+                android:layout_column="1"
+                android:gravity="end" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -654,9 +655,6 @@
                 android:contentDescription="Offensive Courtyard"
                 android:layout_centerInParent="true" />
         </RelativeLayout>
-
-
-        <!-- LOW SHOTS -->
 
         <TextView
             android:layout_width="wrap_content"
