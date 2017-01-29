@@ -21,6 +21,16 @@ public class MatchData {
         matches.add(match);
     }
 
+    public MatchData filterByTeam(int teamNo) {
+
+        MatchData matchData = new MatchData();
+
+        for(Match match : matches) {
+            if (match.preGameObject.teamNumber == teamNo)
+                matchData.addMatch(match);
+        }
+        return matchData;
+    }
 
     // String serializers to read / write it to file
 
@@ -42,7 +52,7 @@ public class MatchData {
             this.teleopScoutingObject = teleopScoutingObject;
         }
 
-        // TODO: test this code to make sure it works
+        // TODO: this needs to be re-worked because MikeO changed around the data
 
         @Override
         public String toString() {
@@ -53,7 +63,7 @@ public class MatchData {
 
             // autonomous mode
             sb.append( String.format("%b,%b,%d,%b,%d,%d,", autoScoutingObject.start_gear, autoScoutingObject.start_fuel,
-                    autoScoutingObject.gear_delivered, autoScoutingObject.boiler, autoScoutingObject.accuracy,
+                    autoScoutingObject.gear_delivered, autoScoutingObject.boiler, autoScoutingObject.numFuelScored,
                     autoScoutingObject.open_hopper));
 
             // teleop mode
@@ -65,10 +75,10 @@ public class MatchData {
             // fuel-pickup cycles
             sb.append("{");
             for(int i = 0; i < teleopScoutingObject.fuelPickups.size(); i++) {
-                FuelPickup fuelPickup = teleopScoutingObject.fuelPickups.get(i);
+                FuelPickupEvent fuelPickup = teleopScoutingObject.fuelPickups.get(i);
 
-                sb.append(String.format("{%.2f;%.2f;%d;%d}", fuelPickup.startTime, fuelPickup.endTime,
-                        fuelPickup.pickupLocation, fuelPickup.amount));
+                sb.append(String.format("{%.2f;%.2f;%d;%d}", fuelPickup.timestamp, fuelPickup.endTime,
+                        fuelPickup.pickupType, fuelPickup.amount));
 
                 if(i < teleopScoutingObject.fuelPickups.size())
                     sb.append(":");
@@ -78,9 +88,9 @@ public class MatchData {
             // fuel-shot cycles
             sb.append("{");
             for(int i = 0; i < teleopScoutingObject.fuelShots.size(); i++) {
-                FuelShot fuelShot = teleopScoutingObject.fuelShots.get(i);
+                FuelShotEvent fuelShot = teleopScoutingObject.fuelShots.get(i);
 
-                sb.append(String.format("{%.2f;%.2f;%b;%d;%d;%d}", fuelShot.startTime, fuelShot.endTime,
+                sb.append(String.format("{%.2f;%.2f;%b;%d;%d;%d}", fuelShot.timestamp, fuelShot.endTime,
                         fuelShot.boiler, fuelShot.accuracy, fuelShot.x, fuelShot.y));
 
                 if(i < teleopScoutingObject.fuelShots.size())
@@ -97,9 +107,9 @@ public class MatchData {
             // gear-pickup cycles
             sb.append("{");
             for(int i = 0; i < teleopScoutingObject.gearPickups.size(); i++) {
-                GearPickup gearPickup = teleopScoutingObject.gearPickups.get(i);
+                GearPickupEvent gearPickup = teleopScoutingObject.gearPickups.get(i);
 
-                sb.append(String.format("{%.2f;%.2f;%b;%b}", gearPickup.startTime, gearPickup.endTime, gearPickup.pickupLocation, gearPickup.successful));
+                sb.append(String.format("{%.2f;%.2f;%b;%b}", gearPickup.timestamp, gearPickup.endTime, gearPickup.pickupLocation, gearPickup.successful));
 
                 if(i < teleopScoutingObject.gearPickups.size())
                     sb.append(":");
@@ -109,9 +119,9 @@ public class MatchData {
             // gear-delivery cycles
             sb.append("{");
             for(int i = 0; i < teleopScoutingObject.gearDelivevries.size(); i++) {
-                GearDelivevry gearDelivevry = teleopScoutingObject.gearDelivevries.get(i);
+                GearDelivevryEvent gearDelivevry = teleopScoutingObject.gearDelivevries.get(i);
 
-                sb.append(String.format("{%.2f;%.2f;%d;%d}", gearDelivevry.startTime, gearDelivevry.endTime, gearDelivevry.delivered, gearDelivevry.lift));
+                sb.append(String.format("{%.2f;%.2f;%d;%d}", gearDelivevry.timestamp, gearDelivevry.endTime, gearDelivevry.deliveryStatus, gearDelivevry.lift));
 
                 if(i < teleopScoutingObject.gearDelivevries.size())
                     sb.append(":");
@@ -150,7 +160,7 @@ public class MatchData {
             autoScoutingObject.start_fuel = Boolean.valueOf(tokens[3]);
             autoScoutingObject.gear_delivered = Integer.valueOf(tokens[4]);
             autoScoutingObject.boiler = Boolean.valueOf(tokens[5]);
-            autoScoutingObject.accuracy = Integer.valueOf(tokens[6]);
+            autoScoutingObject.numFuelScored = Integer.valueOf(tokens[6]);
             autoScoutingObject.open_hopper = Integer.valueOf(tokens[7]);
 
             // teleopmode
@@ -161,7 +171,7 @@ public class MatchData {
                 String[] fuelPickups = tokens[9].split(":");
                 for(String s : fuelPickups) {
                     String[] fuelPickupTokens = s.split(";");
-                    teleopScoutingObject.fuelPickups.add(new FuelPickup(Double.valueOf(fuelPickupTokens[0]),
+                    teleopScoutingObject.fuelPickups.add(new FuelPickupEvent(Double.valueOf(fuelPickupTokens[0]),
                             Double.valueOf(fuelPickupTokens[1]), Integer.valueOf(fuelPickupTokens[2]),
                             Integer.valueOf(fuelPickupTokens[3])));
                 }
@@ -171,7 +181,7 @@ public class MatchData {
                 String[] fuelShots = tokens[10].split(":");
                 for(String s : fuelShots) {
                     String[] fuelPickupTokens = s.split(";");
-                    teleopScoutingObject.fuelShots.add(new FuelShot(Double.valueOf(fuelPickupTokens[0]),
+                    teleopScoutingObject.fuelShots.add(new FuelShotEvent(Double.valueOf(fuelPickupTokens[0]),
                             Double.valueOf(fuelPickupTokens[1]), Boolean.valueOf(fuelPickupTokens[2]),
                             Integer.valueOf(fuelPickupTokens[3]), Integer.valueOf(fuelPickupTokens[4]),
                             Integer.valueOf(fuelPickupTokens[5])));
@@ -184,7 +194,7 @@ public class MatchData {
                 String[] gearPickups = tokens[12].split(":");
                 for (String s : gearPickups) {
                     String[] gearPickupTokens = s.split(";");
-                    teleopScoutingObject.gearPickups.add(new GearPickup(Double.valueOf(gearPickupTokens[0]),
+                    teleopScoutingObject.gearPickups.add(new GearPickupEvent(Double.valueOf(gearPickupTokens[0]),
                             Double.valueOf(gearPickupTokens[1]), Boolean.valueOf(gearPickupTokens[2]),
                             Boolean.valueOf(gearPickupTokens[3])));
                 }
@@ -194,7 +204,7 @@ public class MatchData {
                 String[] gearDelivery = tokens[13].split(":");
                 for (String s : gearDelivery) {
                     String[] gearDeliveryTokens = s.split(";");
-                    teleopScoutingObject.gearDelivevries.add(new GearDelivevry(Double.valueOf(gearDeliveryTokens[0]),
+                    teleopScoutingObject.gearDelivevries.add(new GearDelivevryEvent(Double.valueOf(gearDeliveryTokens[0]),
                             Double.valueOf(gearDeliveryTokens[1]), Integer.valueOf(gearDeliveryTokens[2]),
                             Integer.valueOf(gearDeliveryTokens[3])));
                 }
