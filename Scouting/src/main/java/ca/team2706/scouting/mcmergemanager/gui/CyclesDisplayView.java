@@ -6,8 +6,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -19,27 +17,66 @@ import java.util.ArrayList;
  * Created by mike on 22/01/17.
  */
 
-public class CyclesDisplayView extends SurfaceView {
-    private SurfaceHolder holder;
+public class CyclesDisplayView extends View {
+
+    public static final double MATCH_DURATION = 135.0;  // s
+
+    private static final Paint PURPLE_FILL = new Paint();
+    private static final Paint RED_FILL    = new Paint();
+    private static final Paint OUTLINE_PAINT = new Paint(Color.BLACK);
 
 
-    private static final int PURPLE = Color.rgb(102,51,153);
+    // static initializer
+    static {
+        PURPLE_FILL.setColor(Color.rgb(102,51,153));
+        PURPLE_FILL.setStyle(Paint.Style.FILL);
+        RED_FILL.setColor(Color.RED);
+        RED_FILL.setStyle(Paint.Style.FILL);
 
-    private class CycleBar {
-        public double startTime;
-        public double endTime;
-        public int colour;
-
-        public CycleBar(double startTime, double endTime) {
-            this.startTime = startTime;
-            this.endTime = endTime;
-        }
+        OUTLINE_PAINT.setStyle(Paint.Style.STROKE);
+        OUTLINE_PAINT.setStrokeWidth(10);
     }
+
+
+    private int viewWidth, viewHeight;
 
 
     private ArrayList<CycleBar> cycleBars = new ArrayList<>();
 
-    public static final double MATCH_DURATION = 135.0;  // s
+    private class CycleBar {
+        private double startTime, endTime;
+
+        private Rect backgroundRect, outlineRect;
+        private Paint fillPaint;
+
+        CycleBar(double startTime, double endTime, boolean success) {
+            this.startTime = startTime;
+            this.endTime = endTime;
+
+            if(success)
+                fillPaint = PURPLE_FILL;
+            else
+                fillPaint = RED_FILL;
+        }
+
+        /**
+         * Uses the viewWidth and viewHeight to calculate the pixel of the bars.
+         */
+        void calcPxDims() {
+            if(viewWidth == 0 || viewHeight == 0)
+                return;
+
+            double scalingFactor = viewWidth / MATCH_DURATION;
+
+            int startx = (int) (startTime * scalingFactor);
+            int endx = (int) (endTime * scalingFactor);
+
+            backgroundRect = new Rect(startx, 0, endx, viewHeight);
+
+            outlineRect = new Rect(startx, 0, endx, viewHeight);
+        }
+    }
+
 
     /** Constructor **/
     public CyclesDisplayView(Context context) {
@@ -54,25 +91,25 @@ public class CyclesDisplayView extends SurfaceView {
     }
 
     private void localInit() {
-        holder = getHolder();
-        holder.addCallback(new SurfaceHolder.Callback() {
-            @Override
-            public void surfaceDestroyed(SurfaceHolder holder) {
-            }
 
-            @Override
-            public void surfaceCreated(SurfaceHolder holder) {
-                Canvas c = holder.lockCanvas(null);
-                onDraw(c);
-                holder.unlockCanvasAndPost(c);
-            }
-
-            @Override
-            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
-            }
-        });
     }
+
+
+    @Override
+    public void onFinishInflate() {
+        super.onFinishInflate();
+    }
+
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        viewWidth = w;
+        viewHeight = h;
+
+        for(CycleBar cycleBar : cycleBars)
+            cycleBar.calcPxDims();
+    }
+
 
     /**
      * Add a cycle bar to the bar graph.
@@ -94,16 +131,11 @@ public class CyclesDisplayView extends SurfaceView {
 
 
         // size the bar to the length of the cycle
-        CycleBar cycleBar = new CycleBar(startTime, endTime);
+        CycleBar cycleBar = new CycleBar(startTime, endTime, success);
 
-        // set colour
-        if(success) {
-            cycleBar.colour = PURPLE;
-        } else {
-            cycleBar.colour = Color.RED;
-        }
-
+        cycleBar.calcPxDims();
         cycleBars.add(cycleBar);
+
 
         // force a re-draw of this view.
         invalidate();
@@ -111,31 +143,18 @@ public class CyclesDisplayView extends SurfaceView {
 
     /**
      * All Views must have this, it gets called by the OS every time the screen redraws.
-     * @param canvas
      */
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        // Set the background colour
-        canvas.drawColor(Color.WHITE);
-
         for(CycleBar cycleBar : cycleBars) {
-            double scalingFactor = this.getWidth() / MATCH_DURATION;
 
-            int startx = (int) (cycleBar.startTime * scalingFactor);
-            int endx = (int) (cycleBar.endTime * scalingFactor);
+            // draw the cycleBar
+            canvas.drawRect(cycleBar.backgroundRect, cycleBar.fillPaint);
 
-            Paint paint = new Paint();
-            paint.setStyle(Paint.Style.FILL);
-            paint.setColor(cycleBar.colour);
-            canvas.drawRect(new Rect(startx, 0, endx, this.getHeight()), paint);
-
-            // draw an outline to the box
-            paint.setStyle(Paint.Style.STROKE);
-            paint.setStrokeWidth(10);
-            paint.setColor(Color.BLACK);
-            canvas.drawRect(new Rect(startx, 0, endx, this.getHeight()), paint);
+            // draw an outlineRect to the box
+            canvas.drawRect(cycleBar.outlineRect, OUTLINE_PAINT);
         }
     }
 }
