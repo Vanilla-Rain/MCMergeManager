@@ -78,7 +78,7 @@ public class CyclesDisplayView extends SurfaceView {
      * Add a cycle bar to the bar graph.
      *
      * @param startTime the time-stamp of when the cycle started [0, MATCH_DURATION].
-     * @param endTime the time-stamp of when the cycle ended [0, MATCH_DURATION]. If endTime < startTime, then nothing gets drawn.
+     * @param endTime the time-stamp of when the cycle ended [0, MATCH_DURATION]. If endTime < timestamp, then nothing gets drawn.
      * @param success if true, we draw the cycle bar in 2706 purple, if false, we draw the cycle bar in red.
      *                Intended for cycles that were incomplete at the end of the match, but I'm sure we
      *                can find other uses.
