@@ -110,7 +110,7 @@ public class MatchSchedule implements Serializable {
     }
 
     /**
-     * A costructor that parses the schedule as delivered by TheBlueAlliance.
+     * A costructor that parses the schedule as deliveryStatus by TheBlueAlliance.
      * @param jsonSchedule the match schedule data as returned by thebluealliance.com
      */
     public MatchSchedule(String jsonSchedule) {
