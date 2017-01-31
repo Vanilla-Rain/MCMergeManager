@@ -55,7 +55,7 @@ public class AutoScouting extends AppCompatActivity {
 
             public void onStopTrackingTouch(SeekBar seekBar) {
                 TextView tv = (TextView) findViewById(R.id.autoBallScoredTextView);
-                tv.setText(progressChangedValue + " points were scored");
+                tv.setText(progressChangedValue*5 + " points were scored");
             }
         });
 
@@ -124,12 +124,10 @@ public class AutoScouting extends AppCompatActivity {
 //        preGameObject  = (PreGameObject)thisIntent.getSerializableExtra("PreGameData");
 //    }
     public void toTeleop(View view) {
-        CheckBox cb = (CheckBox) findViewById(R.id.buttoncheckBox);
-        CheckBox cb2 = (CheckBox) findViewById(R.id.buttonArrivedAtDefense);
         Intent intent = new Intent(this, TeleopScouting.class);
 
         intent.putExtra("PreGameData", preGameObject);
-//        intent.putExtra("AutoScoutingData", new AutoScoutingObject(ballsShot, cb.isChecked(), defensesBreached, cb2.isChecked()));
+ //       intent.putExtra("AutoScoutingData", new AutoScoutingObject(ballsShot, cb.isChecked(), defensesBreached, cb2.isChecked()));
 
         startActivity(intent);
     }

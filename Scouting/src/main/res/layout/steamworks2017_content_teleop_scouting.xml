@@ -12,29 +12,10 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
         android:layout_alignParentStart="true"
-        android:layout_marginBottom="86dp">
+        android:layout_marginBottom="86dp"
+        android:layout_height="500dp">
 
-
-        <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Large Text"
-        android:id="@+id/textViewGameTime"
-
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="1000dp" />
-
-        <TextView
-            android:text="TextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/textViewGameTime"
-            android:layout_toStartOf="@+id/textViewGameTime"
-            android:id="@+id/textView7" />
 
         <Button
             android:text="DELIVERY"
@@ -44,26 +25,9 @@
             android:layout_marginEnd="7dp"
             android:layout_alignBaseline="@+id/gearPickupButton"
             android:layout_alignBottom="@+id/gearPickupButton"
-            android:layout_alignParentEnd="true" />
-
-        <TextView
-            android:text="BALLS"
-            android:layout_width="500dp"
-            android:layout_height="30dp"
-            android:id="@+id/ballTextView"
-            android:textAppearance="@android:style/TextAppearance.Material.Large"
-            android:layout_marginStart="20dp"
-            android:layout_below="@+id/gearDeliveryButton"
-            android:layout_toEndOf="@+id/textView7" />
-
-        <TextView
-            android:text="GEARS"
-            android:layout_width="500dp"
-            android:layout_height="30dp"
-            android:id="@+id/gearsTextView"
-            android:textAppearance="@android:style/TextAppearance.Material.Large"
-            android:layout_alignParentTop="true"
-            android:layout_alignStart="@+id/ballTextView" />
+            android:layout_alignParentEnd="true"
+            android:background="@android:color/white"
+            android:textColor="@android:color/holo_purple"/>
 
         <Button
             android:text="PICKUP"
@@ -73,7 +37,9 @@
             android:layout_marginTop="7dp"
             android:layout_marginStart="10dp"
             android:layout_below="@+id/gearsTextView"
-            android:layout_alignParentStart="true" />
+            android:layout_alignParentStart="true"
+            android:background="@android:color/white"
+            android:textColor="@android:color/holo_purple"/>
 
         <Button
             android:text="SHOOTING"
@@ -82,27 +48,21 @@
             android:layout_width="150dp"
             android:layout_alignBaseline="@+id/ballPickupButton"
             android:layout_alignBottom="@+id/ballPickupButton"
-            android:layout_alignStart="@+id/gearDeliveryButton" />
-
-        <Button
-            android:text="STARTED CLIMBING"
-            android:id="@+id/startedClimbingButton"
-            android:layout_height="90dp"
-            android:layout_width="150dp"
-            android:layout_marginTop="15dp"
-            android:layout_below="@+id/textView6"
-            android:layout_centerHorizontal="true" />
+            android:layout_alignStart="@+id/gearDeliveryButton"
+            android:background="@android:color/white"
+            android:textColor="@android:color/holo_purple"/>
 
         <TextView
             android:text="CLIMBING"
             android:layout_width="500dp"
             android:layout_height="30dp"
-            android:id="@+id/textView6"
+            android:id="@+id/ropeClimbingTextview"
             android:textAppearance="@android:style/TextAppearance.Material.Large"
             android:layout_marginTop="20dp"
             android:layout_below="@+id/ballPickupButton"
             android:layout_alignStart="@+id/startedClimbingButton"
-            android:layout_marginStart="14dp" />
+            android:layout_marginStart="14dp"
+            android:textColor="@android:color/holo_purple"/>
 
         <Button
             android:text="SHOOTING"
@@ -111,7 +71,54 @@
             android:layout_width="150dp"
             android:layout_marginTop="9dp"
             android:layout_below="@+id/ballTextView"
-            android:layout_alignStart="@+id/gearPickupButton" />
+            android:layout_alignStart="@+id/gearPickupButton"
+            android:background="@android:color/white"
+            android:textColor="@android:color/holo_purple"/>
+
+        <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Large Text"
+        android:id="@+id/textViewGameTime"
+
+            android:textColor="@android:color/holo_purple"
+
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            />
+
+        <TextView
+            android:text="BALLS"
+            android:layout_width="500dp"
+            android:layout_height="30dp"
+            android:id="@+id/ballTextView"
+            android:textAppearance="@android:style/TextAppearance.Material.Large"
+            android:layout_below="@+id/gearDeliveryButton"
+            android:layout_alignStart="@+id/gearsTextView"
+            android:textColor="@android:color/holo_purple"/>
+
+        <TextView
+            android:text="GEARS"
+            android:layout_width="500dp"
+            android:layout_height="30dp"
+            android:id="@+id/gearsTextView"
+            android:textAppearance="@android:style/TextAppearance.Material.Large"
+            android:layout_alignParentTop="true"
+            android:layout_alignStart="@+id/textViewGameTime"
+            android:layout_marginStart="8dp"
+            android:textColor="@android:color/holo_purple"/>
+
+        <Button
+            android:text="STARTED CLIMBING"
+            android:id="@+id/startedClimbingButton"
+            android:layout_height="90dp"
+            android:layout_width="150dp"
+            android:layout_below="@+id/ropeClimbingTextview"
+            android:layout_centerHorizontal="true"
+            android:background="@android:color/white"
+            android:textColor="@android:color/holo_purple"/>
 
     </RelativeLayout>
     </ScrollView>

@@ -11,8 +11,10 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -42,44 +44,76 @@ public class TeleopScouting extends AppCompatActivity {
     public ArrayList<Integer> defensesBreached;
     public ArrayList<BallShot> ballsShot;
     public ArrayList<BallPickup> ballPickups;
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    private GoogleApiClient client;
+
+    Button submitButton;
+    SeekBar simpleSeekBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.steamworks2017_activity_teleop_scouting);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //final Spinner spinner = (Spinner) findViewById(R.id.defense_spinner);
-        final TextView tvGameTime = (TextView) findViewById(R.id.textViewGameTime);
+        setContentView(R.layout.fragment_ball_scoring);
+        // initiate  views
+        simpleSeekBar = (SeekBar) findViewById(R.id.teleopBallsScoredSeekBar);
+        // perform seek bar change listener event used for getting the progress value
+        simpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            int progressChangedValue = 0;
 
-        m_handler = new Handler();
-
-        m_handlerTask = new Runnable() {
-            @Override
-            public void run() {
-                if (remainTime == 0) {
-                    tvGameTime.setText("Game Over! Please Save and Return");
-                } else {
-                    remainTime--;
-                    int minuets = remainTime / 60;
-                    int remainSec = remainTime - minuets * 60;
-                    String remainSecString;
-                    if (remainSec < 10)
-                        remainSecString = "0" + remainSec;
-                    else
-                        remainSecString = remainSec + "";
-
-                    tvGameTime.setText(minuets + ":" + remainSecString);
-                    m_handler.postDelayed(m_handlerTask, 1000);  // 1 second delay
-                }
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                progressChangedValue = progress;
             }
-        };
-        m_handlerTask.run();
 
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                // TODO Auto-generated method stub
+            }
+
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                TextView tv = (TextView) findViewById(R.id.autoBallScoredTextView);
+                tv.setText(progressChangedValue * 5 + " points were scored");
+            }
+        });
+
+    }
+
+
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+//    private GoogleApiClient client;
+//
+//    @Override
+//    protected void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        setContentView(R.layout.steamworks2017_activity_teleop_scouting);
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        //final Spinner spinner = (Spinner) findViewById(R.id.defense_spinner);
+//        final TextView tvGameTime = (TextView) findViewById(R.id.textViewGameTime);
+//
+//        m_handler = new Handler();
+//
+//        m_handlerTask = new Runnable() {
+//            @Override
+//            public void run() {
+//                if (remainTime == 0) {
+//                    tvGameTime.setText("Game Over! Please Save and Return");
+//                } else {
+//                    remainTime--;
+//                    int minuets = remainTime / 60;
+//                    int remainSec = remainTime - minuets * 60;
+//                    String remainSecString;
+//                    if (remainSec < 10)
+//                        remainSecString = "0" + remainSec;
+//                    else
+//                        remainSecString = remainSec + "";
+//
+//                    tvGameTime.setText(minuets + ":" + remainSecString);
+//                    m_handler.postDelayed(m_handlerTask, 1000);  // 1 second delay
+//                }
+//            }
+//        };
+//        m_handlerTask.run();
+//
+//        }
 
 //        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
 //                R.array.defense_array, android.R.layout.simple_spinner_item);
@@ -222,44 +256,45 @@ public class TeleopScouting extends AppCompatActivity {
 //
 //        }
 //    }
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
-    }
+    // ATTENTION: This was auto-generated to implement the App Indexing API.
+    // See https://g.co/AppIndexing/AndroidStudio for more information.
+    //client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+    //}
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
-    public Action getIndexApiAction() {
-        Thing object = new Thing.Builder()
-                .setName("TeleopScouting Page") // TODO: Define a title for the content shown.
-                // TODO: Make sure this auto-generated URL is correct.
-                .setUrl(Uri.parse("http://[ENTER-YOUR-URL-HERE]"))
-                .build();
-        return new Action.Builder(Action.TYPE_VIEW)
-                .setObject(object)
-                .setActionStatus(Action.STATUS_TYPE_COMPLETED)
-                .build();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client.connect();
-        AppIndex.AppIndexApi.start(client, getIndexApiAction());
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        AppIndex.AppIndexApi.end(client, getIndexApiAction());
-        client.disconnect();
-    }
+//    public Action getIndexApiAction() {
+//        Thing object = new Thing.Builder()
+//                .setName("TeleopScouting Page") // TODO: Define a title for the content shown.
+//                // TODO: Make sure this auto-generated URL is correct.
+//                .setUrl(Uri.parse("http://[ENTER-YOUR-URL-HERE]"))
+//                .build();
+//        return new Action.Builder(Action.TYPE_VIEW)
+//                .setObject(object)
+//                .setActionStatus(Action.STATUS_TYPE_COMPLETED)
+//                .build();
+//    }
+//
+//    @Override
+//    public void onStart() {
+//        super.onStart();
+//
+//        // ATTENTION: This was auto-generated to implement the App Indexing API.
+//        // See https://g.co/AppIndexing/AndroidStudio for more information.
+//        client.connect();
+//        AppIndex.AppIndexApi.start(client, getIndexApiAction());
+//    }
+//
+//    @Override
+//    public void onStop() {
+//        super.onStop();
+//
+//        // ATTENTION: This was auto-generated to implement the App Indexing API.
+//        // See https://g.co/AppIndexing/AndroidStudio for more information.
+//        AppIndex.AppIndexApi.end(client, getIndexApiAction());
+//        client.disconnect();
+//    }
+//}
 }
