@@ -6,16 +6,21 @@ package ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects;
 
 public class PostGameObject {
     public String notes = "";
-    public int climb;
+
+    public enum ClimbType {
+        NO_CLIMB, FAIL, SUCCESS;
+    }
+
+    public ClimbType climbType;
     public double climb_time;
     public double time_dead;
 
-    public static final int NO_CLIMB = 0;
-    public static final int FAIL_CLIMB = 1;
-    public static final int SUCCESS_CLIMB = 2;
 
-    public PostGameObject(String notes, int climb, double climb_time, double time_dead) {
-        this.climb = climb;
+    // empty constructor
+    public PostGameObject() {}
+
+    public PostGameObject(String notes, ClimbType climbType, double climb_time, double time_dead) {
+        this.climbType = climbType;
         this.notes = notes;
         this.climb_time = climb_time;
         this.time_dead = time_dead;

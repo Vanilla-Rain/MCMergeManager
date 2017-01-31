@@ -1,42 +1,72 @@
 package ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-/**
- * Created by dwall on 16/01/17.
- */
 
 public class TeleopScoutingObject {
 
-    public List<Fuel> fuels;
-    public List<Gear> gears;
+    public static double MATCH_TIME = 0; // TODO: get match time in milliseconds?
 
-    public double fuelCycleTime;
-    public double gearCycleTime;
+
+//    public double fuelCycleTime; // TODO: [MikeO] ??
+//    public double gearCycleTime; // TODO: [MikeO] ??
+
+
+    private ArrayList<Event> events = new ArrayList<>();
+
+    public void add(Event e) {
+        events.add(e);
+    }
+
+    /**
+     * Puts all events during teleop mode into a list, sorted by timestamp.
+     * Useful for doing cycle analysis in StatsEngine.
+     */
+    public ArrayList<Event> getEvents() {
+        Collections.sort(events);
+
+        return events;
+    }
+
 
     public TeleopScoutingObject() {
-        fuels = new ArrayList<Fuel>();
-        gears = new ArrayList<Gear>();
+
     }
 
-    public TeleopScoutingObject(List<Fuel> fuels, List<Gear> gears) {
-        this.fuels = fuels;
-        this.gears = gears;
-    }
+    // TODO probably not going to be moved to stat engine
+    // [MikeO] Yeah, I ended up doing something complicated in StatsEngine that includes this :'(
+//    public void cycleTime() {
+//
+//        double fuelPickupCycleTime = 0;
+//        for(FuelPickupEvent f : fuelPickups) {
+//            fuelPickupCycleTime += f.endTime - f.timestamp;
+//        }
+//        // TODO: [MikeO] What if fuelPickups.size() == 0? divByZeroException?
+//        fuelPickupCycleTime /= fuelPickups.size();
+//
+//        double fuelShotCycleTime = 0;
+//        for(FuelShotEvent f : fuelShots) {
+//            fuelShotCycleTime += f.endTime - f.timestamp;
+//        }
+//        fuelShotCycleTime /= fuelShots.size();
+//
+//        double gearPickupCycleTime = 0;
+//        for(GearPickupEvent g : gearPickups) {
+//            gearPickupCycleTime += g.endTime - g.endTime;
+//        }
+//        gearPickupCycleTime /= gearPickups.size();
+//
+//        double gearDeliveryCycleTime = 0;
+//        for(GearDelivevryEvent g : gearDelivevries) {
+//            gearDeliveryCycleTime += g.endTime - g.timestamp;
+//        }
+//        gearDeliveryCycleTime /= gearDelivevries.size();
+//
+//        // assuming that each cycle contains one pickup and one shot/delivery
+//        gearCycleTime = gearPickupCycleTime + gearDeliveryCycleTime;
+//        fuelCycleTime = fuelPickupCycleTime + fuelShotCycleTime;
+//    }
 
-    public void cycleTime() {
-
-        double fuelCycleTime = 0;
-        for(Fuel f : fuels) {
-            fuelCycleTime += f.time;
-        }
-        fuelCycleTime /= fuels.size();
-
-        double gearCycleTime = 0;
-        for(Gear g : gears) {
-            gearCycleTime += g.time;
-        }
-        gearCycleTime /= gears.size();
-    }
 }
