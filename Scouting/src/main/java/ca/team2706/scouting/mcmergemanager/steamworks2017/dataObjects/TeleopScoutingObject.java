@@ -9,7 +9,6 @@ public class TeleopScoutingObject {
 
     public static double MATCH_TIME = 0; // TODO: get match time in milliseconds?
 
-
 //    public double fuelCycleTime; // TODO: [MikeO] ??
 //    public double gearCycleTime; // TODO: [MikeO] ??
 

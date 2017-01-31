@@ -1,38 +1,19 @@
 package ca.team2706.scouting.mcmergemanager.stronghold2016.gui;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.DisplayMetrics;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.SeekBar;
-import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import ca.team2706.scouting.mcmergemanager.R;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.BallPickup;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.BallShot;
-import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.TeleopScoutingObject;
 
 public class TeleopScouting extends AppCompatActivity {
     Handler m_handler;
@@ -44,6 +25,11 @@ public class TeleopScouting extends AppCompatActivity {
     public ArrayList<Integer> defensesBreached;
     public ArrayList<BallShot> ballsShot;
     public ArrayList<BallPickup> ballPickups;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
     Button submitButton;
     SeekBar simpleSeekBar;
