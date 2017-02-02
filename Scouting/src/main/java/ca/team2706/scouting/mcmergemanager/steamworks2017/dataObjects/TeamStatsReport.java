@@ -61,9 +61,11 @@ public class TeamStatsReport implements Serializable {
     // Fuel scoring
     public double teleop_fuelScoredHigh_avgPerMatch;
     public double teleop_fuelScoredHigh_avgPerCycle;
+    public double teleop_fuelScoredHigh_total;
     public double teleop_fuelMissedHigh_avgPerMatch;
     public double teleop_fuelScoredLow_avgPerMatch;
     public double teleop_fuelScoredLow_avgPerCycle;
+    public double teleop_fuelScoredLow_total;
     public double teleop_fuelMissedLow_avgPerMatch;
 
     public double teleop_fuelHigh_aveCycleTime;
