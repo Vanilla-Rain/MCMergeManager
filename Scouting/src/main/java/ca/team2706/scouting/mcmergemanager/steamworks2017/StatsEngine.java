@@ -16,7 +16,10 @@ import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.FuelPickup
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.FuelShotEvent;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.GearDelivevryEvent;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.GearPickupEvent;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.Match;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.MatchData;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.Match;
+
 
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.TeamStatsReport;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.MatchSchedule;
@@ -312,7 +315,7 @@ public class StatsEngine implements Serializable{
             throw new IllegalStateException("matchData is null");
 
         // loop over all matches that this team was in
-        for(MatchData.Match match : teamStatsReport.teamMatchData.matches) {
+        for(Match match : teamStatsReport.teamMatchData.matches) {
             AutoScoutingObject autoData = match.autoScoutingObject;
 
             teamStatsReport.auto_numTimesCrossedBaseline += autoData.crossedBaseline ? 1 : 0;
@@ -415,7 +418,7 @@ public class StatsEngine implements Serializable{
 
         int numGearCycles=0;
 
-        for(MatchData.Match match : teamStatsReport.teamMatchData.matches) {
+        for(Match match : teamStatsReport.teamMatchData.matches) {
 
             // Process all the events during this match in a big state machine.
 
@@ -539,6 +542,7 @@ public class StatsEngine implements Serializable{
                     currFuelCycle.endTime = fuelShotEvent.timestamp;
 
                     if (fuelShotEvent.boiler) {  // high
+                        teamStatsReport.teleop_fuelScoredHigh_total += fuelShotEvent.numScored;
                         teamStatsReport.teleop_fuelScoredHigh_avgPerMatch += fuelShotEvent.numScored;
                         teamStatsReport.teleop_fuelScoredHigh_avgPerCycle += fuelShotEvent.numScored;
                         teamStatsReport.teleop_fuelMissedHigh_avgPerMatch += fuelShotEvent.numMissed;
@@ -546,6 +550,7 @@ public class StatsEngine implements Serializable{
                         inFuelHighCycle = true;
                     }
                     else { // low
+                        teamStatsReport.teleop_fuelScoredLow_total += fuelShotEvent.numScored;
                         teamStatsReport.teleop_fuelScoredLow_avgPerMatch += fuelShotEvent.numScored;
                         teamStatsReport.teleop_fuelScoredLow_avgPerCycle += fuelShotEvent.numScored;
                         teamStatsReport.teleop_fuelMissedLow_avgPerMatch += fuelShotEvent.numMissed;
