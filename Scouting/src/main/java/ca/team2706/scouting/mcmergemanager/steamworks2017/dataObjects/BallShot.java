@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 /**
  * Created by MCSoftware on 2016-01-22.
+ *
+ * RELIC OF STRONGHOLD2016 ~~ NEEDS UPDATING / REPLACING
  */
 public class BallShot implements Serializable {
 
