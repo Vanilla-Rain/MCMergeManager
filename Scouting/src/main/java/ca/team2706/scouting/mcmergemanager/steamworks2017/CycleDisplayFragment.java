@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import ca.team2706.scouting.mcmergemanager.R;
 import ca.team2706.scouting.mcmergemanager.gui.CyclesDisplayView;
 
 /**
@@ -49,7 +50,7 @@ public class CycleDisplayFragment extends Fragment {
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-        m_view =  inflater.inflate(R.layout.fragment_cycles_display, null);
+        m_view =  inflater.inflate(R.layout.steamworks2017_fragment_cycles_display, null);
 
         cyclesDisplayViews[GEAR_CYCLE] = (CyclesDisplayView) m_view.findViewById(R.id.gears_cyclesDisplayView);
         cyclesDisplayViews[HIGH_FUEL_CYCLE] = (CyclesDisplayView) m_view.findViewById(R.id.highFuel_cyclesDisplayView);
