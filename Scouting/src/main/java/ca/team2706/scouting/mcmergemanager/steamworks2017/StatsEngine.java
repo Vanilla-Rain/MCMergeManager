@@ -16,6 +16,7 @@ import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.FuelPickup
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.FuelShotEvent;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.GearDelivevryEvent;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.GearPickupEvent;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.Match;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.MatchData;
 
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.TeamStatsReport;
@@ -312,7 +313,7 @@ public class StatsEngine implements Serializable{
             throw new IllegalStateException("matchData is null");
 
         // loop over all matches that this team was in
-        for(MatchData.Match match : teamStatsReport.teamMatchData.matches) {
+        for(Match match : teamStatsReport.teamMatchData.matches) {
             AutoScoutingObject autoData = match.autoScoutingObject;
 
             teamStatsReport.auto_numTimesCrossedBaseline += autoData.crossedBaseline ? 1 : 0;
@@ -415,7 +416,7 @@ public class StatsEngine implements Serializable{
 
         int numGearCycles=0;
 
-        for(MatchData.Match match : teamStatsReport.teamMatchData.matches) {
+        for(Match match : teamStatsReport.teamMatchData.matches) {
 
             // Process all the events during this match in a big state machine.
 
