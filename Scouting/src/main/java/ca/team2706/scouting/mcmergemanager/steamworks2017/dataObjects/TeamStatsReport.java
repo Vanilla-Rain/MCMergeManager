@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.*;
-
 public class TeamStatsReport implements Serializable {
 
     // Overall Stats
@@ -108,7 +106,7 @@ public class TeamStatsReport implements Serializable {
     public String notes = "";
 
 
-    public MatchSchedule teamMatcheSchedule;
+    public ca.team2706.scouting.mcmergemanager.backend.MatchSchedule teamMatcheSchedule;
     public MatchData teamMatchData;
 
 
