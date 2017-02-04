@@ -16,5 +16,11 @@
             android:id="@+id/textView21"
             android:textAppearance="@android:style/TextAppearance.Material.Large" />
 
+        <Button
+            android:text="Submit Data"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/repairTimesSubmitButton" />
+
     </LinearLayout>
 </ScrollView>

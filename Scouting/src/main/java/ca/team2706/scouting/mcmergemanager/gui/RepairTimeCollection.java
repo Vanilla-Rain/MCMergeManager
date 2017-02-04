@@ -28,22 +28,20 @@ public class RepairTimeCollection extends AppCompatActivity {
 
         // Unbundle the match schedule
         Intent intent = getIntent();
-//        String matchScheduleStr = intent.getStringExtra(getResources().getString(R.string.EXTRA_MATCH_SCHEDULE));
-//        MatchSchedule matchSchedule = new MatchSchedule(matchScheduleStr);
+        //String matchScheduleStr = intent.getStringExtra(getResources().getString(R.string.EXTRA_MATCH_SCHEDULE));
+        //MatchSchedule matchSchedule = new MatchSchedule(matchScheduleStr);
 
         // Get main layout
         LinearLayout mainLayout = (LinearLayout) findViewById(R.id.repair_collection_main_layout);
 
         // Get list of teams
         //List<String> teams = matchSchedule.getTeamNumsAtEvent();
-        
-        // TODO Test Code
 
-        ArrayList<String> teams = new ArrayList<>();
-        teams.add("2706");
-        teams.add("2708");
-        teams.add("3453");
-        teams.add("5646");
+        ArrayList<String> teams = new ArrayList<String>();
+        teams.add("3455");
+        teams.add("5674");
+        teams.add("5464");
+        teams.add("6786");
 
         for(String team: teams) {
 
