@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="ca.team2706.scouting.mcmergemanager.stronghold2016.gui.TeamStatsActivity"
-    tools:showIn="@layout/stronghold2016_activity_team_stats"
+    tools:showIn="@layout/steamworks2017_activity_team_stats"
     tools:ignore="HardcodedText">
 
     <LinearLayout
@@ -94,29 +94,41 @@
                 android:text="Auto Mode:"
                 android:id="@+id/AutoTitle" />
 
-            <CheckBox
-                android:text="Crossed Base Line"
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Crossed Base Line:"
                 android:id="@+id/crossedBaseLine"
-                android:focusable="false"
-                android:clickable="false"
-                android:textColor="?android:attr/textColorSecondary"
                 android:layout_row="1"
-                android:layout_column="0"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:layout_column="0" />
 
-            <CheckBox
-                android:text="Installed Gear"
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/autoInstalledGear"
-                android:focusable="false"
-                android:clickable="false"
-                android:textColor="?android:attr/textColorSecondary"
-                android:layout_row="2"
-                android:layout_column="0"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="0 / 0 (0)"
+                android:id="@+id/crossedBaseLineTV"
+                android:layout_row="1"
+                android:layout_column="1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Installed Gear:"
+                android:id="@+id/installedGear"
+                android:layout_row="3"
+                android:layout_column="0" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="0 / 0 (0)"
+                android:id="@+id/installedGearTV"
+                android:layout_row="3"
+                android:layout_column="1" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -131,7 +143,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="0 / 0 (0)"
+                android:text="0"
                 android:id="@+id/autoHighGoalsTV"
                 android:layout_row="4"
                 android:layout_column="1" />
@@ -149,27 +161,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="0 / 0 (0)"
+                android:text="0"
                 android:id="@+id/autoLowGoalsTV"
                 android:layout_row="5"
-                android:layout_column="1" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Missed Shots: "
-                android:id="@+id/autoMissedShotsLBL"
-                android:layout_row="6"
-                android:layout_column="0" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="0 / 0 (0)"
-                android:id="@+id/autoMissedShotsTV"
-                android:layout_row="6"
                 android:layout_column="1" />
 
         </GridLayout>
@@ -203,7 +197,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="0 / 0 (0)"
+                android:text="0"
                 android:id="@+id/teleopGroundPickupsTV"
                 android:layout_row="7"
                 android:layout_column="1" />
@@ -221,7 +215,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="0 / 0 (0)"
+                android:text="0"
                 android:id="@+id/chutePickupsTV"
                 android:layout_row="8"
                 android:layout_column="1" />
@@ -239,7 +233,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="0 / 0 (0)"
+                android:text="0"
                 android:id="@+id/hopperPickupsTV"
                 android:layout_row="9"
                 android:layout_column="1" />
@@ -317,17 +311,23 @@
                 android:layout_row="13"
                 android:layout_column="1" />
 
-            <CheckBox
-                android:text="Can Climb"
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/canClimb"
-                android:focusable="false"
-                android:clickable="false"
-                android:textColor="?android:attr/textColorSecondary"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Successful Climbs:  "
+                android:id="@+id/climbs"
                 android:layout_row="16"
-                android:layout_column="0"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:layout_column="0" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="0 / 0 (0)"
+                android:id="@+id/climbsTV"
+                android:layout_row="16"
+                android:layout_column="1" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -394,7 +394,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="0 / 0 (0)"
+                android:text="0"
                 android:id="@+id/teleopGearsInstalledTV"
                 android:layout_row="4"
                 android:layout_column="1" />
@@ -412,15 +412,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="0 / 0 (0)"
-                android:id="@+id/teleopMissedGearsTV"
-                android:layout_row="6"
-                android:layout_column="1" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Chute\n    Pickup: "
                 android:id="@+id/chuteGearPickup"
                 android:layout_row="7"
@@ -430,7 +421,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="0 / 0 (0)"
+                android:text="0"
                 android:id="@+id/teleopGearsChutePickupTV"
                 android:layout_row="7"
                 android:layout_column="1" />
@@ -448,9 +439,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="0 / 0 (0)"
+                android:text="0"
                 android:id="@+id/teleopGearsFloorPickupTV"
                 android:layout_row="8"
+                android:layout_column="1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="0"
+                android:id="@+id/teleopMissedGearsTV"
+                android:layout_row="6"
                 android:layout_column="1" />
         </GridLayout>
 
@@ -479,7 +479,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="0 / 0 (0)"
+                android:text="0 (0)"
                 android:id="@+id/teleopLowGoalsTV"
                 android:layout_row="2"
                 android:layout_column="1" />
@@ -516,7 +516,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="0 / 0 (0)"
+                android:text="0"
                 android:id="@+id/teleopLowMissedShotsTV"
                 android:layout_row="5"
                 android:layout_column="1" />
@@ -566,7 +566,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="0 / 0 (0)"
+                android:text="0 (0)"
                 android:id="@+id/teleopHighGoalsTV"
                 android:layout_row="1"
                 android:layout_column="1" />
@@ -603,7 +603,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="0 / 0 (0)"
+                android:text="0"
                 android:id="@+id/teleopHighMissedShotsTV"
                 android:layout_row="5"
                 android:layout_column="1" />

@@ -78,7 +78,7 @@
             android:label="Schedule"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".stronghold2016.gui.TeamStatsActivity"
+            android:name=".steamworks2017.gui.TeamStatsActivity"
             android:label="@string/title_activity_team_stats"
             android:parentActivityName=".gui.MainActivity"
             android:theme="@style/AppTheme">

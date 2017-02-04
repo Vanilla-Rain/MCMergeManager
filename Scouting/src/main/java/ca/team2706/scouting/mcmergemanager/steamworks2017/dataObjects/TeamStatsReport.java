@@ -2,6 +2,7 @@ package ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.*;
 
@@ -44,9 +45,9 @@ public class TeamStatsReport implements Serializable {
 
 
     // TODO -- we'll come back to the pin map later
-//        public List<BallShot> missedTeleopShots;         // to draw pins on map
-//        public List<BallShot> successfulTeleopHighShots; // to draw pins on map
-//        public List<BallShot> successfulTeleopLowShots;  // to draw pins on map
+        public List<BallShot> missedTeleopShots;         // to draw pins on map
+        public List<BallShot> successfulTeleopHighShots; // to draw pins on map
+        public List<BallShot> successfulTeleopLowShots;  // to draw pins on map
 
     // Fuel pickups
     public double teleop_fuelGroundPickups_avgPerMatch;
@@ -112,9 +113,9 @@ public class TeamStatsReport implements Serializable {
 
 
     public TeamStatsReport() {
-//            missedTeleopShots = new ArrayList<>();
-//            successfulTeleopHighShots = new ArrayList<>();
-//            successfulTeleopLowShots = new ArrayList<>();
+            missedTeleopShots = new ArrayList<>();
+            successfulTeleopHighShots = new ArrayList<>();
+            successfulTeleopLowShots = new ArrayList<>();
     }
 
 }
