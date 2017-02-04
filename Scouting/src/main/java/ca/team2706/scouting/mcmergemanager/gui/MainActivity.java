@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity
         if (lauchedPhotoApp) {
             // TODO
             // This used to call Google Drive. This need to be replaced with something else
-            //mGoogleDriveUtils.syncOneTeamsPhotos(enterATeamNumberPopup.getTeamNumber());
+            //mGoogleDriveUtils.syncOneTeamsPhotos(enterATeamNumberPopup.getTeamNo());
 
             lauchedPhotoApp = false;
         }
