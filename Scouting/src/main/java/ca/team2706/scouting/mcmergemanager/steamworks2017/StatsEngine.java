@@ -18,11 +18,10 @@ import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.GearDelive
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.GearPickupEvent;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.Match;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.MatchData;
-import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.Match;
 
 
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.TeamStatsReport;
-import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.MatchSchedule;
+import ca.team2706.scouting.mcmergemanager.backend.MatchSchedule;
 
 
 public class StatsEngine implements Serializable{
