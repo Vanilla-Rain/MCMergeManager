@@ -3,10 +3,6 @@ package ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-/**
- * Created by dwall on 20/01/17.
- */
-
 public class MatchData {
 
     // Member Variables
@@ -21,13 +17,14 @@ public class MatchData {
         matches.add(match);
     }
 
+    public MatchData filterByTeam(int teamNo) {
 
     // String serializers to read / write it to file
 
     /**
      * toString() turns it into a string
      */
-    public static class Match implements Serializable{
+    public static class Match implements Serializable {
 
         public PreGameObject preGameObject;
         public PostGameObject postGameObject;
@@ -38,12 +35,12 @@ public class MatchData {
                      AutoScoutingObject autoScoutingObject) {
             this.preGameObject = preGameObject;
             this.autoScoutingObject = autoScoutingObject;
-            this.postGameObject = postGameObject;
             this.teleopScoutingObject = teleopScoutingObject;
+            this.autoScoutingObject = autoScoutingObject;
         }
 
-        // TODO: test this code to make sure it works
 
+        // TODO: test this code to make sure it works
         @Override
         public String toString() {
             StringBuilder sb = new StringBuilder();
@@ -207,6 +204,6 @@ public class MatchData {
 
             postGameObject.notes = tokens[17];
         }
-
+        return matchData;
     }
 }
