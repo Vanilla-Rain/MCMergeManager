@@ -22,7 +22,7 @@ import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.MatchData;
 
 
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.TeamStatsReport;
-import ca.team2706.scouting.mcmergemanager.backend.MatchSchedule;
+import ca.team2706.scouting.mcmergemanager.backend.dataObjects.MatchSchedule;
 
 
 public class StatsEngine implements Serializable{

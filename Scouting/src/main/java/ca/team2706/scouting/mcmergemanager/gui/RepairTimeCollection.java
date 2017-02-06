@@ -1,7 +1,5 @@
 package ca.team2706.scouting.mcmergemanager.gui;
 
-import android.app.Activity;
-import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -11,10 +9,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import ca.team2706.scouting.mcmergemanager.R;
-import ca.team2706.scouting.mcmergemanager.backend.MatchSchedule;
 
 /**
  * Created by alden on 2017-02-04.

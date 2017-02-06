@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import ca.team2706.scouting.mcmergemanager.backend.dataObjects.MatchSchedule;
 import ca.team2706.scouting.mcmergemanager.backend.dataObjects.RepairTimeObject;
 
 public class TeamStatsReport implements Serializable {
@@ -113,7 +114,7 @@ public class TeamStatsReport implements Serializable {
     public String notes = "";
 
 
-    public ca.team2706.scouting.mcmergemanager.backend.MatchSchedule teamMatcheSchedule;
+    public MatchSchedule teamMatcheSchedule;
     public MatchData teamMatchData;
 
 
