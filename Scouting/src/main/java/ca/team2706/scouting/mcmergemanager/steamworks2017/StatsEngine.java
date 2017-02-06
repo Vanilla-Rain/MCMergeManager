@@ -16,7 +16,6 @@ import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.FuelPickup
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.FuelShotEvent;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.GearDelivevryEvent;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.GearPickupEvent;
-import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.Match;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.MatchData;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.Match;
 
@@ -315,7 +314,7 @@ public class StatsEngine implements Serializable{
             throw new IllegalStateException("matchData is null");
 
         // loop over all matches that this team was in
-        for(Match match : teamStatsReport.teamMatchData.matches) {
+        for(MatchSchedule.Match match : teamStatsReport.teamMatchData.matches) {
             AutoScoutingObject autoData = match.autoScoutingObject;
 
             teamStatsReport.auto_numTimesCrossedBaseline += autoData.crossedBaseline ? 1 : 0;
