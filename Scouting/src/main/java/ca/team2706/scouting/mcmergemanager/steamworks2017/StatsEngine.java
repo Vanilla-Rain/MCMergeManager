@@ -314,7 +314,7 @@ public class StatsEngine implements Serializable{
             throw new IllegalStateException("matchData is null");
 
         // loop over all matches that this team was in
-        for(MatchSchedule.Match match : teamStatsReport.teamMatchData.matches) {
+        for(MatchData.Match match : teamStatsReport.teamMatchData.matches) {
             AutoScoutingObject autoData = match.autoScoutingObject;
 
             teamStatsReport.auto_numTimesCrossedBaseline += autoData.crossedBaseline ? 1 : 0;
@@ -417,7 +417,7 @@ public class StatsEngine implements Serializable{
 
         int numGearCycles=0;
 
-        for(Match match : teamStatsReport.teamMatchData.matches) {
+        for(MatchData.Match match : teamStatsReport.teamMatchData.matches) {
 
             // Process all the events during this match in a big state machine.
 
