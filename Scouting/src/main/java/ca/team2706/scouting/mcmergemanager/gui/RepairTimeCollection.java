@@ -8,9 +8,10 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import ca.team2706.scouting.mcmergemanager.R;
+import ca.team2706.scouting.mcmergemanager.backend.dataObjects.MatchSchedule;
 
 /**
  * Created by alden on 2017-02-04.
@@ -24,20 +25,14 @@ public class RepairTimeCollection extends AppCompatActivity {
 
         // Unbundle the match schedule
         Intent intent = getIntent();
-        //String matchScheduleStr = intent.getStringExtra(getResources().getString(R.string.EXTRA_MATCH_SCHEDULE));
-        //MatchSchedule matchSchedule = new MatchSchedule(matchScheduleStr);
+        String matchScheduleStr = intent.getStringExtra(getResources().getString(R.string.EXTRA_MATCH_SCHEDULE));
+        MatchSchedule matchSchedule = new MatchSchedule(matchScheduleStr);
 
         // Get main layout
         LinearLayout mainLayout = (LinearLayout) findViewById(R.id.repair_collection_main_layout);
 
-        // Get list of teams
-        //List<String> teams = matchSchedule.getTeamNumsAtEvent();
-
-        ArrayList<String> teams = new ArrayList<String>();
-        teams.add("3455");
-        teams.add("5674");
-        teams.add("5464");
-        teams.add("6786");
+        //Get list of teams
+        List<String> teams = matchSchedule.getTeamNumsAtEvent();
 
         for(String team: teams) {
 
