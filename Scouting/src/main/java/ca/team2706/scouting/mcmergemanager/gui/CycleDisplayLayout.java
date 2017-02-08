@@ -5,6 +5,8 @@ import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import ca.team2706.scouting.mcmergemanager.R;
+
 /**
  * Created by mike on 23/01/17.
  */

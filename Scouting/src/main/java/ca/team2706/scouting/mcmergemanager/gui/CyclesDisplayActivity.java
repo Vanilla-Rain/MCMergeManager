@@ -4,6 +4,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.LinearLayout;
 
+import ca.team2706.scouting.mcmergemanager.R;
+
 
 public class CyclesDisplayActivity extends AppCompatActivity {
 
@@ -11,9 +13,15 @@ public class CyclesDisplayActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.cycles_display_activity);
 
-        LinearLayout mainLayout = (LinearLayout) findViewById(R.id.activity_main_layout);
+
+
+        // TODO: instead of fake data, unpack the TeamStatsReport from the intent
+        // and display real data.
+
+
+        LinearLayout mainLayout = (LinearLayout) findViewById(R.id.cycles_display_main_layout);
 
         // in the real app, get this from the team's data.
         int matchesPlayed = 20;

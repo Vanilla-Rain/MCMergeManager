@@ -4,12 +4,16 @@
     android:layout_height="match_parent"
     android:measureWithLargestChild="false">
 
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="5dp" />
+
     <TextView
         android:text="Match -1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/cyclesDisplayMatchNo"
-        android:textSize="20sp" />
+        android:textSize="30sp" />
 
     <LinearLayout
         android:orientation="horizontal"
@@ -27,35 +31,40 @@
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/cycle_bars_height"
                 android:id="@+id/textView3"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:textSize="20sp" />
 
             <TextView
                 android:text="H. Fuel"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/cycle_bars_height"
                 android:id="@+id/textView4"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:textSize="20sp" />
 
             <TextView
                 android:text="L. Fuel"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/cycle_bars_height"
                 android:id="@+id/textView5"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:textSize="20sp" />
 
             <TextView
                 android:text="Defense"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/cycle_bars_height"
                 android:id="@+id/textView6"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:textSize="20sp" />
 
             <TextView
                 android:text="Climb"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/cycle_bars_height"
                 android:id="@+id/textView7"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:textSize="20sp" />
         </LinearLayout>
 
 
@@ -65,38 +74,33 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content">
 
-            <ca.team2706.cycles_display_test.CyclesDisplayView
+            <ca.team2706.scouting.mcmergemanager.gui.CyclesDisplayView
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/cycle_bars_height"
-                class="ca.team2706.cycles_display_test.CyclesDisplayView"
                 android:id="@+id/gears_cyclesDisplayView"
                 android:layout_weight="1.90" />
 
-            <ca.team2706.cycles_display_test.CyclesDisplayView
+            <ca.team2706.scouting.mcmergemanager.gui.CyclesDisplayView
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/cycle_bars_height"
-                class="ca.team2706.cycles_display_test.CyclesDisplayView"
                 android:id="@+id/highFuel_cyclesDisplayView"
                 android:layout_weight="1.90" />
 
-            <ca.team2706.cycles_display_test.CyclesDisplayView
+            <ca.team2706.scouting.mcmergemanager.gui.CyclesDisplayView
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/cycle_bars_height"
-                class="ca.team2706.cycles_display_test.CyclesDisplayView"
                 android:id="@+id/lowFuel_cyclesDisplayView"
                 android:layout_weight="1.90" />
 
-            <ca.team2706.cycles_display_test.CyclesDisplayView
+            <ca.team2706.scouting.mcmergemanager.gui.CyclesDisplayView
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/cycle_bars_height"
-                class="ca.team2706.cycles_display_test.CyclesDisplayView"
                 android:id="@+id/defense_cyclesDisplayView"
                 android:layout_weight="1.90" />
 
-            <ca.team2706.cycles_display_test.CyclesDisplayView
+            <ca.team2706.scouting.mcmergemanager.gui.CyclesDisplayView
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/cycle_bars_height"
-                class="ca.team2706.cycles_display_test.CyclesDisplayView"
                 android:id="@+id/climb_cyclesDisplayView"
                 android:layout_weight="1.90" />
         </LinearLayout>
@@ -104,5 +108,11 @@
 
     <Space
         android:layout_width="match_parent"
-        android:layout_height="20dp" />
+        android:layout_height="10dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:background="@android:color/black"/>
+
 </ca.team2706.scouting.mcmergemanager.gui.CycleDisplayLayout>

@@ -101,14 +101,35 @@ public class TeamInfoFragment extends Fragment
             if (m_teamStatsReport != null) {
                 fillStatsData();
                 fillNotes();
-                m_view.findViewById(R.id.fullStatsBtn).setEnabled(true);
+                m_view.findViewById(R.id.viewCyclesBtn).setEnabled(true);
             }
 
 
+            // Set up the fullStatsBtn and viewStatsBtn
 
+            Button fullStatsBtn = (Button) m_view.findViewById(R.id.fullStatsBtn);
+            fullStatsBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                //On click function
+                public void onClick(View view) {
+                    Intent intent = new Intent(getActivity(), TeamStatsActivity.class);
+                    intent.putExtra(getString(R.string.EXTRA_TEAM_STATS_REPORT), m_teamStatsReport);
+                    startActivity(intent);
+                }
+            });
+
+            Button viewCyclesBtn = (Button) m_view.findViewById(R.id.viewCyclesBtn);
+            viewCyclesBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                //On click function
+                public void onClick(View view) {
+                    Intent intent = new Intent(getActivity(), CyclesDisplayActivity.class);
+                    intent.putExtra(getString(R.string.EXTRA_TEAM_STATS_REPORT), m_teamStatsReport);
+                    startActivity(intent);
+                }
+            });
 
         }
-        Log.d("accepted", "" + args.getBoolean("accepted"));
         if(args.getBoolean("accepted")) {
 
             Toast.makeText(getActivity(),"Downloading... Please Wait",Toast.LENGTH_LONG).show();
@@ -181,16 +202,6 @@ public class TeamInfoFragment extends Fragment
             args.putBoolean("accepted", false);
         }
 
-        Button fullStatsBtn = (Button) m_view.findViewById(R.id.fullStatsBtn);
-        fullStatsBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            //On click function
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), TeamStatsActivity.class);
-                intent.putExtra(getString(R.string.EXTRA_TEAM_STATS_REPORT), m_teamStatsReport);
-                startActivity(intent);
-            }
-        });
 
 
 
@@ -243,10 +254,6 @@ public class TeamInfoFragment extends Fragment
         super.onDetach();
     }
 
-    public interface OnFragmentInteractionListener {
-
-    }
-
 
 
     public void updatePhotos(Bitmap[] photos) {
@@ -274,14 +281,5 @@ public class TeamInfoFragment extends Fragment
             linearLayout.addView(imageView);
         }
     }
-
-
-//    public void updateData(String[] matchResultsDataCSV, String[] matchScoutingDataCSV) {
-//
-//    }
-//
-//    public void updateMatchSchedule(MatchSchedule matchSchedule) {
-//
-//    }
 
 }
