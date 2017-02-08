@@ -23,8 +23,6 @@ public class CyclesDisplayView extends View {
 
     private static final Paint PURPLE_FILL = new Paint();
     private static final Paint RED_FILL    = new Paint();
-    private static final Paint OUTLINE_PAINT = new Paint(Color.BLACK);
-
 
     // static initializer
     static {
@@ -32,9 +30,6 @@ public class CyclesDisplayView extends View {
         PURPLE_FILL.setStyle(Paint.Style.FILL);
         RED_FILL.setColor(Color.RED);
         RED_FILL.setStyle(Paint.Style.FILL);
-
-        OUTLINE_PAINT.setStyle(Paint.Style.STROKE);
-        OUTLINE_PAINT.setStrokeWidth(10);
     }
 
 
@@ -46,7 +41,7 @@ public class CyclesDisplayView extends View {
     private class CycleBar {
         private double startTime, endTime;
 
-        private Rect backgroundRect, outlineRect;
+        private Rect backgroundRect;
         private Paint fillPaint;
 
         CycleBar(double startTime, double endTime, boolean success) {
@@ -72,8 +67,6 @@ public class CyclesDisplayView extends View {
             int endx = (int) (endTime * scalingFactor);
 
             backgroundRect = new Rect(startx, 0, endx, viewHeight);
-
-            outlineRect = new Rect(startx, 0, endx, viewHeight);
         }
     }
 
@@ -115,7 +108,7 @@ public class CyclesDisplayView extends View {
      * Add a cycle bar to the bar graph.
      *
      * @param startTime the time-stamp of when the cycle started [0, MATCH_DURATION].
-     * @param endTime the time-stamp of when the cycle ended [0, MATCH_DURATION]. If endTime < timestamp, then nothing gets drawn.
+     * @param endTime the time-stamp of when the cycle ended [0, MATCH_DURATION]. If endTime < startTime, then nothing gets drawn.
      * @param success if true, we draw the cycle bar in 2706 purple, if false, we draw the cycle bar in red.
      *                Intended for cycles that were incomplete at the end of the match, but I'm sure we
      *                can find other uses.
@@ -152,9 +145,6 @@ public class CyclesDisplayView extends View {
 
             // draw the cycleBar
             canvas.drawRect(cycleBar.backgroundRect, cycleBar.fillPaint);
-
-            // draw an outlineRect to the box
-            canvas.drawRect(cycleBar.outlineRect, OUTLINE_PAINT);
         }
     }
 }

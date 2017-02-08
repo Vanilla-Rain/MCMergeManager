@@ -9,6 +9,7 @@ import android.widget.TextView;
  * Created by mike on 23/01/17.
  */
 
+
 public class CycleDisplayLayout extends LinearLayout {
 
     public static final int GEAR_CYCLE      = 0;
