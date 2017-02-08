@@ -1,15 +1,27 @@
 package ca.team2706.scouting.mcmergemanager.gui;
 
+import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import org.apache.commons.net.ftp.FTPFile;
+
 import ca.team2706.scouting.mcmergemanager.R;
+import ca.team2706.scouting.mcmergemanager.backend.App;
+import ca.team2706.scouting.mcmergemanager.backend.FTPClient;
+import ca.team2706.scouting.mcmergemanager.backend.FileUtils;
+import ca.team2706.scouting.mcmergemanager.backend.interfaces.FTPRequester;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.StatsEngine;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.MatchSchedule;
 
@@ -18,6 +30,7 @@ public class PrimaryTab extends Fragment {
 
     private View v;
     private Bundle m_savedInstanceState;
+
 
     @Nullable
     @Override
@@ -76,7 +89,6 @@ public class PrimaryTab extends Fragment {
                 return false;
             }
         });
-
         return v;
     }
 }

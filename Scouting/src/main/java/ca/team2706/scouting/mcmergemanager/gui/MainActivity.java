@@ -2,6 +2,7 @@ package ca.team2706.scouting.mcmergemanager.gui;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -25,24 +26,30 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.apache.commons.net.ftp.FTPFile;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
 import ca.team2706.scouting.mcmergemanager.R;
 import ca.team2706.scouting.mcmergemanager.backend.BlueAllianceUtils;
+import ca.team2706.scouting.mcmergemanager.backend.FTPClient;
 import ca.team2706.scouting.mcmergemanager.backend.FileUtils;
 import ca.team2706.scouting.mcmergemanager.backend.TakePicture;
 import ca.team2706.scouting.mcmergemanager.backend.interfaces.DataRequester;
+import ca.team2706.scouting.mcmergemanager.backend.interfaces.FTPRequester;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.MatchData;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.MatchSchedule;
 
 @TargetApi(21)
 public class MainActivity extends AppCompatActivity
-                implements DataRequester, PreMatchReportFragment.OnFragmentInteractionListener {
+                implements DataRequester, PreMatchReportFragment.OnFragmentInteractionListener, FTPRequester{
 
     public int teamColour = Color.rgb(102, 51, 153);
 
@@ -58,6 +65,12 @@ public class MainActivity extends AppCompatActivity
     public static MatchSchedule m_matchSchedule;
 
     FileUtils mFileUtils;
+    static FTPClient ftpClient;
+
+    /** static initializer **/
+    static {
+
+    }
 
     /** A flag so that onResume() knows to sync photos for a particular team when we're returning from the camera app */
     boolean lauchedPhotoApp = false;
@@ -74,6 +87,12 @@ public class MainActivity extends AppCompatActivity
 
         mFileUtils = new FileUtils(this);
         FileUtils.canWriteToStorage();
+        ftpClient = new FTPClient("35.164.180.39", "scout", "2706IsWatching!", FileUtils.sLocalTeamPhotosFilePath,  FileUtils.sRemoteTeamPhotosFilePath);
+        try{
+            ftpClient.connect();
+        }catch(Exception e){
+            Log.d("FTP|Connect", "Error while connecting");
+        }
     }
 
     @Override
@@ -333,5 +352,51 @@ public class MainActivity extends AppCompatActivity
                 (new Timer()).schedule(new CheckSchedulePopupHasExited(), 250);
             }
         }
+    }
+    public void downloadFileCallback(String localFilename, String remoteFilename){
+        //Here in case we need it later
+    }
+    public void uploadFileCallback(String localFilename, String remoteFilename){
+        //Here in case we need it later
+    }
+    public void syncCallback(int changedFiles){
+        //Here in case we need it later
+    }
+    public void dirCallback(FTPFile[] listing){
+        //Here in case we need it later
+    }
+    public void updateSyncBar(String Caption, int Progress, Activity activity, boolean isRunning){
+        final String caption = Caption;
+        final int progress = Progress;
+        final Activity activ = activity;
+        final boolean isRunningf = isRunning;
+        activity.runOnUiThread(new Runnable(){
+            public void run(){
+                TextView tv =(TextView)activ.findViewById(R.id.syncCaption);
+                ProgressBar pb = (ProgressBar)activ.findViewById(R.id.syncBar);
+                Button bu = (Button)activ.findViewById(R.id.syncButon);
+                if(isRunningf){
+                    bu.setText("syncing...");
+                }else{
+                    bu.setText("Sync Photos");
+                }
+                if(caption.startsWith("^")){
+                    pb.setIndeterminate(true);
+                    tv.setText("Getting File Listing...");
+                }else{
+                    pb.setIndeterminate(false);
+                    tv.setText(caption);
+                }
+                pb.setProgress(progress);
+            }
+        });
+    }
+    public void syncPhotos(View v){
+        try{
+            ftpClient.syncAllFiles(this, this);
+        }catch(Exception e){
+
+        }
+
     }
 }
