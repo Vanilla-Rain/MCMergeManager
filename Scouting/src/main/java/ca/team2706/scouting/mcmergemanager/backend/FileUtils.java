@@ -62,6 +62,10 @@ public class FileUtils {
         sLocalTeamPhotosFilePath = sLocalTeamFilePath + "/" + "Team Photos";
     }
 
+    public enum FileType {
+        SYNCHED, UNSYNCHED;
+    }
+
     /**
      * Constructor
      *
@@ -297,16 +301,45 @@ public class FileUtils {
         }
     }
 
+
+    /**
+     * Clears the file containing unsynched Team Data.
+     * Call this after a successful sync with the db server.
+
+     * @return whether or not the delete was successful.
+     */
+    public boolean clearUnsyncedTeamDataFile() {
+        File file = new File( App.getContext().getResources().getString(R.string.teamDataFileNameUNSYNCHED));
+        return file.delete();
+    }
+    
+
     /**
      * Load data from the teamDataFile.
      */
     public List<TeamDataObject> loadTeamDataFile() {
+        return loadTeamDataFile(FileType.SYNCHED);
+    }
+
+        /**
+         * Load data from the teamDataFile.
+         */
+    public List<TeamDataObject> loadTeamDataFile(FileType fileType) {
         // TODO #90
 
         List<TeamDataObject> teamDataObjects = new ArrayList<>();
 
         // read the file
-        String inFileName = sLocalEventFilePath +"/"+ App.getContext().getResources().getString(R.string.teamDataFileName);
+        String inFileName;
+        switch (fileType) {
+            case UNSYNCHED:
+                inFileName = sLocalEventFilePath + "/" + App.getContext().getResources().getString(R.string.teamDataFileNameUNSYNCHED);
+                break;
+            case SYNCHED:
+            default:
+                inFileName = sLocalEventFilePath + "/" + App.getContext().getResources().getString(R.string.teamDataFileName);
+        }
+
         try {
             BufferedReader br = new BufferedReader(new FileReader(inFileName));
             String line = br.readLine();
