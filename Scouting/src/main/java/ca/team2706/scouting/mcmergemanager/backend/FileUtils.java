@@ -16,6 +16,9 @@ import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -27,12 +30,11 @@ import java.util.Date;
 import java.util.List;
 
 import ca.team2706.scouting.mcmergemanager.R;
+import ca.team2706.scouting.mcmergemanager.backend.dataObjects.NoteObject;
+import ca.team2706.scouting.mcmergemanager.backend.dataObjects.RepairTimeObject;
 import ca.team2706.scouting.mcmergemanager.backend.dataObjects.TeamDataObject;
 import ca.team2706.scouting.mcmergemanager.backend.interfaces.PhotoRequester;
-import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.BallPickup;
-import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.BallShot;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.MatchData;
-import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.ScalingTime;
 
 /**
  * This is a helper class to hold common code for accessing shared scouting data files.
@@ -157,7 +159,7 @@ public class FileUtils {
 
         String outFileName = sLocalEventFilePath +"/"+ App.getContext().getResources().getString(R.string.matchScoutingDataFileName);
 
-        Log.d(App.getContext().getResources().getString(R.string.app_name), "Saving data to file: "+outFileName);
+        Log.d(App.getContext().getResources().getString(R.string.app_name), "Saving match data to file: "+outFileName);
 
         File outfile = new File(outFileName);
         try {
@@ -172,7 +174,7 @@ public class FileUtils {
 
         outFileName = sLocalEventFilePath +"/"+ App.getContext().getResources().getString(R.string.matchScoutingDataFileNameUNSYNCHED);
 
-        Log.d(App.getContext().getResources().getString(R.string.app_name), "Saving data to file: "+outFileName);
+        Log.d(App.getContext().getResources().getString(R.string.app_name), "Saving match data to file: "+outFileName);
 
         outfile = new File(outFileName);
         try {
@@ -245,7 +247,7 @@ public class FileUtils {
      * They should be short and fit on one line, so they will be truncated to 80 characters.
      */
     public void addNote(int teamNumber, String note) {
-        // TODO
+        // TODO #41
     }
 
     /**
@@ -256,7 +258,7 @@ public class FileUtils {
      * and ending with a newline (except for the last one).
      */
     public String getNotesForTeam(int teamNumber) {
-        // TODO
+        // TODO #41
 
         return "";
     }
@@ -264,27 +266,104 @@ public class FileUtils {
 
     public void appendToTeamDataFile(TeamDataObject teamDataObject) {
         // TODO #90
+
+        String outFileName = sLocalEventFilePath +"/"+ App.getContext().getResources().getString(R.string.teamDataFileName);
+
+        Log.d(App.getContext().getResources().getString(R.string.app_name), "Saving team data to file: "+outFileName);
+
+        File outfile = new File(outFileName);
+        try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter(outfile, true));
+            bw.append( teamDataObject.toString() );
+            bw.flush();
+            bw.close();
+        } catch (IOException e) {
+
+        }
+
+
+        outFileName = sLocalEventFilePath +"/"+ App.getContext().getResources().getString(R.string.teamDataFileNameUNSYNCHED);
+
+        Log.d(App.getContext().getResources().getString(R.string.app_name), "Saving team data to file: "+outFileName);
+
+        outfile = new File(outFileName);
+        try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter(outfile, true));
+            bw.append( teamDataObject.toString() );
+            bw.flush();
+            bw.close();
+        } catch (IOException e) {
+
+        }
     }
 
     /**
      * Load data from the teamDataFile.
      */
-    public TeamDataObject[] loadTeamDataFile() {
+    public List<TeamDataObject> loadTeamDataFile() {
         // TODO #90
 
-        return new TeamDataObject[0];
+        List<TeamDataObject> teamDataObjects = new ArrayList<>();
+
+        // read the file
+        String inFileName = sLocalEventFilePath +"/"+ App.getContext().getResources().getString(R.string.teamDataFileName);
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(inFileName));
+            String line = br.readLine();
+
+            while (line != null) {
+
+                JSONObject jsonObject;
+                try {
+                    jsonObject = new JSONObject(line);
+                } catch (JSONException e) {
+                    continue;
+                }
+
+                TeamDataObject teamDataObject;
+                TeamDataObject.TeamDataType teamDataType = TeamDataObject.TeamDataType.valueOf(jsonObject.getString(TeamDataObject.JSONKEY_TYPE));
+                switch (teamDataType) {
+                    case NOTE:
+                        teamDataObjects.add(new NoteObject(jsonObject));
+                        break;
+
+                    case REPAIR_TIME:
+                        teamDataObjects.add(new RepairTimeObject(jsonObject));
+                        break;
+                }
+
+                line = br.readLine();
+            }
+            br.close();
+        } catch (Exception e) {
+            Log.e(App.getContext().getResources().getString(R.string.app_name), "loadMatchDataFile:: " + e.toString());
+            return null;
+        }
+
+        return teamDataObjects;
     }
 
-    public TeamDataObject[] loadTeamDataForTeam(int teamNo) {
+
+    /**
+     * This will reload the entire TeamDataFile from disk. If you already have a List<TeamDataObject>, then
+     * it would be more efficient to pass it to filterTeamDataByTeam().
+     */
+    public List<TeamDataObject> loadTeamDataForTeam(int teamNo) {
         // TODO #90
 
-        return new TeamDataObject[0];
+        return filterTeamDataByTeam(teamNo, loadTeamDataFile());
     }
 
-    public static TeamDataObject[] filterTeamDataByTeam(int teamNo, TeamDataObject teamDataObject) {
+    public static List<TeamDataObject> filterTeamDataByTeam(int teamNo, List<TeamDataObject> teamDataObjects) {
         // TODO #90
 
-        return new TeamDataObject[0];
+        List<TeamDataObject> toRet = new ArrayList<>();
+
+        for(TeamDataObject teamDataObject : teamDataObjects)
+            if (teamDataObject.getTeamNo() == teamNo)
+                toRet.add(teamDataObject);
+
+        return toRet;
     }
 
 
