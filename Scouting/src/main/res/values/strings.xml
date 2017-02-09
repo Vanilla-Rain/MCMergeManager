@@ -15,6 +15,7 @@
     <string name="title_activity_teleop_scouting">Teleop Scouting</string>
     <string name="title_activity_file_chooser">FileChooser</string>
     <string name="title_activity_team_stats">TeamStatsPage</string>
+    <string name="title_activity_repair_time_collection">RepairTimeCollection</string>
     <string name="title_activity_team_cycles_report">TeamCyclesReport</string>
     <string name="matchScoutingDataFileName">matchScoutingData.csv</string>
     <string name="matchScoutingDataFileNameUNSYNCHED">matchScoutingData_UNSYNCHED.csv</string>

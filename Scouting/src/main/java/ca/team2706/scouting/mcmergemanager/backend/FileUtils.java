@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.List;
 
 import ca.team2706.scouting.mcmergemanager.R;
+import ca.team2706.scouting.mcmergemanager.backend.dataObjects.TeamDataObject;
 import ca.team2706.scouting.mcmergemanager.backend.interfaces.PhotoRequester;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.BallPickup;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.BallShot;
@@ -42,11 +43,6 @@ import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.ScalingTim
 public class FileUtils {
 
     private static Activity mActivity;
-
-    /**
-     * A pointer to myself so that the nested classes can use my ConnectionCallbacks
-     **/
-    FileUtils m_me;
 
     public static String sLocalToplevelFilePath;
     public static String sLocalTeamFilePath;
@@ -71,7 +67,6 @@ public class FileUtils {
      */
     public FileUtils(Activity activity) {
         mActivity = activity;
-        m_me = this;
 
         checkLocalFileStructure();
     }
@@ -264,6 +259,32 @@ public class FileUtils {
         // TODO
 
         return "";
+    }
+
+
+    public void appendToTeamDataFile(TeamDataObject teamDataObject) {
+        // TODO #90
+    }
+
+    /**
+     * Load data from the teamDataFile.
+     */
+    public TeamDataObject[] loadTeamDataFile() {
+        // TODO #90
+
+        return new TeamDataObject[0];
+    }
+
+    public TeamDataObject[] loadTeamDataForTeam(int teamNo) {
+        // TODO #90
+
+        return new TeamDataObject[0];
+    }
+
+    public static TeamDataObject[] filterTeamDataByTeam(int teamNo, TeamDataObject teamDataObject) {
+        // TODO #90
+
+        return new TeamDataObject[0];
     }
 
 
