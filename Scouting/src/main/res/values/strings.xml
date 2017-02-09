@@ -8,14 +8,14 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_match_scouting">Match Scouting</string>
     <string name="match_scouting_activity_title">Match Scouting</string>
-    <string name="title_activity_auto_scouting">AutoScouting</string>
-    <string name="title_activity_auto_scouting2">AutoScouting2</string>
+    <string name="title_activity_auto_scouting">Auto Scouting</string>
+    <string name="title_activity_auto_scouting2">Auto Scouting2</string>
     <string name="title_activity_post_game">Post Game</string>
     <string name="title_activity_teleop_scouting">Teleop Scouting</string>
-    <string name="title_activity_file_chooser">FileChooser</string>
-    <string name="title_activity_team_stats">TeamStatsPage</string>
+  
+    <string name="title_activity_team_stats">Team Stats Page</string>
+    <string name="title_activity_cycles_display">Cycles Display</string>
     <string name="title_activity_repair_time_collection">RepairTimeCollection</string>
-    <string name="title_activity_team_cycles_report">TeamCyclesReport</string>
     <string name="matchScoutingDataFileName">matchScoutingData.csv</string>
     <string name="matchScoutingDataFileNameUNSYNCHED">matchScoutingData_UNSYNCHED.csv</string>
     <string-array name="year_array">
