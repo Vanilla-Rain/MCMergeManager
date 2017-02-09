@@ -16,8 +16,6 @@ public class HelpActivity extends AppCompatActivity {
         setContentView(R.layout.activity_help);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        TextView tvEventIds = (TextView)findViewById(R.id.eventIdsTextView);
-        tvEventIds.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
 }

@@ -96,6 +96,16 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ca.team2706.scouting.mcmergemanager.gui.MainActivity" />
         </activity>
+  
+      <activity>
+            android:name=".gui.RepairTimeCollection"
+            android:label="@string/title_activity_repair_time_collection"
+            android:parentActivityName=".gui.MainActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ca.team2706.scouting.mcmergemanager.gui.MainActivity" />
+        </activity>
 
         <!-- ATTENTION: This was auto-generated to add Google Play services to your project for
      App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
