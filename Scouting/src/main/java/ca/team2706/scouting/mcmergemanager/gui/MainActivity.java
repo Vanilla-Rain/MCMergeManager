@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity
         if (lauchedPhotoApp) {
             // TODO
             // This used to call Google Drive. This need to be replaced with something else
-            //mGoogleDriveUtils.syncOneTeamsPhotos(enterATeamNumberPopup.getTeamNumber());
+            //mGoogleDriveUtils.syncOneTeamsPhotos(enterATeamNumberPopup.getTeamNo());
 
             lauchedPhotoApp = false;
         }
@@ -253,6 +253,12 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onFragmentInteraction(Uri uri) {
         // empty?
+    }
+
+    public void onRepairTimeRecordClicked(View view) {
+        Intent intent = new Intent(this, RepairTimeCollection.class);
+        intent.putExtra(getResources().getString(R.string.EXTRA_MATCH_SCHEDULE), m_matchSchedule.toString());
+        startActivity(intent);
     }
 
     class CheckPicturePopupHasExited extends TimerTask {

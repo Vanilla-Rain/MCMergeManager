@@ -1,4 +1,4 @@
-package ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects;
+package ca.team2706.scouting.mcmergemanager.backend.dataObjects;
 
 import android.util.Log;
 
@@ -41,6 +41,18 @@ public class MatchSchedule implements Serializable {
         public int getRed3() { return red3; }
         public int getBlueScore() { return blueScore; }
         public int getRedScore() { return redScore; }
+
+        public int[] getTeamNos() {
+            int[] arr = new int[6];
+            arr[0] = blue1;
+            arr[1] = blue2;
+            arr[2] = blue3;
+            arr[3] = red1;
+            arr[4] = red2;
+            arr[5] = red3;
+
+            return arr;
+        }
 
         // setters - this is how other classes will update data, or make a Match if they only know a few fields
         public void setMatchNo(int matchNo) { this.matchNo = matchNo; }
@@ -96,6 +108,20 @@ public class MatchSchedule implements Serializable {
     private List<Match> matches = new ArrayList<Match>();
 
     public List<Match> getMatches(){ return matches; }
+
+
+    public List<String> getTeamNumsAtEvent() {
+        ArrayList<String> list = new ArrayList<>();
+
+        for(Match m : matches) {
+            for(int teamNo : m.getTeamNos()) {
+                if(!list.contains(""+teamNo)) {
+                    list.add(""+teamNo);
+                }
+            }
+        }
+        return list;
+    }
 
     public void addMatch(Match match) {
         matches.add(match);
