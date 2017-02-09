@@ -46,7 +46,10 @@
 
     <string name="title_activity_settings">Settings</string>
     <!-- Strings related to properties from the Settings page -->
-    <string name="PROPERTY_teamname">ca.team2706.scouting.teamname</string>
+    <string name="PROPERTY_FTPHostname">ca.team2706.scouting.hostname</string>
+    <string name="PROPERTY_FTPUsername">ca.team2706.scouting.username</string>
+    <string name="PROPERTY_FTPPassword">ca.team2706.scouting.password</string>
+    <string name="PROPERTY_FTPSyncOverWifi">ca.team2706.scouting.syncOverWifi</string>
     <string name="PROPERTY_event">ca.team2706.scouting.event</string>
 
     <string name="TBA_EVENT_NAMES">Alamo Regional:Arizona East Regional:Arizona West Regional:Autodesk Oregon Regional:BAE Granite State Regional:Bayou Regional:Bedford FIRST Robotics District:Boilermaker Regional:Boston Regional:Bridgewater-Raritan District:Buckeye Regional:Central Valley Regional:Central Washington Regional:Chesapeake Regional:Colorado Regional:Connecticut Regional:Crossroads Regional:Dallas Regional:Detroit District:Festival de Robotique Montreal:Finger Lakes Regional:Grand Blanc District:Greater Kansas City Regional:Greater Toronto East Regional:Greater Toronto West Regional:Greater Toronto Central Regional:Gull Lake District:Hatboro-Horsham District:Hawaii Regional:Hub City Regional:Inland Empire Regional:Israel Regional:Kettering University District:Lake Superior Regional:Las Vegas Regional:Lenape Seneca District:Livonia District:Lone Star Regional:Los Angeles Regional:Michigan State Championship:Mid-Atlantic Region Championship:Midwest Regional:Minnesota 10000 Lakes Regional:Minnesota North Star Regional:Mount Olive District:New York City Regional:North Carolina Regional:North Bay Regional:North Bay 2015 (for testing):Northern Lights Regional:Oklahoma Regional:Orlando Regional:Palmetto Regional:Peachtree Regional:Pine Tree Regional:Pittsburgh Regional:Queen City Regional:Razorback Regional:Sacramento Regional:San Diego Regional:SBPLI Long Island Regional:Seattle Regional:Silicon Valley Regional:Smoky Mountains Regional:South Florida Regional:Spokane Regional:Springside - Chestnut Hill District:St Joseph District:St. Louis Regional:TCnj District:Traverse City District:Troy District:Utah Regional:Virginia Regional:Washington DC Regional:Waterford District:Waterloo Regional:West Michigan District:Western Canadian Regional:Wisconsin Regional:WPI Regional</string>
@@ -63,7 +66,7 @@
 
         "\n\n<font size="16"><b>Syncing Data</b></font>"
 
-        "<b>Team Photos</b> are synced to **somewhere, we haven\'t decided where yet**"
+        "<b>Team Photos</b> are synced to an FTP Server of your choosing"
 
         "\n\n<font size="16"><b>Local Data</b></font>"
 
