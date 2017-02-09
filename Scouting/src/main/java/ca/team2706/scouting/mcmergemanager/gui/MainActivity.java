@@ -18,7 +18,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -35,6 +34,7 @@ import java.util.TimerTask;
 import ca.team2706.scouting.mcmergemanager.R;
 import ca.team2706.scouting.mcmergemanager.backend.BlueAllianceUtils;
 import ca.team2706.scouting.mcmergemanager.backend.FileUtils;
+import ca.team2706.scouting.mcmergemanager.backend.JsonUtils;
 import ca.team2706.scouting.mcmergemanager.backend.TakePicture;
 import ca.team2706.scouting.mcmergemanager.backend.interfaces.DataRequester;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.MatchData;
@@ -45,6 +45,8 @@ public class MainActivity extends AppCompatActivity
                 implements DataRequester, PreMatchReportFragment.OnFragmentInteractionListener {
 
     public int teamColour = Color.rgb(102, 51, 153);
+
+    public Context context;
 
     Intent globalIntent;
     MainActivity me;
@@ -64,6 +66,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        context = this;
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.activity_main);
         setNavDrawer();
@@ -88,7 +91,7 @@ public class MainActivity extends AppCompatActivity
         if (lauchedPhotoApp) {
             // TODO
             // This used to call Google Drive. This need to be replaced with something else
-            //mGoogleDriveUtils.syncOneTeamsPhotos(enterATeamNumberPopup.getTeamNumber());
+            //mGoogleDriveUtils.syncOneTeamsPhotos(enterATeamNumberPopup.getTeamNo());
 
             lauchedPhotoApp = false;
         }
@@ -252,6 +255,12 @@ public class MainActivity extends AppCompatActivity
         // empty?
     }
 
+    public void onRepairTimeRecordClicked(View view) {
+        Intent intent = new Intent(this, RepairTimeCollection.class);
+        intent.putExtra(getResources().getString(R.string.EXTRA_MATCH_SCHEDULE), m_matchSchedule.toString());
+        startActivity(intent);
+    }
+
     class CheckPicturePopupHasExited extends TimerTask {
         public void run() {
             if (enterATeamNumberPopup.accepted) {
@@ -315,4 +324,9 @@ public class MainActivity extends AppCompatActivity
             }
         }
     }
+
+    public void onClick(View v) {
+        JsonUtils.getMatch(this, 7);
+    }
+
 }
