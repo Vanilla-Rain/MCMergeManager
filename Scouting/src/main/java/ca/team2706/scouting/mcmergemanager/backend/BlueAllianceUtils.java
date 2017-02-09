@@ -337,11 +337,6 @@ public class BlueAllianceUtils {
             boolean looped = false;
             String joe = downloadedCompArray.get(o);
 
-            //Get their nickname
-            String downloadedNickname = getBlueAllianceData("nickname", "http://www.thebluealliance.com/api/v2/team/frc" + joe + "?X-TBA-App-Id=frc2706:mergemanager:v01/");
-            // [Mike] ^^^ This variable is never used, that means it's doing a slow internet call that we never use...??
-            // We should either save and display that, or get rid of it altogether.
-
             //Get Competitions they went to
             ArrayList<String> comps2015 = getBlueAllianceDataArrayAsArray("event_code", "http://www.thebluealliance.com/api/v2/team/frc" + joe + "/" + dataYear + "/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
 
