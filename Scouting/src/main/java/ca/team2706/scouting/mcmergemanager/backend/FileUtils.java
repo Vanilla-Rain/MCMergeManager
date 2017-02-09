@@ -150,6 +150,10 @@ public class FileUtils {
         }
     }
 
+    public void appendToMatchDataFile() {
+        //TODO #76
+    }
+
     /**
      * Take one match of data and stick it at the end of the match data file.
      *
@@ -160,6 +164,10 @@ public class FileUtils {
      * "%d,%d,%b,%b,{%d;...},{{%d:%d:%.2f:%d};...},{%d;...},{{%d:%d:%.2f:%d};...},%,2f,{{%d;%,2f}:...},{{%.2f;%d}:...},%s,%b,%d"
      */
     public void appendToMatchDataFile(MatchData.Match match) {
+
+        //TODO: #76
+        //TODO: Redo this to write the file in JSON format
+
 
         String outFileName = sLocalEventFilePath +"/"+ App.getContext().getResources().getString(R.string.matchScoutingDataFileName);
 
@@ -193,6 +201,17 @@ public class FileUtils {
 
 
     /**
+     * Clears the file containing unsynched Team Data.
+     * Call this after a successful sync with the db server.
+
+     * @return whether or not the delete was successful.
+     */
+    public boolean clearUnsyncedMatchScoutingDataFile() {
+        File file = new File( App.getContext().getResources().getString(R.string.matchScoutingDataFileNameUNSYNCHED));
+        return file.delete();
+    }
+
+    /**
      * Load the entire file of match data into Objects.
      *
      * Data format:
@@ -202,12 +221,30 @@ public class FileUtils {
      * "%d,%d,%b,%b,{%d;...},{{%d:%d:%.2f:%d};...},{%d;...},{{%d:%d:%.2f:%d};...},%,2f,{{%d;%,2f}:...},{{%.2f;%d}:...},%s,%b,%d"
      */
     public MatchData loadMatchDataFile() {
+        return loadMatchDataFile(FileType.SYNCHED);
+    }
+
+
+    public MatchData loadMatchDataFile(FileType fileType) {
+
+        //TODO: #76
+        //TODO: Redo this to write the file in JSON format
+
 
         MatchData matchData = new MatchData();
         List<String> matchStrs = new ArrayList<>();
 
         // read the file
-        String inFileName = sLocalEventFilePath +"/"+ App.getContext().getResources().getString(R.string.matchScoutingDataFileName);
+        String inFileName;
+        switch (fileType) {
+            case UNSYNCHED:
+                inFileName = sLocalEventFilePath + "/" + App.getContext().getResources().getString(R.string.matchScoutingDataFileNameUNSYNCHED);
+                break;
+            case SYNCHED:
+            default:
+                inFileName = sLocalEventFilePath + "/" + App.getContext().getResources().getString(R.string.matchScoutingDataFileName);
+        }
+
         try {
             BufferedReader br = new BufferedReader(new FileReader(inFileName));
             String line = br.readLine();
