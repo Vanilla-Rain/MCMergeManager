@@ -47,13 +47,13 @@ public class MainActivity extends AppCompatActivity
     public Context context;
 
     Intent globalIntent;
-    MainActivity me;
+    static MainActivity me;
 
     FragmentManager mFragmentManager;
     FragmentTransaction mFragmentTransaction;
 
-    public static MatchData mMatchData;
-    public static MatchSchedule mMatchSchedule = new MatchSchedule();
+    public static MatchData sMatchData;
+    public static MatchSchedule sMatchSchedule = new MatchSchedule();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity
 
         // In case the schedule is empty, make sure we pass along the list of teams registered at event
         // that we fetched at the beginning.
-        mMatchData = FileUtils.loadMatchDataFile();
+        sMatchData = FileUtils.loadMatchDataFile();
     }
 
     /**
@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity
 
         Intent intent = new Intent(this, PreGameActivity.class);
         intent.putExtra( getString(R.string.EXTRA_MATCH_NO), matchNo);
-        intent.putExtra( getString(R.string.EXTRA_MATCH_SCHEDULE), mMatchSchedule);
+        intent.putExtra( getString(R.string.EXTRA_MATCH_SCHEDULE), sMatchSchedule);
         startActivity(intent);
     }
 
@@ -155,10 +155,10 @@ public class MainActivity extends AppCompatActivity
      */
     public void onShowScheduleClicked(View view) {
 
-        if (mMatchSchedule != null) {
+        if (sMatchSchedule != null) {
             // bundle the match data into an intent
             Intent intent = new Intent(this, MatchScheduleActivity.class);
-            intent.putExtra(getResources().getString(R.string.EXTRA_MATCH_SCHEDULE), mMatchSchedule.toString());
+            intent.putExtra(getResources().getString(R.string.EXTRA_MATCH_SCHEDULE), sMatchSchedule.toString());
             startActivity(intent);
         } else {
             ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -170,7 +170,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void onShowTeamScheduleClicked(View view) {
-        if (mMatchSchedule == null) {
+        if (sMatchSchedule == null) {
             Toast.makeText(this, "No Schedule Data to show. No Internet?", Toast.LENGTH_LONG).show();
             return;
         }
@@ -183,7 +183,7 @@ public class MainActivity extends AppCompatActivity
 
     public void onRepairTimeRecordClicked(View view) {
         Intent intent = new Intent(this, RepairTimeCollection.class);
-        intent.putExtra(getResources().getString(R.string.EXTRA_MATCH_SCHEDULE), mMatchSchedule.toString());
+        intent.putExtra(getResources().getString(R.string.EXTRA_MATCH_SCHEDULE), sMatchSchedule.toString());
         startActivity(intent);
     }
 
@@ -226,8 +226,8 @@ public class MainActivity extends AppCompatActivity
 
         // In the case that the schedule is not published yet,
         // make sure we preserve the list of teams registered at this event.
-        matchSchedule.addToListOfTeamsAtEvent(mMatchSchedule.getTeamNumsAtEvent());
-        mMatchSchedule = matchSchedule;
+        matchSchedule.addToListOfTeamsAtEvent(sMatchSchedule.getTeamNumsAtEvent());
+        sMatchSchedule = matchSchedule;
     }
 
     /**
@@ -299,7 +299,7 @@ public class MainActivity extends AppCompatActivity
 
                 // bundle the match data into an intent and launch the schedule activity
                 Intent intent = new Intent(me, MatchScheduleActivity.class);
-                intent.putExtra(getResources().getString(R.string.EXTRA_MATCH_SCHEDULE), mMatchSchedule.toString());
+                intent.putExtra(getResources().getString(R.string.EXTRA_MATCH_SCHEDULE), sMatchSchedule.toString());
                 intent.putExtra(getResources().getString(R.string.EXTRA_TEAM_NO), teamNumber);
                 startActivity(intent);
 
