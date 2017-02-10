@@ -37,7 +37,6 @@ public class TeamInfoFragment extends Fragment
 
     private int m_teamNumber;
     private View m_view;
-    public FileUtils fileUtils;
     private String textViewPerformanceString;
     private String nicknameString;
     public String name;
@@ -62,13 +61,11 @@ public class TeamInfoFragment extends Fragment
         StrictMode.setThreadPolicy(policy);
         m_view = inflater.inflate(R.layout.fragment_team_info, null);
 
-
-        fileUtils = new FileUtils(getActivity());
         final Bundle args = getArguments();
 
         if(args.get("teamNumber") !=null ) {
             m_teamNumber = (int) args.get("teamNumber");
-            fileUtils.getTeamPhotos(m_teamNumber, this);
+            FileUtils.getTeamPhotos(m_teamNumber, this);
 
             Runnable getStuff = new Runnable() {
                 public void run() {

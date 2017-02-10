@@ -12,12 +12,10 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -51,18 +49,11 @@ public class MainActivity extends AppCompatActivity
     Intent globalIntent;
     MainActivity me;
 
-    DrawerLayout mDrawerLayout;
-    NavigationView mNavigationView;
     FragmentManager mFragmentManager;
     FragmentTransaction mFragmentTransaction;
 
     public static MatchData m_matchData;
     public static MatchSchedule m_matchSchedule;
-
-    FileUtils mFileUtils;
-
-    /** A flag so that onResume() knows to sync photos for a particular team when we're returning from the camera app */
-    boolean lauchedPhotoApp = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,33 +66,19 @@ public class MainActivity extends AppCompatActivity
 
         me = this;
 
-        mFileUtils = new FileUtils(this);
-        FileUtils.canWriteToStorage();
+        FileUtils.checkFileReadWritePermissions(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        //  This used to be needed for Google Drive, might not serve any purpose now...
-        if (mFileUtils == null) {
-            mFileUtils = new FileUtils(this);
-        }
-
-        if (lauchedPhotoApp) {
-            // TODO
-            // This used to call Google Drive. This need to be replaced with something else
-            //mGoogleDriveUtils.syncOneTeamsPhotos(enterATeamNumberPopup.getTeamNo());
-
-            lauchedPhotoApp = false;
-        }
-
         // tell the user where they are syncing their dada to
         updateDataSyncLabel();
 
         // fetch the match data from TheBlueAlliance to update the scores.
         BlueAllianceUtils.fetchMatchScheduleAndResults(this);
-        m_matchData = mFileUtils.loadMatchDataFile();
+        m_matchData = FileUtils.loadMatchDataFile();
     }
 
     /**
@@ -178,7 +155,6 @@ public class MainActivity extends AppCompatActivity
             NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
             if (activeNetwork == null) { // not connected to the internet
                 Toast.makeText(this, "No Schedule Data to show. No Internet?", Toast.LENGTH_LONG).show();
-                return;
             }
         }
     }
@@ -199,15 +175,12 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setBackgroundColor(teamColour);
 
-        if (toolbar != null) {
-            setSupportActionBar(toolbar);
-        }
+        setSupportActionBar(toolbar);
+
         //Set up drawer layout and navigation view
         mFragmentManager = getSupportFragmentManager();
         mFragmentTransaction = mFragmentManager.beginTransaction();
         mFragmentTransaction.replace(R.id.containerView, new TabFragment()).commit();
-
-        android.support.v7.widget.Toolbar toolbar2 = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
     }
 
     public GetTeamNumberDialog enterATeamNumberPopup;
@@ -264,29 +237,24 @@ public class MainActivity extends AppCompatActivity
     class CheckPicturePopupHasExited extends TimerTask {
         public void run() {
             if (enterATeamNumberPopup.accepted) {
-                if(enterATeamNumberPopup.accepted) {
-                    int teamNumber;
-                    try {
-                        teamNumber = Integer.parseInt(enterATeamNumberPopup.inputResult);
-                    } catch (NumberFormatException e) {
-                        // TODO: should probably pop up a toast or something. There seems to be some threading issue with
-                        // doing that from here.
+                int teamNumber;
+                try {
+                    teamNumber = Integer.parseInt(enterATeamNumberPopup.inputResult);
+                } catch (NumberFormatException e) {
+                    // TODO: should probably pop up a toast or something. There seems to be some threading issue with
+                    // doing that from here.
 
-                        Log.e(me.getResources().getString(R.string.app_name), e.toString());
-                        return;
-                    }
-
-                    FileUtils fileUtils = new FileUtils(me);
-
-                    Uri teamPhotoUri = fileUtils.getNameForNewPhoto(teamNumber);
-                    String teamPhotoPath = teamPhotoUri.getPath();
-                    Log.e(me.getResources().getString(R.string.app_name), "Saving to \""+teamPhotoPath+"\"");
-
-                    TakePicture pic = new TakePicture(teamPhotoPath, me);
-                    pic.capturePicture();
-                    DisplayAlertDialog.accepted = false;
+                    Log.e(getResources().getString(R.string.app_name), e.toString());
+                    return;
                 }
 
+                Uri teamPhotoUri = FileUtils.getNameForNewPhoto(teamNumber);
+                String teamPhotoPath = teamPhotoUri.getPath();
+                Log.e(getResources().getString(R.string.app_name), "Saving to \""+teamPhotoPath+"\"");
+
+                TakePicture pic = new TakePicture(teamPhotoPath, me);
+                pic.capturePicture();
+                DisplayAlertDialog.accepted = false;
             }
             else if (!enterATeamNumberPopup.canceled) {
                 // schedule me to run again
@@ -298,25 +266,22 @@ public class MainActivity extends AppCompatActivity
     class CheckSchedulePopupHasExited extends TimerTask {
         public void run() {
             if (enterATeamNumberPopup.accepted) {
-                if(enterATeamNumberPopup.accepted) {
-                    int teamNumber;
-                    try {
-                        teamNumber = Integer.parseInt(enterATeamNumberPopup.inputResult);
-                    } catch (NumberFormatException e) {
-                        Log.d(me.getResources().getString(R.string.app_name),
-                                e.toString());
-                        return;
-                    }
-
-                    // bundle the match data into an intent and launch the schedule activity
-                    Intent intent = new Intent(me, MatchScheduleActivity.class);
-                    intent.putExtra(getResources().getString(R.string.EXTRA_MATCH_SCHEDULE), m_matchSchedule.toString());
-                    intent.putExtra(getResources().getString(R.string.EXTRA_TEAM_NO), teamNumber);
-                    startActivity(intent);
-
-                    DisplayAlertDialog.accepted = false;
+                int teamNumber;
+                try {
+                    teamNumber = Integer.parseInt(enterATeamNumberPopup.inputResult);
+                } catch (NumberFormatException e) {
+                    Log.d(me.getResources().getString(R.string.app_name),
+                            e.toString());
+                    return;
                 }
 
+                // bundle the match data into an intent and launch the schedule activity
+                Intent intent = new Intent(me, MatchScheduleActivity.class);
+                intent.putExtra(getResources().getString(R.string.EXTRA_MATCH_SCHEDULE), m_matchSchedule.toString());
+                intent.putExtra(getResources().getString(R.string.EXTRA_TEAM_NO), teamNumber);
+                startActivity(intent);
+
+                DisplayAlertDialog.accepted = false;
             }
             else if (!enterATeamNumberPopup.canceled) {
                 // schedule me to run again
