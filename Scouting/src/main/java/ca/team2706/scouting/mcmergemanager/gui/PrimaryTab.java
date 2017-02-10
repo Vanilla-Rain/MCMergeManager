@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import ca.team2706.scouting.mcmergemanager.R;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.StatsEngine;
-import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.MatchSchedule;
+import ca.team2706.scouting.mcmergemanager.backend.dataObjects.MatchSchedule;
 
 
 public class PrimaryTab extends Fragment {

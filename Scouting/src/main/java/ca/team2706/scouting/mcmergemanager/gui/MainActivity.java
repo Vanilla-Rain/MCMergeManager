@@ -34,9 +34,9 @@ import ca.team2706.scouting.mcmergemanager.backend.BlueAllianceUtils;
 import ca.team2706.scouting.mcmergemanager.backend.FileUtils;
 import ca.team2706.scouting.mcmergemanager.backend.JsonUtils;
 import ca.team2706.scouting.mcmergemanager.backend.TakePicture;
+import ca.team2706.scouting.mcmergemanager.backend.dataObjects.MatchSchedule;
 import ca.team2706.scouting.mcmergemanager.backend.interfaces.DataRequester;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.MatchData;
-import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.MatchSchedule;
 
 @TargetApi(21)
 public class MainActivity extends AppCompatActivity

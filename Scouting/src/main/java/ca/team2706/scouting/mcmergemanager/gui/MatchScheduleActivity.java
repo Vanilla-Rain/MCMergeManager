@@ -16,7 +16,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import ca.team2706.scouting.mcmergemanager.R;
-import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.MatchSchedule;
+import ca.team2706.scouting.mcmergemanager.backend.dataObjects.MatchSchedule;
 
 /**
  * Created by mike on 31/01/16.

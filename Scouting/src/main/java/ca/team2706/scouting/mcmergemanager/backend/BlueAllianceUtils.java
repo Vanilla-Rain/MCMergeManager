@@ -30,7 +30,7 @@ import java.util.ArrayList;
 
 import ca.team2706.scouting.mcmergemanager.R;
 import ca.team2706.scouting.mcmergemanager.backend.interfaces.DataRequester;
-import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.MatchSchedule;
+import ca.team2706.scouting.mcmergemanager.backend.dataObjects.MatchSchedule;
 
 public class BlueAllianceUtils {
 

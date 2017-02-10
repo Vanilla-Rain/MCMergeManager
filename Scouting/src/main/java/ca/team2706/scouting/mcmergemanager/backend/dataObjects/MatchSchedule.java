@@ -1,5 +1,7 @@
 package ca.team2706.scouting.mcmergemanager.backend.dataObjects;
 
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -10,6 +12,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import ca.team2706.scouting.mcmergemanager.R;
+import ca.team2706.scouting.mcmergemanager.backend.App;
 
 /**
  * Created by mike on 31/01/16.
@@ -169,8 +174,14 @@ public class MatchSchedule implements Serializable {
         try {
             jsonArr = new JSONArray(jsonSchedule);
 
+            // Just for testing the Match Prediction, match #3 does not have a score
+            // if we're in the test event from the previous year.
+            SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(App.getContext());
+            String eventName = SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_event), "<Not Set>");
+            boolean testEvent = eventName.equals(App.getContext().getResources().getString(R.string.TBA_TEST_EVENT));
+
             // loop over individual matches
-            for(int i=0;i<(jsonArr.length());i++)
+            for(int i=0;i<(jsonArr.length( ));i++)
             {
                 JSONObject jsonMatch=jsonArr.getJSONObject(i);
 
@@ -195,8 +206,9 @@ public class MatchSchedule implements Serializable {
                     match.setRedScore(-1);
                 }
 
-                // TODO: Just for testing
-                if (match.getMatchNo() == 3) {
+                // Just for testing the Match Prediction, match #3 does not have a score
+                // if we're in the test event from the previous year.
+                if (testEvent && match.getMatchNo() == 3) {
                     match.setBlueScore(-1);
                     match.setRedScore(-1);
                 }
