@@ -5,6 +5,7 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,8 +13,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-
-import java.util.ArrayList;
 
 import ca.team2706.scouting.mcmergemanager.R;
 import ca.team2706.scouting.mcmergemanager.backend.dataObjects.MatchSchedule;
@@ -26,12 +25,6 @@ public class MatchScheduleActivity extends ListActivity {
     Activity activity;
 
     MatchSchedule matchSchedule;
-
-    ArrayList<String> matchNos = new ArrayList<String>();
-    ArrayList<String> blueAlliances = new ArrayList<String>();
-    ArrayList<String> redAlliances = new ArrayList<String>();
-    ArrayList<String> blueScores = new ArrayList<String>();
-    ArrayList<String> redScores = new ArrayList<String>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -72,15 +65,11 @@ public class MatchScheduleActivity extends ListActivity {
 
     private class MatchesArrayAdapter extends ArrayAdapter<MatchSchedule.Match> {
 
-        private Context c;
-        private int id;
         private MatchSchedule matchSchedule;
 
-        public MatchesArrayAdapter(Context context, int textViewResourceId,
+        MatchesArrayAdapter(Context context, int textViewResourceId,
                                  MatchSchedule matchSchedule) {
             super(context, textViewResourceId, matchSchedule.getMatches());
-            c = context;
-            id = textViewResourceId;
             this.matchSchedule = matchSchedule;
         }
 
@@ -90,6 +79,7 @@ public class MatchScheduleActivity extends ListActivity {
         }
 
         @Override
+        @NonNull
         public View getView(int position, View convertView, ViewGroup parent) {
             LayoutInflater inflater = activity.getLayoutInflater();
             if (convertView == null) {

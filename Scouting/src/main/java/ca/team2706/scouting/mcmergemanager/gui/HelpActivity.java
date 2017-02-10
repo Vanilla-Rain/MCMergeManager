@@ -3,8 +3,6 @@ package ca.team2706.scouting.mcmergemanager.gui;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.method.LinkMovementMethod;
-import android.widget.TextView;
 
 import ca.team2706.scouting.mcmergemanager.R;
 

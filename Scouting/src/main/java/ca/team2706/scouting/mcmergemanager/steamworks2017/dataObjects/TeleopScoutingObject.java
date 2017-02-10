@@ -2,15 +2,11 @@ package ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 
 public class TeleopScoutingObject {
 
     public static double MATCH_TIME = 0; // TODO: get match time in milliseconds?
-
-//    public double fuelCycleTime; // TODO: [MikeO] ??
-//    public double gearCycleTime; // TODO: [MikeO] ??
 
 
     private ArrayList<Event> events = new ArrayList<>();

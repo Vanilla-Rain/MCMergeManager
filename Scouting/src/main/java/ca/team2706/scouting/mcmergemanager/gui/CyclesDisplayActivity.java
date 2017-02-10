@@ -1,7 +1,7 @@
 package ca.team2706.scouting.mcmergemanager.gui;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.LinearLayout;
 
 import ca.team2706.scouting.mcmergemanager.R;

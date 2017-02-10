@@ -2,7 +2,6 @@ package ca.team2706.scouting.mcmergemanager.gui;
 
 import android.app.Fragment;
 import android.content.Context;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,9 +12,8 @@ import android.widget.TextView;
 import java.util.Map;
 
 import ca.team2706.scouting.mcmergemanager.R;
-import ca.team2706.scouting.mcmergemanager.stronghold2016.StatsEngine;
-import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.MatchSchedule;
-import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.TeleopScoutingObject;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.StatsEngine;
+import ca.team2706.scouting.mcmergemanager.backend.dataObjects.MatchSchedule;
 
 public class PreMatchReportFragment extends Fragment {
     // the fragment initialization parameters
@@ -150,7 +148,6 @@ public class PreMatchReportFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 }

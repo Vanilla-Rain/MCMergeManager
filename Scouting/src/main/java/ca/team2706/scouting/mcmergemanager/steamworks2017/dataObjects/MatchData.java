@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class MatchData {
 
 
-    public class Match implements Serializable {
+    public static class Match implements Serializable {
 
         public PreGameObject preGameObject;
         public PostGameObject postGameObject;

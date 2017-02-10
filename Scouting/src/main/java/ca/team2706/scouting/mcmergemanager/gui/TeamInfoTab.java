@@ -16,7 +16,8 @@ import android.widget.SearchView;
 import android.widget.Spinner;
 
 import ca.team2706.scouting.mcmergemanager.R;
-import ca.team2706.scouting.mcmergemanager.stronghold2016.StatsEngine;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.StatsEngine;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.TeamStatsReport;
 
 /**
  * Created by cnnr2 on 2015-10-31.
@@ -62,7 +63,7 @@ public class TeamInfoTab extends Fragment {
                         args.putInt("teamNumber", teamNumber);
                         StatsEngine statsEngine = new StatsEngine(MainActivity.m_matchData, MainActivity.m_matchSchedule);
 
-                        StatsEngine.TeamStatsReport teamStatsReport = statsEngine.getTeamStatsReport(teamNumber);  // just so I can look at it in bebug
+                        TeamStatsReport teamStatsReport = statsEngine.getTeamStatsReport(teamNumber);  // just so I can look at it in bebug
                         args.putSerializable(getString(R.string.EXTRA_TEAM_STATS_REPORT), teamStatsReport);
                         m_teamInfoFragment.setArguments(args);
 
@@ -115,7 +116,6 @@ public class TeamInfoTab extends Fragment {
                 Spinner spinner = (Spinner) alertLayout.findViewById(R.id.year_spinner);
 
                 // Create an ArrayAdapter using the string array and a default spinner layout
-                int selectedCurrent = spinner.getSelectedItemPosition();
                 ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
                         R.array.year_array, android.R.layout.simple_spinner_item);
                 spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -173,7 +173,6 @@ public class TeamInfoTab extends Fragment {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 accepted = true;
-                                Log.e("accepted", "" + accepted);
                                 inputResult = editText.getText().toString();
                                 TeamInfoFragment fragment1 = new TeamInfoFragment();
 

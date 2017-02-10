@@ -11,7 +11,6 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,9 +26,9 @@ import ca.team2706.scouting.mcmergemanager.R;
 import ca.team2706.scouting.mcmergemanager.backend.BlueAllianceUtils;
 import ca.team2706.scouting.mcmergemanager.backend.FileUtils;
 import ca.team2706.scouting.mcmergemanager.backend.interfaces.PhotoRequester;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.gui.TeamStatsActivity;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.StatsEngine;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.TeleopScoutingObject;
-import ca.team2706.scouting.mcmergemanager.steamworks2017.gui.TeamStatsActivity;
 
 
 public class TeamInfoFragment extends Fragment

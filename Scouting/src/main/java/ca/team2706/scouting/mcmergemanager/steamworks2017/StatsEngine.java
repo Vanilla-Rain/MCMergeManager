@@ -19,7 +19,6 @@ import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.GearDelive
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.GearPickupEvent;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.MatchData;
 
-
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.TeamStatsReport;
 import ca.team2706.scouting.mcmergemanager.backend.dataObjects.MatchSchedule;
 
@@ -32,6 +31,14 @@ public class StatsEngine implements Serializable{
     private MatchData matchData;
     private MatchSchedule matchSchedule;
     private RepairTimeObject[] repairTimeObjects;
+
+
+    /**
+     * Constructor
+     */
+    public StatsEngine(MatchData matchData, MatchSchedule matchSchedule) {
+        this(matchData, matchSchedule, null);
+    }
 
     /** Contructor
      *

@@ -30,7 +30,7 @@ import java.util.List;
 import ca.team2706.scouting.mcmergemanager.R;
 import ca.team2706.scouting.mcmergemanager.backend.dataObjects.TeamDataObject;
 import ca.team2706.scouting.mcmergemanager.backend.interfaces.PhotoRequester;
-import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.MatchData;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.MatchData;
 
 /**
  * This is a helper class to hold common code for accessing shared scouting data files.
@@ -226,6 +226,7 @@ public class FileUtils {
 
             try {
                 MatchData.Match match = new MatchData.Match(matchStr);
+//                MatchData.Match match = new MatchData.Match(matchStr);
                 matchData.addMatch(match);
             } catch (Exception e) {
                 Log.e(App.getContext().getResources().getString(R.string.app_name), "loadMatchDataFile:: "+e.toString());
