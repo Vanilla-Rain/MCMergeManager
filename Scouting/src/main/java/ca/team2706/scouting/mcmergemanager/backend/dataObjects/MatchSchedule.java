@@ -46,7 +46,7 @@ public class MatchSchedule implements Serializable {
         try {
             JSONObject jsonObj = new JSONObject(serializedMatchSchedule);
 
-            matchScheduleJSONstr = jsonObj.getString(JSONKEY_matchScheduleJSONstr);
+            parseTBASchedule(jsonObj.getString(JSONKEY_matchScheduleJSONstr));
 
             String[] teamNos = jsonObj.getString(JSONKEP_teamListInt).split(",");
             for(String teamNoStr : teamNos) {
