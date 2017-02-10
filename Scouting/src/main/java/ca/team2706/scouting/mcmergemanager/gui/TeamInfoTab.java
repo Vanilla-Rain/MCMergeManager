@@ -61,7 +61,7 @@ public class TeamInfoTab extends Fragment {
                         m_teamInfoFragment = new TeamInfoFragment();
                         Bundle args = new Bundle();
                         args.putInt("teamNumber", teamNumber);
-                        StatsEngine statsEngine = new StatsEngine(MainActivity.m_matchData, MainActivity.m_matchSchedule);
+                        StatsEngine statsEngine = new StatsEngine(MainActivity.mMatchData, MainActivity.mMatchSchedule);
 
                         TeamStatsReport teamStatsReport = statsEngine.getTeamStatsReport(teamNumber);  // just so I can look at it in bebug
                         args.putSerializable(getString(R.string.EXTRA_TEAM_STATS_REPORT), teamStatsReport);

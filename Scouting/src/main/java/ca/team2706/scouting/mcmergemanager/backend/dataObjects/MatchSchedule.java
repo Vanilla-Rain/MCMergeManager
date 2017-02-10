@@ -21,112 +21,55 @@ import ca.team2706.scouting.mcmergemanager.backend.App;
  */
 public class MatchSchedule implements Serializable {
 
-    public static class Match implements Comparable<Match>, Serializable {
-        private int matchNo;
+    private static final String JSONKEY_matchScheduleJSONstr = "matchScheduleJSONstr";
+    private static final String JSONKEP_teamListInt = "teamListInt";
 
-        private int blue1;
-        private int blue2;
-        private int blue3;
-        private int red1;
-        private int red2;
-        private int red3;
+    private String matchScheduleJSONstr = "";
 
-        // = -1 if the match has not been played yet.
-        private int blueScore;
-        private int redScore;
+    private List<Match> matches = new ArrayList<>();
 
+    /** List of teams at this event
+     * doing it as a list of Integers so we can sort it numerically, rather than alphabetically
+     * before turning it into Strings (ie we want order {47, 256, 2706}, not {256, 2706, 47}).
+     **/
+    private ArrayList<Integer> teamListInt = new ArrayList<>();
 
-        // getters - this is how other classes will access the data (they can read it, but not change it)
-        public int getMatchNo() { return matchNo; }
-        public int getBlue1() { return blue1; }
-        public int getBlue2() { return blue2; }
-        public int getBlue3() { return blue3; }
-        public int getRed1() { return red1; }
-        public int getRed2() { return red2; }
-        public int getRed3() { return red3; }
-        public int getBlueScore() { return blueScore; }
-        public int getRedScore() { return redScore; }
-
-        public int[] getTeamNos() {
-            int[] arr = new int[6];
-            arr[0] = blue1;
-            arr[1] = blue2;
-            arr[2] = blue3;
-            arr[3] = red1;
-            arr[4] = red2;
-            arr[5] = red3;
-
-            return arr;
-        }
-
-        // setters - this is how other classes will update data, or make a Match if they only know a few fields
-        public void setMatchNo(int matchNo) { this.matchNo = matchNo; }
-        public void setRed1(int red1) { this.red1 = red1; }
-        public void setRed2(int red2) { this.red2 = red2; }
-        public void setRed3(int red3) { this.red3 = red3; }
-        public void setBlue1(int blue1) { this.blue1 = blue1; }
-        public void setBlue2(int blue2) { this.blue2 = blue2; }
-        public void setBlue3(int blue3) { this.blue3 = blue3; }
-        public void setRedScore(int redScore) { this.redScore = redScore; }
-        public void setBlueScore(int blueScore) { this.blueScore = blueScore; }
+    /** Constructors **/
+    public MatchSchedule() {
+        super();
+    }
 
 
-        /** Default empty constructor **/
-        public Match() {
+    public MatchSchedule(String serializedMatchSchedule) {
+        super();
 
-        }
+        try {
+            JSONObject jsonObj = new JSONObject(serializedMatchSchedule);
 
-        /** De-serializing constructor **/
-        public Match(String serializedMatch) {
-            try {
-                String[] tokens = serializedMatch.split(",");
-                matchNo = Integer.parseInt(tokens[0]);
-                blue1 = Integer.parseInt(tokens[1]);
-                blue2 = Integer.parseInt(tokens[2]);
-                blue3 = Integer.parseInt(tokens[3]);
-                red1 = Integer.parseInt(tokens[4]);
-                red2 = Integer.parseInt(tokens[5]);
-                red3 = Integer.parseInt(tokens[6]);
-                blueScore = Integer.parseInt(tokens[7]);
-                redScore = Integer.parseInt(tokens[8]);
+            matchScheduleJSONstr = jsonObj.getString(JSONKEY_matchScheduleJSONstr);
 
-            } catch (Exception e) {
-                // the data was in the wrong format, empty everything out
-                matchNo = blue1 = blue2 = blue3 = red1 = red2 = red3 = 0;
-                blueScore = redScore = -1;
+            String[] teamNos = jsonObj.getString(JSONKEP_teamListInt).split(",");
+            for(String teamNoStr : teamNos) {
+                try {
+                    teamListInt.add(Integer.valueOf(teamNoStr));
+                } catch (NumberFormatException e) {
+                    // just pass
+                }
             }
-        }
 
-        @Override
-        public int compareTo(Match another) {
-            return this.getMatchNo() - another.getMatchNo();
-        }
-
-        @Override
-        public String toString(){
-            return matchNo+","+blue1+","+blue2+","+blue3+","+red1+","+red2+","+red3+","+blueScore+","+redScore;
+        } catch (JSONException e) {
+            Log.e("MCMergeManager", "Failed to deserialize MatchSchedule.",e);
         }
     }
 
-    private String matchScheduleJSONstr;
-
-    private List<Match> matches = new ArrayList<Match>();
+    public static MatchSchedule newFromJsonSchedule(String jsonSchedule) {
+        MatchSchedule matchSchedule = new MatchSchedule();
+        matchSchedule.parseTBASchedule(jsonSchedule);
+        return matchSchedule;
+    }
 
     public List<Match> getMatches(){ return matches; }
 
-
-    public List<String> getTeamNumsAtEvent() {
-        ArrayList<String> list = new ArrayList<>();
-
-        for(Match m : matches) {
-            for(int teamNo : m.getTeamNos()) {
-                if(!list.contains(""+teamNo)) {
-                    list.add(""+teamNo);
-                }
-            }
-        }
-        return list;
-    }
 
     public void addMatch(Match match) {
         matches.add(match);
@@ -135,18 +78,34 @@ public class MatchSchedule implements Serializable {
     public Match getMatchNo(int i){ return matches.get(i); }
 
 
-    /** Constructors **/
-    public MatchSchedule() {
-        super();
+    /**
+     * Takes a json string containing a TBA Event:TeamsList and combines it with the list of teams from the schedule.
+     */
+    public void addToListOfTeamsAtEvent(String jsonTeamsList) {
+        parseTBATeamsList(jsonTeamsList);
     }
 
+
     /**
-     * A costructor that parses the schedule as deliveryStatus by TheBlueAlliance.
-     * @param jsonSchedule the match schedule data as returned by thebluealliance.com
+     * Takes a list of team numbers and combines it with the list of teams from the schedule.
      */
-    public MatchSchedule(String jsonSchedule) {
-        super();
-        parseTBAData(jsonSchedule);
+    public void addToListOfTeamsAtEvent(List<String> teamsList) {
+        for(String teamNoStr : teamsList) {
+            int teamNo = Integer.valueOf(teamNoStr);
+            if (!teamListInt.contains(teamNo)) {
+                teamListInt.add(teamNo);
+            }
+        }
+    }
+
+    public List<String> getTeamNumsAtEvent() {
+        Collections.sort(teamListInt);
+
+        List<String> teamListStr = new ArrayList<>();
+        for(Integer i: teamListInt)
+        teamListStr.add(i.toString());
+
+        return teamListStr;
     }
 
     /**
@@ -164,9 +123,29 @@ public class MatchSchedule implements Serializable {
         return filteredSchedule;
     }
 
-    public String toString() { return matchScheduleJSONstr; }
+    public String toString() {
+        // There's gotta be a simpler way to serialize this...
+        JSONObject jsonObject = new JSONObject();
 
-    public void parseTBAData(String jsonSchedule) {
+        StringBuilder teamListSerializedStrBldr = new StringBuilder();
+        for(int teamNo : teamListInt)
+            teamListSerializedStrBldr.append(teamNo + ",");
+
+        try {
+            jsonObject.put(JSONKEY_matchScheduleJSONstr, matchScheduleJSONstr);
+            jsonObject.put(JSONKEP_teamListInt, teamListSerializedStrBldr.toString());
+        } catch (JSONException e) {
+            Log.e("MCMergeManager", "Failed to serialize MatchSchedule.",e);
+        }
+
+        return jsonObject.toString();
+    }
+
+
+    private void parseTBASchedule(String jsonSchedule) {
+
+        if(jsonSchedule == null)
+            return;
 
         matchScheduleJSONstr = jsonSchedule;
 
@@ -224,6 +203,14 @@ public class MatchSchedule implements Serializable {
                 match.setRed2(Integer.parseInt(redTeams.getString(1).substring(3)));
                 match.setRed3(Integer.parseInt(redTeams.getString(2).substring(3)));
 
+
+                // Fill in the list of teams at this event
+                for(int teamNo : match.getTeamNos()) {
+                    if (!teamListInt.contains(teamNo)) {
+                        teamListInt.add(teamNo);
+                    }
+                }
+
                 matches.add(match);
             }
 
@@ -232,8 +219,126 @@ public class MatchSchedule implements Serializable {
         } catch(JSONException e) {
             // something went wrong
             Log.e("MCMergeManager", "Failed to parse the match schedule from thebluealliance. Maybe the data is not valid json?");
-            return;
         }
     }
+
+
+    private void parseTBATeamsList(String jsonTeamsList) {
+
+        if(jsonTeamsList == null)
+            return;
+
+        JSONArray jsonArr;
+        try {
+            jsonArr = new JSONArray(jsonTeamsList);
+
+            // loop over individual teams
+            for(int i=0;i<(jsonArr.length( ));i++)
+            {
+                JSONObject jsonTeam = jsonArr.getJSONObject(i);
+
+                try {
+                    teamListInt.add( Integer.valueOf(jsonTeam.getString("team_number")) );
+                } catch (JSONException e) {
+                    continue;
+                }
+            }
+
+            Collections.sort(teamListInt);
+
+        } catch(JSONException e) {
+            // something went wrong
+            Log.e("MCMergeManager", "Failed to parse the match schedule from thebluealliance. Maybe the data is not valid json?");
+        }
+    }
+
+
+    public static class Match implements Comparable<Match>, Serializable {
+        private int matchNo;
+
+        private int blue1;
+        private int blue2;
+        private int blue3;
+        private int red1;
+        private int red2;
+        private int red3;
+
+        // = -1 if the match has not been played yet.
+        private int blueScore;
+        private int redScore;
+
+
+        // getters - this is how other classes will access the data (they can read it, but not change it)
+        public int getMatchNo() { return matchNo; }
+        public int getBlue1() { return blue1; }
+        public int getBlue2() { return blue2; }
+        public int getBlue3() { return blue3; }
+        public int getRed1() { return red1; }
+        public int getRed2() { return red2; }
+        public int getRed3() { return red3; }
+        public int getBlueScore() { return blueScore; }
+        public int getRedScore() { return redScore; }
+
+        int[] getTeamNos() {
+            int[] arr = new int[6];
+            arr[0] = blue1;
+            arr[1] = blue2;
+            arr[2] = blue3;
+            arr[3] = red1;
+            arr[4] = red2;
+            arr[5] = red3;
+
+            return arr;
+        }
+
+        // setters - this is how other classes will update data, or make a Match if they only know a few fields
+        void setMatchNo(int matchNo) { this.matchNo = matchNo; }
+        void setRed1(int red1) { this.red1 = red1; }
+        void setRed2(int red2) { this.red2 = red2; }
+        void setRed3(int red3) { this.red3 = red3; }
+        void setBlue1(int blue1) { this.blue1 = blue1; }
+        void setBlue2(int blue2) { this.blue2 = blue2; }
+        void setBlue3(int blue3) { this.blue3 = blue3; }
+        void setRedScore(int redScore) { this.redScore = redScore; }
+        void setBlueScore(int blueScore) { this.blueScore = blueScore; }
+
+
+        /** Default empty constructor **/
+        public Match() {
+
+        }
+
+        /** De-serializing constructor **/
+        public Match(String serializedMatch) {
+            try {
+                String[] tokens = serializedMatch.split(",");
+                matchNo = Integer.parseInt(tokens[0]);
+                blue1 = Integer.parseInt(tokens[1]);
+                blue2 = Integer.parseInt(tokens[2]);
+                blue3 = Integer.parseInt(tokens[3]);
+                red1 = Integer.parseInt(tokens[4]);
+                red2 = Integer.parseInt(tokens[5]);
+                red3 = Integer.parseInt(tokens[6]);
+                blueScore = Integer.parseInt(tokens[7]);
+                redScore = Integer.parseInt(tokens[8]);
+
+            } catch (Exception e) {
+                // the data was in the wrong format, empty everything out
+                matchNo = blue1 = blue2 = blue3 = red1 = red2 = red3 = 0;
+                blueScore = redScore = -1;
+            }
+        }
+
+        @Override
+        public int compareTo(Match another) {
+            return this.getMatchNo() - another.getMatchNo();
+        }
+
+        @Override
+        public String toString(){
+            return matchNo+","+blue1+","+blue2+","+blue3+","+red1+","+red2+","+red3+","+blueScore+","+redScore;
+        }
+    }
+
 
 }

@@ -27,6 +27,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.List;
 
 import ca.team2706.scouting.mcmergemanager.R;
 import ca.team2706.scouting.mcmergemanager.backend.interfaces.DataRequester;
@@ -340,7 +341,7 @@ public class BlueAllianceUtils {
                     return;
                 }
 
-                MatchSchedule schedule = new MatchSchedule(scheduleStr);
+                MatchSchedule schedule = MatchSchedule.newFromJsonSchedule(scheduleStr);
 
                 // return data to the requester
                 requester.updateMatchSchedule(schedule);
@@ -348,6 +349,40 @@ public class BlueAllianceUtils {
         }.start();
     }
 
+
+    public static void fetchTeamsRegisteredAtEvent(final DataRequester requester) {
+
+        // check if we have internet connectivity
+        ConnectivityManager cm = (ConnectivityManager) App.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        if (activeNetwork == null) { // not connected to the internet
+            return;
+        }
+
+        new Thread()
+        {
+            public void run() {
+                SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(App.getContext());
+                String TBA_event = SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_event), "<Not Set>");
+                String teamsListStr;
+                try {
+                    teamsListStr = readUrl("https://www.thebluealliance.com/api/v2/event/"+TBA_event+"/teams?X-TBA-App-Id=frc2706:mergemanager:v01/");
+
+
+                } catch (Exception e) {
+                    Log.e(App.getContext().getResources().getString(R.string.app_name), "Error fetching schedule data from thebluealliance. ",e);
+                    return;
+                }
+
+                MatchSchedule schedule = new MatchSchedule();
+                schedule.addToListOfTeamsAtEvent(teamsListStr);
+
+                // return data to the requester
+                requester.updateMatchSchedule(schedule);
+            }
+        }.start();
+
+    }
 
     /**
      * Fetches Blue Alliance data for all teams who are registered for a particular event and saves the data in
