@@ -235,9 +235,16 @@ public class MainActivity extends AppCompatActivity
      */
     public void updateDataSyncLabel() {
         SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        String event = SP.getString(getResources().getString(R.string.PROPERTY_event), "<Not Set>");
+        String event_code = SP.getString(getResources().getString(R.string.PROPERTY_event), "<Not Set>");
 
-        String label = "Event:"+event;
+        // look up the human-readable event_name that matches this event_code.
+        String event_name = "";
+        String[] event_codes = getString(R.string.TBA_EVENT_CODES).split(":");
+        for(int i=0; i<event_codes.length; i++)
+            if(event_codes[i].equals(event_code))
+                event_name = getString(R.string.TBA_EVENT_NAMES).split(":")[i];
+
+        String label = "Event: "+event_name+" ["+event_code+"]";
 
         TextView tv = (TextView) findViewById(R.id.sync_settings_tv);
         tv.setText(label);
