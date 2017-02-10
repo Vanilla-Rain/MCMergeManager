@@ -21,9 +21,11 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.ConnectException;
+import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 
 import ca.team2706.scouting.mcmergemanager.R;
@@ -51,8 +53,7 @@ public class BlueAllianceUtils {
         if (ContextCompat.checkSelfPermission(activity, Manifest.permission.INTERNET)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(activity,
-                    new String[]{Manifest.permission.INTERNET},
-                    123);
+                    new String[]{Manifest.permission.INTERNET}, 123);
 
             // check if they clicked Deny
             if (ContextCompat.checkSelfPermission(activity, Manifest.permission.INTERNET)
@@ -72,15 +73,28 @@ public class BlueAllianceUtils {
         BufferedReader reader = null;
 
         try {
+            URLConnection conn;
             URL url = new URL(urlString);
-            reader = new BufferedReader(new InputStreamReader(url.openStream()));
-            StringBuffer buffer = new StringBuffer();
-            int read;
-            char[] chars = new char[1024];
-            while ((read = reader.read(chars)) != -1)
-                buffer.append(chars, 0, read);
+            conn = url.openConnection();
+            HttpURLConnection httpConn = (HttpURLConnection) conn;
+            httpConn.setRequestMethod("GET");
+            httpConn.connect();
 
-            return buffer.toString();
+            int httpRespCode = httpConn.getResponseCode();
+            if (httpRespCode == HttpURLConnection.HTTP_OK) {
+                reader = new BufferedReader(new InputStreamReader(httpConn.getInputStream()));
+
+
+                StringBuffer buffer = new StringBuffer();
+                int read;
+                char[] chars = new char[1024];
+                while ((read = reader.read(chars)) != -1)
+                    buffer.append(chars, 0, read);
+
+                return buffer.toString();
+            } else {
+                throw new ConnectException("TBA connection returned code: " + httpRespCode);
+            }
         } finally {
             if (reader != null)
                 reader.close();
@@ -320,7 +334,7 @@ public class BlueAllianceUtils {
                 String TBA_event = SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_event), "<Not Set>");
                 String scheduleStr;
                 try {
-                    scheduleStr = readUrl("http://www.thebluealliance.com/api/v2/event/"+TBA_event+"/matches?X-TBA-App-Id=frc2706:mergemanager:v01/");
+                    scheduleStr = readUrl("https://www.thebluealliance.com/api/v2/event/"+TBA_event+"/matches?X-TBA-App-Id=frc2706:mergemanager:v01/");
                 } catch (Exception e) {
                     Log.e(App.getContext().getResources().getString(R.string.app_name), "Error fetching schedule data from thebluealliance. ",e);
                     return;
