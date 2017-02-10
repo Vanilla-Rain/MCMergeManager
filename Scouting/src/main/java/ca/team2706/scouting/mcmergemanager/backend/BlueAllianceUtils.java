@@ -173,10 +173,10 @@ public class BlueAllianceUtils {
 
             // if (! file exitst(/MCMergeManager/<TeamName>/<EventName>/thebluealliance.json) )
         } else {
-            ArrayList<String> comps2016 = getBlueAllianceDataArrayAsArray("event_code", "http://www.thebluealliance.com/api/v2/team/frc" + teamNumber + "/2016/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
-            ArrayList<String> compsName2016 = getBlueAllianceDataArrayAsArray("name", "http://www.thebluealliance.com/api/v2/team/frc" + teamNumber + "/2016/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
+            ArrayList<String> comps2016 = getBlueAllianceDataArrayAsArray("event_code", "https://www.thebluealliance.com/api/v2/team/frc" + teamNumber + "/2016/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
+            ArrayList<String> compsName2016 = getBlueAllianceDataArrayAsArray("name", "https://www.thebluealliance.com/api/v2/team/frc" + teamNumber + "/2016/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
             for (int i = 0; i < comps2016.size(); i++) {
-                ArrayList<String> test = getBlueAllianceDataDoubleArrayAsArray(1, "http://www.thebluealliance.com/api/v2/event/2016" + comps2016.get(i) + "/rankings?X-TBA-App-Id=frc2706:mergemanager:v01/");
+                ArrayList<String> test = getBlueAllianceDataDoubleArrayAsArray(1, "https://www.thebluealliance.com/api/v2/event/2016" + comps2016.get(i) + "/rankings?X-TBA-App-Id=frc2706:mergemanager:v01/");
                 for (int p = 0; p < test.size(); p++) {
                     if (test.get(p).equals(Integer.toString(teamNumber))) { // Or use equals() if it actually returns an Object.
                         // Found at index i. Break or return if necessary.
@@ -192,10 +192,10 @@ public class BlueAllianceUtils {
                 }
             }
 
-            ArrayList<String> comps2015 = getBlueAllianceDataArrayAsArray("event_code", "http://www.thebluealliance.com/api/v2/team/frc" + teamNumber + "/2015/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
-            ArrayList<String> compsName2015 = getBlueAllianceDataArrayAsArray("name", "http://www.thebluealliance.com/api/v2/team/frc" + teamNumber + "/2015/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
+            ArrayList<String> comps2015 = getBlueAllianceDataArrayAsArray("event_code", "https://www.thebluealliance.com/api/v2/team/frc" + teamNumber + "/2015/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
+            ArrayList<String> compsName2015 = getBlueAllianceDataArrayAsArray("name", "https://www.thebluealliance.com/api/v2/team/frc" + teamNumber + "/2015/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
             for (int i = 0; i < comps2015.size(); i++) {
-                ArrayList<String> test = getBlueAllianceDataDoubleArrayAsArray(1, "http://www.thebluealliance.com/api/v2/event/2015" + comps2015.get(i) + "/rankings?X-TBA-App-Id=frc2706:mergemanager:v01/");
+                ArrayList<String> test = getBlueAllianceDataDoubleArrayAsArray(1, "https://www.thebluealliance.com/api/v2/event/2015" + comps2015.get(i) + "/rankings?X-TBA-App-Id=frc2706:mergemanager:v01/");
                 for (int p = 0; p < test.size(); p++) {
                     if (test.get(p).equals(Integer.toString(teamNumber))) { // Or use equals() if it actually returns an Object.
                         // Found at index i. Break or return if necessary.
@@ -211,10 +211,10 @@ public class BlueAllianceUtils {
                 }
             }
 
-            ArrayList<String> comps2014 = getBlueAllianceDataArrayAsArray("event_code", "http://www.thebluealliance.com/api/v2/team/frc" + teamNumber + "/2014/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
-            ArrayList<String> compsName2014 = getBlueAllianceDataArrayAsArray("name", "http://www.thebluealliance.com/api/v2/team/frc" + teamNumber + "/2014/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
+            ArrayList<String> comps2014 = getBlueAllianceDataArrayAsArray("event_code", "https://www.thebluealliance.com/api/v2/team/frc" + teamNumber + "/2014/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
+            ArrayList<String> compsName2014 = getBlueAllianceDataArrayAsArray("name", "https://www.thebluealliance.com/api/v2/team/frc" + teamNumber + "/2014/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
             for (int i = 0; i < comps2014.size(); i++) {
-                ArrayList<String> test = getBlueAllianceDataDoubleArrayAsArray(1, "http://www.thebluealliance.com/api/v2/event/2014" + comps2014.get(i) + "/rankings?X-TBA-App-Id=frc2706:mergemanager:v01/");
+                ArrayList<String> test = getBlueAllianceDataDoubleArrayAsArray(1, "https://www.thebluealliance.com/api/v2/event/2014" + comps2014.get(i) + "/rankings?X-TBA-App-Id=frc2706:mergemanager:v01/");
                 for (int p = 0; p < test.size(); p++) {
 
                     if (test.get(p).equals(Integer.toString(teamNumber))) { // Or use equals() if it actually returns an Object.
@@ -233,10 +233,10 @@ public class BlueAllianceUtils {
 
             }
 
-            ArrayList<String> comps2013 = getBlueAllianceDataArrayAsArray("event_code", "http://www.thebluealliance.com/api/v2/team/frc" + teamNumber + "/2013/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
-            ArrayList<String> compsName2013 = getBlueAllianceDataArrayAsArray("name", "http://www.thebluealliance.com/api/v2/team/frc" + teamNumber + "/2013/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
+            ArrayList<String> comps2013 = getBlueAllianceDataArrayAsArray("event_code", "https://www.thebluealliance.com/api/v2/team/frc" + teamNumber + "/2013/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
+            ArrayList<String> compsName2013 = getBlueAllianceDataArrayAsArray("name", "https://www.thebluealliance.com/api/v2/team/frc" + teamNumber + "/2013/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
             for (int i = 0; i < comps2013.size(); i++) {
-                ArrayList<String> test = getBlueAllianceDataDoubleArrayAsArray(1, "http://www.thebluealliance.com/api/v2/event/2013" + comps2013.get(i) + "/rankings?X-TBA-App-Id=frc2706:mergemanager:v01/");
+                ArrayList<String> test = getBlueAllianceDataDoubleArrayAsArray(1, "https://www.thebluealliance.com/api/v2/event/2013" + comps2013.get(i) + "/rankings?X-TBA-App-Id=frc2706:mergemanager:v01/");
                 for (int p = 0; p < test.size(); p++) {
 
 
@@ -364,7 +364,7 @@ public class BlueAllianceUtils {
         }
 
         //Get all teams at event
-        final ArrayList<String> downloadedCompArray = getBlueAllianceDataArrayAsArray("team_number", "http://www.thebluealliance.com/api/v2/event/" + year + eventName + "/teams?X-TBA-App-Id=frc2706:mergemanager:v01/");
+        final ArrayList<String> downloadedCompArray = getBlueAllianceDataArrayAsArray("team_number", "https://www.thebluealliance.com/api/v2/event/" + year + eventName + "/teams?X-TBA-App-Id=frc2706:mergemanager:v01/");
 
         for (
             //For each team
@@ -382,16 +382,16 @@ public class BlueAllianceUtils {
             String joe = downloadedCompArray.get(o);
 
             //Get Competitions they went to
-            ArrayList<String> comps2015 = getBlueAllianceDataArrayAsArray("event_code", "http://www.thebluealliance.com/api/v2/team/frc" + joe + "/" + dataYear + "/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
+            ArrayList<String> comps2015 = getBlueAllianceDataArrayAsArray("event_code", "https://www.thebluealliance.com/api/v2/team/frc" + joe + "/" + dataYear + "/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
 
             //Get Names of Competitions they went to
-            ArrayList<String> compsName2015 = getBlueAllianceDataArrayAsArray("name", "http://www.thebluealliance.com/api/v2/team/frc" + joe + "/" + dataYear + "/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
+            ArrayList<String> compsName2015 = getBlueAllianceDataArrayAsArray("name", "https://www.thebluealliance.com/api/v2/team/frc" + joe + "/" + dataYear + "/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
 
             for (int i = 0; i < comps2015.size(); i++) {
                 //For each competition
 
                 //Get their ranking
-                ArrayList<String> test = getBlueAllianceDataDoubleArrayAsArray(1, "http://www.thebluealliance.com/api/v2/event/" + dataYear + comps2015.get(i) + "/rankings?X-TBA-App-Id=frc2706:mergemanager:v01/");
+                ArrayList<String> test = getBlueAllianceDataDoubleArrayAsArray(1, "https://www.thebluealliance.com/api/v2/event/" + dataYear + comps2015.get(i) + "/rankings?X-TBA-App-Id=frc2706:mergemanager:v01/");
                 for (int p = 0; p < test.size(); p++) {
                     if (test.get(p).equals(Integer.toString(Integer.parseInt(joe)))) {
                         // Found at index i. Break or return if necessary.
