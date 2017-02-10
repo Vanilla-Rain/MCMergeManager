@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity
         updateDataSyncLabel();
 
         // fetch the match data from TheBlueAlliance to update the scores.
+        BlueAllianceUtils.checkInternetPermissions(this);
         BlueAllianceUtils.fetchMatchScheduleAndResults(this);
         m_matchData = FileUtils.loadMatchDataFile();
     }

@@ -1,12 +1,17 @@
 package ca.team2706.scouting.mcmergemanager.backend;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.ProgressBar;
@@ -29,21 +34,46 @@ public class BlueAllianceUtils {
 
     private Activity mActivity;
 
+    private static boolean sPermissionsChecked = false;
+
     /* ~~~ Constructor ~~~ */
     public BlueAllianceUtils(Activity activity) {
         mActivity = activity;
+
+        checkInternetPermissions(activity);
     }
 
 
+    public static boolean checkInternetPermissions(Activity activity) {
+        if (activity == null)
+            return false;
 
-    public static String readUrl(String urlString) throws Exception {
+        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.INTERNET)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(activity,
+                    new String[]{Manifest.permission.INTERNET},
+                    123);
+
+            // check if they clicked Deny
+            if (ContextCompat.checkSelfPermission(activity, Manifest.permission.INTERNET)
+                    != PackageManager.PERMISSION_GRANTED)
+                sPermissionsChecked = false;
+        }
+
+        sPermissionsChecked = true;
+        return sPermissionsChecked;
+    }
+
+    @NonNull
+    private static String readUrl(String urlString) throws Exception {
+        if(!sPermissionsChecked)
+            throw new IllegalStateException("BlueAllianceUtils: make sure you call BlueAllianceUtils.checkInternetPermissions() and the user has clicked \"Yes\" before trying to contact thebluealliance.com!");
+
         BufferedReader reader = null;
 
         try {
             URL url = new URL(urlString);
-            InputStream is = url.openStream();
-            InputStreamReader isr = new InputStreamReader(is);
-            reader = new BufferedReader(isr);
+            reader = new BufferedReader(new InputStreamReader(url.openStream()));
             StringBuffer buffer = new StringBuffer();
             int read;
             char[] chars = new char[1024];
@@ -292,7 +322,7 @@ public class BlueAllianceUtils {
                 try {
                     scheduleStr = readUrl("http://www.thebluealliance.com/api/v2/event/"+TBA_event+"/matches?X-TBA-App-Id=frc2706:mergemanager:v01/");
                 } catch (Exception e) {
-                    Log.e(App.getContext().getResources().getString(R.string.app_name), "Error fetching schedule data from thebluealliance. "+e.getStackTrace());
+                    Log.e(App.getContext().getResources().getString(R.string.app_name), "Error fetching schedule data from thebluealliance. ",e);
                     return;
                 }
 
@@ -356,7 +386,7 @@ public class BlueAllianceUtils {
                         compAmount -= 1;
                         String combine = dataYear + " "/* //TODO year */ + compsName2015.get(i) + " seeded " + Integer.toString(p) + "/" + compAmount + " " + joe;
 
-                        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(mActivity);
+                        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(App.getContext());
                         SharedPreferences.Editor editor = SP.edit();
                         boolean done = false;
 
