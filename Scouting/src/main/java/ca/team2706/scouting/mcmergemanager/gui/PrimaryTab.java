@@ -57,11 +57,11 @@ public class PrimaryTab extends Fragment {
                     // bundle up the data it needs
                     Bundle args = new Bundle();
                     MatchSchedule.Match match;
-                    match = MainActivity.mMatchSchedule.getMatchNo(matchNo-1);
+                    match = MainActivity.sMatchSchedule.getMatchNo(matchNo-1);
                     args.putString(PreMatchReportFragment.ARG_MATCH, match.toString());  // if match == null, this will throw an exception and be caught
-                    if (MainActivity.mMatchSchedule == null) return false;
+                    if (MainActivity.sMatchSchedule == null) return false;
 
-                    StatsEngine statsEngine = new StatsEngine(MainActivity.mMatchData, MainActivity.mMatchSchedule);
+                    StatsEngine statsEngine = new StatsEngine(MainActivity.sMatchData, MainActivity.sMatchSchedule);
                     args.putSerializable(PreMatchReportFragment.ARG_STATS, statsEngine);
 
                     fragment.setArguments(args);
