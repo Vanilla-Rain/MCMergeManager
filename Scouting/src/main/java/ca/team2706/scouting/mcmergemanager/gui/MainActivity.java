@@ -52,8 +52,8 @@ public class MainActivity extends AppCompatActivity
     FragmentManager mFragmentManager;
     FragmentTransaction mFragmentTransaction;
 
-    public static MatchData m_matchData;
-    public static MatchSchedule m_matchSchedule;
+    public static MatchData mMatchData;
+    public static MatchSchedule mMatchSchedule = new MatchSchedule();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,20 +66,29 @@ public class MainActivity extends AppCompatActivity
 
         me = this;
 
+        // tell the user where they are syncing their data to
+        updateDataSyncLabel();
+
         FileUtils.checkFileReadWritePermissions(this);
+
+        BlueAllianceUtils.checkInternetPermissions(this);
+        BlueAllianceUtils.fetchTeamsRegisteredAtEvent(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        // tell the user where they are syncing their dada to
+        // tell the user where they are syncing their data to
         updateDataSyncLabel();
 
         // fetch the match data from TheBlueAlliance to update the scores.
         BlueAllianceUtils.checkInternetPermissions(this);
         BlueAllianceUtils.fetchMatchScheduleAndResults(this);
-        m_matchData = FileUtils.loadMatchDataFile();
+
+        // In case the schedule is empty, make sure we pass along the list of teams registered at event
+        // that we fetched at the beginning.
+        mMatchData = FileUtils.loadMatchDataFile();
     }
 
     /**
@@ -105,7 +114,7 @@ public class MainActivity extends AppCompatActivity
 
         Intent intent = new Intent(this, PreGameActivity.class);
         intent.putExtra( getString(R.string.EXTRA_MATCH_NO), matchNo);
-        intent.putExtra( getString(R.string.EXTRA_MATCH_SCHEDULE), m_matchSchedule);
+        intent.putExtra( getString(R.string.EXTRA_MATCH_SCHEDULE), mMatchSchedule);
         startActivity(intent);
     }
 
@@ -146,10 +155,10 @@ public class MainActivity extends AppCompatActivity
      */
     public void onShowScheduleClicked(View view) {
 
-        if (m_matchSchedule != null) {
+        if (mMatchSchedule != null) {
             // bundle the match data into an intent
             Intent intent = new Intent(this, MatchScheduleActivity.class);
-            intent.putExtra(getResources().getString(R.string.EXTRA_MATCH_SCHEDULE), m_matchSchedule.toString());
+            intent.putExtra(getResources().getString(R.string.EXTRA_MATCH_SCHEDULE), mMatchSchedule.toString());
             startActivity(intent);
         } else {
             ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -161,7 +170,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void onShowTeamScheduleClicked(View view) {
-        if (m_matchSchedule == null) {
+        if (mMatchSchedule == null) {
             Toast.makeText(this, "No Schedule Data to show. No Internet?", Toast.LENGTH_LONG).show();
             return;
         }
@@ -170,6 +179,12 @@ public class MainActivity extends AppCompatActivity
         enterATeamNumberPopup.displayAlertDialog();
 
         (new Timer()).schedule(new CheckSchedulePopupHasExited(), 250);
+    }
+
+    public void onRepairTimeRecordClicked(View view) {
+        Intent intent = new Intent(this, RepairTimeCollection.class);
+        intent.putExtra(getResources().getString(R.string.EXTRA_MATCH_SCHEDULE), mMatchSchedule.toString());
+        startActivity(intent);
     }
 
     private void setNavDrawer() {
@@ -208,7 +223,11 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void updateMatchSchedule(MatchSchedule matchSchedule) {
-        m_matchSchedule = matchSchedule;
+
+        // In the case that the schedule is not published yet,
+        // make sure we preserve the list of teams registered at this event.
+        matchSchedule.addToListOfTeamsAtEvent(mMatchSchedule.getTeamNumsAtEvent());
+        mMatchSchedule = matchSchedule;
     }
 
     /**
@@ -229,11 +248,6 @@ public class MainActivity extends AppCompatActivity
         // empty?
     }
 
-    public void onRepairTimeRecordClicked(View view) {
-        Intent intent = new Intent(this, RepairTimeCollection.class);
-        intent.putExtra(getResources().getString(R.string.EXTRA_MATCH_SCHEDULE), m_matchSchedule.toString());
-        startActivity(intent);
-    }
 
     class CheckPicturePopupHasExited extends TimerTask {
         public void run() {
@@ -278,7 +292,7 @@ public class MainActivity extends AppCompatActivity
 
                 // bundle the match data into an intent and launch the schedule activity
                 Intent intent = new Intent(me, MatchScheduleActivity.class);
-                intent.putExtra(getResources().getString(R.string.EXTRA_MATCH_SCHEDULE), m_matchSchedule.toString());
+                intent.putExtra(getResources().getString(R.string.EXTRA_MATCH_SCHEDULE), mMatchSchedule.toString());
                 intent.putExtra(getResources().getString(R.string.EXTRA_TEAM_NO), teamNumber);
                 startActivity(intent);
 
