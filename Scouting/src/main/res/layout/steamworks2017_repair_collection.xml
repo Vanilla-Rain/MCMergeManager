@@ -20,7 +20,8 @@
             android:text="Submit Data"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/repairTimesSubmitButton" />
+            android:id="@+id/repairTimesSubmitButton"
+            android:onClick="onSubmitClicked" />
 
     </LinearLayout>
 </ScrollView>
