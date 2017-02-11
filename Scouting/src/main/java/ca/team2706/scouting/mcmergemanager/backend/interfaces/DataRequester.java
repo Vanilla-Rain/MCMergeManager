@@ -1,6 +1,6 @@
 package ca.team2706.scouting.mcmergemanager.backend.interfaces;
 
-import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.MatchSchedule;
+import ca.team2706.scouting.mcmergemanager.backend.dataObjects.MatchSchedule;
 
 /**
  * This interface is meant to be implemented by an activity that requests matchScoutingData and / or MatchResultsData from the FileUtils.

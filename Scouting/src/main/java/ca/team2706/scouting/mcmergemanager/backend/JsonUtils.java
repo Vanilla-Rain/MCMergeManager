@@ -39,6 +39,9 @@ public class JsonUtils {
     private static JSONObject jsonObject; // TODO: figure out why I can't just create this variable in the method
     private static String fileName = "/sdcard/"+ App.getContext().getString(R.string.FILE_TOPLEVEL_DIR) + "/Team2706/matchData.txt";
 
+    private static JSONArray[][] objects;
+    private static JSONObject obj;
+
     public static void getCompetition(final Context context) {
         RequestQueue queue = Volley.newRequestQueue(context);
         final String url = "http://ftp.team2706.ca:3000/competitions/153/matches.json";
@@ -96,6 +99,8 @@ public class JsonUtils {
                     }
                 }
         );
+
+        queue.add(getRequest);
     }
 
 
@@ -144,19 +149,15 @@ public class JsonUtils {
 
         System.out.println(jsonArray.toString());
 
-        parseOneMatch();
+        parseOneMatch(12);
     }
 
-    public static void parseOneMatch() {
-        try {
-            for(int i = 0; i < jsonArray.length(); i++) {
-                JSONObject jsonObject = (JSONObject) jsonArray.get(i);
-                System.out.println(Integer.toString(i) + ": " + jsonObject.get("general_notes"));
-            }
-        } catch(JSONException e) {
-            Log.d("Json parsing error: ", e.toString());
-        }
+    public static void parseOneMatch(int matchId) {
+        obj = new JSONObject();
+
+
     }
+
 
     public static void postMatch(final Context context, int compID) {
         final String url = "http://ftp.team2706.ca:3000/competitions/" + compID + "/matches.json";
@@ -185,6 +186,7 @@ public class JsonUtils {
                 public String getBodyContentType() {
                     return "application/json; charset=utf-8";
                 }
+
                 @Override
                 public byte[] getBody() throws AuthFailureError {
                     try {

@@ -1,10 +1,12 @@
 package ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects;
 
+import java.io.Serializable;
+
 /**
  * Created by dwall on 16/01/17.
  */
 
-public class AutoScoutingObject {
+public class AutoScoutingObject implements Serializable {
 
     public boolean start_gear;
     public boolean start_fuel;

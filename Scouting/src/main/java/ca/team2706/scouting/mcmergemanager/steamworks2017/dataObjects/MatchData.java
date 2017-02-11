@@ -1,12 +1,18 @@
 package ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects;
 
+import android.util.Log;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class MatchData {
+public class MatchData implements Serializable {
 
 
-    public class Match implements Serializable {
+    public static class Match implements Serializable {
 
         public PreGameObject preGameObject;
         public PostGameObject postGameObject;
@@ -22,6 +28,64 @@ public class MatchData {
         }
 
         // TODO: this needs to be re-worked because MikeO changed around the data
+
+        public JSONObject toJson() {
+            JSONObject jsonObject = new JSONObject();
+
+            try {
+                // pregame
+                jsonObject.put("team_id", preGameObject.teamNumber);
+                jsonObject.put("match_id", preGameObject.matchNumber);
+
+                // autonomous
+                jsonObject.put("", autoScoutingObject.start_fuel);
+                jsonObject.put("", autoScoutingObject.boiler_attempted);
+                jsonObject.put("", autoScoutingObject.numFuelScored);
+                jsonObject.put("", autoScoutingObject.start_gear);
+
+                // teleop
+                JSONArray arr = new JSONArray();
+                for(Event event : teleopScoutingObject.getEvents()) {
+                    JSONObject obj = new JSONObject();
+                    obj.put("", event.timestamp);
+                    if(event instanceof FuelPickupEvent) {
+                        FuelPickupEvent e = (FuelPickupEvent) event;
+                        obj.put("", e.amount);
+                        obj.put("", e.pickupType);
+                    } else if(event instanceof FuelShotEvent) {
+                        FuelShotEvent e = (FuelShotEvent) event;
+                        obj.put("", e.numMissed);
+                        obj.put("", e.numScored);
+                        obj.put("", e.boiler);
+                        obj.put("", e.x);
+                        obj.put("", e.y);
+                    } else if(event instanceof GearPickupEvent) {
+                        GearPickupEvent e = (GearPickupEvent) event;
+                        obj.put("", e.pickupType);
+                        obj.put("", e.successful);
+                    } else if(event instanceof GearDelivevryEvent) {
+                        GearDelivevryEvent e = (GearDelivevryEvent) event;
+                        obj.put("", e.deliveryStatus);
+                        obj.put("", e.lift);
+                    } else if(event instanceof DefenseEvent) {
+                        DefenseEvent e = (DefenseEvent) event;
+                        obj.put("", e.skill);
+                    }
+                }
+                jsonObject.put("events", arr);
+
+                // post game
+                jsonObject.put("", postGameObject.climb_time);
+                jsonObject.put("", postGameObject.climbType);
+                jsonObject.put("", postGameObject.notes);
+                jsonObject.put("", postGameObject.time_dead);
+
+            } catch (JSONException e) {
+                Log.d("JSON error :( - ", e.toString());
+            }
+
+            return jsonObject;
+        }
 //
 //    @Override
 //    public String toString() {
