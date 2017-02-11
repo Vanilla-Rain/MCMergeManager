@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity
 
     public static MatchData sMatchData = new MatchData();
     public static MatchSchedule sMatchSchedule = new MatchSchedule();
+    public static TeamInfoTab mTeamInfoTab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,9 +71,6 @@ public class MainActivity extends AppCompatActivity
         updateDataSyncLabel();
 
         FileUtils.checkFileReadWritePermissions(this);
-
-        BlueAllianceUtils.checkInternetPermissions(this);
-        BlueAllianceUtils.fetchTeamsRegisteredAtEvent(this);
     }
 
     @Override
@@ -84,6 +82,7 @@ public class MainActivity extends AppCompatActivity
 
         // fetch the match data from TheBlueAlliance to update the scores.
         BlueAllianceUtils.checkInternetPermissions(this);
+        BlueAllianceUtils.fetchTeamsRegisteredAtEvent(this);
         BlueAllianceUtils.fetchMatchScheduleAndResults(this);
 
         // In case the schedule is empty, make sure we pass along the list of teams registered at event
@@ -230,8 +229,9 @@ public class MainActivity extends AppCompatActivity
         matchSchedule.addToListOfTeamsAtEvent(sMatchSchedule.getTeamNumsAtEvent());
         sMatchSchedule = matchSchedule;
 
-        //TODO Notify the TeamInfoTab that the list of teams at this event has updated.
-        //TODO I actually have no idea how to do this.
+        // Notify the TeamInfoTab that the list of teams at this event has updated.
+
+        mTeamInfoTab.rebuildAutocompleteList();
 
     }
 

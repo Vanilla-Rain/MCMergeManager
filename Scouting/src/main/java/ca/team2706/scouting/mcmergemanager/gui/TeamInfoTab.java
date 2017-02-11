@@ -70,6 +70,9 @@ public class TeamInfoTab extends Fragment {
             }
         });
 
+        // So, uhh, this is hacky as shit
+        MainActivity.mTeamInfoTab = this;
+
         return mView;
     }
 
@@ -87,18 +90,27 @@ public class TeamInfoTab extends Fragment {
     }
 
     void rebuildAutocompleteList() {
-        // Build the autocomplete list
-        List<String> teamsAtEventList = MainActivity.sMatchSchedule.getTeamNumsAtEvent();
-        String[] autocompleteList = new String[teamsAtEventList.size()];
-        for (int i = 0; i < teamsAtEventList.size(); i++)
-            autocompleteList[i] = teamsAtEventList.get(i);
+
+        // This stuff changes the GUI, so it needs to be run on the UI thread
+
+        getActivity().runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+                // Build the autocomplete list
+                List<String> teamsAtEventList = MainActivity.sMatchSchedule.getTeamNumsAtEvent();
+                String[] autocompleteList = new String[teamsAtEventList.size()];
+                for (int i = 0; i < teamsAtEventList.size(); i++)
+                    autocompleteList[i] = teamsAtEventList.get(i);
 
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(MainActivity.me, android.R.layout.simple_dropdown_item_1line,
-                autocompleteList);
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(MainActivity.me, android.R.layout.simple_dropdown_item_1line,
+                        autocompleteList);
 
-        mAutoCompleteTextView.setAdapter(adapter);
-        mAutoCompleteTextView.setThreshold(0);
+                mAutoCompleteTextView.setAdapter(adapter);
+                mAutoCompleteTextView.setThreshold(0);
+            }
+        });
     }
 
 
