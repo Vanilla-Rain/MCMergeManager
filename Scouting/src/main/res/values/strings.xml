@@ -49,13 +49,13 @@
     <string name="about_description">
         "<font size="18"><b>About MC Merge Manager</b></font>"
 
-        "MC Merge Manager is a scouting app for the 2016 FIRST Robotics Competition game &quot;Stronghold&quot;."
+        "MC Merge Manager is a scouting app for the 2017 FIRST Robotics Competition game &quot;Steamworks&quot;."
 
-        "MC Merge Manager is developed and maintained by FRC Team 2706 &quot;Merge Conflict&quot;. This project is open source and can be found at\n\t\t\twww.github.com/FRC2706/MCMergeManager."
+        "MC Merge Manager is developed and maintained by FRC Team 2706 &quot;Merge Conflict&quot;. This project is open source and can be found at\n\t\t\twww.github.com/FRC2706/MCMergeManager.\n\nSend questions to @gmail.com"
 
         "\n\n<font size="16"><b>Syncing Data</b></font>"
 
-        "<b>Team Photos</b> are synced to **somewhere, we haven\'t decided where yet**"
+        "<b>Team Photos</b> are synced to ftp.team2706.ca"
 
         "\n\n<font size="16"><b>Local Data</b></font>"
 
