@@ -2,6 +2,7 @@ package ca.team2706.scouting.mcmergemanager.backend.dataObjects;
 
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,10 +27,10 @@ public abstract class TeamDataObject {
     private TeamDataType type;
     private String data;
 
-    private static String JSONKEY_TEAMNO    = "TeamNo";
-    private static String JSONKEY_EVENTCODE = "EventCode";
-    private static String JSONKEY_TYPE      = "Type";
-    private static String JSONKEY_DATA      = "Data";
+    public static String JSONKEY_TEAMNO    = "TeamNo";
+    public static String JSONKEY_EVENTCODE = "EventCode";
+    public static String JSONKEY_TYPE      = "Type";
+    public static String JSONKEY_DATA      = "Data";
 
     /** CONSTRUCTOR **/
     protected TeamDataObject(int teamNo, String eventCode, TeamDataType type, String data) {
@@ -47,6 +48,8 @@ public abstract class TeamDataObject {
         SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(App.getContext());
         this.eventCode = SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_event), "<Not Set>");
     }
+
+
 
     /**
      * CONSTRUCTOR
@@ -70,7 +73,6 @@ public abstract class TeamDataObject {
 
         this.data = jsonObj.getString(JSONKEY_DATA);
     }
-
 
 
     public int getTeamNo() {
@@ -106,4 +108,16 @@ public abstract class TeamDataObject {
         return jsonObject;
     }
 
+
+    @Override
+    public String toString() {
+
+        try {
+            return toJSON().toString();
+        } catch (JSONException e) {
+            Log.e(App.getContext().getResources().getString(R.string.app_name), "Error converting TeamDataObject to JSON", e);
+
+            return "";
+        }
+    }
 }
