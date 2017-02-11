@@ -326,7 +326,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void onClick(View v) {
-        JsonUtils.getMatch(this, 7);
+        JsonUtils.postMatch(this, 7);
     }
 
 }

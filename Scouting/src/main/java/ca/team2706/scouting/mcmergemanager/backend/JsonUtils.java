@@ -3,12 +3,15 @@ package ca.team2706.scouting.mcmergemanager.backend;
 import android.content.Context;
 import android.util.Log;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
@@ -22,6 +25,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 
 import ca.team2706.scouting.mcmergemanager.R;
 
@@ -151,6 +155,50 @@ public class JsonUtils {
             }
         } catch(JSONException e) {
             Log.d("Json parsing error: ", e.toString());
+        }
+    }
+
+    public static void postMatch(final Context context, int compID) {
+        final String url = "http://ftp.team2706.ca:3000/competitions/" + compID + "/matches.json";
+        RequestQueue queue = Volley.newRequestQueue(context);
+
+        try {
+            RequestQueue requestQueue = Volley.newRequestQueue(context);
+            // Prepares POST data...
+            JSONObject jsonBody = new JSONObject();
+            jsonBody.put("number", 23);
+            jsonBody.put("team_id", 5);
+            final String mRequestBody = jsonBody.toString();
+            // Volley request...
+            StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    Log.i("VOLLEY", response);
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("VOLLEY error from: " + url + " - ", error.toString());
+                }
+            }) {
+                @Override
+                public String getBodyContentType() {
+                    return "application/json; charset=utf-8";
+                }
+                @Override
+                public byte[] getBody() throws AuthFailureError {
+                    try {
+                        return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
+                    } catch (UnsupportedEncodingException uee) {
+                        VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s",
+                                mRequestBody, "utf-8");
+                        return null;
+                    }
+                }
+            };
+            requestQueue.add(request);
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 }
