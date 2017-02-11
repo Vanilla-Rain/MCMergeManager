@@ -10,6 +10,11 @@
         android:id="@+id/teamNumber"
         android:textAppearance="@android:style/TextAppearance.Material.Medium" />
 
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
+
     <RadioGroup
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -23,6 +28,11 @@
             android:layout_weight="1"
             android:checked="true" />
 
+        <Space
+            android:layout_width="32dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
         <RadioButton
             android:text="Y"
             android:layout_width="wrap_content"
@@ -31,6 +41,11 @@
             android:layout_weight="1"
             android:checked="false" />
 
+        <Space
+            android:layout_width="32dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
         <RadioButton
             android:text="N"
             android:layout_width="wrap_content"
@@ -38,6 +53,12 @@
             android:id="@+id/no"
             android:layout_weight="1"
             android:checked="false" />
+
+        <Space
+            android:layout_width="32dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
     </RadioGroup>
 
 </LinearLayout>
