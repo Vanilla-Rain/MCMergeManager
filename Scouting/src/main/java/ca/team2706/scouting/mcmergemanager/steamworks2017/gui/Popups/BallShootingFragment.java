@@ -8,11 +8,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import ca.team2706.scouting.mcmergemanager.R;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.FuelShotEvent;
 
 /**
  * Created by Merge on 2017-02-09.
@@ -21,10 +21,12 @@ import ca.team2706.scouting.mcmergemanager.R;
 public class BallShootingFragment extends DialogFragment{
 
     SeekBar ballShootingSeekBar;
+    public int pointsScored;
 
 
+    private FuelShotEvent ballsScored = new FuelShotEvent();
+    private FragmentListener listener;
 
-    private EditNameDialogListener listener;
 
     public BallShootingFragment() {
         // Empty constructor is required for DialogFragment
@@ -32,7 +34,7 @@ public class BallShootingFragment extends DialogFragment{
         // Use `newInstance` instead as shown below
     }
 
-    public static BallShootingFragment newInstance(String title, EditNameDialogListener listener) {
+    public static BallShootingFragment newInstance(String title, FragmentListener listener) {
         BallShootingFragment frag = new BallShootingFragment();
         Bundle args = new Bundle();
         args.putString("title", title);
@@ -61,6 +63,7 @@ public class BallShootingFragment extends DialogFragment{
                 }
         );
 
+// ballsScored.numScored
         // initiate  views
         ballShootingSeekBar=(SeekBar)view.findViewById(R.id.teleopBallsScoredSeekBar);
         // perform seek bar change listener event used for getting the progress value
@@ -78,8 +81,21 @@ public class BallShootingFragment extends DialogFragment{
             public void onStopTrackingTouch(SeekBar seekBar) {
                 TextView tv = (TextView) getView().findViewById(R.id.teleopBallScoredTextView);
                 tv.setText(progressChangedValue*5 + " balls  were scored");
+                pointsScored = progressChangedValue;
+//              Toast.makeText(getActivity(), "Data saved!", Toast.LENGTH_LONG).show();
             }
+
         });
+        view.findViewById(R.id.ballScoringSubmit).setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ballsScored.numScored = pointsScored;
+                        Log.i(getClass().getName(), "quit");
+                        listener.editNameDialogCancel(me);
+                    }
+                }
+        );
     }
 
     @Override

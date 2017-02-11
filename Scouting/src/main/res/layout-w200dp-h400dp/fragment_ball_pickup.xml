@@ -26,24 +26,32 @@
     <Button
         android:text="Ground"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/button7"
+        android:layout_height="34dp"
+        android:id="@+id/ground_ball_pickup_button"
         android:background="@android:color/white"
         android:textColor="@android:color/holo_purple"/>
 
     <Button
         android:text="Hopper"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/button8"
+        android:layout_height="36dp"
         android:background="@android:color/white"
-        android:textColor="@android:color/holo_purple"/>
+        android:textColor="@android:color/holo_purple"
+        android:id="@+id/hopper_ball_pickup_button" />
+
+    <Button
+        android:text="FEEDER"
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:id="@+id/feeder_ball_pickup_button"
+        android:background="@android:color/white"
+        android:textColor="@android:color/holo_purple" />
 
     <Button
         android:text="Other"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/button9"
+        android:layout_height="36dp"
+        android:id="@+id/other_ball_pickup_button"
         android:background="@android:color/white"
         android:textColor="@android:color/holo_purple"/>
 

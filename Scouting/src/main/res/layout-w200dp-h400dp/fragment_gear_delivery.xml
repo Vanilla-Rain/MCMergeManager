@@ -27,7 +27,7 @@
         android:text="boiler side"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/button7"
+        android:id="@+id/boiler_side_gear_delivery_button"
         android:background="@android:color/white"
         android:textColor="@android:color/holo_purple"/>
 
@@ -35,15 +35,15 @@
         android:text="Middle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/button8"
         android:background="@android:color/white"
-        android:textColor="@android:color/holo_purple"/>
+        android:textColor="@android:color/holo_purple"
+        android:id="@+id/middle_gear_delivery_button" />
 
     <Button
         android:text="loading station side"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/button9"
+        android:id="@+id/feeder_side_gear_delivery_button"
         android:background="@android:color/white"
         android:textColor="@android:color/holo_purple"/>
 

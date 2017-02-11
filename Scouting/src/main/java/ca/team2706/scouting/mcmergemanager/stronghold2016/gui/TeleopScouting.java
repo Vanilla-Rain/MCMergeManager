@@ -8,21 +8,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
-import android.widget.SeekBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
 import ca.team2706.scouting.mcmergemanager.R;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.gui.Popups.BallPickupFragment;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.gui.Popups.BallShootingFragment;
-import ca.team2706.scouting.mcmergemanager.steamworks2017.gui.Popups.EditNameDialogFragment;
-import ca.team2706.scouting.mcmergemanager.steamworks2017.gui.Popups.EditNameDialogListener;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.gui.Popups.FragmentListener;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.gui.Popups.GearDeliveryFragment;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.gui.Popups.GearPickupFragment;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.BallPickup;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.BallShot;
 
-public class TeleopScouting extends AppCompatActivity implements EditNameDialogListener {
+public class TeleopScouting extends AppCompatActivity implements FragmentListener {
 
 
     public void editNameDialogComplete(DialogFragment dialogFragment, Bundle data) {
@@ -34,7 +33,7 @@ public class TeleopScouting extends AppCompatActivity implements EditNameDialogL
     Handler m_handlerDefending;
     Runnable m_handlerTaskDefending;
     private int remainTime = 135;
-    private EditNameDialogListener listener;
+    private FragmentListener listener;
     public ArrayList<Integer> defensesBreached;
     public ArrayList<BallShot> ballsShot;
     public ArrayList<BallPickup> ballPickups;
@@ -109,8 +108,8 @@ public class TeleopScouting extends AppCompatActivity implements EditNameDialogL
 
     private void showEditDialog() {
         FragmentManager fm = getFragmentManager();
-        EditNameDialogFragment editNameDialogFragment = EditNameDialogFragment.newInstance("Subscribe", this);
-        editNameDialogFragment.show(fm, "fragment_edit_name");
+        BallPickupFragment ballPickupFragment = BallPickupFragment.newInstance("Subscribe", this);
+        ballPickupFragment.show(fm, "fragment_edit_name");
     }
 
     private void showBallScoring() {
