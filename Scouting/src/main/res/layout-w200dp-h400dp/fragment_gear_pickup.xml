@@ -47,4 +47,12 @@
         android:background="@android:color/white"
         android:textColor="@android:color/holo_purple"/>
 
+    <Button
+        android:text="cancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/gear_pickup_cancel_button"
+        android:background="@android:color/white"
+        android:textColor="@android:color/holo_purple" />
+
 </LinearLayout>
