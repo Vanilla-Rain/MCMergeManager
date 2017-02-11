@@ -12,12 +12,14 @@
     <string name="title_activity_auto_scouting2">Auto Scouting2</string>
     <string name="title_activity_post_game">Post Game</string>
     <string name="title_activity_teleop_scouting">Teleop Scouting</string>
-  
+
     <string name="title_activity_team_stats">Team Stats Page</string>
     <string name="title_activity_cycles_display">Cycles Display</string>
     <string name="title_activity_repair_time_collection">RepairTimeCollection</string>
     <string name="matchScoutingDataFileName">matchScoutingData.csv</string>
     <string name="matchScoutingDataFileNameUNSYNCHED">matchScoutingData_UNSYNCHED.csv</string>
+    <string name="teamDataFileName">teamData.json</string>
+    <string name="teamDataFileNameUNSYNCHED">teamData_UNSYNCHED.json</string>
     <string-array name="year_array">
         <item>2017</item>
         <item>2016</item>
@@ -64,5 +66,3 @@
     <string name="title_activity_new_teleop_scouting">NewTeleopScouting</string>
     <string name="title_activity_new_auto_scouting">NewAutoScouting</string>
     <string name="title_activity_pre_game">PreGameActivity</string>
-
-</resources>
