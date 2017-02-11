@@ -32,7 +32,6 @@ import java.util.TimerTask;
 import ca.team2706.scouting.mcmergemanager.R;
 import ca.team2706.scouting.mcmergemanager.backend.BlueAllianceUtils;
 import ca.team2706.scouting.mcmergemanager.backend.FileUtils;
-import ca.team2706.scouting.mcmergemanager.backend.JsonUtils;
 import ca.team2706.scouting.mcmergemanager.backend.TakePicture;
 import ca.team2706.scouting.mcmergemanager.backend.dataObjects.MatchSchedule;
 import ca.team2706.scouting.mcmergemanager.backend.interfaces.DataRequester;
@@ -58,6 +57,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        FileUtils.checkLocalFileStructure(this);
         context = this;
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.activity_main);
@@ -318,7 +318,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void onClick(View v) {
-        JsonUtils.postMatch(this, 7);
+        FileUtils.postMatchToServer(this, 1);
+        FileUtils.getCompetitionFromServer(this, 1);
     }
 
 }

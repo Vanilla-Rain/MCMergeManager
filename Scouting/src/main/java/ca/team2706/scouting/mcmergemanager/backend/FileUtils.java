@@ -17,12 +17,30 @@ import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -46,7 +64,7 @@ public class FileUtils {
     public static String sLocalTeamPhotosFilePath;
 
     /* Static initializer */
-    {
+    static {
         // store string constants and preferences in member variables just for cleanliness
         // (since the strings are `static`, when any instances of FileUtils update these, all instances will get the updates)
         SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(App.getContext());
@@ -56,6 +74,9 @@ public class FileUtils {
         sLocalTeamPhotosFilePath = sLocalTeamFilePath + "/" + "Team Photos";
     }
 
+    public enum FileType {
+        SYNCED, UNSYNCHED;
+    }
 
     /**
      * private constructor -- this is a static class, it should not be instantiated
@@ -409,5 +430,123 @@ public class FileUtils {
         options.inSampleSize = inSampleSize;
         options.inJustDecodeBounds = false;
         return BitmapFactory.decodeFile(imagePath);
+    }
+
+
+    /*
+        gets a competition data from the swagger server
+        if compID is 0 will take from current event, if other number will get that competition
+     */
+    public static void getCompetitionFromServer(final Context context, int compID) {
+        RequestQueue queue = Volley.newRequestQueue(context);
+        final String url;
+        if(compID == 0) {
+            SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(App.getContext());
+            url = "http://ftp.team2706.ca:3000/competitions/" + SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_event), "<Not Set>") + "/matches.json";
+        } else {
+            url = "http://ftp.team2706.ca:3000/competitions/" + compID + "/matches.json";
+        }
+        // prepare the Request
+        JsonArrayRequest getRequest = new JsonArrayRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        // display response
+                        saveJsonFile(response);
+                        System.out.println(response.toString() + "\nWriting should have gone well");
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("Error.Response", error.toString());
+                    }
+                }
+        );
+
+        // add it to the RequestQueue
+        queue.add(getRequest);
+    }
+
+    private static void saveJsonFile(JSONArray jsonArray) {
+        if(!clearTeamDataFile(FileType.SYNCED)) {
+            Log.d("Deleting file failed", "something probably went wrong");
+        }
+
+        String outFileName = sLocalEventFilePath +"/"+ App.getContext().getResources().getString(R.string.matchScoutingDataFileName);
+        File file = new File(outFileName);
+
+        try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter(file, true));
+
+            for (int i = 0; i < jsonArray.length(); i++){
+                bw.append(jsonArray.get(i).toString() + "\n");
+            }
+
+            bw.flush();
+            bw.close();
+        } catch (JSONException e) {
+            Log.d("JSON Exception: ", e.toString());
+        } catch (IOException e) {
+            Log.d("File writing error ", e.toString());
+        }
+    }
+
+    private static boolean clearTeamDataFile(FileType fileType) {
+        File file;
+        switch(fileType) {
+            case UNSYNCHED:
+                file = new File(sLocalEventFilePath + "/" + App.getContext().getResources().getString(R.string.matchScoutingDataFileNameUNSYNCHED));
+                return file.delete();
+            case SYNCED:
+                file = new File(sLocalEventFilePath + "/" + App.getContext().getResources().getString(R.string.matchScoutingDataFileName));
+                return file.delete();
+        }
+        return false;
+    }
+
+    public static void postMatchToServer(final Context context, int compID) {
+        final String url = "http://ftp.team2706.ca:3000/competitions/" + compID + "/matches.json";
+        RequestQueue queue = Volley.newRequestQueue(context);
+
+        try {
+            RequestQueue requestQueue = Volley.newRequestQueue(context);
+            // Prepares POST data...
+            JSONObject jsonBody = new JSONObject();
+            jsonBody.put("number", 99);
+            jsonBody.put("team_id", 5);
+            final String mRequestBody = jsonBody.toString();
+            // Volley request...
+            StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    Log.i("VOLLEY", response);
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("VOLLEY error from: " + url + " - ", error.toString());
+                }
+            }) {
+                @Override
+                public String getBodyContentType() {
+                    return "application/json; charset=utf-8";
+                }
+
+                @Override
+                public byte[] getBody() throws AuthFailureError {
+                    try {
+                        return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
+                    } catch (UnsupportedEncodingException uee) {
+                        VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s",
+                                mRequestBody, "utf-8");
+                        return null;
+                    }
+                }
+            };
+            requestQueue.add(request);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -42,35 +42,6 @@ public class JsonUtils {
     private static JSONArray[][] objects;
     private static JSONObject obj;
 
-    public static void getCompetition(final Context context) {
-        RequestQueue queue = Volley.newRequestQueue(context);
-        final String url = "http://ftp.team2706.ca:3000/competitions/153/matches.json";
-        jsonArray = new JSONArray();
-
-        // prepare the Request
-        JsonArrayRequest getRequest = new JsonArrayRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        // display response
-                        jsonArray = response;
-
-                        // create file for json
-                        saveJsonFile(context);
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d("Error.Response", error.toString());
-                    }
-                }
-        );
-
-        // add it to the RequestQueue
-        queue.add(getRequest);
-    }
-
     public static void getMatch(final Context context, int matchID) {
         RequestQueue queue = Volley.newRequestQueue(context);
         final String url = "http://ftp.team2706.ca:3000/matches/" + matchID + ".json";
