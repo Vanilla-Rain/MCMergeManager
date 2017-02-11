@@ -9,7 +9,7 @@ import org.json.JSONObject;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class MatchData {
+public class MatchData implements Serializable {
 
 
     public static class Match implements Serializable {

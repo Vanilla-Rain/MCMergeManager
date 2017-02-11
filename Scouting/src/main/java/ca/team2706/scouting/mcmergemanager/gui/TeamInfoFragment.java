@@ -199,9 +199,6 @@ public class TeamInfoFragment extends Fragment
         }
 
 
-
-
-
         return m_view;
     }
 

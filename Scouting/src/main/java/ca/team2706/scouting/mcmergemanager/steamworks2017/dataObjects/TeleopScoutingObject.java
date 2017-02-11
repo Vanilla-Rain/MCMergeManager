@@ -1,10 +1,11 @@
 package ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 
 
-public class TeleopScoutingObject {
+public class TeleopScoutingObject implements Serializable {
 
     public static double MATCH_TIME = 0; // TODO: get match time in milliseconds?
 

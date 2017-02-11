@@ -59,8 +59,13 @@ public class TeamInfoTab extends Fragment {
                 //If the keyevent is a key-down event on the "enter" button
                 if ((keyevent.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
                     launchTeamInfoFragment();
+
+                    // true means we dealt with (consumed) this keypress
                     return true;
                 }
+
+                // false means we did not deal with this keypress, and it should hand this keypress
+                // event to the next registered handler.
                 return false;
             }
         });
