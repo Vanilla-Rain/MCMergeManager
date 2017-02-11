@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity
     FragmentManager mFragmentManager;
     FragmentTransaction mFragmentTransaction;
 
-    public static MatchData sMatchData;
+    public static MatchData sMatchData = new MatchData();
     public static MatchSchedule sMatchSchedule = new MatchSchedule();
 
     @Override
@@ -89,6 +89,7 @@ public class MainActivity extends AppCompatActivity
         // In case the schedule is empty, make sure we pass along the list of teams registered at event
         // that we fetched at the beginning.
         sMatchData = FileUtils.loadMatchDataFile();
+        if(sMatchData == null) sMatchData = new MatchData();
     }
 
     /**

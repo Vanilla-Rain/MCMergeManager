@@ -53,6 +53,7 @@ public class StatsEngine implements Serializable{
     /** This constructor meant more for testing than for actual use **/
     public StatsEngine(MatchSchedule matchSchedule) {
         this.matchSchedule = matchSchedule;
+        this.matchData = new MatchData();
 
         computeOPRs();
     }
