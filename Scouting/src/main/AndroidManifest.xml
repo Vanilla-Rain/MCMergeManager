@@ -66,10 +66,6 @@
             android:label="About"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".gui.HelpActivity"
-            android:label="Help"
-            android:theme="@style/AppTheme" />
-        <activity
             android:name=".gui.SettingsActivity"
             android:label="Settings"
             android:theme="@style/AppTheme" />
