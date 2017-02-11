@@ -1,64 +1,172 @@
 package ca.team2706.scouting.mcmergemanager.stronghold2016.gui;
 
+import android.app.DialogFragment;
+import android.app.FragmentManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.google.android.gms.common.api.GoogleApiClient;
-
 import java.util.ArrayList;
 
 import ca.team2706.scouting.mcmergemanager.R;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.gui.Popups.BallShootingFragment;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.gui.Popups.EditNameDialogFragment;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.gui.Popups.EditNameDialogListener;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.gui.Popups.GearDeliveryFragment;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.gui.Popups.GearPickupFragment;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.BallPickup;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.BallShot;
 
-public class TeleopScouting extends AppCompatActivity {
+public class TeleopScouting extends AppCompatActivity implements EditNameDialogListener {
+
+
+    public void editNameDialogComplete(DialogFragment dialogFragment, Bundle data) {
+
+    }
+
     Handler m_handler;
     Runnable m_handlerTask;
     Handler m_handlerDefending;
     Runnable m_handlerTaskDefending;
     private int remainTime = 135;
-
+    private EditNameDialogListener listener;
     public ArrayList<Integer> defensesBreached;
     public ArrayList<BallShot> ballsShot;
     public ArrayList<BallPickup> ballPickups;
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    private GoogleApiClient client;
-
-    Button submitButton;
-    SeekBar simpleSeekBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_ball_scoring);
-        // initiate  views
-        simpleSeekBar = (SeekBar) findViewById(R.id.teleopBallsScoredSeekBar);
-        // perform seek bar change listener event used for getting the progress value
-        simpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            int progressChangedValue = 0;
+        setContentView(R.layout.steamworks2017_activity_teleop_scouting);
+        Toolbar tb = (Toolbar) findViewById(R.id.toolbar);
+        //final Spinner spinner = (Spinner) findViewById(R.id.defense_spinner);
+        final TextView tvGameTime = (TextView) findViewById(R.id.textViewGameTime);
 
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                progressChangedValue = progress;
+
+        Button fab = (Button) findViewById(R.id.ballPickupButton);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showEditDialog();
             }
 
-            public void onStartTrackingTouch(SeekBar seekBar) {
-                // TODO Auto-generated method stub
-            }
 
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                TextView tv = (TextView) findViewById(R.id.autoBallScoredTextView);
-                tv.setText(progressChangedValue * 5 + " points were scored");
+        });
+
+        Button openBallScoringFrag = (Button) findViewById(R.id.ballShootingButton);
+        openBallScoringFrag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showBallScoring();
             }
         });
 
+        Button openGearDeliveryFrag = (Button) findViewById(R.id.gearDeliveryButton);
+            openGearDeliveryFrag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showGearDelivery();
+            }
+        });
+        Button openGearPickupFrag = (Button) findViewById(R.id.gearPickupButton);
+        openGearPickupFrag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showGearPickup();}
+        });
+
+
+        m_handler = new Handler();
+
+        m_handlerTask = new Runnable() {
+            @Override
+            public void run() {
+                if (remainTime == 0) {
+                    tvGameTime.setText("Game Over! Please Save and Return");
+                } else {
+                    remainTime--;
+                    int minuets = remainTime / 60;
+                    int remainSec = remainTime - minuets * 60;
+                    String remainSecString;
+                    if (remainSec < 10)
+                        remainSecString = "0" + remainSec;
+                    else
+                        remainSecString = remainSec + "";
+
+                    tvGameTime.setText(minuets + ":" + remainSecString);
+                    m_handler.postDelayed(m_handlerTask, 1000);  // 1 second delay
+                }
+            }
+        };
+        m_handlerTask.run();
     }
+
+
+    private void showEditDialog() {
+        FragmentManager fm = getFragmentManager();
+        EditNameDialogFragment editNameDialogFragment = EditNameDialogFragment.newInstance("Subscribe", this);
+        editNameDialogFragment.show(fm, "fragment_edit_name");
+    }
+
+    private void showBallScoring() {
+        FragmentManager fm = getFragmentManager();
+        BallShootingFragment ballShootingFragment = BallShootingFragment.newInstance("Subscribe", this);
+        ballShootingFragment.show(fm, "fragment_edit_name");
+    }
+
+    private void showGearDelivery() {
+        FragmentManager fm = getFragmentManager();
+        GearDeliveryFragment gearDeliveryFragment = GearDeliveryFragment.newInstance("Subscribe", this);
+        gearDeliveryFragment.show(fm, "fragment_edit_name");
+    }
+
+    private void showGearPickup() {
+        FragmentManager fm = getFragmentManager();
+        GearPickupFragment gearPickupFragment = GearPickupFragment.newInstance("Subscribe", this);
+        gearPickupFragment.show(fm, "fragment_edit_name");
+    }
+
+    @Override
+    public void editNameDialogCancel(DialogFragment dialogFragment) {
+        dialogFragment.dismiss();
+    }
+
+
+
+    // TODO Create a textView for this seekbar.
+//    Button submitButton;
+//    SeekBar simpleSeekBar;
+//
+//    @Override
+//    protected void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        setContentView(R.layout.fragment_ball_scoring);
+//        // initiate  views
+//        simpleSeekBar = (SeekBar) findViewById(R.id.teleopBallsScoredSeekBar);
+//        // perform seek bar change listener event used for getting the progress value
+//        simpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+//            int progressChangedValue = 0;
+//
+//            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+//                progressChangedValue = progress;
+//            }
+//
+//            public void onStartTrackingTouch(SeekBar seekBar) {
+//                // TODO Auto-generated method stub
+//            }
+//
+//            public void onStopTrackingTouch(SeekBar seekBar) {
+//                TextView tv = (TextView) findViewById(R.id.autoBallScoredTextView);
+//                tv.setText(progressChangedValue * 5 + " points were scored");
+//            }
+//        });
+//
+//    }
 
 
     /**
