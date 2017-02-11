@@ -38,12 +38,11 @@ import ca.team2706.scouting.mcmergemanager.backend.interfaces.DataRequester;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.MatchData;
 
 @TargetApi(21)
-public class MainActivity extends AppCompatActivity
-                implements DataRequester, PreMatchReportFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements DataRequester, PreMatchReportFragment.OnFragmentInteractionListener {
+public Context context;
 
     public int teamColour = Color.rgb(102, 51, 153);
 
-    public Context context;
 
     Intent globalIntent;
     static MainActivity me;
@@ -62,6 +61,8 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.activity_main);
         setNavDrawer();
+
+        context = this;
 
         globalIntent = new Intent();
 
