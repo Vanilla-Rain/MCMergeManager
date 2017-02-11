@@ -20,7 +20,20 @@
             android:text="Submit Data"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/repairTimesSubmitButton"
+            android:id="@+id/repairTimesSubmitButton1"
+            android:onClick="onSubmitClicked" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/rowContainer"></LinearLayout>
+
+        <Button
+            android:text="Submit Data"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/repairTimesSubmitButton2"
             android:onClick="onSubmitClicked" />
 
     </LinearLayout>

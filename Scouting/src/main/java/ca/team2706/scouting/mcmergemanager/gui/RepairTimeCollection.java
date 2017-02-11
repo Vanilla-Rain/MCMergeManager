@@ -38,6 +38,7 @@ public class RepairTimeCollection extends AppCompatActivity {
 
         // Get main layout
         LinearLayout mainLayout = (LinearLayout) findViewById(R.id.repair_collection_main_layout);
+        LinearLayout rowContainer = (LinearLayout) mainLayout.findViewById(R.id.rowContainer);
 
         //Get list of teams
         List<String> teams = matchSchedule.getTeamNumsAtEvent();
@@ -50,7 +51,7 @@ public class RepairTimeCollection extends AppCompatActivity {
         for(String team: teams) {
 
             View row = generateRow(team);
-            mainLayout.addView(row);
+            rowContainer.addView(row);
 
         }
 
@@ -74,7 +75,8 @@ public class RepairTimeCollection extends AppCompatActivity {
     public void onSubmitClicked(View view) {
 
         generateRepairTimeObjects();
-
+        Intent intent = new Intent(this,MainActivity.class);
+        startActivity(intent);
 
     }
 
@@ -102,7 +104,7 @@ public class RepairTimeCollection extends AppCompatActivity {
         }
 
         for(RepairTimeObject repairObject: repairObjects) {
-            //FileUtils.appendToMatchDataFile(repairObject);
+            FileUtils.appendToTeamDataFile(repairObject);
         }
 
     }
