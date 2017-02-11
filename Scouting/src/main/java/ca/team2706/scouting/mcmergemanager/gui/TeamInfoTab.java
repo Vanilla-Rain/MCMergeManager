@@ -4,98 +4,132 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.SearchView;
 import android.widget.Spinner;
 
+import java.util.List;
+
 import ca.team2706.scouting.mcmergemanager.R;
-import ca.team2706.scouting.mcmergemanager.stronghold2016.StatsEngine;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.StatsEngine;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.TeamStatsReport;
 
 /**
  * Created by cnnr2 on 2015-10-31.
  */
 public class TeamInfoTab extends Fragment {
 
-    private Bundle m_savedInstanceState = null;
-    public View view;
-    public TeamInfoFragment m_teamInfoFragment;
+    private static boolean accepted = false;
+    private static boolean canceled = false;
+
+    private Bundle mSavedInstanceState = null;
+
+    private View mView;
+    private FragmentManager mFragmentManager;
+    private TeamInfoFragment mTeamInfoFragment;
+    private AutoCompleteTextView mAutoCompleteTextView;
+
+    private EditText editText;
+    private static String inputResult;
+    private View edit;
+    private AlertDialog.Builder alert;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        m_savedInstanceState = savedInstanceState;
+        mSavedInstanceState = savedInstanceState;
 
-        view = inflater.inflate(R.layout.team_info_tab, container, false);
+        mView = inflater.inflate(R.layout.team_info_tab, container, false);
 
-        launchImageButton();
-        SearchView searchView = (SearchView) view.findViewById(R.id.searchView);
+        bindDownloadImageButton();
+        bindSearchImageButton();
 
-        searchView.setOnQueryTextListener(
-                new SearchView.OnQueryTextListener() {
-                    @Override
-                    public boolean onQueryTextSubmit(String query) {
-                        // load the team stats fragment
+        mAutoCompleteTextView = (AutoCompleteTextView) mView.findViewById(R.id.teamNumberAutoCompleteTV);
 
-                        // If we're being restored from a previous state,
-                        // then we don't need to do anything and should return or else
-                        // we could end up with overlapping fragments.
-                        if (m_savedInstanceState != null) {
-                            return false;
-                        }
+        // Bind the enter key action for the EditText
+        mAutoCompleteTextView.setOnKeyListener(new View.OnKeyListener() {
+            public boolean onKey(View view, int keyCode, KeyEvent keyevent) {
+                //If the keyevent is a key-down event on the "enter" button
+                if ((keyevent.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    launchTeamInfoFragment();
 
-                        int teamNumber;
-                        try {
-                            teamNumber = Integer.parseInt(query);
-                        } catch (NumberFormatException e) {
-                            // they didn't type in a valid number. Too bad for them, we're not going any further!
-                            return false;
-                        }
-
-                        // Create a new Fragment to be placed in the activity layout
-                        m_teamInfoFragment = new TeamInfoFragment();
-                        Bundle args = new Bundle();
-                        args.putInt("teamNumber", teamNumber);
-                        StatsEngine statsEngine = new StatsEngine(MainActivity.m_matchData, MainActivity.m_matchSchedule);
-
-                        StatsEngine.TeamStatsReport teamStatsReport = statsEngine.getTeamStatsReport(teamNumber);  // just so I can look at it in bebug
-                        args.putSerializable(getString(R.string.EXTRA_TEAM_STATS_REPORT), teamStatsReport);
-                        m_teamInfoFragment.setArguments(args);
-
-                        // Add the fragment to the 'fragment_container' FrameLayout
-                        getActivity().getFragmentManager().beginTransaction()
-                                .replace(R.id.fragment_container, m_teamInfoFragment).commit();
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onQueryTextChange(String newText) {
-                        // TODO: show a filtered autocomplete list of teams at this event
-                        return false;
-                    }
+                    // true means we dealt with (consumed) this keypress
+                    return true;
                 }
-        );
 
-        return view;
+                // false means we did not deal with this keypress, and it should hand this keypress
+                // event to the next registered handler.
+                return false;
+            }
+        });
+
+        // So, uhh, this is hacky as shit
+        MainActivity.mTeamInfoTab = this;
+
+        return mView;
     }
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
-    public EditText editText;
-    public  static boolean accepted = false;
-    public  static boolean canceled = false;
-    public  static String inputResult;
-    public View edit;
-    public AlertDialog.Builder alert;
-    public boolean launchImageButton() {
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        mFragmentManager = getFragmentManager();
+
+        rebuildAutocompleteList();
+    }
+
+    void rebuildAutocompleteList() {
+
+        // This stuff changes the GUI, so it needs to be run on the UI thread
+
+        getActivity().runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+                // Build the autocomplete list
+                List<String> teamsAtEventList = MainActivity.sMatchSchedule.getTeamNumsAtEvent();
+                String[] autocompleteList = new String[teamsAtEventList.size()];
+                for (int i = 0; i < teamsAtEventList.size(); i++)
+                    autocompleteList[i] = teamsAtEventList.get(i);
+
+
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(MainActivity.me, android.R.layout.simple_dropdown_item_1line,
+                        autocompleteList);
+
+                mAutoCompleteTextView.setAdapter(adapter);
+                mAutoCompleteTextView.setThreshold(0);
+            }
+        });
+    }
+
+
+    public boolean bindSearchImageButton() {
+        ImageButton button = (ImageButton) mView.findViewById(R.id.searchBtn);
+
+        button.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View view) {
+                launchTeamInfoFragment();
+            }
+        });
+
+        return true;
+    }
+
+    public boolean bindDownloadImageButton() {
         // Inflate the menu; this adds items to the action bar if it is present.
-        ImageButton button = (ImageButton) view.findViewById(R.id.imageButton);
+        ImageButton button = (ImageButton) mView.findViewById(R.id.imageButton);
 
         button.setOnClickListener(new View.OnClickListener() {
 
@@ -115,7 +149,6 @@ public class TeamInfoTab extends Fragment {
                 Spinner spinner = (Spinner) alertLayout.findViewById(R.id.year_spinner);
 
                 // Create an ArrayAdapter using the string array and a default spinner layout
-                int selectedCurrent = spinner.getSelectedItemPosition();
                 ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
                         R.array.year_array, android.R.layout.simple_spinner_item);
                 spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -146,17 +179,13 @@ public class TeamInfoTab extends Fragment {
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 // Apply the adapter to the spinner
                 spinner.setAdapter(adapter);
-                //this stuff gets the edittext from the view and sets the hint and the inputtype
+                //this stuff gets the edittext from the mView and sets the hint and the inputtype
                 edit = alertLayout.findViewById(R.id.inputHint);
                 if (edit instanceof EditText) {
                     editText = (EditText) edit;
                     editText.setHint("Competition ID - See Help for more");
 
                 }
-
-
-                Log.d("editing hint", "you got that");
-
 
                 alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 
@@ -173,7 +202,6 @@ public class TeamInfoTab extends Fragment {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 accepted = true;
-                                Log.e("accepted", "" + accepted);
                                 inputResult = editText.getText().toString();
                                 TeamInfoFragment fragment1 = new TeamInfoFragment();
 
@@ -182,7 +210,7 @@ public class TeamInfoTab extends Fragment {
                                 fragment1.setArguments(args);
 
                                 // Add the fragment to the 'fragment_container' FrameLayout
-                                getActivity().getFragmentManager().beginTransaction()
+                                mFragmentManager.beginTransaction()
                                         .replace(R.id.fragment_container, fragment1).commit();
                             }
                         }
@@ -195,7 +223,44 @@ public class TeamInfoTab extends Fragment {
         });
 
         return true;
-
     }
 
+
+    private void launchTeamInfoFragment() {
+        // load the team stats fragment
+
+        // If we're being restored from a previous state,
+        // then we don't need to do anything and should return or else
+        // we could end up with overlapping fragments.
+        if(mSavedInstanceState!=null) {
+            return;
+        }
+
+        int teamNumber;
+        try {
+            teamNumber = Integer.valueOf(mAutoCompleteTextView.getText().toString());
+        }
+
+        catch(NumberFormatException e) {
+            // they didn't type in a valid number. Too bad for them, we're not going any further!
+            return;
+        }
+
+        // Create a new Fragment to be placed in the activity layout
+        mTeamInfoFragment=new TeamInfoFragment();
+
+        Bundle args = new Bundle();
+        args.putInt("teamNumber",teamNumber);
+        StatsEngine statsEngine = new StatsEngine(MainActivity.sMatchData, MainActivity.sMatchSchedule);
+
+        TeamStatsReport teamStatsReport = statsEngine.getTeamStatsReport(teamNumber);  // just so I can look at it in bebug
+        args.putSerializable( getString(R.string.EXTRA_TEAM_STATS_REPORT),teamStatsReport );
+        mTeamInfoFragment.setArguments(args);
+
+        // Add the fragment to the 'fragment_container' FrameLayout
+        mFragmentManager
+                .beginTransaction()
+                .replace(R.id.fragment_container, mTeamInfoFragment)
+                .commit();
+    }
 }

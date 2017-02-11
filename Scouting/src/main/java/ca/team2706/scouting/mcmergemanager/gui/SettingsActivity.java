@@ -1,8 +1,6 @@
 package ca.team2706.scouting.mcmergemanager.gui;
 
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
@@ -17,8 +15,6 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
-
-import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.util.List;
 
@@ -36,7 +32,6 @@ import ca.team2706.scouting.mcmergemanager.R;
  * API Guide</a> for more information on developing a Settings UI.
  */
 public class SettingsActivity extends AppCompatPreferenceActivity {
-    private GoogleApiClient mGoogleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

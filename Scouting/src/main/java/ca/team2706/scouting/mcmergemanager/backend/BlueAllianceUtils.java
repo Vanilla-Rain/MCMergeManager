@@ -1,12 +1,17 @@
 package ca.team2706.scouting.mcmergemanager.backend;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.ProgressBar;
@@ -16,41 +21,81 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.ConnectException;
+import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.List;
 
 import ca.team2706.scouting.mcmergemanager.R;
 import ca.team2706.scouting.mcmergemanager.backend.interfaces.DataRequester;
-import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.MatchSchedule;
+import ca.team2706.scouting.mcmergemanager.backend.dataObjects.MatchSchedule;
 
 public class BlueAllianceUtils {
 
     private Activity mActivity;
 
+    private static boolean sPermissionsChecked = false;
+
     /* ~~~ Constructor ~~~ */
     public BlueAllianceUtils(Activity activity) {
         mActivity = activity;
+
+        checkInternetPermissions(activity);
     }
 
 
+    public static boolean checkInternetPermissions(Activity activity) {
+        if (activity == null)
+            return false;
 
-    public static String readUrl(String urlString) throws Exception {
+        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.INTERNET)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(activity,
+                    new String[]{Manifest.permission.INTERNET}, 123);
+
+            // check if they clicked Deny
+            if (ContextCompat.checkSelfPermission(activity, Manifest.permission.INTERNET)
+                    != PackageManager.PERMISSION_GRANTED)
+                sPermissionsChecked = false;
+        }
+
+        sPermissionsChecked = true;
+        return sPermissionsChecked;
+    }
+
+    @NonNull
+    private static String readUrl(String urlString) throws Exception {
+        if(!sPermissionsChecked)
+            throw new IllegalStateException("BlueAllianceUtils: make sure you call BlueAllianceUtils.checkInternetPermissions() and the user has clicked \"Yes\" before trying to contact thebluealliance.com!");
+
         BufferedReader reader = null;
 
         try {
+            URLConnection conn;
             URL url = new URL(urlString);
-            InputStream is = url.openStream();
-            InputStreamReader isr = new InputStreamReader(is);
-            reader = new BufferedReader(isr);
-            StringBuffer buffer = new StringBuffer();
-            int read;
-            char[] chars = new char[1024];
-            while ((read = reader.read(chars)) != -1)
-                buffer.append(chars, 0, read);
+            conn = url.openConnection();
+            HttpURLConnection httpConn = (HttpURLConnection) conn;
+            httpConn.setRequestMethod("GET");
+            httpConn.connect();
 
-            return buffer.toString();
+            int httpRespCode = httpConn.getResponseCode();
+            if (httpRespCode == HttpURLConnection.HTTP_OK) {
+                reader = new BufferedReader(new InputStreamReader(httpConn.getInputStream()));
+
+
+                StringBuffer buffer = new StringBuffer();
+                int read;
+                char[] chars = new char[1024];
+                while ((read = reader.read(chars)) != -1)
+                    buffer.append(chars, 0, read);
+
+                return buffer.toString();
+            } else {
+                throw new ConnectException("TBA connection returned code: " + httpRespCode);
+            }
         } finally {
             if (reader != null)
                 reader.close();
@@ -129,10 +174,10 @@ public class BlueAllianceUtils {
 
             // if (! file exitst(/MCMergeManager/<TeamName>/<EventName>/thebluealliance.json) )
         } else {
-            ArrayList<String> comps2016 = getBlueAllianceDataArrayAsArray("event_code", "http://www.thebluealliance.com/api/v2/team/frc" + teamNumber + "/2016/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
-            ArrayList<String> compsName2016 = getBlueAllianceDataArrayAsArray("name", "http://www.thebluealliance.com/api/v2/team/frc" + teamNumber + "/2016/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
+            ArrayList<String> comps2016 = getBlueAllianceDataArrayAsArray("event_code", "https://www.thebluealliance.com/api/v2/team/frc" + teamNumber + "/2016/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
+            ArrayList<String> compsName2016 = getBlueAllianceDataArrayAsArray("name", "https://www.thebluealliance.com/api/v2/team/frc" + teamNumber + "/2016/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
             for (int i = 0; i < comps2016.size(); i++) {
-                ArrayList<String> test = getBlueAllianceDataDoubleArrayAsArray(1, "http://www.thebluealliance.com/api/v2/event/2016" + comps2016.get(i) + "/rankings?X-TBA-App-Id=frc2706:mergemanager:v01/");
+                ArrayList<String> test = getBlueAllianceDataDoubleArrayAsArray(1, "https://www.thebluealliance.com/api/v2/event/2016" + comps2016.get(i) + "/rankings?X-TBA-App-Id=frc2706:mergemanager:v01/");
                 for (int p = 0; p < test.size(); p++) {
                     if (test.get(p).equals(Integer.toString(teamNumber))) { // Or use equals() if it actually returns an Object.
                         // Found at index i. Break or return if necessary.
@@ -148,10 +193,10 @@ public class BlueAllianceUtils {
                 }
             }
 
-            ArrayList<String> comps2015 = getBlueAllianceDataArrayAsArray("event_code", "http://www.thebluealliance.com/api/v2/team/frc" + teamNumber + "/2015/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
-            ArrayList<String> compsName2015 = getBlueAllianceDataArrayAsArray("name", "http://www.thebluealliance.com/api/v2/team/frc" + teamNumber + "/2015/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
+            ArrayList<String> comps2015 = getBlueAllianceDataArrayAsArray("event_code", "https://www.thebluealliance.com/api/v2/team/frc" + teamNumber + "/2015/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
+            ArrayList<String> compsName2015 = getBlueAllianceDataArrayAsArray("name", "https://www.thebluealliance.com/api/v2/team/frc" + teamNumber + "/2015/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
             for (int i = 0; i < comps2015.size(); i++) {
-                ArrayList<String> test = getBlueAllianceDataDoubleArrayAsArray(1, "http://www.thebluealliance.com/api/v2/event/2015" + comps2015.get(i) + "/rankings?X-TBA-App-Id=frc2706:mergemanager:v01/");
+                ArrayList<String> test = getBlueAllianceDataDoubleArrayAsArray(1, "https://www.thebluealliance.com/api/v2/event/2015" + comps2015.get(i) + "/rankings?X-TBA-App-Id=frc2706:mergemanager:v01/");
                 for (int p = 0; p < test.size(); p++) {
                     if (test.get(p).equals(Integer.toString(teamNumber))) { // Or use equals() if it actually returns an Object.
                         // Found at index i. Break or return if necessary.
@@ -167,10 +212,10 @@ public class BlueAllianceUtils {
                 }
             }
 
-            ArrayList<String> comps2014 = getBlueAllianceDataArrayAsArray("event_code", "http://www.thebluealliance.com/api/v2/team/frc" + teamNumber + "/2014/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
-            ArrayList<String> compsName2014 = getBlueAllianceDataArrayAsArray("name", "http://www.thebluealliance.com/api/v2/team/frc" + teamNumber + "/2014/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
+            ArrayList<String> comps2014 = getBlueAllianceDataArrayAsArray("event_code", "https://www.thebluealliance.com/api/v2/team/frc" + teamNumber + "/2014/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
+            ArrayList<String> compsName2014 = getBlueAllianceDataArrayAsArray("name", "https://www.thebluealliance.com/api/v2/team/frc" + teamNumber + "/2014/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
             for (int i = 0; i < comps2014.size(); i++) {
-                ArrayList<String> test = getBlueAllianceDataDoubleArrayAsArray(1, "http://www.thebluealliance.com/api/v2/event/2014" + comps2014.get(i) + "/rankings?X-TBA-App-Id=frc2706:mergemanager:v01/");
+                ArrayList<String> test = getBlueAllianceDataDoubleArrayAsArray(1, "https://www.thebluealliance.com/api/v2/event/2014" + comps2014.get(i) + "/rankings?X-TBA-App-Id=frc2706:mergemanager:v01/");
                 for (int p = 0; p < test.size(); p++) {
 
                     if (test.get(p).equals(Integer.toString(teamNumber))) { // Or use equals() if it actually returns an Object.
@@ -189,10 +234,10 @@ public class BlueAllianceUtils {
 
             }
 
-            ArrayList<String> comps2013 = getBlueAllianceDataArrayAsArray("event_code", "http://www.thebluealliance.com/api/v2/team/frc" + teamNumber + "/2013/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
-            ArrayList<String> compsName2013 = getBlueAllianceDataArrayAsArray("name", "http://www.thebluealliance.com/api/v2/team/frc" + teamNumber + "/2013/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
+            ArrayList<String> comps2013 = getBlueAllianceDataArrayAsArray("event_code", "https://www.thebluealliance.com/api/v2/team/frc" + teamNumber + "/2013/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
+            ArrayList<String> compsName2013 = getBlueAllianceDataArrayAsArray("name", "https://www.thebluealliance.com/api/v2/team/frc" + teamNumber + "/2013/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
             for (int i = 0; i < comps2013.size(); i++) {
-                ArrayList<String> test = getBlueAllianceDataDoubleArrayAsArray(1, "http://www.thebluealliance.com/api/v2/event/2013" + comps2013.get(i) + "/rankings?X-TBA-App-Id=frc2706:mergemanager:v01/");
+                ArrayList<String> test = getBlueAllianceDataDoubleArrayAsArray(1, "https://www.thebluealliance.com/api/v2/event/2013" + comps2013.get(i) + "/rankings?X-TBA-App-Id=frc2706:mergemanager:v01/");
                 for (int p = 0; p < test.size(); p++) {
 
 
@@ -290,13 +335,13 @@ public class BlueAllianceUtils {
                 String TBA_event = SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_event), "<Not Set>");
                 String scheduleStr;
                 try {
-                    scheduleStr = readUrl("http://www.thebluealliance.com/api/v2/event/"+TBA_event+"/matches?X-TBA-App-Id=frc2706:mergemanager:v01/");
+                    scheduleStr = readUrl("https://www.thebluealliance.com/api/v2/event/"+TBA_event+"/matches?X-TBA-App-Id=frc2706:mergemanager:v01/");
                 } catch (Exception e) {
-                    Log.e(App.getContext().getResources().getString(R.string.app_name), "Error fetching schedule data from thebluealliance. "+e.getStackTrace());
+                    Log.e(App.getContext().getResources().getString(R.string.app_name), "Error fetching schedule data from thebluealliance. ",e);
                     return;
                 }
 
-                MatchSchedule schedule = new MatchSchedule(scheduleStr);
+                MatchSchedule schedule = MatchSchedule.newFromJsonSchedule(scheduleStr);
 
                 // return data to the requester
                 requester.updateMatchSchedule(schedule);
@@ -304,6 +349,40 @@ public class BlueAllianceUtils {
         }.start();
     }
 
+
+    public static void fetchTeamsRegisteredAtEvent(final DataRequester requester) {
+
+        // check if we have internet connectivity
+        ConnectivityManager cm = (ConnectivityManager) App.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        if (activeNetwork == null) { // not connected to the internet
+            return;
+        }
+
+        new Thread()
+        {
+            public void run() {
+                SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(App.getContext());
+                String TBA_event = SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_event), "<Not Set>");
+                String teamsListStr;
+                try {
+                    teamsListStr = readUrl("https://www.thebluealliance.com/api/v2/event/"+TBA_event+"/teams?X-TBA-App-Id=frc2706:mergemanager:v01/");
+
+
+                } catch (Exception e) {
+                    Log.e(App.getContext().getResources().getString(R.string.app_name), "Error fetching schedule data from thebluealliance. ",e);
+                    return;
+                }
+
+                MatchSchedule schedule = new MatchSchedule();
+                schedule.addToListOfTeamsAtEvent(teamsListStr);
+
+                // return data to the requester
+                requester.updateMatchSchedule(schedule);
+            }
+        }.start();
+
+    }
 
     /**
      * Fetches Blue Alliance data for all teams who are registered for a particular event and saves the data in
@@ -320,7 +399,7 @@ public class BlueAllianceUtils {
         }
 
         //Get all teams at event
-        final ArrayList<String> downloadedCompArray = getBlueAllianceDataArrayAsArray("team_number", "http://www.thebluealliance.com/api/v2/event/" + year + eventName + "/teams?X-TBA-App-Id=frc2706:mergemanager:v01/");
+        final ArrayList<String> downloadedCompArray = getBlueAllianceDataArrayAsArray("team_number", "https://www.thebluealliance.com/api/v2/event/" + year + eventName + "/teams?X-TBA-App-Id=frc2706:mergemanager:v01/");
 
         for (
             //For each team
@@ -337,22 +416,17 @@ public class BlueAllianceUtils {
             boolean looped = false;
             String joe = downloadedCompArray.get(o);
 
-            //Get their nickname
-            String downloadedNickname = getBlueAllianceData("nickname", "http://www.thebluealliance.com/api/v2/team/frc" + joe + "?X-TBA-App-Id=frc2706:mergemanager:v01/");
-            // [Mike] ^^^ This variable is never used, that means it's doing a slow internet call that we never use...??
-            // We should either save and display that, or get rid of it altogether.
-
             //Get Competitions they went to
-            ArrayList<String> comps2015 = getBlueAllianceDataArrayAsArray("event_code", "http://www.thebluealliance.com/api/v2/team/frc" + joe + "/" + dataYear + "/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
+            ArrayList<String> comps2015 = getBlueAllianceDataArrayAsArray("event_code", "https://www.thebluealliance.com/api/v2/team/frc" + joe + "/" + dataYear + "/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
 
             //Get Names of Competitions they went to
-            ArrayList<String> compsName2015 = getBlueAllianceDataArrayAsArray("name", "http://www.thebluealliance.com/api/v2/team/frc" + joe + "/" + dataYear + "/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
+            ArrayList<String> compsName2015 = getBlueAllianceDataArrayAsArray("name", "https://www.thebluealliance.com/api/v2/team/frc" + joe + "/" + dataYear + "/events?X-TBA-App-Id=frc2706:mergemanager:v01/");
 
             for (int i = 0; i < comps2015.size(); i++) {
                 //For each competition
 
                 //Get their ranking
-                ArrayList<String> test = getBlueAllianceDataDoubleArrayAsArray(1, "http://www.thebluealliance.com/api/v2/event/" + dataYear + comps2015.get(i) + "/rankings?X-TBA-App-Id=frc2706:mergemanager:v01/");
+                ArrayList<String> test = getBlueAllianceDataDoubleArrayAsArray(1, "https://www.thebluealliance.com/api/v2/event/" + dataYear + comps2015.get(i) + "/rankings?X-TBA-App-Id=frc2706:mergemanager:v01/");
                 for (int p = 0; p < test.size(); p++) {
                     if (test.get(p).equals(Integer.toString(Integer.parseInt(joe)))) {
                         // Found at index i. Break or return if necessary.
@@ -361,7 +435,7 @@ public class BlueAllianceUtils {
                         compAmount -= 1;
                         String combine = dataYear + " "/* //TODO year */ + compsName2015.get(i) + " seeded " + Integer.toString(p) + "/" + compAmount + " " + joe;
 
-                        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(mActivity);
+                        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(App.getContext());
                         SharedPreferences.Editor editor = SP.edit();
                         boolean done = false;
 

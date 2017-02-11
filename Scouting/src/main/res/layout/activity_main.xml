@@ -9,8 +9,7 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimaryDark"/>
+        android:layout_height="wrap_content"/>
 
 
     <TextView
@@ -20,7 +19,7 @@
         android:id="@+id/sync_settings_tv"
         android:textColor="@color/white"
         android:background="@color/Purple2706"
-        android:textSize="@dimen/abc_text_size_medium_material" />
+        android:textSize="@dimen/text_margin" />
 
     <FrameLayout
         android:orientation="vertical"

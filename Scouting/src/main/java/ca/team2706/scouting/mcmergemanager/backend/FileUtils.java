@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.DisplayMetrics;
@@ -34,7 +35,7 @@ import ca.team2706.scouting.mcmergemanager.backend.dataObjects.NoteObject;
 import ca.team2706.scouting.mcmergemanager.backend.dataObjects.RepairTimeObject;
 import ca.team2706.scouting.mcmergemanager.backend.dataObjects.TeamDataObject;
 import ca.team2706.scouting.mcmergemanager.backend.interfaces.PhotoRequester;
-import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.MatchData;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.MatchData;
 
 /**
  * This is a helper class to hold common code for accessing shared scouting data files.
@@ -43,8 +44,6 @@ import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.MatchData;
  * Created by Mike Ounsworth
  */
 public class FileUtils {
-
-    private static Activity mActivity;
 
     public static String sLocalToplevelFilePath;
     public static String sLocalTeamFilePath;
@@ -67,45 +66,46 @@ public class FileUtils {
     }
 
     /**
-     * Constructor
-     *
-     * @param activity This will be used to fetch string constants for file storage and displaying toasts.
-     */
-    public FileUtils(Activity activity) {
-        mActivity = activity;
-
-        checkLocalFileStructure();
+     * private constructor -- this is a static class, it should not be instantiated
+     **/
+    private FileUtils() {
+        // empty
     }
-
 
     /**
      * Checks if we have the permission read / write to the internal USB STORAGE,
      * requesting that permission if we do not have it.
      *
+     * @param activity The activity on which to pop up permission request dialogs. May be null, in
+     *                 which case nothing is done and false is returned.
      * @return whether or not we have the STORAGE permission.
      */
-    public static boolean canWriteToStorage() {
-        if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.READ_EXTERNAL_STORAGE)
+    @Nullable
+    public static boolean checkFileReadWritePermissions(Activity activity) {
+        if (activity == null)
+            return false;
+
+        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(mActivity,
+            ActivityCompat.requestPermissions(activity,
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                     123);
 
             // check if they clicked Deny
-            if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.READ_EXTERNAL_STORAGE)
+            if (ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE)
                     != PackageManager.PERMISSION_GRANTED)
                 return false;
         }
 
 
-        if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(mActivity,
+            ActivityCompat.requestPermissions(activity,
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     123);
 
             // check if they clicked Deny
-            if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            if (ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                     != PackageManager.PERMISSION_GRANTED)
                 return false;
         }
@@ -124,9 +124,13 @@ public class FileUtils {
      *      - event/
      *          - matchScoutingData.csv
      */
-    public void checkLocalFileStructure() {
+    //TODO Update ^^^
+    public static void checkLocalFileStructure(Activity activity) {
+        if (activity == null)
+            return;
+
         // check for STORAGE permission
-        if (!canWriteToStorage())
+        if (!checkFileReadWritePermissions(activity))
             return;
 
         makeDirectory(sLocalToplevelFilePath);
@@ -136,7 +140,7 @@ public class FileUtils {
     }
 
 
-    private void makeDirectory(String directoryName) {
+    private static void makeDirectory(String directoryName) {
 
         Log.d(App.getContext().getResources().getString(R.string.app_name), "Making directory: " + directoryName);
 
@@ -150,10 +154,6 @@ public class FileUtils {
         }
     }
 
-    public void appendToMatchDataFile() {
-        //TODO #76
-    }
-
     /**
      * Take one match of data and stick it at the end of the match data file.
      *
@@ -163,7 +163,7 @@ public class FileUtils {
      * Or, in printf / format strings:
      * "%d,%d,%b,%b,{%d;...},{{%d:%d:%.2f:%d};...},{%d;...},{{%d:%d:%.2f:%d};...},%,2f,{{%d;%,2f}:...},{{%.2f;%d}:...},%s,%b,%d"
      */
-    public void appendToMatchDataFile(MatchData.Match match) {
+    public static void appendToMatchDataFile(MatchData.Match match) {
 
         //TODO: #76
         //TODO: Redo this to write the file in JSON format
@@ -220,12 +220,12 @@ public class FileUtils {
      * Or, in printf / format strings:
      * "%d,%d,%b,%b,{%d;...},{{%d:%d:%.2f:%d};...},{%d;...},{{%d:%d:%.2f:%d};...},%,2f,{{%d;%,2f}:...},{{%.2f;%d}:...},%s,%b,%d"
      */
-    public MatchData loadMatchDataFile() {
+    public static MatchData loadMatchDataFile() {
         return loadMatchDataFile(FileType.SYNCHED);
     }
 
 
-    public MatchData loadMatchDataFile(FileType fileType) {
+    public static MatchData loadMatchDataFile(FileType fileType) {
 
         //TODO: #76
         //TODO: Redo this to write the file in JSON format
@@ -287,7 +287,7 @@ public class FileUtils {
      * The intention of Notes is for the drive team to be able to read them quickly.
      * They should be short and fit on one line, so they will be truncated to 80 characters.
      */
-    public void addNote(int teamNumber, String note) {
+    public static void addNote(int teamNumber, String note) {
         // TODO #41
     }
 
@@ -298,14 +298,14 @@ public class FileUtils {
      * @return All the notes for this team concatenated into a single string, with each note beginning with a bullet "-",
      * and ending with a newline (except for the last one).
      */
-    public String getNotesForTeam(int teamNumber) {
+    public static String getNotesForTeam(int teamNumber) {
         // TODO #41
 
         return "";
     }
 
 
-    public void appendToTeamDataFile(TeamDataObject teamDataObject) {
+    public static void appendToTeamDataFile(TeamDataObject teamDataObject) {
         // TODO #90
 
         String outFileName = sLocalEventFilePath +"/"+ App.getContext().getResources().getString(R.string.teamDataFileName);
@@ -338,30 +338,17 @@ public class FileUtils {
         }
     }
 
-
-    /**
-     * Clears the file containing unsynched Team Data.
-     * Call this after a successful sync with the db server.
-
-     * @return whether or not the delete was successful.
-     */
-    public boolean clearUnsyncedTeamDataFile() {
-        File file = new File( App.getContext().getResources().getString(R.string.teamDataFileNameUNSYNCHED));
-        return file.delete();
-    }
-    
-
     /**
      * Load data from the teamDataFile.
      */
-    public List<TeamDataObject> loadTeamDataFile() {
+    public static List<TeamDataObject> loadTeamDataFile() {
         return loadTeamDataFile(FileType.SYNCHED);
     }
 
         /**
          * Load data from the teamDataFile.
          */
-    public List<TeamDataObject> loadTeamDataFile(FileType fileType) {
+    public static List<TeamDataObject> loadTeamDataFile(FileType fileType) {
         // TODO #90
 
         List<TeamDataObject> teamDataObjects = new ArrayList<>();
@@ -446,7 +433,7 @@ public class FileUtils {
      * @param teamNumber
      * @return Can return NULL if we do not have permission to write to STORAGE.
      */
-    public Uri getNameForNewPhoto(int teamNumber) {
+    public static Uri getNameForNewPhoto(int teamNumber) {
         // check if a photo folder exists for this team, and create it if it does not.
         String dir = sLocalTeamPhotosFilePath + "/" + teamNumber + "/";
         File file = new File(dir);
@@ -464,7 +451,7 @@ public class FileUtils {
     }
 
 
-    public String getTeamPhotoPath(int teamNumber) {
+    public static String getTeamPhotoPath(int teamNumber) {
         return sLocalTeamPhotosFilePath + "/" + teamNumber;
     }
 
@@ -484,10 +471,7 @@ public class FileUtils {
      * @return It will call requester.updatePhotos(Bitmap[]) with an array of Bitmaps containing all
      * photos for that team, or a zero-length array if no photos were found for that team.
      */
-    public void getTeamPhotos(int teamNumber, PhotoRequester requester) {
-        // check for STORAGE permission
-        if (!canWriteToStorage())
-            return;
+    public static void getTeamPhotos(int teamNumber, PhotoRequester requester) {
 
         /* First, return the requester any photos we have on the local drive */
 

@@ -11,6 +11,6 @@
         android:id="@+id/action_search"
         android:title="picture"
         android:orderInCategory="100"
-        android:icon="@drawable/icon"
+        android:icon="@drawable/merge_icon"
         app:showAsAction="ifRoom" />
 </menu>

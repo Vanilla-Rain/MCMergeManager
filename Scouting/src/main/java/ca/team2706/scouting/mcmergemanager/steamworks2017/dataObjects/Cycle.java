@@ -1,7 +1,9 @@
 package ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects;
 
+import java.io.Serializable;
+
 // For feeding the CycleDisplay window
-public class Cycle{
+public class Cycle implements Serializable{
     public enum CycleType {
         GEAR, HIGH_GOAL, LOW_GOAL, CLIMB, DEFENSE;
     }
