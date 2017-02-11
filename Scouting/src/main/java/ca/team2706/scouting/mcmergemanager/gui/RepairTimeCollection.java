@@ -73,14 +73,12 @@ public class RepairTimeCollection extends AppCompatActivity {
 
     public void onSubmitClicked(View view) {
 
-        RepairTimeObject[] repairObjects = generateRepairTimeObjects();
-
-        // TODO: Send RepairTimeObjects to... somewhere?
+        generateRepairTimeObjects();
 
 
     }
 
-    public RepairTimeObject[] generateRepairTimeObjects() {
+    public void generateRepairTimeObjects() {
 
         ArrayList<RepairTimeObject> repairObjects = new ArrayList<RepairTimeObject>();
 
@@ -104,7 +102,7 @@ public class RepairTimeCollection extends AppCompatActivity {
         }
 
         for(RepairTimeObject repairObject: repairObjects) {
-            FileUtils.appendToMatchDataFile(repairObject);
+            //FileUtils.appendToMatchDataFile(repairObject);
         }
 
     }

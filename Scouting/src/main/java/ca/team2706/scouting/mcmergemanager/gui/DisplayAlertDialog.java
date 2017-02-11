@@ -14,14 +14,15 @@ import ca.team2706.scouting.mcmergemanager.R;
 
 // TODO: Should this be removed as it has references
 public class DisplayAlertDialog {
+    public static int inputType;
+    public static boolean accepted = false;
+    public static String inputResult;
     public Context launchActivity;
     public String title;
     public String inputHint;
-    public static int inputType;
-    public  static boolean accepted = false;
-    public  static String inputResult;
     public View edit;
-public EditText editText;
+    public EditText editText;
+
     // INPUT TYPE: 0 = STRING, 1 = NUMBERS, 2 = PASSWORD note: currently busted lol
     public DisplayAlertDialog(String title, String inputHint, int inputType, Context launchActivity) {
         this.title = title;
@@ -36,19 +37,21 @@ public EditText editText;
         LayoutInflater inflater = activity.getLayoutInflater();
         View alertLayout = inflater.inflate(R.layout.layout_custom_dialog, null);
         AlertDialog.Builder alert = new AlertDialog.Builder(launchActivity);
-Log.e("this far", "so close");
+
         alert.setTitle(title);
         alert.setView(alertLayout);
         alert.setCancelable(false);
         //this stuff gets the edittext from the view and sets the hint and the inputtype
-      edit =  alertLayout.findViewById(R.id.inputHint);
-        if( edit instanceof EditText) {
-        editText = (EditText) edit;
+        edit = alertLayout.findViewById(R.id.inputHint);
+        if (edit instanceof EditText) {
+            editText = (EditText) edit;
             editText.setHint(inputHint);
             Log.d("inputType", Integer.toString(inputType));
             switch (inputType) {
-                case 0:   return;
-                case 1: editText.setInputType(InputType.TYPE_CLASS_NUMBER);
+                case 0:
+                    return;
+                case 1:
+                    editText.setInputType(InputType.TYPE_CLASS_NUMBER);
                     Log.d("kk", "here");
 
             }
@@ -71,20 +74,18 @@ Log.e("this far", "so close");
         alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 
 
-
-
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Log.d("boo", "boo");
                         accepted = true;
-inputResult = editText.getText().toString();
+                        inputResult = editText.getText().toString();
                     }
                 }
 
         );
-            AlertDialog dialog = alert.create();
-            dialog.show();
-        }
-
+        AlertDialog dialog = alert.create();
+        dialog.show();
     }
+
+}
 

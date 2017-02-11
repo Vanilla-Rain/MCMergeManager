@@ -100,8 +100,7 @@ public class PostGameActivity extends AppCompatActivity {
 
         // SAVING STUFF
         MatchData.Match match = new MatchData.Match(p, a, t, post);
-        FileUtils fileUtils = new FileUtils(this);
-        fileUtils.appendToMatchDataFile(match);
+//        FileUtils.appendToMatchDataFile(match);
 
         startActivity(intent);
     }
