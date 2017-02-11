@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ca.team2706.scouting.mcmergemanager.R;
+import ca.team2706.scouting.mcmergemanager.backend.FileUtils;
 import ca.team2706.scouting.mcmergemanager.backend.dataObjects.MatchSchedule;
 import ca.team2706.scouting.mcmergemanager.backend.dataObjects.RepairTimeObject;
 
@@ -102,12 +103,9 @@ public class RepairTimeCollection extends AppCompatActivity {
 
         }
 
-        RepairTimeObject[] out = new RepairTimeObject[repairObjects.size()];
-        for(int i = 0; i < repairObjects.size(); i++) {
-            out[i] = repairObjects.get(i);
+        for(RepairTimeObject repairObject: repairObjects) {
+            FileUtils.appendToMatchDataFile(repairObject);
         }
-
-        return out;
 
     }
 
