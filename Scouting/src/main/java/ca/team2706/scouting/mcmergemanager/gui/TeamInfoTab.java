@@ -27,7 +27,6 @@ import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.TeamStatsR
  * Created by cnnr2 on 2015-10-31.
  */
 public class TeamInfoTab extends Fragment {
-//                        implements View.OnKeyListener {
 
     private static boolean accepted = false;
     private static boolean canceled = false;
@@ -54,7 +53,17 @@ public class TeamInfoTab extends Fragment {
 
         mAutoCompleteTextView = (AutoCompleteTextView) mView.findViewById(R.id.teamNumberAutoCompleteTV);
 
-//        mAutoCompleteTextView.setOnKeyListener(this);
+        // Bind the enter key action for the EditText
+        mAutoCompleteTextView.setOnKeyListener(new View.OnKeyListener() {
+            public boolean onKey(View view, int keyCode, KeyEvent keyevent) {
+                //If the keyevent is a key-down event on the "enter" button
+                if ((keyevent.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    launchTeamInfoFragment();
+                    return true;
+                }
+                return false;
+            }
+        });
 
         return mView;
     }
@@ -69,6 +78,10 @@ public class TeamInfoTab extends Fragment {
 
         mFragmentManager = getFragmentManager();
 
+        rebuildAutocompleteList();
+    }
+
+    void rebuildAutocompleteList() {
         // Build the autocomplete list
         List<String> teamsAtEventList = MainActivity.sMatchSchedule.getTeamNumsAtEvent();
         String[] autocompleteList = new String[teamsAtEventList.size()];
@@ -90,43 +103,7 @@ public class TeamInfoTab extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View view) {
-                // load the team stats fragment
-
-                // If we're being restored from a previous state,
-                // then we don't need to do anything and should return or else
-                // we could end up with overlapping fragments.
-                if(mSavedInstanceState!=null) {
-                    return;
-                }
-
-                int teamNumber;
-                try {
-                    teamNumber = Integer.valueOf(mAutoCompleteTextView.getText().toString());
-                }
-
-                catch(NumberFormatException e) {
-                    // they didn't type in a valid number. Too bad for them, we're not going any further!
-                    return;
-                }
-
-                // Create a new Fragment to be placed in the activity layout
-                mTeamInfoFragment=new TeamInfoFragment();
-
-                Bundle args = new Bundle();
-                args.putInt("teamNumber",teamNumber);
-                StatsEngine statsEngine = new StatsEngine(MainActivity.sMatchData, MainActivity.sMatchSchedule);
-
-                TeamStatsReport teamStatsReport = statsEngine.getTeamStatsReport(teamNumber);  // just so I can look at it in bebug
-                args.putSerializable( getString(R.string.EXTRA_TEAM_STATS_REPORT),teamStatsReport );
-                mTeamInfoFragment.setArguments(args);
-
-                // Add the fragment to the 'fragment_container' FrameLayout
-//                getActivity()
-//                .getFragmentManager()
-                mFragmentManager
-                .beginTransaction()
-                .replace(R.id.fragment_container, mTeamInfoFragment)
-                .commit();
+                launchTeamInfoFragment();
             }
         });
 
@@ -193,10 +170,6 @@ public class TeamInfoTab extends Fragment {
 
                 }
 
-
-                Log.d("editing hint", "you got that");
-
-
                 alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 
                     @Override
@@ -233,7 +206,44 @@ public class TeamInfoTab extends Fragment {
         });
 
         return true;
-
     }
 
+
+    private void launchTeamInfoFragment() {
+        // load the team stats fragment
+
+        // If we're being restored from a previous state,
+        // then we don't need to do anything and should return or else
+        // we could end up with overlapping fragments.
+        if(mSavedInstanceState!=null) {
+            return;
+        }
+
+        int teamNumber;
+        try {
+            teamNumber = Integer.valueOf(mAutoCompleteTextView.getText().toString());
+        }
+
+        catch(NumberFormatException e) {
+            // they didn't type in a valid number. Too bad for them, we're not going any further!
+            return;
+        }
+
+        // Create a new Fragment to be placed in the activity layout
+        mTeamInfoFragment=new TeamInfoFragment();
+
+        Bundle args = new Bundle();
+        args.putInt("teamNumber",teamNumber);
+        StatsEngine statsEngine = new StatsEngine(MainActivity.sMatchData, MainActivity.sMatchSchedule);
+
+        TeamStatsReport teamStatsReport = statsEngine.getTeamStatsReport(teamNumber);  // just so I can look at it in bebug
+        args.putSerializable( getString(R.string.EXTRA_TEAM_STATS_REPORT),teamStatsReport );
+        mTeamInfoFragment.setArguments(args);
+
+        // Add the fragment to the 'fragment_container' FrameLayout
+        mFragmentManager
+                .beginTransaction()
+                .replace(R.id.fragment_container, mTeamInfoFragment)
+                .commit();
+    }
 }

@@ -229,6 +229,10 @@ public class MainActivity extends AppCompatActivity
         // make sure we preserve the list of teams registered at this event.
         matchSchedule.addToListOfTeamsAtEvent(sMatchSchedule.getTeamNumsAtEvent());
         sMatchSchedule = matchSchedule;
+
+        //TODO Notify the TeamInfoTab that the list of teams at this event has updated.
+        //TODO I actually have no idea how to do this.
+
     }
 
     /**
