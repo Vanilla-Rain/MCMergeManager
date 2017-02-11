@@ -72,6 +72,7 @@ public Context context;
         updateDataSyncLabel();
 
         FileUtils.checkFileReadWritePermissions(this);
+        FileUtils.checkLocalFileStructure(this);
     }
 
     @Override
