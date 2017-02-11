@@ -33,7 +33,6 @@ public class AutoScouting extends AppCompatActivity {
 //    public ArrayList<Integer> defensesBreached;
     public ArrayList<BallShot> ballsShot;
 
-    Button submitButton;
     SeekBar simpleSeekBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

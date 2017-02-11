@@ -43,6 +43,7 @@ import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.MatchSched
 @TargetApi(21)
 public class MainActivity extends AppCompatActivity
                 implements DataRequester, PreMatchReportFragment.OnFragmentInteractionListener {
+public Context context;
 
     public int teamColour = Color.rgb(102, 51, 153);
 
@@ -67,6 +68,8 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.activity_main);
         setNavDrawer();
+
+        context = this;
 
         globalIntent = new Intent();
 
