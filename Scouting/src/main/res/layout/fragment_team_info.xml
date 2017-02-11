@@ -37,13 +37,26 @@
             android:id="@+id/statsTV"
             android:layout_gravity="center_horizontal" />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Full Stats"
-            android:id="@+id/fullStatsBtn"
-            android:layout_gravity="right"
-            android:enabled="false" />
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="right">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="View Cycles"
+                android:id="@+id/viewCyclesBtn"
+                android:layout_gravity="right" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Full Stats"
+                android:id="@+id/fullStatsBtn"
+                android:layout_gravity="right" />
+        </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"

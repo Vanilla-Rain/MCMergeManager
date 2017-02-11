@@ -2,8 +2,10 @@ package ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
-import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.*;
+import ca.team2706.scouting.mcmergemanager.backend.dataObjects.MatchSchedule;
+import ca.team2706.scouting.mcmergemanager.backend.dataObjects.RepairTimeObject;
 
 public class TeamStatsReport implements Serializable {
 
@@ -19,6 +21,11 @@ public class TeamStatsReport implements Serializable {
 
     public double scheduleToughness;    // Whether, on average, their opponents were stronger than their allies, or the other way around.
     // ie.: Are they seeded artificially high or artificially low by schedule luck?
+
+    public RepairTimeObject[] repairTimeObjects;
+    public double repair_time_percent;
+    public double working_time_percent;
+    // To get the total number of data points, use repairTimeObjects.length
 
     public boolean badManners; // TODO: I have no idea how we're capturing this
 
@@ -44,9 +51,9 @@ public class TeamStatsReport implements Serializable {
 
 
     // TODO -- we'll come back to the pin map later
-//        public List<BallShot> missedTeleopShots;         // to draw pins on map
-//        public List<BallShot> successfulTeleopHighShots; // to draw pins on map
-//        public List<BallShot> successfulTeleopLowShots;  // to draw pins on map
+        public List<BallShot> missedTeleopShots;         // to draw pins on map
+        public List<BallShot> successfulTeleopHighShots; // to draw pins on map
+        public List<BallShot> successfulTeleopLowShots;  // to draw pins on map
 
     // Fuel pickups
     public double teleop_fuelGroundPickups_avgPerMatch;
@@ -61,9 +68,11 @@ public class TeamStatsReport implements Serializable {
     // Fuel scoring
     public double teleop_fuelScoredHigh_avgPerMatch;
     public double teleop_fuelScoredHigh_avgPerCycle;
+    public double teleop_fuelScoredHigh_total;
     public double teleop_fuelMissedHigh_avgPerMatch;
     public double teleop_fuelScoredLow_avgPerMatch;
     public double teleop_fuelScoredLow_avgPerCycle;
+    public double teleop_fuelScoredLow_total;
     public double teleop_fuelMissedLow_avgPerMatch;
 
     public double teleop_fuelHigh_aveCycleTime;
@@ -110,9 +119,9 @@ public class TeamStatsReport implements Serializable {
 
 
     public TeamStatsReport() {
-//            missedTeleopShots = new ArrayList<>();
-//            successfulTeleopHighShots = new ArrayList<>();
-//            successfulTeleopLowShots = new ArrayList<>();
+            missedTeleopShots = new ArrayList<>();
+            successfulTeleopHighShots = new ArrayList<>();
+            successfulTeleopLowShots = new ArrayList<>();
     }
 
 }

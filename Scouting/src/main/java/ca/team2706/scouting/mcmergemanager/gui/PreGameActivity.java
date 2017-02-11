@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import ca.team2706.scouting.mcmergemanager.R;
-import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.MatchSchedule;
+import ca.team2706.scouting.mcmergemanager.backend.dataObjects.MatchSchedule;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.PreGameObject;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.gui.AutoScouting;
 

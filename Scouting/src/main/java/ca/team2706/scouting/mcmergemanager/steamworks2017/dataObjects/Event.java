@@ -1,11 +1,13 @@
 package ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects;
 
+import java.io.Serializable;
+
 /**
  * This is an abstract class to represent any timestamped event during an FRC match.
  *
  * It implements Comparator to allow them to be sorted by timestamp.
  */
-public abstract class Event implements Comparable<Event> {
+public abstract class Event implements Comparable<Event>, Serializable {
     public double timestamp;
 
     public Event(double timestamp) {

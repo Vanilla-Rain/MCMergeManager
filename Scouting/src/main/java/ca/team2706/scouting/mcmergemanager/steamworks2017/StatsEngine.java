@@ -8,6 +8,7 @@ import java.util.Map;
 
 import Jama.Matrix;
 
+import ca.team2706.scouting.mcmergemanager.backend.dataObjects.RepairTimeObject;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.AutoScoutingObject;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.Cycle;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.DefenseEvent;
@@ -16,11 +17,10 @@ import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.FuelPickup
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.FuelShotEvent;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.GearDelivevryEvent;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.GearPickupEvent;
-import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.Match;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.MatchData;
 
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.TeamStatsReport;
-import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.MatchSchedule;
+import ca.team2706.scouting.mcmergemanager.backend.dataObjects.MatchSchedule;
 
 
 public class StatsEngine implements Serializable{
@@ -30,16 +30,30 @@ public class StatsEngine implements Serializable{
 
     private MatchData matchData;
     private MatchSchedule matchSchedule;
+    private RepairTimeObject[] repairTimeObjects;
 
-    /** Contructor **/
+
+    /**
+     * Constructor
+     */
     public StatsEngine(MatchData matchData, MatchSchedule matchSchedule) {
+        this(matchData, matchSchedule, null);
+    }
+
+    /** Contructor
+     *
+     * @param repairTimeObjects May be null
+     **/
+    public StatsEngine(MatchData matchData, MatchSchedule matchSchedule, RepairTimeObject[] repairTimeObjects) {
         this.matchData = matchData;
         this.matchSchedule = matchSchedule;
+        this.repairTimeObjects = repairTimeObjects;
     }
 
     /** This constructor meant more for testing than for actual use **/
     public StatsEngine(MatchSchedule matchSchedule) {
         this.matchSchedule = matchSchedule;
+        this.matchData = new MatchData();
 
         computeOPRs();
     }
@@ -313,7 +327,7 @@ public class StatsEngine implements Serializable{
             throw new IllegalStateException("matchData is null");
 
         // loop over all matches that this team was in
-        for(Match match : teamStatsReport.teamMatchData.matches) {
+        for(MatchData.Match match : teamStatsReport.teamMatchData.matches) {
             AutoScoutingObject autoData = match.autoScoutingObject;
 
             teamStatsReport.auto_numTimesCrossedBaseline += autoData.crossedBaseline ? 1 : 0;
@@ -396,6 +410,25 @@ public class StatsEngine implements Serializable{
 
         teamStatsReport.scheduleToughness = computeScheduleToughness(teamNo);
 
+        // Deal with RepairTimeObjects to see how much of the event teams spent
+        // repairing their robot.
+        if(repairTimeObjects != null) {
+            int repairCount = 0;
+            int workingCount = 0;
+            for (RepairTimeObject repairTimeObject : repairTimeObjects) {
+                switch (repairTimeObject.getRepairStatus()) {
+                    case REPAIRING:
+                        repairCount++;
+                        break;
+                    case WORKING:
+                        workingCount++;
+                        break;
+                }
+            }
+            teamStatsReport.repair_time_percent  = ((double) repairCount) / repairTimeObjects.length;
+            teamStatsReport.working_time_percent = ((double) workingCount) / repairTimeObjects.length;
+        }
+
         // TODO:
         //teamStatsReport.badManners = ?
 
@@ -416,7 +449,7 @@ public class StatsEngine implements Serializable{
 
         int numGearCycles=0;
 
-        for(Match match : teamStatsReport.teamMatchData.matches) {
+        for(MatchData.Match match : teamStatsReport.teamMatchData.matches) {
 
             // Process all the events during this match in a big state machine.
 
@@ -540,6 +573,7 @@ public class StatsEngine implements Serializable{
                     currFuelCycle.endTime = fuelShotEvent.timestamp;
 
                     if (fuelShotEvent.boiler) {  // high
+                        teamStatsReport.teleop_fuelScoredHigh_total += fuelShotEvent.numScored;
                         teamStatsReport.teleop_fuelScoredHigh_avgPerMatch += fuelShotEvent.numScored;
                         teamStatsReport.teleop_fuelScoredHigh_avgPerCycle += fuelShotEvent.numScored;
                         teamStatsReport.teleop_fuelMissedHigh_avgPerMatch += fuelShotEvent.numMissed;
@@ -547,6 +581,7 @@ public class StatsEngine implements Serializable{
                         inFuelHighCycle = true;
                     }
                     else { // low
+                        teamStatsReport.teleop_fuelScoredLow_total += fuelShotEvent.numScored;
                         teamStatsReport.teleop_fuelScoredLow_avgPerMatch += fuelShotEvent.numScored;
                         teamStatsReport.teleop_fuelScoredLow_avgPerCycle += fuelShotEvent.numScored;
                         teamStatsReport.teleop_fuelMissedLow_avgPerMatch += fuelShotEvent.numMissed;

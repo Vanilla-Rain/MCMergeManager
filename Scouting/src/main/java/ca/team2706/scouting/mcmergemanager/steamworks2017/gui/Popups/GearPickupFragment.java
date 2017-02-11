@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import ca.team2706.scouting.mcmergemanager.R;
-import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.GearPickup;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.GearPickupEvent;
 
 /**
  * Created by Merge on 2017-02-11.
