@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -23,14 +24,15 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import ca.team2706.scouting.mcmergemanager.R;
-import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.AutoScoutingObject;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.AutoScoutingObject;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.BallShot;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.PreGameObject;
 
 public class AutoScouting extends AppCompatActivity {
 
+    private AutoScoutingObject autoScoutingObject2017 = new AutoScoutingObject();
     private PreGameObject preGameObject;
-//    public ArrayList<Integer> defensesBreached;
+    public int pointsScored;
     public ArrayList<BallShot> ballsShot;
 
     SeekBar simpleSeekBar;
@@ -55,78 +57,42 @@ public class AutoScouting extends AppCompatActivity {
             public void onStopTrackingTouch(SeekBar seekBar) {
                 TextView tv = (TextView) findViewById(R.id.autoBallScoredTextView);
                 tv.setText(progressChangedValue*5 + " points were scored");
+                pointsScored = progressChangedValue;
             }
         });
 
+
+        autoScoutingObject2017.numFuelScored = pointsScored;
+
+        final CheckBox checkBox = (CheckBox) findViewById(R.id.crossedBaselineCheckBox);
+        if (checkBox.isChecked()) {
+            autoScoutingObject2017.crossedBaseline = true;
+        }
+        else {
+            autoScoutingObject2017.crossedBaseline = false;
+        }
+
+        final CheckBox cb = (CheckBox) findViewById(R.id.startingGearCheckBox);
+        if (cb.isChecked()) {
+
+            autoScoutingObject2017.start_gear = true;
+        }
+        else {
+            autoScoutingObject2017.start_gear = false;
+        }
+
+        final CheckBox checkiestOfBoxes = (CheckBox) findViewById(R.id.startingBallsCheckBox);
+        if (checkiestOfBoxes.isChecked()) {
+            autoScoutingObject2017.crossedBaseline = true;
+        }
+        else {
+            autoScoutingObject2017.crossedBaseline = false;}
     }
 
-
-
-
-    //        final Spinner spinner = (Spinner) findViewById(R.id.defense_spinner);
-//        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-//                R.array.defense_array, android.R.layout.simple_spinner_item);
-//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//
-//        // Apply the adapter to the spinner
-//        ballsShot = new ArrayList<>();
-//        defensesBreached = new ArrayList<Integer>();
-//
-//        spinner.setAdapter(adapter);
-//        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//
-//                if (position != 0)
-//                    defensesBreached.add(position);
-//
-//                spinner.setSelection(0);
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> adapterView) {
-//
-//            }
-//        });
-//
-//        final ImageView imageViewMap = (ImageView) findViewById(R.id.map);
-//        imageViewMap.setOnTouchListener(new View.OnTouchListener() {
-//            public boolean onTouch(View v, MotionEvent event) {
-//                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-//
-//                    // draw a new pin on the map
-//                    RelativeLayout imgHolder = (RelativeLayout) findViewById(R.id.relativeLayoutMap);
-//
-//                    ImageView pointerImageView = new ImageView(AutoScouting.this);
-//                    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(50, 50);
-//                    params.leftMargin = (int) event.getX() + (int) imageViewMap.getX() - 25;
-//                    params.topMargin = (int) event.getY() + (int) imageViewMap.getY() - 25;
-//
-//                    pointerImageView.setImageResource(R.drawable.pinicon);
-//                    pointerImageView.setLayoutParams(params);
-//                    imgHolder.addView(pointerImageView);
-//
-//                    Timer timer = new Timer();
-//                    CheckVar checkVar = new CheckVar();
-//                    checkVar.x = (int)event.getX();
-//                    checkVar.y = (int)event.getY();
-//                    checkVar.t = new TeleopTimerAlertDialog("Shooting...", AutoScouting.this, "High Goal", BallShot.HIGH_GOAL, "Low Goal", BallShot.LOW_GOAL, "Cancel", BallShot.MISS);
-//                    timer.schedule(checkVar, 0, 1000);
-//                }
-//                return true;
-//            }
-//
-//
-//        });
-//
-//        Intent thisIntent = getIntent();
-//        preGameObject  = (PreGameObject)thisIntent.getSerializableExtra("PreGameData");
-//    }
     public void toTeleop(View view) {
         Intent intent = new Intent(this, TeleopScouting.class);
 
         intent.putExtra("PreGameData", preGameObject);
- //       intent.putExtra("AutoScoutingData", new AutoScoutingObject(ballsShot, cb.isChecked(), defensesBreached, cb2.isChecked()));
 
         startActivity(intent);
     }
