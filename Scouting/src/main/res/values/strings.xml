@@ -16,15 +16,10 @@
     <string name="title_activity_team_stats">Team Stats Page</string>
     <string name="title_activity_cycles_display">Cycles Display</string>
     <string name="title_activity_repair_time_collection">RepairTimeCollection</string>
-<<<<<<< HEAD
     <string name="matchScoutingDataFileName">matchScoutingData.json</string>
     <string name="matchScoutingDataFileNameUNSYNCHED">matchScoutingData_UNSYNCHED.json</string>
     <string name="teamDataFileName">teamData.json</string>
     <string name="teamDataFileNameUNSYNCHED">teamData_UNSYNCHED.json</string>
-=======
-    <string name="matchScoutingDataFileName">matchScoutingData.csv</string>
-    <string name="matchScoutingDataFileNameUNSYNCHED">matchScoutingData_UNSYNCHED.csv</string>
->>>>>>> 3aa00a579ef5552326d6d7d084d2f90bb29278a8
     <string-array name="year_array">
         <item>2017</item>
         <item>2016</item>
@@ -72,9 +67,5 @@
     <string name="title_activity_new_auto_scouting">NewAutoScouting</string>
     <string name="title_activity_pre_game">PreGameActivity</string>
 
-<<<<<<< HEAD
 
 </resources>
-=======
-</resources>
->>>>>>> 3aa00a579ef5552326d6d7d084d2f90bb29278a8

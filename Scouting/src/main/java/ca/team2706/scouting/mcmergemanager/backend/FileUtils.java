@@ -17,7 +17,6 @@ import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-<<<<<<< HEAD
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -32,8 +31,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-=======
->>>>>>> 3aa00a579ef5552326d6d7d084d2f90bb29278a8
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
