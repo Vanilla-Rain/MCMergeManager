@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+<<<<<<< HEAD
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -46,6 +47,8 @@ import java.util.Date;
 import java.util.List;
 
 import ca.team2706.scouting.mcmergemanager.R;
+import ca.team2706.scouting.mcmergemanager.backend.dataObjects.NoteObject;
+import ca.team2706.scouting.mcmergemanager.backend.dataObjects.RepairTimeObject;
 import ca.team2706.scouting.mcmergemanager.backend.dataObjects.TeamDataObject;
 import ca.team2706.scouting.mcmergemanager.backend.interfaces.PhotoRequester;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.MatchData;
@@ -74,11 +77,9 @@ public class FileUtils {
         sLocalTeamPhotosFilePath = sLocalTeamFilePath + "/" + "Team Photos";
     }
 
-
     public enum FileType {
-        SYNCED, UNSYNCHED;
+        SYNCHED, UNSYNCHED;
     }
-
 
     /**
      * private constructor -- this is a static class, it should not be instantiated
@@ -180,9 +181,13 @@ public class FileUtils {
      */
     public static void appendToMatchDataFile(MatchData.Match match) {
 
+        //TODO: #76
+        //TODO: Redo this to write the file in JSON format
+
+
         String outFileName = sLocalEventFilePath +"/"+ App.getContext().getResources().getString(R.string.matchScoutingDataFileName);
 
-        Log.d(App.getContext().getResources().getString(R.string.app_name), "Saving data to file: "+outFileName);
+        Log.d(App.getContext().getResources().getString(R.string.app_name), "Saving match data to file: "+outFileName);
 
         File outfile = new File(outFileName);
         try {
@@ -197,7 +202,7 @@ public class FileUtils {
 
         outFileName = sLocalEventFilePath +"/"+ App.getContext().getResources().getString(R.string.matchScoutingDataFileNameUNSYNCHED);
 
-        Log.d(App.getContext().getResources().getString(R.string.app_name), "Saving data to file: "+outFileName);
+        Log.d(App.getContext().getResources().getString(R.string.app_name), "Saving match data to file: "+outFileName);
 
         outfile = new File(outFileName);
         try {
@@ -212,6 +217,17 @@ public class FileUtils {
 
 
     /**
+     * Clears the file containing unsynched Team Data.
+     * Call this after a successful sync with the db server.
+
+     * @return whether or not the delete was successful.
+     */
+    public boolean clearUnsyncedMatchScoutingDataFile() {
+        File file = new File( App.getContext().getResources().getString(R.string.matchScoutingDataFileNameUNSYNCHED));
+        return file.delete();
+    }
+
+    /**
      * Load the entire file of match data into Objects.
      *
      * Data format:
@@ -221,12 +237,30 @@ public class FileUtils {
      * "%d,%d,%b,%b,{%d;...},{{%d:%d:%.2f:%d};...},{%d;...},{{%d:%d:%.2f:%d};...},%,2f,{{%d;%,2f}:...},{{%.2f;%d}:...},%s,%b,%d"
      */
     public static MatchData loadMatchDataFile() {
+        return loadMatchDataFile(FileType.SYNCHED);
+    }
+
+
+    public static MatchData loadMatchDataFile(FileType fileType) {
+
+        //TODO: #76
+        //TODO: Redo this to write the file in JSON format
+
 
         MatchData matchData = new MatchData();
         List<String> matchStrs = new ArrayList<>();
 
         // read the file
-        String inFileName = sLocalEventFilePath +"/"+ App.getContext().getResources().getString(R.string.matchScoutingDataFileName);
+        String inFileName;
+        switch (fileType) {
+            case UNSYNCHED:
+                inFileName = sLocalEventFilePath + "/" + App.getContext().getResources().getString(R.string.matchScoutingDataFileNameUNSYNCHED);
+                break;
+            case SYNCHED:
+            default:
+                inFileName = sLocalEventFilePath + "/" + App.getContext().getResources().getString(R.string.matchScoutingDataFileName);
+        }
+
         try {
             BufferedReader br = new BufferedReader(new FileReader(inFileName));
             String line = br.readLine();
@@ -249,7 +283,6 @@ public class FileUtils {
 
             try {
                 MatchData.Match match = new MatchData.Match(matchStr);
-//                MatchData.Match match = new MatchData.Match(matchStr);
                 matchData.addMatch(match);
             } catch (Exception e) {
                 Log.e(App.getContext().getResources().getString(R.string.app_name), "loadMatchDataFile:: "+e.toString());
@@ -271,7 +304,7 @@ public class FileUtils {
      * They should be short and fit on one line, so they will be truncated to 80 characters.
      */
     public static void addNote(int teamNumber, String note) {
-        // TODO
+        // TODO #41
     }
 
     /**
@@ -282,7 +315,7 @@ public class FileUtils {
      * and ending with a newline (except for the last one).
      */
     public static String getNotesForTeam(int teamNumber) {
-        // TODO
+        // TODO #41
 
         return "";
     }
@@ -290,27 +323,120 @@ public class FileUtils {
 
     public static void appendToTeamDataFile(TeamDataObject teamDataObject) {
         // TODO #90
+
+        String outFileName = sLocalEventFilePath +"/"+ App.getContext().getResources().getString(R.string.teamDataFileName);
+
+        Log.d(App.getContext().getResources().getString(R.string.app_name), "Saving team data to file: "+outFileName);
+
+        File outfile = new File(outFileName);
+        try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter(outfile, true));
+            bw.append( teamDataObject.toString() );
+            bw.flush();
+            bw.close();
+        } catch (IOException e) {
+
+        }
+
+
+        outFileName = sLocalEventFilePath +"/"+ App.getContext().getResources().getString(R.string.teamDataFileNameUNSYNCHED);
+
+        Log.d(App.getContext().getResources().getString(R.string.app_name), "Saving team data to file: "+outFileName);
+
+        outfile = new File(outFileName);
+        try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter(outfile, true));
+            bw.append( teamDataObject.toString() );
+            bw.flush();
+            bw.close();
+        } catch (IOException e) {
+
+        }
     }
 
     /**
      * Load data from the teamDataFile.
      */
-    public static TeamDataObject[] loadTeamDataFile() {
-        // TODO #90
-
-        return new TeamDataObject[0];
+    public static List<TeamDataObject> loadTeamDataFile() {
+        return loadTeamDataFile(FileType.SYNCHED);
     }
 
-    public static TeamDataObject[] loadTeamDataForTeam(int teamNo) {
+        /**
+         * Load data from the teamDataFile.
+         */
+    public static List<TeamDataObject> loadTeamDataFile(FileType fileType) {
         // TODO #90
 
-        return new TeamDataObject[0];
+        List<TeamDataObject> teamDataObjects = new ArrayList<>();
+
+        // read the file
+        String inFileName;
+        switch (fileType) {
+            case UNSYNCHED:
+                inFileName = sLocalEventFilePath + "/" + App.getContext().getResources().getString(R.string.teamDataFileNameUNSYNCHED);
+                break;
+            case SYNCHED:
+            default:
+                inFileName = sLocalEventFilePath + "/" + App.getContext().getResources().getString(R.string.teamDataFileName);
+        }
+
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(inFileName));
+            String line = br.readLine();
+
+            while (line != null) {
+
+                JSONObject jsonObject;
+                try {
+                    jsonObject = new JSONObject(line);
+                } catch (JSONException e) {
+                    continue;
+                }
+
+                TeamDataObject teamDataObject;
+                TeamDataObject.TeamDataType teamDataType = TeamDataObject.TeamDataType.valueOf(jsonObject.getString(TeamDataObject.JSONKEY_TYPE));
+                switch (teamDataType) {
+                    case NOTE:
+                        teamDataObjects.add(new NoteObject(jsonObject));
+                        break;
+
+                    case REPAIR_TIME:
+                        teamDataObjects.add(new RepairTimeObject(jsonObject));
+                        break;
+                }
+
+                line = br.readLine();
+            }
+            br.close();
+        } catch (Exception e) {
+            Log.e(App.getContext().getResources().getString(R.string.app_name), "loadMatchDataFile:: " + e.toString());
+            return null;
+        }
+
+        return teamDataObjects;
     }
 
-    public static TeamDataObject[] filterTeamDataByTeam(int teamNo, TeamDataObject teamDataObject) {
+
+    /**
+     * This will reload the entire TeamDataFile from disk. If you already have a List<TeamDataObject>, then
+     * it would be more efficient to pass it to filterTeamDataByTeam().
+     */
+    public List<TeamDataObject> loadTeamDataForTeam(int teamNo) {
         // TODO #90
 
-        return new TeamDataObject[0];
+        return filterTeamDataByTeam(teamNo, loadTeamDataFile());
+    }
+
+    public static List<TeamDataObject> filterTeamDataByTeam(int teamNo, List<TeamDataObject> teamDataObjects) {
+        // TODO #90
+
+        List<TeamDataObject> toRet = new ArrayList<>();
+
+        for(TeamDataObject teamDataObject : teamDataObjects)
+            if (teamDataObject.getTeamNo() == teamNo)
+                toRet.add(teamDataObject);
+
+        return toRet;
     }
 
 
@@ -471,7 +597,7 @@ public class FileUtils {
     }
 
     private static void saveJsonFile(JSONArray jsonArray) {
-        if(!clearTeamDataFile(FileType.SYNCED)) {
+        if(!clearTeamDataFile(FileType.SYNCHED)) {
             Log.d("Deleting file failed", "something probably went wrong");
         }
 
@@ -500,7 +626,7 @@ public class FileUtils {
             case UNSYNCHED:
                 file = new File(sLocalEventFilePath + "/" + App.getContext().getResources().getString(R.string.matchScoutingDataFileNameUNSYNCHED));
                 return file.delete();
-            case SYNCED:
+            case SYNCHED:
                 file = new File(sLocalEventFilePath + "/" + App.getContext().getResources().getString(R.string.matchScoutingDataFileName));
                 return file.delete();
         }

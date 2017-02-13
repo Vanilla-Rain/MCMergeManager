@@ -10,11 +10,10 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right"
         android:measureWithLargestChild="false"
         android:weightSum="1">
-
-
 
         <ImageButton
             android:layout_width="55dp"
@@ -31,23 +30,23 @@
             android:layout_weight="1" />
 
         <AutoCompleteTextView
-            android:layout_width="100dp"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:id="@+id/teamNumberAutoCompleteTV"
-            android:hint="Team #"
+            android:id="@+id/searchView"
+            android:queryHint="Team #"
             android:focusable="true"
             android:inputType="number"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center_horizontal" />
+            android:layout_gravity="right"
+            android:gravity="right" />
+
 
         <ImageButton
             android:layout_width="46dp"
             android:layout_height="46dp"
-            android:id="@+id/searchBtn"
-            android:gravity="left"
+            android:id="@+id/team_info_searchBtn"
+            android:gravity="right"
             android:src="@drawable/ic_search"
-            android:background="@android:color/transparent"
-            android:onClick=""/>
+            android:background="@android:color/transparent"/>
     </LinearLayout>
 
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
