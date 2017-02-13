@@ -12,12 +12,14 @@
     <string name="title_activity_auto_scouting2">Auto Scouting2</string>
     <string name="title_activity_post_game">Post Game</string>
     <string name="title_activity_teleop_scouting">Teleop Scouting</string>
-  
+
     <string name="title_activity_team_stats">Team Stats Page</string>
     <string name="title_activity_cycles_display">Cycles Display</string>
     <string name="title_activity_repair_time_collection">RepairTimeCollection</string>
     <string name="matchScoutingDataFileName">matchScoutingData.csv</string>
     <string name="matchScoutingDataFileNameUNSYNCHED">matchScoutingData_UNSYNCHED.csv</string>
+    <string name="teamDataFileName">teamData.json</string>
+    <string name="teamDataFileNameUNSYNCHED">teamData_UNSYNCHED.json</string>
     <string-array name="year_array">
         <item>2017</item>
         <item>2016</item>
@@ -47,13 +49,13 @@
     <string name="about_description">
         "<font size="18"><b>About MC Merge Manager</b></font>"
 
-        "MC Merge Manager is a scouting app for the 2016 FIRST Robotics Competition game &quot;Stronghold&quot;."
+        "MC Merge Manager is a scouting app for the 2017 FIRST Robotics Competition game &quot;Steamworks&quot;."
 
-        "MC Merge Manager is developed and maintained by FRC Team 2706 &quot;Merge Conflict&quot;. This project is open source and can be found at\n\t\t\twww.github.com/FRC2706/MCMergeManager."
+        "MC Merge Manager is developed and maintained by FRC Team 2706 &quot;Merge Conflict&quot;. This project is open source and can be found at\n\t\t\twww.github.com/FRC2706/MCMergeManager.\n\nSend questions to @gmail.com"
 
         "\n\n<font size="16"><b>Syncing Data</b></font>"
 
-        "<b>Team Photos</b> are synced to **somewhere, we haven\'t decided where yet**"
+        "<b>Team Photos</b> are synced to ftp.team2706.ca"
 
         "\n\n<font size="16"><b>Local Data</b></font>"
 
@@ -64,5 +66,4 @@
     <string name="title_activity_new_teleop_scouting">NewTeleopScouting</string>
     <string name="title_activity_new_auto_scouting">NewAutoScouting</string>
     <string name="title_activity_pre_game">PreGameActivity</string>
-
 </resources>

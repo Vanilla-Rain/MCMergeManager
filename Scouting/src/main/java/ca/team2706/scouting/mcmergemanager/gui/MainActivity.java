@@ -141,10 +141,6 @@ public Context context;
                 intent = new Intent(this, AboutActivity.class);
                 startActivity(intent);
                 return true;
-            case R.id.action_help:
-                intent = new Intent(this, HelpActivity.class);
-                startActivity(intent);
-                return true;
             default:
                 return super.onOptionsItemSelected(item);
 
@@ -231,8 +227,8 @@ public Context context;
         sMatchSchedule = matchSchedule;
 
         // Notify the TeamInfoTab that the list of teams at this event has updated.
-
-        mTeamInfoTab.rebuildAutocompleteList();
+        if(mTeamInfoTab != null)
+            mTeamInfoTab.rebuildAutocompleteList();
 
     }
 
