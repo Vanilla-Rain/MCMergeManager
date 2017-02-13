@@ -14,6 +14,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import ca.team2706.scouting.mcmergemanager.R;
+import ca.team2706.scouting.mcmergemanager.gui.PreGameActivity;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.gui.Popups.BallPickupFragment;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.gui.Popups.BallShootingFragment;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.gui.Popups.ClimbingFragment;
@@ -97,6 +98,9 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
             public void run() {
                 if (remainTime == 0) {
                     tvGameTime.setText("Game Over! Please Save and Return");
+
+                    Intent i=new Intent(getApplicationContext(), PostGameClass.class);
+                    startActivity(i);
                 } else {
                     remainTime--;
                     int minuets = remainTime / 60;
@@ -148,6 +152,11 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
     @Override
     public void editNameDialogCancel(DialogFragment dialogFragment) {
         dialogFragment.dismiss();
+    }
+
+    public void toPostGame (View view) {
+        Intent intent = new Intent(this, PreGameActivity.class);
+        startActivity(intent);
     }
 
 }
