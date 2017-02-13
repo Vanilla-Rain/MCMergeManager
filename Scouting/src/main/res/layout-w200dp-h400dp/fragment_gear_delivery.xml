@@ -6,41 +6,53 @@
 
     <Space
         android:layout_width="match_parent"
-        android:layout_height="47dp"
-        android:layout_weight="0.04" />
+        android:layout_height="26dp" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/textView26"
-        android:text="           How many balls were scored?"
+        android:text="          Where was the gear delivered?"
         android:textAppearance="@style/TextAppearance.AppCompat.SearchResult.Title" />
 
     <Space
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.30" />
+        android:layout_height="wrap_content" />
 
-    <SeekBar
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="18dp" />
+
+    <Button
+        android:text="boiler side"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/teleopBallsScoredSeekBar"
-        android:layout_weight="0.04"
-        android:max="24"
-        android:progress="0" />
+        android:id="@+id/button7"
+        android:background="@android:color/white"
+        android:textColor="@android:color/holo_purple"/>
 
-    <TextView
+    <Button
+        android:text="Middle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/teleopBallScoredTextView" />
+        android:id="@+id/button8"
+        android:background="@android:color/white"
+        android:textColor="@android:color/holo_purple"/>
+
+    <Button
+        android:text="loading station side"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/button9"
+        android:background="@android:color/white"
+        android:textColor="@android:color/holo_purple"/>
 
     <Button
         android:text="Cancel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/ballScoringCancel"
-        android:layout_weight="0.04"
+        android:id="@+id/gear_delivery_cancel_button"
         android:background="@android:color/white"
-        android:textColor="@android:color/holo_purple"/>
+        android:textColor="@android:color/holo_purple" />
 
 </LinearLayout>
