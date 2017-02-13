@@ -231,7 +231,7 @@ public class MainActivity extends AppCompatActivity
 
         // Notify the TeamInfoTab that the list of teams at this event has updated.
 
-        mTeamInfoTab.rebuildAutocompleteList();
+//        mTeamInfoTab.rebuildAutocompleteList();
 
     }
 
