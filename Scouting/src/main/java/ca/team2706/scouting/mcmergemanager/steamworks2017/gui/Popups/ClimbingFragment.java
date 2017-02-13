@@ -2,6 +2,7 @@ package ca.team2706.scouting.mcmergemanager.steamworks2017.gui.Popups;
 
 import android.app.DialogFragment;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import ca.team2706.scouting.mcmergemanager.R;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.FuelShotEvent;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.PostGameObject;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.gui.PostGameClass;
 
 import static ca.team2706.scouting.mcmergemanager.R.*;
 
@@ -102,6 +104,10 @@ public class ClimbingFragment extends DialogFragment {
                         postGameObject.climbType = PostGameObject.ClimbType.FAIL;
                         Log.i(getClass().getName(), "quit");
                         listener.editNameDialogCancel(me);
+
+                        Intent intent = new Intent(v.getContext(),PostGameClass.class);
+                        startActivity(intent);
+
                     }
                 }
         );
@@ -114,6 +120,9 @@ public class ClimbingFragment extends DialogFragment {
                         postGameObject.climb_time = pointsScored;
                         Log.i(getClass().getName(), "quit");
                         listener.editNameDialogCancel(me);
+
+                        Intent intent = new Intent(v.getContext(),PostGameClass.class);
+                        startActivity(intent);
                     }
                 }
         );

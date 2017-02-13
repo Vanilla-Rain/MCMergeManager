@@ -44,11 +44,6 @@
                 android:value="ca.team2706.scouting.mcmergemanager.gui.MainActivity" />
         </activity>
         <activity
-            android:name=".stronghold2016.gui.PostGameActivity"
-            android:label="@string/title_activity_post_game"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
-        <activity
             android:name=".gui.PreGameActivity"
             android:label="@string/title_activity_pre_game"
             android:parentActivityName=".gui.MainActivity"

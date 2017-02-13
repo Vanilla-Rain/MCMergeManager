@@ -2,6 +2,7 @@ package ca.team2706.scouting.mcmergemanager.stronghold2016.gui;
 
 import android.app.DialogFragment;
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +20,7 @@ import ca.team2706.scouting.mcmergemanager.steamworks2017.gui.Popups.ClimbingFra
 import ca.team2706.scouting.mcmergemanager.steamworks2017.gui.Popups.FragmentListener;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.gui.Popups.GearDeliveryFragment;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.gui.Popups.GearPickupFragment;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.gui.PostGameClass;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.BallPickup;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.BallShot;
 
@@ -26,7 +28,7 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
 
 
     public void editNameDialogComplete(DialogFragment dialogFragment, Bundle data) {
-    // Empty field is hear because of interface.
+    // Empty field is here because of interface.
     }
 
     Handler m_handler;
@@ -147,4 +149,5 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
     public void editNameDialogCancel(DialogFragment dialogFragment) {
         dialogFragment.dismiss();
     }
+
 }

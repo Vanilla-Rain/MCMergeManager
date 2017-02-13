@@ -91,9 +91,7 @@ public class AutoScouting extends AppCompatActivity {
 
     public void toTeleop(View view) {
         Intent intent = new Intent(this, TeleopScouting.class);
-
         intent.putExtra("PreGameData", preGameObject);
-
         startActivity(intent);
     }
 
