@@ -15,6 +15,7 @@ import java.util.ArrayList;
 
 import ca.team2706.scouting.mcmergemanager.R;
 import ca.team2706.scouting.mcmergemanager.gui.PreGameActivity;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.PostGameObject;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.gui.Popups.BallPickupFragment;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.gui.Popups.BallShootingFragment;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.gui.Popups.ClimbingFragment;
@@ -41,6 +42,7 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
     public ArrayList<Integer> defensesBreached;
     public ArrayList<BallShot> ballsShot;
     public ArrayList<BallPickup> ballPickups;
+    private PostGameObject postGameObject= new PostGameObject();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +100,7 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
             public void run() {
                 if (remainTime == 0) {
                     tvGameTime.setText("Game Over! Please Save and Return");
+                    postGameObject.climbType = postGameObject.climbType.NO_CLIMB;
 
                     Intent i=new Intent(getApplicationContext(), PostGameClass.class);
                     startActivity(i);
