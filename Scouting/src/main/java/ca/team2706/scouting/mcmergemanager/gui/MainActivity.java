@@ -227,8 +227,8 @@ public Context context;
         sMatchSchedule = matchSchedule;
 
         // Notify the TeamInfoTab that the list of teams at this event has updated.
-
-//        mTeamInfoTab.rebuildAutocompleteList();
+        if(mTeamInfoTab != null)
+            mTeamInfoTab.rebuildAutocompleteList();
 
     }
 
