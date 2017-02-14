@@ -10,6 +10,10 @@ import java.io.Serializable;
 public abstract class Event implements Comparable<Event>, Serializable {
     public double timestamp;
 
+    public Event(){
+
+    }
+
     public Event(double timestamp) {
         this.timestamp = timestamp;
     }
