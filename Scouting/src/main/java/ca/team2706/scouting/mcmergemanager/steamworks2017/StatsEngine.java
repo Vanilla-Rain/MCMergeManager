@@ -427,6 +427,10 @@ public class StatsEngine implements Serializable{
             }
             teamStatsReport.repair_time_percent  = ((double) repairCount) / repairTimeObjects.length;
             teamStatsReport.working_time_percent = ((double) workingCount) / repairTimeObjects.length;
+            teamStatsReport.repairTimeObjects = repairTimeObjects;
+        }
+        else {
+            teamStatsReport.repairTimeObjects = new RepairTimeObject[0];
         }
 
         // TODO:
