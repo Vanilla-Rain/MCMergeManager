@@ -17,7 +17,6 @@ import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-<<<<<<< HEAD
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
