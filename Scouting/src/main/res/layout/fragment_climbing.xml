@@ -6,53 +6,62 @@
 
     <Space
         android:layout_width="match_parent"
-        android:layout_height="26dp" />
+        android:layout_height="47dp"
+        android:layout_weight="0.04" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/textView26"
-        android:text="          Where was the gear delivered?"
+        android:text="           How much time was spent climbing?"
         android:textAppearance="@style/TextAppearance.AppCompat.SearchResult.Title" />
 
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+
 
     <Space
         android:layout_width="match_parent"
-        android:layout_height="18dp" />
+        android:layout_height="wrap_content"
+        android:layout_weight="0.30" />
 
-    <Button
-        android:text="boiler side"
+    <SeekBar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/boiler_side_gear_delivery_button"
-        android:background="@android:color/white"
-        android:textColor="@android:color/holo_purple"/>
+        android:id="@+id/climbingTimeSeekBar"
+        android:layout_weight="0.04"
+        android:max="24"
+        android:progress="0" />
 
-    <Button
-        android:text="Middle"
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
-        android:textColor="@android:color/holo_purple"
-        android:id="@+id/middle_gear_delivery_button" />
+        android:id="@+id/climbTimeTextView"
+        android:text="0 seconds to climb" />
 
     <Button
-        android:text="loading station side"
+        android:text="Successful climb"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/feeder_side_gear_delivery_button"
+        android:id="@+id/climbingSuccessButton"
+        android:layout_weight="0.04"
         android:background="@android:color/white"
-        android:textColor="@android:color/holo_purple"/>
+        android:textColor="@android:color/holo_purple" />
+
+    <Button
+        android:text="Failure to climb"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/climbFailedButton"
+        android:layout_weight="0.04"
+        android:background="@android:color/white"
+        android:textColor="@android:color/holo_purple" />
 
     <Button
         android:text="Cancel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/gear_delivery_cancel_button"
+        android:id="@+id/climbCancelButton"
+        android:layout_weight="0.04"
         android:background="@android:color/white"
-        android:textColor="@android:color/holo_purple" />
+        android:textColor="@android:color/holo_purple"/>
 
 </LinearLayout>

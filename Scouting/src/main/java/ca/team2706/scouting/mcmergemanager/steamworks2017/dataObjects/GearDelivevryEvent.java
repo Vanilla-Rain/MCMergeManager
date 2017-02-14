@@ -17,6 +17,10 @@ public class GearDelivevryEvent extends Event {
     public Lift lift;
     public GearDeliveryStatus deliveryStatus;
 
+    public GearDelivevryEvent(){
+
+    }
+
 
     public GearDelivevryEvent(double timestamp, GearDeliveryStatus deliveryStatus, Lift lift) {
         super(timestamp);
