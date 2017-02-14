@@ -13,6 +13,10 @@ public class FuelShotEvent extends Event {
     public int x;
     public int y;
 
+    public FuelShotEvent() {
+
+    }
+
     public FuelShotEvent(double timestamp, boolean boiler, int numScored, int numMissed, int x, int y){
         super(timestamp);
 

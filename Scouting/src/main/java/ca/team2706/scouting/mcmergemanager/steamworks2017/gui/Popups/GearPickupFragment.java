@@ -18,7 +18,8 @@ import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.GearPickup
 
 public class GearPickupFragment extends DialogFragment {
 
-    private EditNameDialogListener listener;
+    private FragmentListener listener;
+    private GearPickupEvent gearPickupEvent = new GearPickupEvent();
 
     public GearPickupFragment() {
         // Empty constructor is required for DialogFragment
@@ -26,7 +27,7 @@ public class GearPickupFragment extends DialogFragment {
         // Use `newInstance` instead as shown below
     }
 
-    public static GearPickupFragment newInstance(String title, EditNameDialogListener listener) {
+    public static GearPickupFragment newInstance(String title, FragmentListener listener) {
         GearPickupFragment frag = new GearPickupFragment();
         Bundle args = new Bundle();
         args.putString("title", title);
@@ -49,6 +50,38 @@ public class GearPickupFragment extends DialogFragment {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        Log.i(getClass().getName(), "quit");
+                        listener.editNameDialogCancel(me);
+                    }
+                }
+        );
+
+        view.findViewById(R.id.ground_gear_pickup_button).setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        gearPickupEvent.pickupType = GearPickupEvent.GearPickupType.GROUND;
+                        Log.i(getClass().getName(), "quit");
+                        listener.editNameDialogCancel(me);
+                    }
+                }
+        );
+        view.findViewById(R.id.wall_gear_pickup_button).setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        gearPickupEvent.pickupType = GearPickupEvent.GearPickupType.WALL;
+                        Log.i(getClass().getName(), "quit");
+                        listener.editNameDialogCancel(me);
+                    }
+                }
+        );
+
+        view.findViewById(R.id.other_gear_pickup_button).setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        gearPickupEvent.pickupType = GearPickupEvent.GearPickupType.GROUND;
                         Log.i(getClass().getName(), "quit");
                         listener.editNameDialogCancel(me);
                     }
