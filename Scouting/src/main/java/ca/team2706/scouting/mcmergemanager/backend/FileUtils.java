@@ -180,9 +180,7 @@ public class FileUtils {
      */
     public static void appendToMatchDataFile(MatchData.Match match) {
 
-        //TODO: #76
-        //TODO: Redo this to write the file in JSON format
-
+        //TODO: #76, make sure this actually works
 
         String outFileName = sLocalEventFilePath +"/"+ App.getContext().getResources().getString(R.string.matchScoutingDataFileName);
 
@@ -190,8 +188,9 @@ public class FileUtils {
 
         File outfile = new File(outFileName);
         try {
+            // converts match to json, and then uses json.toString method to save in file
             BufferedWriter bw = new BufferedWriter(new FileWriter(outfile, true));
-            bw.append( match.toString() );
+            bw.append( match.toJson().toString() );
             bw.flush();
             bw.close();
         } catch (IOException e) {
@@ -206,7 +205,7 @@ public class FileUtils {
         outfile = new File(outFileName);
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(outfile, true));
-            bw.append( match.toString() );
+            bw.append( match.toJson().toString() );
             bw.flush();
             bw.close();
         } catch (IOException e) {
@@ -243,12 +242,13 @@ public class FileUtils {
     public static MatchData loadMatchDataFile(FileType fileType) {
 
         //TODO: #76
-        //TODO: Redo this to write the file in JSON format
+        //TODO: Redo this to read the file in JSON format
 
 
         MatchData matchData = new MatchData();
-        List<String> matchStrs = new ArrayList<>();
+        List<JSONObject> matchJson = new ArrayList<>();
 
+        // TODO: Do we even need to look at the matches in unsynched, since they should have all been save in synced
         // read the file
         String inFileName;
         switch (fileType) {
@@ -266,8 +266,7 @@ public class FileUtils {
 
             while (line != null) {
                 // braces are for human readibility, but make parsing harder
-                line = line.replace("{","").replace("}","");
-                matchStrs.add(line);
+                matchJson.add(new JSONObject(line));
                 line = br.readLine();
             }
             br.close();
@@ -278,10 +277,10 @@ public class FileUtils {
 
         // parse all the matches into the MatchData object
         boolean parseFailure = false;
-        for (String matchStr : matchStrs) {
+        for (JSONObject obj : matchJson) {
 
             try {
-                MatchData.Match match = new MatchData.Match(matchStr);
+                MatchData.Match match = new MatchData.Match(obj);
                 matchData.addMatch(match);
             } catch (Exception e) {
                 Log.e(App.getContext().getResources().getString(R.string.app_name), "loadMatchDataFile:: "+e.toString());
@@ -564,15 +563,11 @@ public class FileUtils {
         gets a competition data from the swagger server
         if compID is 0 will take from current event, if other number will get that competition
      */
-    public static void getCompetitionFromServer(final Context context, int compID) {
+    public static void getMatchesFromServer(final Context context) {
         RequestQueue queue = Volley.newRequestQueue(context);
-        final String url;
-        if(compID == 0) {
-            SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(App.getContext());
-            url = "http://ftp.team2706.ca:3000/competitions/" + SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_event), "<Not Set>") + "/matches.json";
-        } else {
-            url = "http://ftp.team2706.ca:3000/competitions/" + compID + "/matches.json";
-        }
+        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(App.getContext());
+        final String url = "http://ftp.team2706.ca:3000/competitions/" + SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_event), "<Not Set>") + "/matches.json";
+
         // prepare the Request
         JsonArrayRequest getRequest = new JsonArrayRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONArray>() {
@@ -630,6 +625,57 @@ public class FileUtils {
                 return file.delete();
         }
         return false;
+    }
+
+    /*
+        Takes the selected event that you are at
+     */
+    public static void postMatchToServer(final Context context) {
+        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(App.getContext());
+
+        final String url = "http://ftp.team2706.ca:3000/competitions/" + SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_event), "<Not Set>") + ".json";
+        RequestQueue queue = Volley.newRequestQueue(context);
+
+        try {
+            RequestQueue requestQueue = Volley.newRequestQueue(context);
+            // Prepares POST data...
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("competition_id",SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_event), "<Not Set"));
+            jsonObject.put("number", 7);
+            jsonObject.put("team_id", 7);
+            final String mRequestBody = jsonObject.toString();
+            // Volley request...
+            StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    Log.i("VOLLEY", response);
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("VOLLEY error from: " + url + " - ", error.toString());
+                }
+            }) {
+                @Override
+                public String getBodyContentType() {
+                    return "application/json; charset=utf-8";
+                }
+
+                @Override
+                public byte[] getBody() throws AuthFailureError {
+                    try {
+                        return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
+                    } catch (UnsupportedEncodingException uee) {
+                        VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s",
+                                mRequestBody, "utf-8");
+                        return null;
+                    }
+                }
+            };
+            requestQueue.add(request);
+        } catch (Exception e) {
+            Log.d("Somethin interesting", e.toString());
+        }
     }
 
     public static void postMatchToServer(final Context context, int compID) {

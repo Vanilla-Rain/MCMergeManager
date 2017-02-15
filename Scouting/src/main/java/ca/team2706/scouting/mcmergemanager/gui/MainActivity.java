@@ -315,8 +315,8 @@ public Context context;
     }
 
     public void onClick(View v) {
-        FileUtils.postMatchToServer(this, 1);
-        FileUtils.getCompetitionFromServer(this, 1);
+        FileUtils.postMatchToServer(this);
+        FileUtils.getMatchesFromServer(this);
     }
 
 }

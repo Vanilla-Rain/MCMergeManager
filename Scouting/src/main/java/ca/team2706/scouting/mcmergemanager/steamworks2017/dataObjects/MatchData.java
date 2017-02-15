@@ -29,13 +29,36 @@ public class MatchData implements Serializable {
 
         // TODO: this needs to be re-worked because MikeO changed around the data
 
+        public Match(JSONObject jsonObject) {
+            preGameObject = new PreGameObject();
+            postGameObject = new PostGameObject();
+            teleopScoutingObject = new TeleopScoutingObject();
+            autoScoutingObject = new AutoScoutingObject();
+
+            try {
+                // pregame
+                preGameObject.teamNumber = jsonObject.getInt("team_number");
+                preGameObject.matchNumber = jsonObject.getInt("id");
+
+                // autonomous
+
+                // teleop
+
+                // postgame
+
+            } catch(JSONException e) {
+                Log.d("Error parsing json", e.toString());
+            }
+
+        }
+
         public JSONObject toJson() {
             JSONObject jsonObject = new JSONObject();
 
             try {
                 // pregame
-                jsonObject.put("team_id", preGameObject.teamNumber);
-                jsonObject.put("match_id", preGameObject.matchNumber);
+                jsonObject.put("team_number", preGameObject.teamNumber);
+                jsonObject.put("id", preGameObject.matchNumber);
 
                 // autonomous
                 jsonObject.put("", autoScoutingObject.start_fuel);
@@ -176,7 +199,7 @@ public class MatchData implements Serializable {
 //        return sb.toString();
 //    }
 //
-        public Match(String str) {
+//        public Match(String str) {
 //        preGameObject = new PreGameObject();
 //        autoScoutingObject = new AutoScoutingObject();
 //        teleopScoutingObject = new TeleopScoutingObject();
@@ -249,7 +272,7 @@ public class MatchData implements Serializable {
 //        postGameObject.time_dead = Integer.valueOf(tokens[16]);
 //
 //        postGameObject.notes = tokens[17];
-        }
+//        }
 
     }
 
