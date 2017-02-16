@@ -23,7 +23,7 @@ import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.TeleopScou
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.BallShot;
 
 /**
- * Created by Merge on 2017-02-12.
+ * Created by JustinT on 2017-02-12.
  */
 
 public class PostGameClass extends AppCompatActivity {
@@ -109,12 +109,10 @@ public class PostGameClass extends AppCompatActivity {
             PreGameObject pre = (PreGameObject) thisIntent.getSerializableExtra("PreGameData");
             AutoScoutingObject a = (AutoScoutingObject) thisIntent.getSerializableExtra("AutoScoutingData");
             TeleopScoutingObject t  = (TeleopScoutingObject) thisIntent.getSerializableExtra("TeleopScoutingData");
-            TextView tv = (TextView) findViewById(R.id.time_defending_text_view);
             PostGameObject post = (PostGameObject) thisIntent.getSerializableExtra("PostGameScoutingData");
 
             MatchData.Match match = new MatchData.Match(pre, post, t, a);
-            FileUtils fileUtils = new FileUtils(this);
-            fileUtils.appendToMatchDataFile(match);
+            FileUtils.appendToMatchDataFile(match);
 
 
 
