@@ -16,6 +16,8 @@ import android.view.ViewGroup;
 import ca.team2706.scouting.mcmergemanager.R;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.FuelPickupEvent;
 
+import static ca.team2706.scouting.mcmergemanager.stronghold2016.gui.TeleopScouting.teleopScoutingObject;
+
 public class BallPickupFragment extends DialogFragment {
     private FragmentListener listener;
     private FuelPickupEvent ballPickups = new FuelPickupEvent();
@@ -107,6 +109,7 @@ public class BallPickupFragment extends DialogFragment {
     @Override
     public void onCancel(DialogInterface dialog) {
         super.onCancel(dialog);
+        teleopScoutingObject.add(ballPickups);
         listener.editNameDialogCancel(this);
     }
 }

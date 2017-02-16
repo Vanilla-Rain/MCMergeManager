@@ -31,7 +31,6 @@ import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.PreGameObj
 public class AutoScouting extends AppCompatActivity {
 
     private AutoScoutingObject autoScoutingObject2017 = new AutoScoutingObject();
-    private PreGameObject preGameObject;
     public int pointsScored;
     public ArrayList<BallShot> ballsShot;
 
@@ -91,7 +90,8 @@ public class AutoScouting extends AppCompatActivity {
 
     public void toTeleop(View view) {
         Intent intent = new Intent(this, TeleopScouting.class);
-        intent.putExtra("PreGameData", preGameObject);
+        intent.putExtra("PreGameData", getIntent().getSerializableExtra("PreGameData"));
+        intent.putExtra("AutoScoutingData", autoScoutingObject2017);
         startActivity(intent);
     }
 
