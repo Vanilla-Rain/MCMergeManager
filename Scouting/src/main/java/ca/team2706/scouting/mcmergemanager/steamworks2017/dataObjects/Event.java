@@ -7,11 +7,12 @@ import java.io.Serializable;
  *
  * It implements Comparator to allow them to be sorted by timestamp.
  */
-public abstract class Event implements Comparable<Event>, Serializable {
+public class Event implements Comparable<Event>, Serializable {
+
     public double timestamp;
 
     public Event(){
-
+        timestamp = 0;
     }
 
     public Event(double timestamp) {

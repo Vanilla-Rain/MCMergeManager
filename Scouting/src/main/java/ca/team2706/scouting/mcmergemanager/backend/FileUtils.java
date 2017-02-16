@@ -629,8 +629,9 @@ public class FileUtils {
 
     /*
         Takes the selected event that you are at
+        TODO: get JSOn body uncommentedable
      */
-    public static void postMatchToServer(final Context context) {
+    public static void postMatchToServer(final Context context/*, JSONObject jsonBody*/) {
         SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(App.getContext());
 
         final String url = "http://ftp.team2706.ca:3000/competitions/" + SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_event), "<Not Set>") + ".json";
@@ -686,8 +687,15 @@ public class FileUtils {
             RequestQueue requestQueue = Volley.newRequestQueue(context);
             // Prepares POST data...
             JSONObject jsonBody = new JSONObject();
-            jsonBody.put("number", 99);
-            jsonBody.put("team_id", 5);
+            jsonBody.put("competition_id", compID);
+            jsonBody.put("number", 1);
+            jsonBody.put("team_number", 1);
+            JSONArray arr = new JSONArray();
+            JSONObject obj = new JSONObject();
+            obj.put("match_id", 99);
+            obj.put("objective_id", 14);
+            arr.put(obj);
+            jsonBody.put("events", arr);
             final String mRequestBody = jsonBody.toString();
             // Volley request...
             StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {

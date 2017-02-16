@@ -41,10 +41,68 @@ public class MatchData implements Serializable {
                 preGameObject.matchNumber = jsonObject.getInt("id");
 
                 // autonomous
+                autoScoutingObject.crossedBaseline = jsonObject.getBoolean("");
+                autoScoutingObject.start_fuel = jsonObject.getBoolean("");
+                autoScoutingObject.start_gear = jsonObject.getBoolean("");
+                autoScoutingObject.boiler_attempted = jsonObject.getInt("");
+                autoScoutingObject.gear_delivered = jsonObject.getInt("");
+                autoScoutingObject.numFuelScored = jsonObject.getInt("");
+                autoScoutingObject.open_hopper = jsonObject.getInt("");
 
                 // teleop
+                JSONArray arr = new JSONArray(jsonObject.getJSONArray("events"));
+                for(int i = 0; i < arr.length(); i++) {
+                    JSONObject obj = new JSONObject(arr.get(i).toString());
+                    Event event;
+                    switch((int) obj.get("objective_id")) {
+                        case FuelShotEvent.objectiveId:
+                            event = new FuelShotEvent((double) obj.get(""), (boolean) obj.get(""),
+                                    (int) obj.get(""), (int )obj.get(""), (int) obj.get(""), (int)obj.get(""));
+                            break;
+                        case FuelPickupEvent.objectiveId:
+                            try {
+                                event = new FuelPickupEvent((double) obj.get(""), FuelPickupEvent.FuelPickupType.valueOf((String) obj.get("")),
+                                        (int) obj.get(""));
+                            } catch(IllegalArgumentException e) {
+                                Log.d("FuelPickupType error", e.toString());
+                                event = new Event(); // should I change this to something else, such as a default pickup type?
+                            }
+                            break;
+                        case GearDelivevryEvent.objectiveId:
+                            try {
+                                event = new GearDelivevryEvent((double) obj.get(""),
+                                        GearDelivevryEvent.GearDeliveryStatus.valueOf((String) obj.get("")),
+                                        GearDelivevryEvent.Lift.valueOf((String) obj.get("")));
+                            } catch(IllegalArgumentException e) {
+                                Log.d("GearDeliveryEvent error", e.toString());
+                                event = new Event();
+                            }
+                            break;
+                        case GearPickupEvent.objectiveId:
+                            try {
+                                event = new GearPickupEvent((double) obj.get(""),
+                                        GearPickupEvent.GearPickupType.valueOf((String) obj.get("")),
+                                        (boolean) obj.get(""));
+                            } catch (IllegalArgumentException e) {
+                                Log.d("GearPickupError", e.toString());
+                                event = new Event();
+                            }
+                            break;
+                        case DefenseEvent.objectiveId:
+                            event = new DefenseEvent((double) obj.get(""), (int) obj.get(""));
+                            break;
+                        default:
+                            event = new Event();
+                            break;
+                    }
+                    teleopScoutingObject.add(event);
+                }
 
                 // postgame
+                postGameObject.climb_time = jsonObject.getDouble("");
+                postGameObject.climbType = PostGameObject.ClimbType.valueOf(jsonObject.getString(""));
+                postGameObject.notes = jsonObject.getString("");
+                postGameObject.time_dead = jsonObject.getDouble("");
 
             } catch(JSONException e) {
                 Log.d("Error parsing json", e.toString());

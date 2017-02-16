@@ -26,6 +26,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -315,8 +316,9 @@ public Context context;
     }
 
     public void onClick(View v) {
-        FileUtils.postMatchToServer(this);
-        FileUtils.getMatchesFromServer(this);
+        FileUtils.loadMatchDataFile(FileUtils.FileType.SYNCHED);
+//        FileUtils.postMatchToServer(this, 204);
+//        FileUtils.getMatchesFromServer(this);
     }
 
 }
