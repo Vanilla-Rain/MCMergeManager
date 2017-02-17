@@ -736,6 +736,8 @@ public class StatsEngine implements Serializable{
                 teamStatsReport.highestDeadness = match.postGameObject.time_dead;
 
 
+            teamStatsReport.avgTimeSpentPlayingDef += match.postGameObject.time_defending;
+
         } // for match
 
 
@@ -800,6 +802,7 @@ public class StatsEngine implements Serializable{
                 teamStatsReport.climb_avgTime /= teamStatsReport.climbAttepmts;
 
             teamStatsReport.avgDeadness /= numMatchesPlayed;
+            teamStatsReport.avgTimeSpentPlayingDef /= numMatchesPlayed;
 
         } // end averages
 
