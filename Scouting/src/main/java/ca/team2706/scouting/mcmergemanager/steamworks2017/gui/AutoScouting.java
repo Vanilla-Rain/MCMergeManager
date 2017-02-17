@@ -1,4 +1,4 @@
-package ca.team2706.scouting.mcmergemanager.stronghold2016.gui;
+package ca.team2706.scouting.mcmergemanager.steamworks2017.gui;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -27,6 +27,8 @@ import ca.team2706.scouting.mcmergemanager.R;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.AutoScoutingObject;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.BallShot;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.PreGameObject;
+import ca.team2706.scouting.mcmergemanager.stronghold2016.gui.TeleopScouting;
+import ca.team2706.scouting.mcmergemanager.stronghold2016.gui.TeleopTimerAlertDialog;
 
 public class AutoScouting extends AppCompatActivity {
 

@@ -20,7 +20,7 @@ import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.MatchData;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.PostGameObject;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.PreGameObject;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.TeleopScoutingObject;
-import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.BallShot;
+
 
 /**
  * Created by JustinT on 2017-02-12.
@@ -30,11 +30,11 @@ public class PostGameClass extends AppCompatActivity {
 
     public int timeDead;
     public int timeDefending;
+    public String woo = "Woo";
 
     private PostGameObject postGameObject = new PostGameObject();
     private DefenseEvent defenseEvent = new DefenseEvent();
 
-    public ArrayList<BallShot> ballsShot;
 
     SeekBar deadTimeSeekBar;
     SeekBar defenseSeekBar;
@@ -97,8 +97,7 @@ public class PostGameClass extends AppCompatActivity {
 
                // FileUtils.appendToMatchDataFile(match);
 
-                Intent intent = new Intent(view.getContext(),PreGameActivity.class);
-                startActivity(intent);
+                returnHome(view);
             }
         });
     }
@@ -109,12 +108,17 @@ public class PostGameClass extends AppCompatActivity {
             PreGameObject pre = (PreGameObject) thisIntent.getSerializableExtra("PreGameData");
             AutoScoutingObject a = (AutoScoutingObject) thisIntent.getSerializableExtra("AutoScoutingData");
             TeleopScoutingObject t  = (TeleopScoutingObject) thisIntent.getSerializableExtra("TeleopScoutingData");
-            PostGameObject post = (PostGameObject) thisIntent.getSerializableExtra("PostGameScoutingData");
+            PostGameObject post = (PostGameObject) thisIntent.getSerializableExtra("PostGameData");  // climb was set in climbingFragment.
+            post.time_dead = timeDead;
+
+            //PostGameObject post = new PostGameObject(woo, PostGameObject.ClimbType.SUCCESS, timeDead, timeDefending);
+            Intent intent = new Intent(this,PreGameActivity.class);
 
             MatchData.Match match = new MatchData.Match(pre, post, t, a);
+            FileUtils.checkLocalFileStructure(this);
             FileUtils.appendToMatchDataFile(match);
 
-
+            startActivity(intent);
 
     }
 }

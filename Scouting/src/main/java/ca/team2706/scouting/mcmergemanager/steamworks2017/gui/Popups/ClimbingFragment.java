@@ -140,6 +140,7 @@ public class ClimbingFragment extends DialogFragment {
         intent.putExtra("PreGameData", getActivity().getIntent().getSerializableExtra("PreGameData"));
         intent.putExtra("AutoScoutingData", getActivity().getIntent().getSerializableExtra("AutoScoutingData"));
         intent.putExtra("TeleopScoutingData", getActivity().getIntent().getSerializableExtra("TeleopScoutingObject"));
+        intent.putExtra("PostGameData", postGameObject);
 
         startActivity(intent);
     }

@@ -51,7 +51,7 @@ public class FileUtils {
     public static String sLocalTeamPhotosFilePath;
 
     /* Static initializer */
-    {
+    static {
         // store string constants and preferences in member variables just for cleanliness
         // (since the strings are `static`, when any instances of FileUtils update these, all instances will get the updates)
         SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(App.getContext());
