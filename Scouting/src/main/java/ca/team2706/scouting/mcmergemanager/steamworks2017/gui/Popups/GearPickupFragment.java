@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import ca.team2706.scouting.mcmergemanager.R;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.GearPickupEvent;
 
+import static ca.team2706.scouting.mcmergemanager.stronghold2016.gui.TeleopScouting.teleopScoutingObject;
+
 /**
  * Created by Merge on 2017-02-11.
  */
@@ -92,6 +94,7 @@ public class GearPickupFragment extends DialogFragment {
     @Override
     public void onCancel(DialogInterface dialog) {
         super.onCancel(dialog);
+        teleopScoutingObject.add(gearPickupEvent);
         listener.editNameDialogCancel(this);
     }
 }

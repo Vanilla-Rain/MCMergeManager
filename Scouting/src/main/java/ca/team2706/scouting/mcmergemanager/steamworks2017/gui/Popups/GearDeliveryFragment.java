@@ -13,6 +13,9 @@ import ca.team2706.scouting.mcmergemanager.R;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.GearDelivevryEvent;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.GearPickupEvent;
 
+import static ca.team2706.scouting.mcmergemanager.stronghold2016.gui.TeleopScouting.gearDeliveryEvents;
+import static ca.team2706.scouting.mcmergemanager.stronghold2016.gui.TeleopScouting.teleopScoutingObject;
+
 /**
  * Created by JustinT on 2017-02-09.
  */
@@ -94,6 +97,7 @@ public class GearDeliveryFragment extends DialogFragment {
     @Override
     public void onCancel(DialogInterface dialog) {
         super.onCancel(dialog);
+        teleopScoutingObject.add(gearDelivevryEvent);
         listener.editNameDialogCancel(this);
     }
 }

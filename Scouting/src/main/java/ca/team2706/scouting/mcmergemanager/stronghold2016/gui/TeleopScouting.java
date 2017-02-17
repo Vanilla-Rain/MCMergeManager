@@ -12,10 +12,13 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import ca.team2706.scouting.mcmergemanager.R;
 import ca.team2706.scouting.mcmergemanager.gui.PreGameActivity;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.GearDelivevryEvent;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.PostGameObject;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.TeleopScoutingObject;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.gui.Popups.BallPickupFragment;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.gui.Popups.BallShootingFragment;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.gui.Popups.ClimbingFragment;
@@ -42,11 +45,16 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
     public ArrayList<Integer> defensesBreached;
     public ArrayList<BallShot> ballsShot;
     public ArrayList<BallPickup> ballPickups;
+    public static TeleopScoutingObject teleopScoutingObject;
+
+    public static List<GearDelivevryEvent> gearDeliveryEvents;
+
     private PostGameObject postGameObject= new PostGameObject();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        teleopScoutingObject = new TeleopScoutingObject();
         setContentView(R.layout.steamworks2017_activity_teleop_scouting);
         Toolbar tb = (Toolbar) findViewById(R.id.toolbar);
         //final Spinner spinner = (Spinner) findViewById(R.id.defense_spinner);
@@ -103,6 +111,9 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
                     postGameObject.climbType = postGameObject.climbType.NO_CLIMB;
 
                     Intent i=new Intent(getApplicationContext(), PostGameClass.class);
+                    i.putExtra("PreGameData", getIntent().getSerializableExtra("PreGameData"));
+                    i.putExtra("AutoScoutingData", getIntent().getSerializableExtra("AutoScoutingData"));
+                    i.putExtra("TeleopScoutingData", getIntent().getSerializableExtra("TeleopScoutingObject"));
                     startActivity(i);
                 } else {
                     remainTime--;

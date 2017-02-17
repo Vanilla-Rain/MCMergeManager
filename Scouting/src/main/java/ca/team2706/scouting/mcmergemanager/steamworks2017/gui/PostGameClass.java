@@ -11,14 +11,19 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import ca.team2706.scouting.mcmergemanager.R;
+import ca.team2706.scouting.mcmergemanager.backend.FileUtils;
 import ca.team2706.scouting.mcmergemanager.gui.PreGameActivity;
 import ca.team2706.scouting.mcmergemanager.gui.PrimaryTab;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.AutoScoutingObject;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.DefenseEvent;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.MatchData;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.PostGameObject;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.PreGameObject;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.TeleopScoutingObject;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.BallShot;
 
 /**
- * Created by Merge on 2017-02-12.
+ * Created by JustinT on 2017-02-12.
  */
 
 public class PostGameClass extends AppCompatActivity {
@@ -87,12 +92,33 @@ public class PostGameClass extends AppCompatActivity {
                 defenseEvent.skill = timeDefending;
                 postGameObject.time_dead = timeDead;
 
+
+               // MatchData.Match match = new MatchData.Match();
+
+               // FileUtils.appendToMatchDataFile(match);
+
                 Intent intent = new Intent(view.getContext(),PreGameActivity.class);
                 startActivity(intent);
             }
         });
     }
+
+        public void returnHome(View view ){
+            Intent thisIntent = getIntent();
+
+            PreGameObject pre = (PreGameObject) thisIntent.getSerializableExtra("PreGameData");
+            AutoScoutingObject a = (AutoScoutingObject) thisIntent.getSerializableExtra("AutoScoutingData");
+            TeleopScoutingObject t  = (TeleopScoutingObject) thisIntent.getSerializableExtra("TeleopScoutingData");
+            PostGameObject post = (PostGameObject) thisIntent.getSerializableExtra("PostGameScoutingData");
+
+            MatchData.Match match = new MatchData.Match(pre, post, t, a);
+            FileUtils.appendToMatchDataFile(match);
+
+
+
+    }
 }
+
 
 
 
