@@ -78,16 +78,6 @@
             />
 
         <TextView
-            android:text="BALLS"
-            android:layout_width="500dp"
-            android:layout_height="30dp"
-            android:id="@+id/ballTextView"
-            android:textAppearance="@android:style/TextAppearance.Large"
-            android:layout_below="@+id/gearDeliveryButton"
-            android:layout_alignStart="@+id/gearsTextView"
-            android:textColor="@android:color/holo_purple"/>
-
-        <TextView
             android:text="GEARS"
             android:layout_width="500dp"
             android:layout_height="30dp"
@@ -153,6 +143,16 @@
             android:layout_alignBaseline="@+id/textView2"
             android:layout_alignBottom="@+id/textView2"
             android:layout_toEndOf="@+id/startedClimbingButton" />
+
+        <TextView
+            android:text="BALLS"
+            android:layout_width="500dp"
+            android:layout_height="30dp"
+            android:id="@+id/ballTextView"
+            android:textAppearance="@android:style/TextAppearance.Large"
+            android:textColor="@android:color/holo_purple"
+            android:layout_below="@+id/gearDeliveryButton"
+            android:layout_alignStart="@+id/startedClimbingButton" />
 
     </RelativeLayout>
 </ScrollView>

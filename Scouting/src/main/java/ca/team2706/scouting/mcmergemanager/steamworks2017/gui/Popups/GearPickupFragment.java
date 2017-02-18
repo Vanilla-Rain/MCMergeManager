@@ -79,7 +79,7 @@ public class GearPickupFragment extends DialogFragment {
                     public void onClick(View v) {
                         gearPickupEvent.pickupType = GearPickupEvent.GearPickupType.WALL;
 
-                        gearPickupData.putSerializable("FuelPickupEvent", gearPickupEvent);
+                        gearPickupData.putSerializable("GearPickupEvent", gearPickupEvent);
                         listener.editNameDialogComplete(me, gearPickupData);
 
                         Log.i(getClass().getName(), "quit");

@@ -51,8 +51,9 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
     Handler m_handler;
     Runnable m_handlerTask;
     private int remainTime = 135;
-    public static int ballsHeld;
-    // TODO Needs to be made private.
+    public int ballsHeld;
+    public String ballsHeldString;
+
     public static TeleopScoutingObject teleopScoutingObject;
 
     private PostGameObject postGameObject = new PostGameObject();
@@ -67,7 +68,9 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
         final TextView tvGameTime = (TextView) findViewById(R.id.textViewGameTime);
 
         TextView numberBallsHolding = (TextView) findViewById(R.id.numberBallsHolding);
-        numberBallsHolding.setText("woo");
+        ballsHeldString = String.valueOf(ballsHeld);
+
+        numberBallsHolding.setText(ballsHeldString);
 
         Button fab = (Button) findViewById(R.id.ballPickupButton);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -143,7 +146,8 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
 
     private void showEditDialog() {
         FragmentManager fm = getFragmentManager();
-        BallPickupFragment ballPickupFragment = BallPickupFragment.newInstance("Subscribe", this);
+
+        BallPickupFragment ballPickupFragment = BallPickupFragment.newInstance("Subscribe", this, ballsHeld);
         ballPickupFragment.show(fm, "fragment_edit_name");
     }
 

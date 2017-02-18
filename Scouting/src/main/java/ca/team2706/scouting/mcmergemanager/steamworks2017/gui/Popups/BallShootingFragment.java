@@ -102,7 +102,7 @@ public class BallShootingFragment extends DialogFragment{
                     @Override
                     public void onClick(View v) {
                         ballsScored.numScored = pointsScored;
-                        fuelShootingData.putSerializable("FuelPickupEvent", ballsScored);
+                        fuelShootingData.putSerializable("FuelShootingEvent", ballsScored);
                         listener.editNameDialogComplete(me, fuelShootingData);
 
                         Log.i(getClass().getName(), "quit");
