@@ -37,7 +37,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import ca.team2706.scouting.mcmergemanager.R;
-import ca.team2706.scouting.mcmergemanager.backend.App;
 import ca.team2706.scouting.mcmergemanager.backend.BlueAllianceUtils;
 import ca.team2706.scouting.mcmergemanager.backend.FTPClient;
 import ca.team2706.scouting.mcmergemanager.backend.FileUtils;
@@ -67,10 +66,10 @@ public class MainActivity extends AppCompatActivity
 
     public static MatchData sMatchData = new MatchData();
     public static MatchSchedule sMatchSchedule = new MatchSchedule();
-    public static List<TeamDataObject> sRepairTimeObjects = new ArrayList<TeamDataObject>();
+    public static List<TeamDataObject> sRepairTimeObjects = new ArrayList<>();
     public static TeamInfoTab mTeamInfoTab;
 
-    static FTPClient ftpClient;
+    public static FTPClient sFtpClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,20 +83,6 @@ public class MainActivity extends AppCompatActivity
         globalIntent = new Intent();
 
         me = this;
-
-        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(App.getContext());
-        String ftpHostname = SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_FTPHostname),"");
-        String ftpUsername = SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_FTPUsername),"");
-        String ftpPassword = SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_FTPPassword),"");
-
-        if (ftpHostname != "" && ftpUsername != "" && ftpPassword != "") {
-            ftpClient = new FTPClient(ftpHostname, ftpUsername, ftpPassword, FileUtils.sLocalTeamPhotosFilePath, FileUtils.sRemoteTeamPhotosFilePath);
-            try {
-                ftpClient.connect();
-            } catch (Exception e) {
-                Log.d("FTP|Connect", "Error while connecting");
-            }
-        }
 
         // tell the user where they are syncing their gearDeliveryData to
         updateDataSyncLabel();
@@ -387,9 +372,10 @@ public class MainActivity extends AppCompatActivity
     }
     public void syncPhotos(View v){
         try{
-            ftpClient.syncAllFiles(this, this);
+            sFtpClient.syncAllFiles(this, this);
         }catch(Exception e){
             // empty
+            Log.e("MCMergeManager: ","", e);
         }
 
     }

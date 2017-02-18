@@ -164,7 +164,8 @@ public class FTPClient {
                 int Unchanged = 0;
                 localNames = getLocalDir();
                 try{
-                    remoteNames = getRemoteDir("/MCMergeManager", "", 0);
+                    checkFilepath(remotePath, true);
+                    remoteNames = getRemoteDir(remotePath, "", 0);
                 }catch(Exception e) {
                     Log.e("FTPClient|sync", "Failed to get remote file listing");
                     requester.updateSyncBar("Error while syncing, see debug for more info.", 100, activity, true);
@@ -233,7 +234,7 @@ public class FTPClient {
         RemotePath = "/MCMergeManager" + RemotePath;
         Log.i("FTPClient|uploadSync", "\nUploading: " + filename + "\nTo: " + RemotePath);
         try {
-            checkFilepath(filename, true);
+            checkFilepath(filename + "/", true);
             InputStream is = new FileInputStream(filename);
             ftpClient.storeFile(RemotePath, is);
         }catch(Exception e) {
@@ -242,7 +243,7 @@ public class FTPClient {
         }
     }
     private void downloadSync(String RemotePath){
-        String filename = localPath.getAbsolutePath() + RemotePath;
+        String filename = localPath.getAbsolutePath() + RemotePath.split("MCMergeManager")[1];
         Log.i("FTPClient|downloadSync", "\nDownloading: " + RemotePath + "\nTo: " + filename);
         try {
             boolean temp = checkFilepath(filename, false);
@@ -316,7 +317,14 @@ public class FTPClient {
         if (!currentDir.equals("")) {
             dirToList += "/" + currentDir;
         }
-        ftpClient.changeWorkingDirectory(dirToList);
+
+        if( !ftpClient.changeWorkingDirectory(dirToList)) {
+            // This folder doesn't exist, or we can't access it
+            Log.w("FTPClient|getting dirs", "Failed cd'ing into folder \""+dirToList+"\".");
+            return filenames;
+        }
+
+        Log.d("FTPClient", ftpClient.getReplyString() + "(" + ftpClient.getReply() + ")");
         FTPFile[] subFiles = ftpClient.listFiles();
         if (subFiles != null && subFiles.length > 0) {
             for (FTPFile aFile : subFiles) {
@@ -336,15 +344,18 @@ public class FTPClient {
         }
         return filenames;
     }
+
+
     private boolean checkFilepath(String filename, boolean isFTP){
         if(isFTP){
-            ArrayList<String> directorys = new ArrayList<>();
-            filename = filename.split("MCMergeManager")[1];
-            filename = "/MCMergeManager" + filename;
+//            ArrayList<String> directorys = new ArrayList<>();
+//            filename = filename.split("MCMergeManager")[1];
+//            filename = "/MCMergeManager" + filename;
             String parentDir = new File(filename).getParent();
+            Log.d("FTPClient|checkFilePath", filename);
             Log.d("FTPClient|checkFilePath", "Checking for: " + parentDir);
             try{
-                return ftpClient.makeDirectory(parentDir);
+                return ftpClient.makeDirectory(parentDir + "/");
             }catch(Exception e){
                 Log.e("FTPClient|checkFilePath", e.toString());
             }

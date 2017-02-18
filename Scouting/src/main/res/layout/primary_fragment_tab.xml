@@ -36,7 +36,6 @@
                     android:layout_gravity="right"
                     android:layout_weight="7.10"
                     android:onClick="onShowScheduleClicked"
-                    android:singleLine="false"
                     android:clickable="false" />
             </LinearLayout>
 
@@ -92,7 +91,7 @@
                         style="?android:attr/progressBarStyleHorizontal"
                         android:layout_height="wrap_content"
                         android:id="@+id/syncBar"
-                        android:layout_width="140dp" />
+                        android:layout_width="match_parent" />
 
                     <TextView
                         android:text="Start a sync here"
