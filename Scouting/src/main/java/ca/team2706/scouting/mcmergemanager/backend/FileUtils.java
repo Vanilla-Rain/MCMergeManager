@@ -409,7 +409,7 @@ public class FileUtils {
             }
             br.close();
         } catch (Exception e) {
-            Log.e(App.getContext().getResources().getString(R.string.app_name), "loadMatchDataFile:: " + e.toString());
+            Log.e(App.getContext().getResources().getString(R.string.app_name), "loadTeamDataFile:: " + e.toString());
             return null;
         }
 
