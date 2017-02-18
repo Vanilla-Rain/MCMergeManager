@@ -91,7 +91,7 @@ public class TeamStatsReport implements Serializable {
     public double teleop_gears_avgCycleTime;
     public double teleop_gears_minCycleTime;
     public double teleop_gears_maxCycleTime;
-    public GearDelivevryEvent.Lift teleop_gears_preferedLift;  // FEEDER_SIDE, CENTRE, BOILER_SIDE
+    public GearDelivevryEvent.Lift teleop_gears_preferedLift = GearDelivevryEvent.Lift.NONE;  // FEEDER_SIDE, CENTRE, BOILER_SIDE
     public int teleop_gearsScored_feederSide;
     public int teleop_gearsScored_centre;
     public int teleop_gearsScored_boilerSide;

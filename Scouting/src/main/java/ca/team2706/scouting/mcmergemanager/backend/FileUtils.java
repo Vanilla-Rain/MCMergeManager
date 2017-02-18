@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.DisplayMetrics;
@@ -16,15 +17,30 @@ import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -34,7 +50,7 @@ import ca.team2706.scouting.mcmergemanager.backend.dataObjects.NoteObject;
 import ca.team2706.scouting.mcmergemanager.backend.dataObjects.RepairTimeObject;
 import ca.team2706.scouting.mcmergemanager.backend.dataObjects.TeamDataObject;
 import ca.team2706.scouting.mcmergemanager.backend.interfaces.PhotoRequester;
-import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.MatchData;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.MatchData;
 
 /**
  * This is a helper class to hold common code for accessing shared scouting data files.
@@ -44,15 +60,13 @@ import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.MatchData;
  */
 public class FileUtils {
 
-    private static Activity mActivity;
-
     public static String sLocalToplevelFilePath;
     public static String sLocalTeamFilePath;
     public static String sLocalEventFilePath;
     public static String sLocalTeamPhotosFilePath;
 
     /* Static initializer */
-    {
+    static {
         // store string constants and preferences in member variables just for cleanliness
         // (since the strings are `static`, when any instances of FileUtils update these, all instances will get the updates)
         SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(App.getContext());
@@ -67,45 +81,46 @@ public class FileUtils {
     }
 
     /**
-     * Constructor
-     *
-     * @param activity This will be used to fetch string constants for file storage and displaying toasts.
-     */
-    public FileUtils(Activity activity) {
-        mActivity = activity;
-
-        checkLocalFileStructure();
+     * private constructor -- this is a static class, it should not be instantiated
+     **/
+    private FileUtils() {
+        // empty
     }
-
 
     /**
      * Checks if we have the permission read / write to the internal USB STORAGE,
      * requesting that permission if we do not have it.
      *
+     * @param activity The activity on which to pop up permission request dialogs. May be null, in
+     *                 which case nothing is done and false is returned.
      * @return whether or not we have the STORAGE permission.
      */
-    public static boolean canWriteToStorage() {
-        if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.READ_EXTERNAL_STORAGE)
+    @Nullable
+    public static boolean checkFileReadWritePermissions(Activity activity) {
+        if (activity == null)
+            return false;
+
+        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(mActivity,
+            ActivityCompat.requestPermissions(activity,
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                     123);
 
             // check if they clicked Deny
-            if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.READ_EXTERNAL_STORAGE)
+            if (ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE)
                     != PackageManager.PERMISSION_GRANTED)
                 return false;
         }
 
 
-        if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(mActivity,
+            ActivityCompat.requestPermissions(activity,
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     123);
 
             // check if they clicked Deny
-            if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            if (ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                     != PackageManager.PERMISSION_GRANTED)
                 return false;
         }
@@ -124,9 +139,13 @@ public class FileUtils {
      *      - event/
      *          - matchScoutingData.csv
      */
-    public void checkLocalFileStructure() {
+    //TODO Update ^^^
+    public static void checkLocalFileStructure(Activity activity) {
+        if (activity == null)
+            return;
+
         // check for STORAGE permission
-        if (!canWriteToStorage())
+        if (!checkFileReadWritePermissions(activity))
             return;
 
         makeDirectory(sLocalToplevelFilePath);
@@ -136,7 +155,7 @@ public class FileUtils {
     }
 
 
-    private void makeDirectory(String directoryName) {
+    private static void makeDirectory(String directoryName) {
 
         Log.d(App.getContext().getResources().getString(R.string.app_name), "Making directory: " + directoryName);
 
@@ -150,10 +169,6 @@ public class FileUtils {
         }
     }
 
-    public void appendToMatchDataFile() {
-        //TODO #76
-    }
-
     /**
      * Take one match of data and stick it at the end of the match data file.
      *
@@ -163,11 +178,9 @@ public class FileUtils {
      * Or, in printf / format strings:
      * "%d,%d,%b,%b,{%d;...},{{%d:%d:%.2f:%d};...},{%d;...},{{%d:%d:%.2f:%d};...},%,2f,{{%d;%,2f}:...},{{%.2f;%d}:...},%s,%b,%d"
      */
-    public void appendToMatchDataFile(MatchData.Match match) {
+    public static void appendToMatchDataFile(MatchData.Match match) {
 
-        //TODO: #76
-        //TODO: Redo this to write the file in JSON format
-
+        //TODO: #76, make sure this actually works
 
         String outFileName = sLocalEventFilePath +"/"+ App.getContext().getResources().getString(R.string.matchScoutingDataFileName);
 
@@ -175,8 +188,9 @@ public class FileUtils {
 
         File outfile = new File(outFileName);
         try {
+            // converts match to json, and then uses json.toString method to save in file
             BufferedWriter bw = new BufferedWriter(new FileWriter(outfile, true));
-            bw.append( match.toString() );
+            bw.append( match.toJson().toString() );
             bw.flush();
             bw.close();
         } catch (IOException e) {
@@ -191,7 +205,7 @@ public class FileUtils {
         outfile = new File(outFileName);
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(outfile, true));
-            bw.append( match.toString() );
+            bw.append( match.toJson().toString() );
             bw.flush();
             bw.close();
         } catch (IOException e) {
@@ -220,20 +234,21 @@ public class FileUtils {
      * Or, in printf / format strings:
      * "%d,%d,%b,%b,{%d;...},{{%d:%d:%.2f:%d};...},{%d;...},{{%d:%d:%.2f:%d};...},%,2f,{{%d;%,2f}:...},{{%.2f;%d}:...},%s,%b,%d"
      */
-    public MatchData loadMatchDataFile() {
+    public static MatchData loadMatchDataFile() {
         return loadMatchDataFile(FileType.SYNCHED);
     }
 
 
-    public MatchData loadMatchDataFile(FileType fileType) {
+    public static MatchData loadMatchDataFile(FileType fileType) {
 
         //TODO: #76
-        //TODO: Redo this to write the file in JSON format
+        //TODO: Redo this to read the file in JSON format
 
 
         MatchData matchData = new MatchData();
-        List<String> matchStrs = new ArrayList<>();
+        List<JSONObject> matchJson = new ArrayList<>();
 
+        // TODO: Do we even need to look at the matches in unsynched, since they should have all been save in synced
         // read the file
         String inFileName;
         switch (fileType) {
@@ -251,8 +266,7 @@ public class FileUtils {
 
             while (line != null) {
                 // braces are for human readibility, but make parsing harder
-                line = line.replace("{","").replace("}","");
-                matchStrs.add(line);
+                matchJson.add(new JSONObject(line));
                 line = br.readLine();
             }
             br.close();
@@ -263,10 +277,10 @@ public class FileUtils {
 
         // parse all the matches into the MatchData object
         boolean parseFailure = false;
-        for (String matchStr : matchStrs) {
+        for (JSONObject obj : matchJson) {
 
             try {
-                MatchData.Match match = new MatchData.Match(matchStr);
+                MatchData.Match match = new MatchData.Match(obj);
                 matchData.addMatch(match);
             } catch (Exception e) {
                 Log.e(App.getContext().getResources().getString(R.string.app_name), "loadMatchDataFile:: "+e.toString());
@@ -287,7 +301,7 @@ public class FileUtils {
      * The intention of Notes is for the drive team to be able to read them quickly.
      * They should be short and fit on one line, so they will be truncated to 80 characters.
      */
-    public void addNote(int teamNumber, String note) {
+    public static void addNote(int teamNumber, String note) {
         // TODO #41
     }
 
@@ -298,14 +312,14 @@ public class FileUtils {
      * @return All the notes for this team concatenated into a single string, with each note beginning with a bullet "-",
      * and ending with a newline (except for the last one).
      */
-    public String getNotesForTeam(int teamNumber) {
+    public static String getNotesForTeam(int teamNumber) {
         // TODO #41
 
         return "";
     }
 
 
-    public void appendToTeamDataFile(TeamDataObject teamDataObject) {
+    public static void appendToTeamDataFile(TeamDataObject teamDataObject) {
         // TODO #90
 
         String outFileName = sLocalEventFilePath +"/"+ App.getContext().getResources().getString(R.string.teamDataFileName);
@@ -338,30 +352,17 @@ public class FileUtils {
         }
     }
 
-
-    /**
-     * Clears the file containing unsynched Team Data.
-     * Call this after a successful sync with the db server.
-
-     * @return whether or not the delete was successful.
-     */
-    public boolean clearUnsyncedTeamDataFile() {
-        File file = new File( App.getContext().getResources().getString(R.string.teamDataFileNameUNSYNCHED));
-        return file.delete();
-    }
-    
-
     /**
      * Load data from the teamDataFile.
      */
-    public List<TeamDataObject> loadTeamDataFile() {
+    public static List<TeamDataObject> loadTeamDataFile() {
         return loadTeamDataFile(FileType.SYNCHED);
     }
 
         /**
          * Load data from the teamDataFile.
          */
-    public List<TeamDataObject> loadTeamDataFile(FileType fileType) {
+    public static List<TeamDataObject> loadTeamDataFile(FileType fileType) {
         // TODO #90
 
         List<TeamDataObject> teamDataObjects = new ArrayList<>();
@@ -446,7 +447,7 @@ public class FileUtils {
      * @param teamNumber
      * @return Can return NULL if we do not have permission to write to STORAGE.
      */
-    public Uri getNameForNewPhoto(int teamNumber) {
+    public static Uri getNameForNewPhoto(int teamNumber) {
         // check if a photo folder exists for this team, and create it if it does not.
         String dir = sLocalTeamPhotosFilePath + "/" + teamNumber + "/";
         File file = new File(dir);
@@ -464,7 +465,7 @@ public class FileUtils {
     }
 
 
-    public String getTeamPhotoPath(int teamNumber) {
+    public static String getTeamPhotoPath(int teamNumber) {
         return sLocalTeamPhotosFilePath + "/" + teamNumber;
     }
 
@@ -484,10 +485,7 @@ public class FileUtils {
      * @return It will call requester.updatePhotos(Bitmap[]) with an array of Bitmaps containing all
      * photos for that team, or a zero-length array if no photos were found for that team.
      */
-    public void getTeamPhotos(int teamNumber, PhotoRequester requester) {
-        // check for STORAGE permission
-        if (!canWriteToStorage())
-            return;
+    public static void getTeamPhotos(int teamNumber, PhotoRequester requester) {
 
         /* First, return the requester any photos we have on the local drive */
 
@@ -549,8 +547,8 @@ public class FileUtils {
             // Calculate the largest inSampleSize value that is a power of 2 and keeps
             // height or width larger than the requested size.
             while ((halfHeight / inSampleSize) > reqSize
-            || (halfWidth / inSampleSize) > reqSize) {
-            inSampleSize *= 2;
+                    || (halfWidth / inSampleSize) > reqSize) {
+                inSampleSize *= 2;
             }
         }
 
@@ -559,4 +557,178 @@ public class FileUtils {
         options.inJustDecodeBounds = false;
         return BitmapFactory.decodeFile(imagePath);
     }
+
+
+    /*
+        gets a competition data from the swagger server
+        if compID is 0 will take from current event, if other number will get that competition
+     */
+    public static void getMatchesFromServer(final Context context) {
+        RequestQueue queue = Volley.newRequestQueue(context);
+        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(App.getContext());
+        final String url = "http://ftp.team2706.ca:3000/competitions/" + SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_event), "<Not Set>") + "/matches.json";
+
+        // prepare the Request
+        JsonArrayRequest getRequest = new JsonArrayRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        // display response
+                        saveJsonFile(response);
+                        System.out.println(response.toString() + "\nWriting should have gone well");
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("Error.Response", error.toString());
+                    }
+                }
+        );
+
+        // add it to the RequestQueue
+        queue.add(getRequest);
+    }
+
+    private static void saveJsonFile(JSONArray jsonArray) {
+        if(!clearTeamDataFile(FileType.SYNCHED)) {
+            Log.d("Deleting file failed", "something probably went wrong");
+        }
+
+        String outFileName = sLocalEventFilePath +"/"+ App.getContext().getResources().getString(R.string.matchScoutingDataFileName);
+        File file = new File(outFileName);
+
+        try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter(file, true));
+
+            for (int i = 0; i < jsonArray.length(); i++){
+                bw.append(jsonArray.get(i).toString() + "\n");
+            }
+
+            bw.flush();
+            bw.close();
+        } catch (JSONException e) {
+            Log.d("JSON Exception: ", e.toString());
+        } catch (IOException e) {
+            Log.d("File writing error ", e.toString());
+        }
+    }
+
+    private static boolean clearTeamDataFile(FileType fileType) {
+        File file;
+        switch(fileType) {
+            case UNSYNCHED:
+                file = new File(sLocalEventFilePath + "/" + App.getContext().getResources().getString(R.string.matchScoutingDataFileNameUNSYNCHED));
+                return file.delete();
+            case SYNCHED:
+                file = new File(sLocalEventFilePath + "/" + App.getContext().getResources().getString(R.string.matchScoutingDataFileName));
+                return file.delete();
+        }
+        return false;
+    }
+
+    /*
+        Takes the selected event that you are at
+        TODO: get JSOn body uncommentedable
+     */
+    public static void postMatchToServer(final Context context/*, JSONObject jsonBody*/) {
+        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(App.getContext());
+
+        final String url = "http://ftp.team2706.ca:3000/competitions/" + SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_event), "<Not Set>") + ".json";
+        RequestQueue queue = Volley.newRequestQueue(context);
+
+        try {
+            RequestQueue requestQueue = Volley.newRequestQueue(context);
+            // Prepares POST data...
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("competition_id",SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_event), "<Not Set"));
+            jsonObject.put("number", 7);
+            jsonObject.put("team_id", 7);
+            final String mRequestBody = jsonObject.toString();
+            // Volley request...
+            StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    Log.i("VOLLEY", response);
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("VOLLEY error from: " + url + " - ", error.toString());
+                }
+            }) {
+                @Override
+                public String getBodyContentType() {
+                    return "application/json; charset=utf-8";
+                }
+
+                @Override
+                public byte[] getBody() throws AuthFailureError {
+                    try {
+                        return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
+                    } catch (UnsupportedEncodingException uee) {
+                        VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s",
+                                mRequestBody, "utf-8");
+                        return null;
+                    }
+                }
+            };
+            requestQueue.add(request);
+        } catch (Exception e) {
+            Log.d("Somethin interesting", e.toString());
+        }
+    }
+
+    public static void postMatchToServer(final Context context, int compID) {
+        final String url = "http://ftp.team2706.ca:3000/competitions/" + compID + "/matches.json";
+        RequestQueue queue = Volley.newRequestQueue(context);
+
+        try {
+            RequestQueue requestQueue = Volley.newRequestQueue(context);
+            // Prepares POST data...
+            JSONObject jsonBody = new JSONObject();
+            jsonBody.put("competition_id", compID);
+            jsonBody.put("number", 1);
+            jsonBody.put("team_number", 1);
+            JSONArray arr = new JSONArray();
+            JSONObject obj = new JSONObject();
+            obj.put("match_id", 99);
+            obj.put("objective_id", 14);
+            arr.put(obj);
+            jsonBody.put("events", arr);
+            final String mRequestBody = jsonBody.toString();
+            // Volley request...
+            StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    Log.i("VOLLEY", response);
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("VOLLEY error from: " + url + " - ", error.toString());
+                }
+            }) {
+                @Override
+                public String getBodyContentType() {
+                    return "application/json; charset=utf-8";
+                }
+
+                @Override
+                public byte[] getBody() throws AuthFailureError {
+                    try {
+                        return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
+                    } catch (UnsupportedEncodingException uee) {
+                        VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s",
+                                mRequestBody, "utf-8");
+                        return null;
+                    }
+                }
+            };
+            requestQueue.add(request);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

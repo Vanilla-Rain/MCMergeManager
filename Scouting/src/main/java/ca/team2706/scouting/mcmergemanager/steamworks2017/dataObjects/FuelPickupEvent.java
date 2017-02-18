@@ -6,6 +6,8 @@ package ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects;
 
 public class FuelPickupEvent extends Event {
 
+    public static final int objectiveId = 21;
+
     public enum FuelPickupType {
         HOPPER, WALL, GROUND;
     }
@@ -14,9 +16,13 @@ public class FuelPickupEvent extends Event {
 
     public FuelPickupType pickupType;
 
+    public FuelPickupEvent (){
+
+    }
+
     public FuelPickupEvent(double timestamp, FuelPickupType pickupType, int amount) {
         super(timestamp);
-
+//        pickupType = FuelPickupType.GROUND;
         this.pickupType = pickupType;
         this.amount = amount;
     }

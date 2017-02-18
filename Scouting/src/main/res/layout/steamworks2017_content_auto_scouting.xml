@@ -77,7 +77,8 @@
         android:layout_height="wrap_content"
         android:layout_width="500dp"
         android:layout_marginTop="12dp"
-        android:layout_below="@+id/autoBallSeekBar" />
+        android:layout_below="@+id/autoBallSeekBar"
+        android:text="0 points were scored" />
 
     <Button
         android:layout_width="match_parent"

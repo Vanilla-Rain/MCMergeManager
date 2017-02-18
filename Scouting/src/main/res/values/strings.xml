@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="event_id_link"><a href="https://docs.google.com/spreadsheets/d/162LDKU1Lb9MHrbc7uzOrUJRacjPwuV6t04kg8QSOnh0/edit?usp=sharing">Event IDs</a></string>
     <string name="app_name">MC Merge Manager</string>
     <string name="match_number">Match #</string>
     <string name="button_send">Send</string>
@@ -8,37 +7,24 @@
     <string name="red_alliance">Scout Red</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_match_scouting">Match Scouting</string>
-    <!--string name="hello_world">Hello world!</string-->
     <string name="match_scouting_activity_title">Match Scouting</string>
-    <string name="title_activity_auto_scouting">AutoScouting</string>
-    <string name="title_activity_auto_scouting2">AutoScouting2</string>
+    <string name="title_activity_auto_scouting">Auto Scouting</string>
+    <string name="title_activity_auto_scouting2">Auto Scouting2</string>
     <string name="title_activity_post_game">Post Game</string>
     <string name="title_activity_teleop_scouting">Teleop Scouting</string>
-    <string name="title_activity_file_chooser">FileChooser</string>
-    <string name="title_activity_team_stats">TeamStatsPage</string>
+
+    <string name="title_activity_team_stats">Team Stats Page</string>
+    <string name="title_activity_cycles_display">Cycles Display</string>
     <string name="title_activity_repair_time_collection">RepairTimeCollection</string>
-    <string name="title_activity_team_cycles_report">TeamCyclesReport</string>
-    <string name="matchScoutingDataFileName">matchScoutingData.csv</string>
-    <string name="matchScoutingDataFileNameUNSYNCHED">matchScoutingData_UNSYNCHED.csv</string>
+    <string name="matchScoutingDataFileName">matchScoutingData.json</string>
+    <string name="matchScoutingDataFileNameUNSYNCHED">matchScoutingData_UNSYNCHED.json</string>
     <string name="teamDataFileName">teamData.json</string>
     <string name="teamDataFileNameUNSYNCHED">teamData_UNSYNCHED.json</string>
     <string-array name="year_array">
+        <item>2017</item>
         <item>2016</item>
         <item>2015</item>
         <item>2014</item>
-        <item>2013</item>
-    </string-array>
-    <string-array name="defense_array">
-        <item>Breached Defense</item>
-        <item>Portcullis</item>
-        <item>Chevar de Frise</item>
-        <item>Moat</item>
-        <item>Ramparts</item>
-        <item>Drawbridge</item>
-        <item>Sally Port</item>
-        <item>Rock Wall</item>
-        <item>Rough Terrain</item>
-        <item>Low Bar</item>
     </string-array>
 
     <!-- EXTRAS -->
@@ -48,25 +34,28 @@
     <string name="EXTRA_TEAM_STATS_REPORT">ca.team2706.scouting.teamStatsReport</string>
 
     <string name="title_activity_settings">Settings</string>
+
     <!-- Strings related to properties from the Settings page -->
     <string name="PROPERTY_teamname">ca.team2706.scouting.teamname</string>
     <string name="PROPERTY_event">ca.team2706.scouting.event</string>
 
-    <string name="TBA_EVENT_NAMES">Alamo Regional:Arizona East Regional:Arizona West Regional:Autodesk Oregon Regional:BAE Granite State Regional:Bayou Regional:Bedford FIRST Robotics District:Boilermaker Regional:Boston Regional:Bridgewater-Raritan District:Buckeye Regional:Central Valley Regional:Central Washington Regional:Chesapeake Regional:Colorado Regional:Connecticut Regional:Crossroads Regional:Dallas Regional:Detroit District:Festival de Robotique Montreal:Finger Lakes Regional:Grand Blanc District:Greater Kansas City Regional:Greater Toronto East Regional:Greater Toronto West Regional:Greater Toronto Central Regional:Gull Lake District:Hatboro-Horsham District:Hawaii Regional:Hub City Regional:Inland Empire Regional:Israel Regional:Kettering University District:Lake Superior Regional:Las Vegas Regional:Lenape Seneca District:Livonia District:Lone Star Regional:Los Angeles Regional:Michigan State Championship:Mid-Atlantic Region Championship:Midwest Regional:Minnesota 10000 Lakes Regional:Minnesota North Star Regional:Mount Olive District:New York City Regional:North Carolina Regional:North Bay Regional:North Bay 2015 (for testing):Northern Lights Regional:Oklahoma Regional:Orlando Regional:Palmetto Regional:Peachtree Regional:Pine Tree Regional:Pittsburgh Regional:Queen City Regional:Razorback Regional:Sacramento Regional:San Diego Regional:SBPLI Long Island Regional:Seattle Regional:Silicon Valley Regional:Smoky Mountains Regional:South Florida Regional:Spokane Regional:Springside - Chestnut Hill District:St Joseph District:St. Louis Regional:TCnj District:Traverse City District:Troy District:Utah Regional:Virginia Regional:Washington DC Regional:Waterford District:Waterloo Regional:West Michigan District:Western Canadian Regional:Wisconsin Regional:WPI Regional</string>
-    <string name="TBA_EVENT_CODES">2016txsa:2016azch:2016azpx:2016orpo:2016nhma:2016lake:2016mibed:2016inwl:2016mabo:2016njbrg:2016ohcl:2016cama:2016wase:2016mdba:2016code:2016ctha:2016inth:2016txda:2016midet:2016qcmo:2016nyro:2016migbl:2016mokc:2016onto:2016onto:2016onto2:2016migul:2016pahat:2016hiho:2016txlu:2016casb:2016ista:2016miket:2016mndu:2016nvlv:2016njlen:2016miliv:2016txho:2016calb:2016micmp:2016mrcmp:2016ilch:2016mnmi:2016mnmi2:2016njfla:2016nyny:2016ncre:2016onnb:2015onnb:2016mndu2:2016okok:2016flor:2016scmb:2016gadu:2016mele:2016papi:2016ohic:2016arfa:2016casa:2016casd:2016nyli:2016wase:2016casj:2016tnkn:2016flfo:2016wach:2016paphi:2016misjo:2016mosl:2016njewn:2016mitvc:2016mitry:2016utwv:2016vari:2016dcwa:2016miwfd:2016onwa:2016miwmi:2016abca:2016wimi:2016mawo</string>
+    <string name="TBA_EVENT_NAMES">Test Event:Driver Practice:North Bay 2016 (for testing):Western Canada:Rocket City:Archimedes Division:Arkansas Rock City:Southern Cross:South Pacific:Arizona North:Arizona West:Sacramento:Orange County:Los Angeles:Central Valley:Carson Division:Carver Division:San Diego:San Francisco:Silicon Valley:Ventura:Chesapeake:Einstein (St. Louis):Einstein (Houston):Colorado:NE District - Hartford:NE District - Waterbury:Curie Division:Daly Division:Darwin Division:Orlando:South Florida:PCH District - Albany:Peachtree Championship:PCH District - Columbus:PCH District - Dalton:PCH District - Gainesville:Galileo Division:Shenzhen:Hawaii:Hopper Division:Iowa:Idaho:Midwest:Central Illinois:Indiana Championship:IN District - St. Joseph:IN District - Perry Meridian:IN District - Tippecanoe:Indiana Robotics Invitational:Israel Championship:ISR District #1:ISR District #2:ISR District #3:ISR District #4:Bayou:NE District - Greater Boston:NE District - SE Mass:NE District - North Shore:NE District - Worcester Polytechnic:CHS District - Greater DC:CHS District - Central Maryland:CHS District - Northern Maryland:NE District - Pine Tree:FIM District - Ann Arbor Pioneer:FIM District - Woodhaven:FIM District - Center Line:Michigan Championship:FIM District - Escanaba:FIM District - Gaylord:FIM District - Gull Lake:FIM District - Howell:FIM District - Kettering University #1:FIM District - East Kentwood:FIM District - Kettering University #2:FIM District - Lakeview:FIM District - Lansing:FIM District - Livonia:FIM District - Lake Superior State University:FIM District - Marysville:FIM District - Midland:FIM District - Shepherd:FIM District - St. Joseph:FIM District - Southfield:FIM District - Troy:FIM District - Traverse City:FIM District - Waterford:FIM District - West Michigan:Lake Superior:Northern Lights:Minnesota 10000 Lakes:Minnesota North Star:Greater Kansas City:St. Louis:Mid-Atlantic Championship:Toluca:Laguna:NC District - UNC Asheville:North Carolina Championship:NC District - Greensboro:NC District - Raleigh:NC District - Pitt County:New England Championship:Newton Division:NE District - Southern NH:NE District - Granite State:MAR District - Bridgewater-Raritan:MAR District - Mount Olive:MAR District - Montgomery:MAR District - Seneca:Las Vegas:SBPLI Long Island:New York City:Finger Lakes:Hudson Valley:New York Tech Valley:Buckeye:Miami Valley:Oklahoma:ONT District - Georgian College:Ontario Championship:ONT District - McMaster University:ONT District - Western University:ONT District - North Bay:ONT District - Durham College:ONT District - Ryerson University:ONT District - Victoria Park Collegiate:ONT District - University of Waterloo:ONT District - Windsor Essex Great Lakes:PNW District - Lake Oswego:PNW District - Clackamas Academy:PNW District - Wilsonville:Greater Pittsburgh:MAR District - Hatboro-Horsham:MAR District - Springside Chestnut Hill Academy:MAR District - Westtown:Pacific Northwest:Festival de Robotique - Montreal:NE District - Rhode Island:Roebling Division:Palmetto:Tesla Division:Smoky Mountains:Turing Division:Dallas:Lone Star Central:Hub City:Alamo:Brazos Valley:Lone Star North:Utah:CHS District - Southwest Virginia:CHS District - Central Virginia:CHS District - Northern Virginia:CHS District - Hampton Roads:PNW District - Auburn:PNW District - Auburn Mountainview:PNW District - Central Washington University:PNW District - Mount Vernon:PNW District - Glacier Peak:PNW District - West Valley:Seven Rivers:Wisconsin</string>
+    <string name="TBA_EVENT_CODES">2017testevent:2017drivepratc:2016onnb:2017abca:2017alhu:2017arc:2017arli:2017ausc:2017ausp:2017azfl:2017azpx:2017cada:2017cair:2017calb:2017cama:2017cars:2017carv:2017casd:2017casf:2017casj:2017cave:2017chcmp:2017cmpmo:2017cmptx:2017code:2017cthar:2017ctwat:2017cur:2017dal:2017dar:2017flor:2017flwp:2017gaalb:2017gacmp:2017gacol:2017gadal:2017gagai:2017gal:2017gush:2017hiho:2017hop:2017iacf:2017idbo:2017ilch:2017ilpe:2017incmp:2017inmis:2017inpmh:2017inwla:2017iri:2017iscmp:2017isde1:2017isde2:2017isde3:2017isde4:2017lake:2017mabos:2017mabri:2017marea:2017mawor:2017mdbet:2017mdedg:2017mdowi:2017melew:2017miann:2017mibro:2017micen:2017micmp:2017miesc:2017migay:2017migul:2017mihow:2017mike2:2017miken:2017miket:2017milak:2017milan:2017miliv:2017milsu:2017mimar:2017mimid:2017mishe:2017misjo:2017misou:2017mitry:2017mitvc:2017miwat:2017miwmi:2017mndu:2017mndu2:2017mnmi:2017mnmi2:2017mokc:2017mosl:2017mrcmp:2017mxtl:2017mxto:2017ncash:2017nccmp:2017ncgre:2017ncral:2017ncwin:2017necmp:2017new:2017nhbed:2017nhgrs:2017njbri:2017njfla:2017njski:2017njtab:2017nvlv:2017nyli:2017nyny:2017nyro:2017nysu:2017nytr:2017ohcl:2017ohsp:2017okok:2017onbar:2017oncmp:2017onham:2017onlon:2017onnob:2017onosh:2017onto1:2017onto2:2017onwat:2017onwin:2017orlak:2017orore:2017orwil:2017paca:2017pahat:2017paphi:2017pawch:2017pncmp:2017qcmo:2017ripro:2017roe:2017scmb:2017tes:2017tnkn:2017tur:2017txda:2017txho:2017txlu:2017txsa:2017txwa:2017txwo:2017utwv:2017vabla:2017vagle:2017vahay:2017vapor:2017waahs:2017waamv:2017waell:2017wamou:2017wasno:2017waspo:2017wila:2017wimi</string>
+    <string name="TBA_TEST_EVENT">2016onnb</string> <!-- If this event is selected in the settings, some of the data in manipulated so we can test what happens with an event in progress -->
+
 
     <string name="FILE_TOPLEVEL_DIR">MCMergeManager</string>
     <string name="title_activity_about">About</string>
     <string name="about_description">
         "<font size="18"><b>About MC Merge Manager</b></font>"
 
-        "MC Merge Manager is a scouting app for the 2016 FIRST Robotics Competition game &quot;Stronghold&quot;."
+        "MC Merge Manager is a scouting app for the 2017 FIRST Robotics Competition game &quot;Steamworks&quot;."
 
-        "MC Merge Manager is developed and maintained by FRC Team 2706 &quot;Merge Conflict&quot;. This project is open source and can be found at\n\t\t\twww.github.com/FRC2706/MCMergeManager."
+        "MC Merge Manager is developed and maintained by FRC Team 2706 &quot;Merge Conflict&quot;. This project is open source and can be found at\n\t\t\twww.github.com/FRC2706/MCMergeManager.\n\nSend questions to @gmail.com"
 
         "\n\n<font size="16"><b>Syncing Data</b></font>"
 
-        "<b>Team Photos</b> are synced to **somewhere, we haven\'t decided where yet**"
+        "<b>Team Photos</b> are synced to ftp.team2706.ca"
 
         "\n\n<font size="16"><b>Local Data</b></font>"
 
@@ -77,6 +66,5 @@
     <string name="title_activity_new_teleop_scouting">NewTeleopScouting</string>
     <string name="title_activity_new_auto_scouting">NewAutoScouting</string>
     <string name="title_activity_pre_game">PreGameActivity</string>
-
 
 </resources>
