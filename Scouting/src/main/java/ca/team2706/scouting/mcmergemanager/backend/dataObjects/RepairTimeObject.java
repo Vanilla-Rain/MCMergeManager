@@ -56,10 +56,10 @@ public class RepairTimeObject extends TeamDataObject {
         super(jsonObj);
 
         // Pull out data specific to a RepairTimeObject.
+        JSONObject datajson = new JSONObject(this.getData());
         System.out.println(getTeamNo());
-        System.out.println(jsonObj.has(JSONKEY_REPAIR_STATUS));
-        this.repairStatus = RepairStatus.valueOf(jsonObj.getString(JSONKEY_REPAIR_STATUS));
-        this.timestamp = jsonObj.getLong(JSONKEY_TIMESTAMP);
+        this.repairStatus = RepairStatus.valueOf(datajson.getString(JSONKEY_REPAIR_STATUS));
+        this.timestamp = datajson.getLong(JSONKEY_TIMESTAMP);
 
     }
 
@@ -72,11 +72,15 @@ public class RepairTimeObject extends TeamDataObject {
     }
 
     @Override
-    public JSONObject toJSON() throws JSONException {
-        JSONObject jsonObject = super.toJSON();
+    public void initData() throws JSONException {
+
+        // set this.data
+
+        JSONObject jsonObject = new JSONObject();
 
         jsonObject.put(JSONKEY_REPAIR_STATUS, repairStatus.name());
+        jsonObject.put(JSONKEY_TIMESTAMP, timestamp);
 
-        return jsonObject;
+        setData(jsonObject.toString());
     }
 }

@@ -7,6 +7,8 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
+
 import ca.team2706.scouting.mcmergemanager.R;
 import ca.team2706.scouting.mcmergemanager.backend.App;
 
@@ -15,7 +17,7 @@ import ca.team2706.scouting.mcmergemanager.backend.App;
  *
  * Created by mike on 05/02/17.
  */
-public abstract class TeamDataObject {
+public abstract class TeamDataObject implements Serializable {
 
     public enum TeamDataType {
         UNKNOWN, PIT_SCOUTING_DATA, NOTE, REPAIR_TIME;
@@ -91,8 +93,13 @@ public abstract class TeamDataObject {
         this.data = data;
     }
 
+    protected abstract void initData() throws JSONException;
 
+
+    /** Assumes data has alorady been filled with a string **/
     public JSONObject toJSON() throws JSONException {
+
+        initData();
 
         JSONObject jsonObject = new JSONObject();
 

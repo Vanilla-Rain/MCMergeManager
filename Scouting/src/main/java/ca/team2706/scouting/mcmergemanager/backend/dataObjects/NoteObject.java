@@ -21,4 +21,7 @@ public class NoteObject extends TeamDataObject {
     public String getNote() {
         return getData();
     }
+
+    // This is pointless
+    public void initData() {}
 }
