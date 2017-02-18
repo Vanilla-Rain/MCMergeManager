@@ -315,7 +315,7 @@ public class FileUtils {
         File outfile = new File(outFileName);
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(outfile, true));
-            bw.append( teamDataObject.toString() );
+            bw.append( teamDataObject.toString() + "\n");
             bw.flush();
             bw.close();
         } catch (IOException e) {
@@ -409,7 +409,8 @@ public class FileUtils {
             }
             br.close();
         } catch (Exception e) {
-            Log.e(App.getContext().getResources().getString(R.string.app_name), "loadMatchDataFile:: " + e.toString());
+            Log.e(App.getContext().getResources().getString(R.string.app_name), "loadTeamDataFile:: " + e.toString());
+            e.printStackTrace();
             return null;
         }
 

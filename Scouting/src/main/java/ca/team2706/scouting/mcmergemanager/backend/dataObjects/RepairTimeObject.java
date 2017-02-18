@@ -1,9 +1,14 @@
 package ca.team2706.scouting.mcmergemanager.backend.dataObjects;
 
+import android.util.Log;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Date;
+
+import ca.team2706.scouting.mcmergemanager.R;
+import ca.team2706.scouting.mcmergemanager.backend.App;
 
 /**
  * Created by alden on 2017-02-04.
@@ -50,9 +55,10 @@ public class RepairTimeObject extends TeamDataObject {
         // Pull out all the generic gearDeliveryData for a TeamDataObject.
         super(jsonObj);
 
-        // Pull out gearDeliveryData specific to a RepairTimeObject.
-        this.repairStatus = RepairStatus.valueOf(jsonObj.getString(JSONKEY_REPAIR_STATUS));
-        this.timestamp = jsonObj.getLong(JSONKEY_TIMESTAMP);
+        // Pull out data specific to a RepairTimeObject.
+        JSONObject datajson = new JSONObject(this.getData());
+        this.repairStatus = RepairStatus.valueOf(datajson.getString(JSONKEY_REPAIR_STATUS));
+        this.timestamp = datajson.getLong(JSONKEY_TIMESTAMP);
 
     }
 
@@ -64,4 +70,16 @@ public class RepairTimeObject extends TeamDataObject {
         return timestamp;
     }
 
+    @Override
+    public void initData() throws JSONException {
+
+        // set this.data
+
+        JSONObject jsonObject = new JSONObject();
+
+        jsonObject.put(JSONKEY_REPAIR_STATUS, repairStatus.name());
+        jsonObject.put(JSONKEY_TIMESTAMP, timestamp);
+
+        setData(jsonObject.toString());
+    }
 }

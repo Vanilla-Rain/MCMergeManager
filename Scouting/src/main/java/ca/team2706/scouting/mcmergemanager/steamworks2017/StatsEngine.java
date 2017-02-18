@@ -432,8 +432,8 @@ public class StatsEngine implements Serializable{
                         break;
                 }
             }
-            teamStatsReport.repair_time_percent  = ((double) repairCount) / teamRepairTimeObjects.size();
-            teamStatsReport.working_time_percent = ((double) workingCount) / teamRepairTimeObjects.size();
+            teamStatsReport.repair_time_percent  = ((double) repairCount) / teamRepairTimeObjects.size() * 100;
+            teamStatsReport.working_time_percent = ((double) workingCount) / teamRepairTimeObjects.size() * 100;
             teamStatsReport.repairTimeObjects = teamRepairTimeObjects;
         }
 
