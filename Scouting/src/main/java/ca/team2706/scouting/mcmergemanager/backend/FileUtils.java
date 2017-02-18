@@ -38,7 +38,7 @@ import ca.team2706.scouting.mcmergemanager.backend.interfaces.PhotoRequester;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.MatchData;
 
 /**
- * This is a helper class to hold common code for accessing shared scouting gearDeliveryData files.
+ * This is a helper class to hold common code for accessing shared scouting data files.
  * This class takes care of keeping a local cache, syncing to the server, and (eventually) sharing with other bluetooth-connected devices also running the app.
  * <p/>
  * Created by Mike Ounsworth
@@ -116,15 +116,7 @@ public class FileUtils {
     /**
      * This checks the local file system for the appropriate files and folders, creating them if they
      * are missing.
-     * <p/>
-     * The file structure is:
-     * MCMergeManager/
-     *  - team_name/
-     *      - Team Photos/
-     *      - event/
-     *          - matchScoutingData.csv
      */
-    //TODO Update ^^^
     public static void checkLocalFileStructure(Activity activity) {
         if (activity == null)
             return;
@@ -155,7 +147,7 @@ public class FileUtils {
     }
 
     /**
-     * Take one match of gearDeliveryData and stick it at the end of the match gearDeliveryData file.
+     * Take one match of data and stick it at the end of the match data file.
      *
      * Data format:
      * "matchNo<int>,teamNo<int>,isSpyBot<boolean>,reached<boolean>,{autoDefenseBreached<int>;...},{{autoBallShot_X<int>;autoBallShot_Y<int>;autoBallShot_time<.2double>;autoBallshot_which<int>}:...},{teleopDefenseBreached<int>;...},{{teleopBallShot_X<int>;teleopBallShot_Y<int>;teleopBallShot_time<.2double>;teleopBallshot_which<int>}:...},timeDefending<,2double>,{{ballPickup_selection<int>;ballPickup_time<,2double>}:...},{{scaling_time<.2double>;scaling_comelpted<int>}:...},notes<String>,challenged<boolean>,timeDead<int>"
@@ -171,7 +163,7 @@ public class FileUtils {
 
         String outFileName = sLocalEventFilePath +"/"+ App.getContext().getResources().getString(R.string.matchScoutingDataFileName);
 
-        Log.d(App.getContext().getResources().getString(R.string.app_name), "Saving match gearDeliveryData to file: "+outFileName);
+        Log.d(App.getContext().getResources().getString(R.string.app_name), "Saving match data to file: "+outFileName);
 
         File outfile = new File(outFileName);
         try {
@@ -186,7 +178,7 @@ public class FileUtils {
 
         outFileName = sLocalEventFilePath +"/"+ App.getContext().getResources().getString(R.string.matchScoutingDataFileNameUNSYNCHED);
 
-        Log.d(App.getContext().getResources().getString(R.string.app_name), "Saving match gearDeliveryData to file: "+outFileName);
+        Log.d(App.getContext().getResources().getString(R.string.app_name), "Saving match data to file: "+outFileName);
 
         outfile = new File(outFileName);
         try {
@@ -212,13 +204,7 @@ public class FileUtils {
     }
 
     /**
-     * Load the entire file of match gearDeliveryData into Objects.
-     *
-     * Data format:
-     * "matchNo<int>,teamNo<int>,isSpyBot<boolean>,reached<boolean>,{autoDefenseBreached<int>;...},{{autoBallShot_X<int>;autoBallShot_Y<int>;autoBallShot_time<.2double>;autoBallshot_which<int>}:...},{teleopDefenseBreached<int>;...},{{teleopBallShot_X<int>;teleopBallShot_Y<int>;teleopBallShot_time<.2double>;teleopBallshot_which<int>}:...},timeDefending<,2double>,{{ballPickup_selection<int>;ballPickup_time<,2double>}:...},{{scaling_time<.2double>;scaling_comelpted<int>}:...},notes<String>,challenged<boolean>,timeDead<int>"
-     *
-     * Or, in printf / format strings:
-     * "%d,%d,%b,%b,{%d;...},{{%d:%d:%.2f:%d};...},{%d;...},{{%d:%d:%.2f:%d};...},%,2f,{{%d;%,2f}:...},{{%.2f;%d}:...},%s,%b,%d"
+     * Load the entire file of match data into Objects.
      */
     public static MatchData loadMatchDataFile() {
         return loadMatchDataFile(FileType.SYNCHED);
@@ -275,7 +261,7 @@ public class FileUtils {
             }
         }
         if (parseFailure) {
-            Toast.makeText(App.getContext(), "Warning: match gearDeliveryData may be corrupted or malformed.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(App.getContext(), "Warning: match data may be corrupted or malformed.", Toast.LENGTH_SHORT).show();
         }
 
         return matchData;
@@ -306,11 +292,10 @@ public class FileUtils {
 
 
     public static void appendToTeamDataFile(TeamDataObject teamDataObject) {
-        // TODO #90
 
         String outFileName = sLocalEventFilePath +"/"+ App.getContext().getResources().getString(R.string.teamDataFileName);
 
-        Log.d(App.getContext().getResources().getString(R.string.app_name), "Saving team gearDeliveryData to file: "+outFileName);
+        Log.d(App.getContext().getResources().getString(R.string.app_name), "Saving team data to file: "+outFileName);
 
         File outfile = new File(outFileName);
         try {
@@ -325,7 +310,7 @@ public class FileUtils {
 
         outFileName = sLocalEventFilePath +"/"+ App.getContext().getResources().getString(R.string.teamDataFileNameUNSYNCHED);
 
-        Log.d(App.getContext().getResources().getString(R.string.app_name), "Saving team gearDeliveryData to file: "+outFileName);
+        Log.d(App.getContext().getResources().getString(R.string.app_name), "Saving team data to file: "+outFileName);
 
         outfile = new File(outFileName);
         try {
@@ -355,17 +340,16 @@ public class FileUtils {
     }
 
     /**
-     * Load gearDeliveryData from the teamDataFile.
+     * Load data from the teamDataFile.
      */
     public static List<TeamDataObject> loadTeamDataFile() {
         return loadTeamDataFile(FileType.SYNCHED);
     }
 
         /**
-         * Load gearDeliveryData from the teamDataFile.
+         * Load data from the teamDataFile.
          */
     public static List<TeamDataObject> loadTeamDataFile(FileType fileType) {
-        // TODO #90
 
         List<TeamDataObject> teamDataObjects = new ArrayList<>();
 
@@ -423,13 +407,11 @@ public class FileUtils {
      * it would be more efficient to pass it to filterTeamDataByTeam().
      */
     public static List<TeamDataObject> loadTeamDataForTeam(int teamNo) {
-        // TODO #90
 
         return filterTeamDataByTeam(teamNo, loadTeamDataFile());
     }
 
     public static List<TeamDataObject> filterTeamDataByTeam(int teamNo, List<TeamDataObject> teamDataObjects) {
-        // TODO #90
 
         List<TeamDataObject> toRet = new ArrayList<>();
 
@@ -514,10 +496,6 @@ public class FileUtils {
             // else: if it's not a file, then what is it???? .... skip I guess
         }
         requester.updatePhotos(arrBitmaps.toArray(new Bitmap[arrBitmaps.size()]));
-
-
-        /* This used to sync with Google Drive, now we need something different */
-        // TODO
 
     }
 

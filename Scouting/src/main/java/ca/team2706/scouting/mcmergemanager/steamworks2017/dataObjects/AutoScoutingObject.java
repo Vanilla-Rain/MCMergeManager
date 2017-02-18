@@ -28,16 +28,4 @@ public class AutoScoutingObject implements Serializable {
 
     // empty constructor
     public AutoScoutingObject() {}
-
-
-    // TODO out of date, and not being used anywhere. Fix if we need it.
-    // public AutoScoutingObject(boolean start_gear, boolean start_fuel, int open_hopper, int gear_delivered, boolean boiler,
-    //                           int accuracy) {
-    //     this.start_fuel = start_fuel;
-    //     this.start_gear = start_gear;
-    //     this.open_hopper = open_hopper;
-    //     this.gear_delivered = gear_delivered;
-    //     this.boiler = boiler;
-    //     this.numFuelScored = accuracy;
-    // }
 }
