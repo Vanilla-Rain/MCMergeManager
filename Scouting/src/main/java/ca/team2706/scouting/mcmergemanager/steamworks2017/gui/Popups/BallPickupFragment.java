@@ -21,6 +21,7 @@ import static ca.team2706.scouting.mcmergemanager.stronghold2016.gui.TeleopScout
 public class BallPickupFragment extends DialogFragment {
     private FragmentListener listener;
     private FuelPickupEvent ballPickups = new FuelPickupEvent();
+    public Bundle fuelPickupData = new Bundle();
 
     public BallPickupFragment() {
         // Empty constructor is required for DialogFragment
@@ -62,6 +63,10 @@ public class BallPickupFragment extends DialogFragment {
                     @Override
                     public void onClick(View v) {
                         ballPickups.pickupType = FuelPickupEvent.FuelPickupType.GROUND;
+
+                        fuelPickupData.putSerializable("FuelPickupEvent", ballPickups);
+                        listener.editNameDialogComplete(me, fuelPickupData);
+
                         Log.i(getClass().getName(), "quit");
                         listener.editNameDialogCancel(me);
 
@@ -74,6 +79,9 @@ public class BallPickupFragment extends DialogFragment {
                     @Override
                     public void onClick(View v) {
                         ballPickups.pickupType = FuelPickupEvent.FuelPickupType.GROUND;
+                        fuelPickupData.putSerializable("FuelPickupEvent", ballPickups);
+                        listener.editNameDialogComplete(me, fuelPickupData);
+
                         Log.i(getClass().getName(), "quit");
                         listener.editNameDialogCancel(me);
 
@@ -86,6 +94,9 @@ public class BallPickupFragment extends DialogFragment {
                     @Override
                     public void onClick(View v) {
                         ballPickups.pickupType = FuelPickupEvent.FuelPickupType.HOPPER;
+                        fuelPickupData.putSerializable("FuelPickupEvent", ballPickups);
+                        listener.editNameDialogComplete(me, fuelPickupData);
+
                         Log.i(getClass().getName(), "quit");
                         listener.editNameDialogCancel(me);
 
@@ -98,6 +109,9 @@ public class BallPickupFragment extends DialogFragment {
                     @Override
                     public void onClick(View v) {
                         ballPickups.pickupType = FuelPickupEvent.FuelPickupType.WALL;
+                        fuelPickupData.putSerializable("FuelPickupEvent", ballPickups);
+                        listener.editNameDialogComplete(me, fuelPickupData);
+
                         Log.i(getClass().getName(), "quit");
                         listener.editNameDialogCancel(me);
 
@@ -109,7 +123,7 @@ public class BallPickupFragment extends DialogFragment {
     @Override
     public void onCancel(DialogInterface dialog) {
         super.onCancel(dialog);
-        teleopScoutingObject.add(ballPickups);
         listener.editNameDialogCancel(this);
     }
+
 }

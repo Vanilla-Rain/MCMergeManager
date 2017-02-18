@@ -22,6 +22,7 @@ public class GearPickupFragment extends DialogFragment {
 
     private FragmentListener listener;
     private GearPickupEvent gearPickupEvent = new GearPickupEvent();
+    public  Bundle gearPickupData = new Bundle();
 
     public GearPickupFragment() {
         // Empty constructor is required for DialogFragment
@@ -63,6 +64,10 @@ public class GearPickupFragment extends DialogFragment {
                     @Override
                     public void onClick(View v) {
                         gearPickupEvent.pickupType = GearPickupEvent.GearPickupType.GROUND;
+
+                        gearPickupData.putSerializable("FuelPickupEvent", gearPickupEvent);
+                        listener.editNameDialogComplete(me, gearPickupData);
+
                         Log.i(getClass().getName(), "quit");
                         listener.editNameDialogCancel(me);
                     }
@@ -73,6 +78,10 @@ public class GearPickupFragment extends DialogFragment {
                     @Override
                     public void onClick(View v) {
                         gearPickupEvent.pickupType = GearPickupEvent.GearPickupType.WALL;
+
+                        gearPickupData.putSerializable("FuelPickupEvent", gearPickupEvent);
+                        listener.editNameDialogComplete(me, gearPickupData);
+
                         Log.i(getClass().getName(), "quit");
                         listener.editNameDialogCancel(me);
                     }
@@ -84,6 +93,10 @@ public class GearPickupFragment extends DialogFragment {
                     @Override
                     public void onClick(View v) {
                         gearPickupEvent.pickupType = GearPickupEvent.GearPickupType.GROUND;
+
+                        gearPickupData.putSerializable("FuelPickupEvent", gearPickupEvent);
+                        listener.editNameDialogComplete(me, gearPickupData);
+
                         Log.i(getClass().getName(), "quit");
                         listener.editNameDialogCancel(me);
                     }

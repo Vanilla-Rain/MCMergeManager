@@ -25,7 +25,7 @@ public class TeamStatsReport implements Serializable {
     public RepairTimeObject[] repairTimeObjects;
     public double repair_time_percent;
     public double working_time_percent;
-    // To get the total number of data points, use repairTimeObjects.length
+    // To get the total number of gearDeliveryData points, use repairTimeObjects.length
 
     public boolean badManners; // TODO: I have no idea how we're capturing this
 

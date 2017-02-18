@@ -25,6 +25,7 @@ public class BallShootingFragment extends DialogFragment{
 
     SeekBar ballShootingSeekBar;
     public int pointsScored;
+    public Bundle fuelShootingData = new Bundle();
 
     // These are too assemble a string for the text view, not the most elegant solution but it works. -JustinT
     public String endingText = " balls were scored";
@@ -102,6 +103,9 @@ public class BallShootingFragment extends DialogFragment{
                     @Override
                     public void onClick(View v) {
                         ballsScored.numScored = pointsScored;
+                        fuelShootingData.putSerializable("FuelPickupEvent", ballsScored);
+                        listener.editNameDialogComplete(me, fuelShootingData);
+
                         Log.i(getClass().getName(), "quit");
                         listener.editNameDialogCancel(me);
                     }

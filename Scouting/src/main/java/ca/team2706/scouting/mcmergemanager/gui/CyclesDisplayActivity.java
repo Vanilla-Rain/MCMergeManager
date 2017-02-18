@@ -17,16 +17,16 @@ public class CyclesDisplayActivity extends AppCompatActivity {
 
 
 
-        // TODO: instead of fake data, unpack the TeamStatsReport from the intent
-        // and display real data.
+        // TODO: instead of fake gearDeliveryData, unpack the TeamStatsReport from the intent
+        // and display real gearDeliveryData.
 
 
         LinearLayout mainLayout = (LinearLayout) findViewById(R.id.cycles_display_main_layout);
 
-        // in the real app, get this from the team's data.
+        // in the real app, get this from the team's gearDeliveryData.
         int matchesPlayed = 20;
 
-        // populate the things with fake simulated data, just so it looks like something
+        // populate the things with fake simulated gearDeliveryData, just so it looks like something
         int matchNoCounter = 1 + (int) (Math.random()*10);
 
         for(int i=0; i< matchesPlayed; i++) {

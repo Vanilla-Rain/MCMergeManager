@@ -16,7 +16,9 @@ import java.util.List;
 
 import ca.team2706.scouting.mcmergemanager.R;
 import ca.team2706.scouting.mcmergemanager.gui.PreGameActivity;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.FuelPickupEvent;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.GearDelivevryEvent;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.GearPickupEvent;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.PostGameObject;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.TeleopScoutingObject;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.gui.Popups.BallPickupFragment;
@@ -33,7 +35,12 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
 
 
     public void editNameDialogComplete(DialogFragment dialogFragment, Bundle data) {
-    // Empty field is here because of interface.
+        // Empty field is here because of interface.
+        GearDelivevryEvent gearDelivevryEvent = (GearDelivevryEvent) data.getSerializable("GearDeliveryEvent");
+        FuelPickupEvent fuelPickupEvent = (FuelPickupEvent) data.getBinder("FuelPickupEvent");
+
+        teleopScoutingObject.add(gearDelivevryEvent);
+        teleopScoutingObject.add(fuelPickupEvent);
     }
 
     Handler m_handler;
@@ -45,9 +52,8 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
     public ArrayList<Integer> defensesBreached;
     public ArrayList<BallShot> ballsShot;
     public ArrayList<BallPickup> ballPickups;
+    // TODO Needs to be made private.
     public static TeleopScoutingObject teleopScoutingObject;
-
-    public static List<GearDelivevryEvent> gearDeliveryEvents;
 
     private PostGameObject postGameObject= new PostGameObject();
 

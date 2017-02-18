@@ -204,13 +204,13 @@ public class StatsEngine implements Serializable{
 
                 Matrix MatOPRs = M.transpose().times(M).inverse().times(M.transpose()).times(Y);
 
-                // now that we have the data, fill in the hashmap
+                // now that we have the gearDeliveryData, fill in the hashmap
                 OPRs = new HashMap<>();
                 for (int i = 0; i < teams.size(); i++) {
                     OPRs.put(teams.get(i), MatOPRs.get(i, 0));
                 }
             } catch (Exception e) {
-                // probably a Singular Matrix exception -- means we don't have enough data yet
+                // probably a Singular Matrix exception -- means we don't have enough gearDeliveryData yet
 
                 // we don't have scores for any match
                 OPRs = new HashMap<>();
@@ -705,7 +705,7 @@ public class StatsEngine implements Serializable{
             }
 
 
-            // Post match data
+            // Post match gearDeliveryData
 
             if (! match.postGameObject.notes.equals("") )
                 teamStatsReport.notes += "\t\t- " + match.postGameObject.notes + "\n";

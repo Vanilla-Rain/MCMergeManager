@@ -110,6 +110,7 @@ public class PostGameClass extends AppCompatActivity {
             TeleopScoutingObject t  = (TeleopScoutingObject) thisIntent.getSerializableExtra("TeleopScoutingData");
             PostGameObject post = (PostGameObject) thisIntent.getSerializableExtra("PostGameData");  // climb was set in climbingFragment.
             post.time_dead = timeDead;
+            post.time_defending = timeDefending;
 
             //PostGameObject post = new PostGameObject(woo, PostGameObject.ClimbType.SUCCESS, timeDead, timeDefending);
             Intent intent = new Intent(this,PreGameActivity.class);

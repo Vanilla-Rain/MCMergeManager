@@ -136,10 +136,10 @@ public class ClimbingFragment extends DialogFragment {
     public void toPostGame(View view) {
 
         Intent intent = new Intent(view.getContext(),PostGameClass.class);
-        // Pass data to PostGameClass.class
+        // Pass gearDeliveryData to PostGameClass.class
         intent.putExtra("PreGameData", getActivity().getIntent().getSerializableExtra("PreGameData"));
         intent.putExtra("AutoScoutingData", getActivity().getIntent().getSerializableExtra("AutoScoutingData"));
-        intent.putExtra("TeleopScoutingData", getActivity().getIntent().getSerializableExtra("TeleopScoutingObject"));
+        intent.putExtra("TeleopScoutingData", teleopScoutingObject);
         intent.putExtra("PostGameData", postGameObject);
 
         startActivity(intent);

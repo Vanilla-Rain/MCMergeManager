@@ -42,6 +42,7 @@ public class AutoScouting extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.steamworks2017_activity_auto_scouting);
         // initiate  views
+
         simpleSeekBar=(SeekBar)findViewById(R.id.autoBallSeekBar);
         // perform seek bar change listener event used for getting the progress value
         simpleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -58,9 +59,12 @@ public class AutoScouting extends AppCompatActivity {
             public void onStopTrackingTouch(SeekBar seekBar) {
                 TextView tv = (TextView) findViewById(R.id.autoBallScoredTextView);
                 tv.setText(progressChangedValue*5 + " points were scored");
-                pointsScored = progressChangedValue;
+                pointsScored = progressChangedValue*5;
             }
         });
+    }
+
+    public void toTeleop(View view) {
 
 
         autoScoutingObject2017.numFuelScored = pointsScored;
@@ -84,19 +88,19 @@ public class AutoScouting extends AppCompatActivity {
 
         final CheckBox checkiestOfBoxes = (CheckBox) findViewById(R.id.startingBallsCheckBox);
         if (checkiestOfBoxes.isChecked()) {
-            autoScoutingObject2017.crossedBaseline = true;
+            autoScoutingObject2017.start_fuel = true;
         }
         else {
-            autoScoutingObject2017.crossedBaseline = false;}
-    }
+            autoScoutingObject2017.start_fuel = false;}
 
-    public void toTeleop(View view) {
         Intent intent = new Intent(this, TeleopScouting.class);
         intent.putExtra("PreGameData", getIntent().getSerializableExtra("PreGameData"));
         intent.putExtra("AutoScoutingData", autoScoutingObject2017);
         startActivity(intent);
     }
 
+
+    // Still here from 2016, have not really touched it.
     class CheckVar extends TimerTask {
         public int x;
         public int y;
