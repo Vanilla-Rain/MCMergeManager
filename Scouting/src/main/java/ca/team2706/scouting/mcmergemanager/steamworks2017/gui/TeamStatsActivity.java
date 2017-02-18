@@ -22,7 +22,7 @@ public class TeamStatsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.steamworks2017_activity_team_stats);
 
-        // unbundle the stats data from the intent
+        // unbundle the stats gearDeliveryData from the intent
         Intent intent = getIntent();
 
         try {
@@ -67,6 +67,7 @@ public class TeamStatsActivity extends AppCompatActivity {
         CheckBox badManners = (CheckBox) findViewById(R.id.badManners);
         badManners.setChecked(m_teamStatsReport.badManners);
 
+        ((TextView) findViewById(R.id.repairTimeTV)).setText( String.format("Time Spent Repairing: %d%% (%d)", (int) m_teamStatsReport.repair_time_percent, m_teamStatsReport.repairTimeObjects.size()) );
 
 
 
@@ -137,13 +138,6 @@ public class TeamStatsActivity extends AppCompatActivity {
             ((TextView) findViewById(R.id.teleopGroundPickupsTV)).setText(String.format("%d",
                     m_teamStatsReport.teleop_fuelGroundPickups_avgPerMatch));
 
-
-            // TODO: Needs missed pickups for hoppers, chute & ground
-            /*((TextView) findViewById(R.id.teleopFailedPickupsTV)).setText(String.format("%d / %d (%.2f)",
-                                                                            m_teamStastReport.teleop_fuel,
-                                                                            m_teamStastReport.numMatchesPlayed,
-                                                                            ((double) m_teamStastReport.numFailedPickups) / m_teamStastReport.numMatchesPlayed));*/
-
             ((TextView) findViewById(R.id.teleopTimePlayingDTV)).setText(String.format("\t%.1f s",
                                                                             m_teamStatsReport.avgTimeSpentPlayingDef) );
 
@@ -185,44 +179,6 @@ public class TeamStatsActivity extends AppCompatActivity {
                     m_teamStatsReport.teleop_gearsPickupGround_avgPerMatch));
 
 
-        }
-
-
-        // TODO: Needs BallShot and a counter of the total number of low & high shots
-        /** High Shots Map **/
-        final ImageView highGoalMap = (ImageView) findViewById(R.id.mapHigh);
-        for (BallShot shot : m_teamStatsReport.successfulTeleopHighShots) {
-
-            // draw a new pin on the map
-            RelativeLayout imgHolder = (RelativeLayout) findViewById(R.id.mapHighLayout);
-
-            ImageView pointerImageView = new ImageView(this);
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(50, 50);
-            params.leftMargin = (int) highGoalMap.getX() + shot.x - 25;
-            params.topMargin =  (int) highGoalMap.getY() + shot.y - 25;
-
-            pointerImageView.setImageResource(R.drawable.pinicon);
-            pointerImageView.setLayoutParams(params);
-            imgHolder.addView(pointerImageView);
-        }
-
-
-        /** Low Shots Map **/
-
-        final ImageView lowGoalMap = (ImageView) findViewById(R.id.mapLow);
-        for (BallShot shot : m_teamStatsReport.successfulTeleopLowShots) {
-
-            // draw a new pin on the map
-            RelativeLayout imgHolder = (RelativeLayout) findViewById(R.id.mapLowLayout);
-
-            ImageView pointerImageView = new ImageView(this);
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(50, 50);
-            params.leftMargin = (int) lowGoalMap.getX() + shot.x - 25;
-            params.topMargin = (int) lowGoalMap.getY() + shot.y - 25;
-
-            pointerImageView.setImageResource(R.drawable.pinicon);
-            pointerImageView.setLayoutParams(params);
-            imgHolder.addView(pointerImageView);
         }
 
     }

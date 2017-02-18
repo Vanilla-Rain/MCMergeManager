@@ -25,18 +25,23 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/teleopBallsScoredSeekBar"
-        android:layout_weight="0.04" />
+        android:layout_weight="0.04"
+        android:max="24"
+        android:progress="0" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/teleopBallScoredTextView" />
 
-    <TextView
+    <Button
+        android:text="Submit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/textView6"
-        android:layout_weight="0.04" />
+        android:id="@+id/ballScoringSubmit"
+        android:layout_weight="0.04"
+        android:background="@android:color/white"
+        android:textColor="@android:color/holo_purple" />
 
     <Button
         android:text="Cancel"

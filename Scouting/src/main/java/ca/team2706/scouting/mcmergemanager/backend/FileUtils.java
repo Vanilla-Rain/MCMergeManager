@@ -10,12 +10,16 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Toast;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -28,11 +32,11 @@ import java.util.Date;
 import java.util.List;
 
 import ca.team2706.scouting.mcmergemanager.R;
+import ca.team2706.scouting.mcmergemanager.backend.dataObjects.NoteObject;
+import ca.team2706.scouting.mcmergemanager.backend.dataObjects.RepairTimeObject;
+import ca.team2706.scouting.mcmergemanager.backend.dataObjects.TeamDataObject;
 import ca.team2706.scouting.mcmergemanager.backend.interfaces.PhotoRequester;
-import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.BallPickup;
-import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.BallShot;
-import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.MatchData;
-import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.ScalingTime;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.MatchData;
 
 /**
  * This is a helper class to hold common code for accessing shared scouting data files.
@@ -41,13 +45,6 @@ import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.ScalingTim
  * Created by Mike Ounsworth
  */
 public class FileUtils {
-
-    private static Activity mActivity;
-
-    /**
-     * A pointer to myself so that the nested classes can use my ConnectionCallbacks
-     **/
-    FileUtils m_me;
 
     public static String sLocalToplevelFilePath;
     public static String sLocalTeamFilePath;
@@ -73,47 +70,51 @@ public class FileUtils {
         sRemoteTeamPhotosFilePath = "/" + App.getContext().getString(R.string.FILE_TOPLEVEL_DIR) + "/"  + "Team Photos";
     }
 
-    /**
-     * Constructor
-     *
-     * @param activity This will be used to fetch string constants for file storage and displaying toasts.
-     */
-    public FileUtils(Activity activity) {
-        mActivity = activity;
-        m_me = this;
-
-        checkLocalFileStructure();
+    public enum FileType {
+        SYNCHED, UNSYNCHED;
     }
 
+    /**
+     * private constructor -- this is a static class, it should not be instantiated
+     **/
+    private FileUtils() {
+        // empty
+    }
 
     /**
      * Checks if we have the permission read / write to the internal USB STORAGE,
      * requesting that permission if we do not have it.
      *
+     * @param activity The activity on which to pop up permission request dialogs. May be null, in
+     *                 which case nothing is done and false is returned.
      * @return whether or not we have the STORAGE permission.
      */
-    public static boolean canWriteToStorage() {
-        if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.READ_EXTERNAL_STORAGE)
+    @Nullable
+    public static boolean checkFileReadWritePermissions(Activity activity) {
+        if (activity == null)
+            return false;
+
+        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(mActivity,
+            ActivityCompat.requestPermissions(activity,
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                     123);
 
             // check if they clicked Deny
-            if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.READ_EXTERNAL_STORAGE)
+            if (ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE)
                     != PackageManager.PERMISSION_GRANTED)
                 return false;
         }
 
 
-        if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(mActivity,
+            ActivityCompat.requestPermissions(activity,
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     123);
 
             // check if they clicked Deny
-            if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            if (ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                     != PackageManager.PERMISSION_GRANTED)
                 return false;
         }
@@ -124,17 +125,13 @@ public class FileUtils {
     /**
      * This checks the local file system for the appropriate files and folders, creating them if they
      * are missing.
-     * <p/>
-     * The file structure is:
-     * MCMergeManager/
-     *  - team_name/
-     *      - Team Photos/
-     *      - event/
-     *          - matchScoutingData.csv
      */
-    public void checkLocalFileStructure() {
+    public static void checkLocalFileStructure(Activity activity) {
+        if (activity == null)
+            return;
+
         // check for STORAGE permission
-        if (!canWriteToStorage())
+        if (!checkFileReadWritePermissions(activity))
             return;
 
         makeDirectory(sLocalToplevelFilePath);
@@ -144,7 +141,7 @@ public class FileUtils {
     }
 
 
-    private void makeDirectory(String directoryName) {
+    private static void makeDirectory(String directoryName) {
 
         Log.d(App.getContext().getResources().getString(R.string.app_name), "Making directory: " + directoryName);
 
@@ -167,11 +164,15 @@ public class FileUtils {
      * Or, in printf / format strings:
      * "%d,%d,%b,%b,{%d;...},{{%d:%d:%.2f:%d};...},{%d;...},{{%d:%d:%.2f:%d};...},%,2f,{{%d;%,2f}:...},{{%.2f;%d}:...},%s,%b,%d"
      */
-    public void appendToMatchDataFile(MatchData.Match match) {
+    public static void appendToMatchDataFile(MatchData.Match match) {
+
+        //TODO: #76
+        //TODO: Redo this to write the file in JSON format
+
 
         String outFileName = sLocalEventFilePath +"/"+ App.getContext().getResources().getString(R.string.matchScoutingDataFileName);
 
-        Log.d(App.getContext().getResources().getString(R.string.app_name), "Saving data to file: "+outFileName);
+        Log.d(App.getContext().getResources().getString(R.string.app_name), "Saving match data to file: "+outFileName);
 
         File outfile = new File(outFileName);
         try {
@@ -186,7 +187,7 @@ public class FileUtils {
 
         outFileName = sLocalEventFilePath +"/"+ App.getContext().getResources().getString(R.string.matchScoutingDataFileNameUNSYNCHED);
 
-        Log.d(App.getContext().getResources().getString(R.string.app_name), "Saving data to file: "+outFileName);
+        Log.d(App.getContext().getResources().getString(R.string.app_name), "Saving match data to file: "+outFileName);
 
         outfile = new File(outFileName);
         try {
@@ -201,21 +202,44 @@ public class FileUtils {
 
 
     /**
-     * Load the entire file of match data into Objects.
-     *
-     * Data format:
-     * "matchNo<int>,teamNo<int>,isSpyBot<boolean>,reached<boolean>,{autoDefenseBreached<int>;...},{{autoBallShot_X<int>;autoBallShot_Y<int>;autoBallShot_time<.2double>;autoBallshot_which<int>}:...},{teleopDefenseBreached<int>;...},{{teleopBallShot_X<int>;teleopBallShot_Y<int>;teleopBallShot_time<.2double>;teleopBallshot_which<int>}:...},timeDefending<,2double>,{{ballPickup_selection<int>;ballPickup_time<,2double>}:...},{{scaling_time<.2double>;scaling_comelpted<int>}:...},notes<String>,challenged<boolean>,timeDead<int>"
-     *
-     * Or, in printf / format strings:
-     * "%d,%d,%b,%b,{%d;...},{{%d:%d:%.2f:%d};...},{%d;...},{{%d:%d:%.2f:%d};...},%,2f,{{%d;%,2f}:...},{{%.2f;%d}:...},%s,%b,%d"
+     * Clears the file containing unsynched Team Data.
+     * Call this after a successful sync with the db server.
+
+     * @return whether or not the delete was successful.
      */
-    public MatchData loadMatchDataFile() {
+    public boolean clearUnsyncedMatchScoutingDataFile() {
+        File file = new File( App.getContext().getResources().getString(R.string.matchScoutingDataFileNameUNSYNCHED));
+        return file.delete();
+    }
+
+    /**
+     * Load the entire file of match data into Objects.
+     */
+    public static MatchData loadMatchDataFile() {
+        return loadMatchDataFile(FileType.SYNCHED);
+    }
+
+
+    public static MatchData loadMatchDataFile(FileType fileType) {
+
+        //TODO: #76
+        //TODO: Redo this to write the file in JSON format
+
 
         MatchData matchData = new MatchData();
         List<String> matchStrs = new ArrayList<>();
 
         // read the file
-        String inFileName = sLocalEventFilePath +"/"+ App.getContext().getResources().getString(R.string.matchScoutingDataFileName);
+        String inFileName;
+        switch (fileType) {
+            case UNSYNCHED:
+                inFileName = sLocalEventFilePath + "/" + App.getContext().getResources().getString(R.string.matchScoutingDataFileNameUNSYNCHED);
+                break;
+            case SYNCHED:
+            default:
+                inFileName = sLocalEventFilePath + "/" + App.getContext().getResources().getString(R.string.matchScoutingDataFileName);
+        }
+
         try {
             BufferedReader br = new BufferedReader(new FileReader(inFileName));
             String line = br.readLine();
@@ -258,8 +282,8 @@ public class FileUtils {
      * The intention of Notes is for the drive team to be able to read them quickly.
      * They should be short and fit on one line, so they will be truncated to 80 characters.
      */
-    public void addNote(int teamNumber, String note) {
-        // TODO
+    public static void addNote(int teamNumber, String note) {
+        // TODO #41
     }
 
     /**
@@ -269,10 +293,142 @@ public class FileUtils {
      * @return All the notes for this team concatenated into a single string, with each note beginning with a bullet "-",
      * and ending with a newline (except for the last one).
      */
-    public String getNotesForTeam(int teamNumber) {
-        // TODO
+    public static String getNotesForTeam(int teamNumber) {
+        // TODO #41
 
         return "";
+    }
+
+
+    public static void appendToTeamDataFile(TeamDataObject teamDataObject) {
+
+        String outFileName = sLocalEventFilePath +"/"+ App.getContext().getResources().getString(R.string.teamDataFileName);
+
+        Log.d(App.getContext().getResources().getString(R.string.app_name), "Saving team data to file: "+outFileName);
+
+        File outfile = new File(outFileName);
+        try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter(outfile, true));
+            bw.append( teamDataObject.toString() + "\n");
+            bw.flush();
+            bw.close();
+        } catch (IOException e) {
+
+        }
+
+
+        outFileName = sLocalEventFilePath +"/"+ App.getContext().getResources().getString(R.string.teamDataFileNameUNSYNCHED);
+
+        Log.d(App.getContext().getResources().getString(R.string.app_name), "Saving team data to file: "+outFileName);
+
+        outfile = new File(outFileName);
+        try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter(outfile, true));
+            bw.append( teamDataObject.toString() );
+            bw.flush();
+            bw.close();
+        } catch (IOException e) {
+
+        }
+    }
+
+    public static List<TeamDataObject> getRepairTimeObjects() {
+        List<TeamDataObject> teamDataObjects = loadTeamDataFile();
+
+        List<TeamDataObject> repairTimeObjectList = new ArrayList<>();
+
+        if(teamDataObjects != null) {
+            for(TeamDataObject teamDataObject: teamDataObjects) {
+                if(teamDataObject instanceof RepairTimeObject)
+                    repairTimeObjectList.add(teamDataObject);
+            }
+        }
+
+
+        return repairTimeObjectList;
+    }
+
+    /**
+     * Load data from the teamDataFile.
+     */
+    public static List<TeamDataObject> loadTeamDataFile() {
+        return loadTeamDataFile(FileType.SYNCHED);
+    }
+
+        /**
+         * Load data from the teamDataFile.
+         */
+    public static List<TeamDataObject> loadTeamDataFile(FileType fileType) {
+
+        List<TeamDataObject> teamDataObjects = new ArrayList<>();
+
+        // read the file
+        String inFileName;
+        switch (fileType) {
+            case UNSYNCHED:
+                inFileName = sLocalEventFilePath + "/" + App.getContext().getResources().getString(R.string.teamDataFileNameUNSYNCHED);
+                break;
+            case SYNCHED:
+            default:
+                inFileName = sLocalEventFilePath + "/" + App.getContext().getResources().getString(R.string.teamDataFileName);
+        }
+
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(inFileName));
+            String line = br.readLine();
+
+            while (line != null) {
+
+                JSONObject jsonObject;
+                try {
+                    jsonObject = new JSONObject(line);
+                } catch (JSONException e) {
+                    continue;
+                }
+
+                TeamDataObject teamDataObject;
+                TeamDataObject.TeamDataType teamDataType = TeamDataObject.TeamDataType.valueOf(jsonObject.getString(TeamDataObject.JSONKEY_TYPE));
+                switch (teamDataType) {
+                    case NOTE:
+                        teamDataObjects.add(new NoteObject(jsonObject));
+                        break;
+
+                    case REPAIR_TIME:
+                        teamDataObjects.add(new RepairTimeObject(jsonObject));
+                        break;
+                }
+
+                line = br.readLine();
+            }
+            br.close();
+        } catch (Exception e) {
+            Log.e(App.getContext().getResources().getString(R.string.app_name), "loadTeamDataFile:: " + e.toString());
+            e.printStackTrace();
+            return null;
+        }
+
+        return teamDataObjects;
+    }
+
+
+    /**
+     * This will reload the entire TeamDataFile from disk. If you already have a List<TeamDataObject>, then
+     * it would be more efficient to pass it to filterTeamDataByTeam().
+     */
+    public static List<TeamDataObject> loadTeamDataForTeam(int teamNo) {
+
+        return filterTeamDataByTeam(teamNo, loadTeamDataFile());
+    }
+
+    public static List<TeamDataObject> filterTeamDataByTeam(int teamNo, List<TeamDataObject> teamDataObjects) {
+
+        List<TeamDataObject> toRet = new ArrayList<>();
+
+        for(TeamDataObject teamDataObject : teamDataObjects)
+            if (teamDataObject.getTeamNo() == teamNo)
+                toRet.add(teamDataObject);
+
+        return toRet;
     }
 
 
@@ -285,7 +441,7 @@ public class FileUtils {
      * @param teamNumber
      * @return Can return NULL if we do not have permission to write to STORAGE.
      */
-    public Uri getNameForNewPhoto(int teamNumber) {
+    public static Uri getNameForNewPhoto(int teamNumber) {
         // check if a photo folder exists for this team, and create it if it does not.
         String dir = sLocalTeamPhotosFilePath + "/" + teamNumber + "/";
         File file = new File(dir);
@@ -303,7 +459,7 @@ public class FileUtils {
     }
 
 
-    public String getTeamPhotoPath(int teamNumber) {
+    public static String getTeamPhotoPath(int teamNumber) {
         return sLocalTeamPhotosFilePath + "/" + teamNumber;
     }
 
@@ -323,10 +479,7 @@ public class FileUtils {
      * @return It will call requester.updatePhotos(Bitmap[]) with an array of Bitmaps containing all
      * photos for that team, or a zero-length array if no photos were found for that team.
      */
-    public void getTeamPhotos(int teamNumber, PhotoRequester requester) {
-        // check for STORAGE permission
-        if (!canWriteToStorage())
-            return;
+    public static void getTeamPhotos(int teamNumber, PhotoRequester requester) {
 
         /* First, return the requester any photos we have on the local drive */
 
@@ -352,10 +505,6 @@ public class FileUtils {
             // else: if it's not a file, then what is it???? .... skip I guess
         }
         requester.updatePhotos(arrBitmaps.toArray(new Bitmap[arrBitmaps.size()]));
-
-
-        /* This used to sync with Google Drive, now we need something different */
-        // TODO
 
     }
 

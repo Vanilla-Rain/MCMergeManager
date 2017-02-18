@@ -1,10 +1,12 @@
 package ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects;
 
+import java.io.Serializable;
+
 /**
  * Created by dwall on 16/01/17.
  */
 
-public class PostGameObject {
+public class PostGameObject implements Serializable {
     public String notes = "";
 
     public enum ClimbType {
@@ -14,6 +16,7 @@ public class PostGameObject {
     public ClimbType climbType;
     public double climb_time;
     public double time_dead;
+    public double time_defending;
 
 
     // empty constructor

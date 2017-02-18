@@ -3,7 +3,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.3'
+        classpath 'com.android.tools.build:gradle:2.2.0'
     }
 }
 apply plugin: 'com.android.application'
@@ -14,11 +14,11 @@ repositories {
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    buildToolsVersion '25.0.0'
 
     defaultConfig {
         applicationId "ca.team2706.scouting.mcmergemanager"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
@@ -44,4 +44,5 @@ dependencies {
     compile files('libs/Jama-1.0.3.jar')
     compile 'com.google.android.gms:play-services-appindexing:8.4.0'
     compile files('libs/commons-net-3.5.jar')
+    compile 'com.android.volley:volley:1.0.0'
 }

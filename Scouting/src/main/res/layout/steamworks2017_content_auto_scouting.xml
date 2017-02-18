@@ -10,7 +10,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:id="@+id/relativeLayoutMap"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".stronghold2016.gui.AutoScouting"
+    tools:context=".steamworks2017.gui.AutoScouting"
     tools:showIn="@layout/stronghold2016_activity_auto_scouting">
 
     <TextView
@@ -77,7 +77,8 @@
         android:layout_height="wrap_content"
         android:layout_width="500dp"
         android:layout_marginTop="12dp"
-        android:layout_below="@+id/autoBallSeekBar" />
+        android:layout_below="@+id/autoBallSeekBar"
+        android:text="0 points were scored" />
 
     <Button
         android:layout_width="match_parent"

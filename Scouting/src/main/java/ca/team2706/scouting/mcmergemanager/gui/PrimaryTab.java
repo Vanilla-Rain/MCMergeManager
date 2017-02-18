@@ -1,29 +1,17 @@
 package ca.team2706.scouting.mcmergemanager.gui;
 
-import android.app.Activity;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import org.apache.commons.net.ftp.FTPFile;
-
 import ca.team2706.scouting.mcmergemanager.R;
-import ca.team2706.scouting.mcmergemanager.backend.App;
-import ca.team2706.scouting.mcmergemanager.backend.FTPClient;
-import ca.team2706.scouting.mcmergemanager.backend.FileUtils;
-import ca.team2706.scouting.mcmergemanager.backend.interfaces.FTPRequester;
-import ca.team2706.scouting.mcmergemanager.stronghold2016.StatsEngine;
-import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.MatchSchedule;
+import ca.team2706.scouting.mcmergemanager.backend.dataObjects.MatchSchedule;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.StatsEngine;
 
 
 public class PrimaryTab extends Fragment {
@@ -67,14 +55,14 @@ public class PrimaryTab extends Fragment {
                 try {
                     // this is a little convoluted, since we're sending the whole schedule, we could just send the match number rather than a copy of that match
 
-                    // bundle up the data it needs
+                    // bundle up the gearDeliveryData it needs
                     Bundle args = new Bundle();
                     MatchSchedule.Match match;
-                    match = MainActivity.m_matchSchedule.getMatchNo(matchNo-1);
+                    match = MainActivity.sMatchSchedule.getMatchNo(matchNo-1);
                     args.putString(PreMatchReportFragment.ARG_MATCH, match.toString());  // if match == null, this will throw an exception and be caught
-                    if (MainActivity.m_matchSchedule == null) return false;
+                    if (MainActivity.sMatchSchedule == null) return false;
 
-                    StatsEngine statsEngine = new StatsEngine(MainActivity.m_matchData, MainActivity.m_matchSchedule);
+                    StatsEngine statsEngine = new StatsEngine(MainActivity.sMatchData, MainActivity.sMatchSchedule);
                     args.putSerializable(PreMatchReportFragment.ARG_STATS, statsEngine);
 
                     fragment.setArguments(args);
@@ -83,7 +71,7 @@ public class PrimaryTab extends Fragment {
                     getActivity().getFragmentManager().beginTransaction()
                             .replace(R.id.fragment_container1, fragment).commit();
                 } catch (Exception e) {
-                    // if we don't have the data, don't display it
+                    // if we don't have the gearDeliveryData, don't display it
                 }
 
                 return false;

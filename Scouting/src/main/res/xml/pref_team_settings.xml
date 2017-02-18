@@ -50,11 +50,12 @@
     <ListPreference
         android:key="@string/PROPERTY_event"
         android:title="Event Name"
-        android:defaultValue="Preseason"
+        android:defaultValue="Test Event"
         android:selectAllOnFocus="true"
         android:inputType="text"
         android:singleLine="true"
         android:maxLines="1"
         android:persistent="true" />
+
 
 </PreferenceScreen>

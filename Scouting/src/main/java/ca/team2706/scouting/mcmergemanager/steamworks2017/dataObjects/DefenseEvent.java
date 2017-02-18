@@ -8,6 +8,10 @@ public class DefenseEvent extends Event {
 
     public int skill;
 
+    public DefenseEvent(){
+
+    }
+
     public DefenseEvent(double timestamp,  int skill) {
         super(timestamp);
         this.skill = skill;

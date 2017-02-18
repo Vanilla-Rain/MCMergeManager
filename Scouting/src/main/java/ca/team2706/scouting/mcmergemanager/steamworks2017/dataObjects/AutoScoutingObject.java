@@ -1,10 +1,12 @@
 package ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects;
 
+import java.io.Serializable;
+
 /**
  * Created by dwall on 16/01/17.
  */
 
-public class AutoScoutingObject {
+public class AutoScoutingObject implements Serializable {
 
     public boolean start_gear;
     public boolean start_fuel;
@@ -13,7 +15,7 @@ public class AutoScoutingObject {
     public static final int BOILER_NOT_ATTEPMTED  = 0;
     public static final int LOW_BOILER_ATTEPMTED  = 1;
     public static final int HIGH_BOILER_ATTEMPTED = 2;
-    public int numFuelScored; // slider for numFuelScored of fuel delivery
+    public int numFuelScored; // slider(seek bar) for numFuelScored of fuel delivery
 
     public int open_hopper; // 0 if none, 1+ store how many opened
 
@@ -26,16 +28,4 @@ public class AutoScoutingObject {
 
     // empty constructor
     public AutoScoutingObject() {}
-
-
-    // TODO out of date, and not being used anywhere. Fix if we need it.
-    // public AutoScoutingObject(boolean start_gear, boolean start_fuel, int open_hopper, int gear_delivered, boolean boiler,
-    //                           int accuracy) {
-    //     this.start_fuel = start_fuel;
-    //     this.start_gear = start_gear;
-    //     this.open_hopper = open_hopper;
-    //     this.gear_delivered = gear_delivered;
-    //     this.boiler = boiler;
-    //     this.numFuelScored = accuracy;
-    // }
 }
