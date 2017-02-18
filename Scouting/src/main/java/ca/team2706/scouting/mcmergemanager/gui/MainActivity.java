@@ -38,6 +38,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import ca.team2706.scouting.mcmergemanager.R;
+import ca.team2706.scouting.mcmergemanager.backend.App;
 import ca.team2706.scouting.mcmergemanager.backend.BlueAllianceUtils;
 import ca.team2706.scouting.mcmergemanager.backend.FTPClient;
 import ca.team2706.scouting.mcmergemanager.backend.FileUtils;
@@ -87,11 +88,20 @@ public class MainActivity extends AppCompatActivity
 
         mFileUtils = new FileUtils(this);
         FileUtils.canWriteToStorage();
-        ftpClient = new FTPClient("35.164.180.39", "scout", "2706IsWatching!", FileUtils.sLocalTeamPhotosFilePath,  FileUtils.sRemoteTeamPhotosFilePath);
-        try{
-            ftpClient.connect();
-        }catch(Exception e){
-            Log.d("FTP|Connect", "Error while connecting");
+
+
+        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(App.getContext());
+        String ftpHostname = SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_FTPHostname),"");
+        String ftpUsername = SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_FTPUsername),"");
+        String ftpPassword = SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_FTPPassword),"");
+
+        if (ftpHostname != "" && ftpUsername != "" && ftpPassword != "") {
+            ftpClient = new FTPClient(ftpHostname, ftpUsername, ftpPassword, FileUtils.sLocalTeamPhotosFilePath, FileUtils.sRemoteTeamPhotosFilePath);
+            try {
+                ftpClient.connect();
+            } catch (Exception e) {
+                Log.d("FTP|Connect", "Error while connecting");
+            }
         }
     }
 

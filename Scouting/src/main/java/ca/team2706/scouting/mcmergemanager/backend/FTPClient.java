@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Path;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
@@ -97,6 +98,13 @@ public class FTPClient {
      * @throws ConnectException
      */
     public void connect() throws ConnectException {
+
+        ConnectivityManager cm = (ConnectivityManager) App.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        if (activeNetwork == null) { // not connected to the internet
+            return;
+        }
+
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
@@ -119,11 +127,6 @@ public class FTPClient {
             sleep(5);  //multi-threaded voodoo. Give the AsyncTask 5 ms to get started and get the lock.
         } catch (InterruptedException e) {
             // do nothing.
-        }
-        synchronized (connectedThreadLock) {
-            if (!connected) {
-                throw new ConnectException("FTPClient failed to connect to FTP server");
-            }
         }
     }
     /**

@@ -44,10 +44,16 @@
     <string name="EXTRA_TEAM_STATS_REPORT">ca.team2706.scouting.teamStatsReport</string>
 
     <string name="title_activity_settings">Settings</string>
+
+
     <!-- Strings related to properties from the Settings page -->
     <string name="PROPERTY_FTPHostname">ca.team2706.scouting.hostname</string>
+    <string name="PROPERTY_FTPHostname_default">ftp.team2706.ca</string>
     <string name="PROPERTY_FTPUsername">ca.team2706.scouting.username</string>
+    <string name="PROPERTY_FTPUsername_default">scout</string>
     <string name="PROPERTY_FTPPassword">ca.team2706.scouting.password</string>
+    <string name="PROPERTY_DBHostname">ca.team2706.scouting.dbhostname</string>
+    <string name="PROPERTY_DBHostname_default">ftp.team2706.ca</string>
     <string name="PROPERTY_FTPSyncOverWifi">ca.team2706.scouting.syncOverWifi</string>
     <string name="PROPERTY_event">ca.team2706.scouting.event</string>
 
