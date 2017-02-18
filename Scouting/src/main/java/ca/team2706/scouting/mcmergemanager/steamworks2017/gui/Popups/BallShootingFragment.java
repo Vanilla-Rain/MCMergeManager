@@ -10,12 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import ca.team2706.scouting.mcmergemanager.R;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.FuelShotEvent;
 
-import static ca.team2706.scouting.mcmergemanager.stronghold2016.gui.TeleopScouting.teleopScoutingObject;
+import static ca.team2706.scouting.mcmergemanager.steamworks2017.gui.TeleopScouting.teleopScoutingObject;
 
 /**
  * Created by Merge on 2017-02-09.

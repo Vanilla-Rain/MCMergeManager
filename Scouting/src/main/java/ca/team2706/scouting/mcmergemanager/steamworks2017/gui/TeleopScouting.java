@@ -1,4 +1,4 @@
-package ca.team2706.scouting.mcmergemanager.stronghold2016.gui;
+package ca.team2706.scouting.mcmergemanager.steamworks2017.gui;
 
 import android.app.DialogFragment;
 import android.app.FragmentManager;
@@ -17,6 +17,7 @@ import java.util.List;
 import ca.team2706.scouting.mcmergemanager.R;
 import ca.team2706.scouting.mcmergemanager.gui.PreGameActivity;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.FuelPickupEvent;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.FuelShotEvent;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.GearDelivevryEvent;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.GearPickupEvent;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.PostGameObject;
@@ -37,25 +38,24 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
     public void editNameDialogComplete(DialogFragment dialogFragment, Bundle data) {
         // Empty field is here because of interface.
         GearDelivevryEvent gearDelivevryEvent = (GearDelivevryEvent) data.getSerializable("GearDeliveryEvent");
-        FuelPickupEvent fuelPickupEvent = (FuelPickupEvent) data.getBinder("FuelPickupEvent");
+        FuelPickupEvent fuelPickupEvent = (FuelPickupEvent) data.getSerializable("FuelPickupEvent");
+        GearPickupEvent gearPickupEvent = (GearPickupEvent) data.getSerializable("GearPickupEvent");
+        FuelShotEvent fuelShotEvent = (FuelShotEvent) data.getSerializable("FuelShotEvent");
 
+        teleopScoutingObject.add(fuelShotEvent);
         teleopScoutingObject.add(gearDelivevryEvent);
         teleopScoutingObject.add(fuelPickupEvent);
+        teleopScoutingObject.add(gearPickupEvent);
     }
 
     Handler m_handler;
     Runnable m_handlerTask;
-    Handler m_handlerDefending;
-    Runnable m_handlerTaskDefending;
     private int remainTime = 135;
-    private FragmentListener listener;
-    public ArrayList<Integer> defensesBreached;
-    public ArrayList<BallShot> ballsShot;
-    public ArrayList<BallPickup> ballPickups;
+    public static int ballsHeld;
     // TODO Needs to be made private.
     public static TeleopScoutingObject teleopScoutingObject;
 
-    private PostGameObject postGameObject= new PostGameObject();
+    private PostGameObject postGameObject = new PostGameObject();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +66,8 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
         //final Spinner spinner = (Spinner) findViewById(R.id.defense_spinner);
         final TextView tvGameTime = (TextView) findViewById(R.id.textViewGameTime);
 
+        TextView numberBallsHolding = (TextView) findViewById(R.id.numberBallsHolding);
+        numberBallsHolding.setText("woo");
 
         Button fab = (Button) findViewById(R.id.ballPickupButton);
         fab.setOnClickListener(new View.OnClickListener() {

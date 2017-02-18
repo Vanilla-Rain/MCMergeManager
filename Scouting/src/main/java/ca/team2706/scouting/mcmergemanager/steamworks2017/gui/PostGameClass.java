@@ -8,12 +8,9 @@ import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-
 import ca.team2706.scouting.mcmergemanager.R;
 import ca.team2706.scouting.mcmergemanager.backend.FileUtils;
 import ca.team2706.scouting.mcmergemanager.gui.PreGameActivity;
-import ca.team2706.scouting.mcmergemanager.gui.PrimaryTab;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.AutoScoutingObject;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.DefenseEvent;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.MatchData;
@@ -42,7 +39,7 @@ public class PostGameClass extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.stronghold2016_activity_post_game);
+        setContentView(R.layout.steamworks2017_activity_post_game);
         // initiate  views
         deadTimeSeekBar = (SeekBar) findViewById(R.id.timeDeadSeekBar);
         // perform seek bar change listener event used for getting the progress value
