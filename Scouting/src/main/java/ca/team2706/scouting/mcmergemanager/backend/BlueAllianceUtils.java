@@ -104,10 +104,10 @@ public class BlueAllianceUtils {
 
 
     /**
-     * Gets you the formatted string of Blue Alliance data for a particular team.
-     * If we already have data on this team in
+     * Gets you the formatted string of Blue Alliance gearDeliveryData for a particular team.
+     * If we already have gearDeliveryData on this team in
      * /MCMergeManager/<TeamName>/<EventName>/thebluealliance.json
-     * then it will return that data, otherwise it will do an internet fetch and store the results
+     * then it will return that gearDeliveryData, otherwise it will do an internet fetch and store the results
      * in the file for future offline searches.
      * <p/>
      * This should trigger on searching for a team on the Team Info tab.
@@ -127,9 +127,9 @@ public class BlueAllianceUtils {
         ArrayList<String> store2014 = new ArrayList<>();
         ArrayList<String> store2013 = new ArrayList<>();
 
-        /* if (we already have data on them in the json file) {
-            String data = extract the data from json format and build a pretty-print string
-            return data; //TODO
+        /* if (we already have gearDeliveryData on them in the json file) {
+            String gearDeliveryData = extract the gearDeliveryData from json format and build a pretty-print string
+            return gearDeliveryData; //TODO
         }*/
 
         ConnectivityManager cm = (ConnectivityManager) App.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -337,13 +337,13 @@ public class BlueAllianceUtils {
                 try {
                     scheduleStr = readUrl("https://www.thebluealliance.com/api/v2/event/"+TBA_event+"/matches?X-TBA-App-Id=frc2706:mergemanager:v01/");
                 } catch (Exception e) {
-                    Log.e(App.getContext().getResources().getString(R.string.app_name), "Error fetching schedule data from thebluealliance. ",e);
+                    Log.e(App.getContext().getResources().getString(R.string.app_name), "Error fetching schedule gearDeliveryData from thebluealliance. ",e);
                     return;
                 }
 
                 MatchSchedule schedule = MatchSchedule.newFromJsonSchedule(scheduleStr);
 
-                // return data to the requester
+                // return gearDeliveryData to the requester
                 requester.updateMatchSchedule(schedule);
             }
         }.start();
@@ -370,14 +370,14 @@ public class BlueAllianceUtils {
 
 
                 } catch (Exception e) {
-                    Log.e(App.getContext().getResources().getString(R.string.app_name), "Error fetching schedule data from thebluealliance. ",e);
+                    Log.e(App.getContext().getResources().getString(R.string.app_name), "Error fetching schedule gearDeliveryData from thebluealliance. ",e);
                     return;
                 }
 
                 MatchSchedule schedule = new MatchSchedule();
                 schedule.addToListOfTeamsAtEvent(teamsListStr);
 
-                // return data to the requester
+                // return gearDeliveryData to the requester
                 requester.updateMatchSchedule(schedule);
             }
         }.start();
@@ -385,9 +385,9 @@ public class BlueAllianceUtils {
     }
 
     /**
-     * Fetches Blue Alliance data for all teams who are registered for a particular event and saves the data in
+     * Fetches Blue Alliance gearDeliveryData for all teams who are registered for a particular event and saves the gearDeliveryData in
      * /MCMergeManager/<TeamName>/<EventName>/thebluealliance.json
-     * so that the data is still accessible later, even if there's no internet connection later.
+     * so that the gearDeliveryData is still accessible later, even if there's no internet connection later.
      * <p/>
      * This should trigger on a button, or maybe a settin+gs-menu item in Settings.
      */

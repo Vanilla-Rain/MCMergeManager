@@ -31,7 +31,7 @@ public class MatchSchedule implements Serializable {
         private int redScore;
 
 
-        // getters - this is how other classes will access the data (they can read it, but not change it)
+        // getters - this is how other classes will access the gearDeliveryData (they can read it, but not change it)
         public int getMatchNo() { return matchNo; }
         public int getBlue1() { return blue1; }
         public int getBlue2() { return blue2; }
@@ -42,7 +42,7 @@ public class MatchSchedule implements Serializable {
         public int getBlueScore() { return blueScore; }
         public int getRedScore() { return redScore; }
 
-        // setters - this is how other classes will update data, or make a Match if they only know a few fields
+        // setters - this is how other classes will update gearDeliveryData, or make a Match if they only know a few fields
         public void setMatchNo(int matchNo) { this.matchNo = matchNo; }
         public void setRed1(int red1) { this.red1 = red1; }
         public void setRed2(int red2) { this.red2 = red2; }
@@ -74,7 +74,7 @@ public class MatchSchedule implements Serializable {
                 redScore = Integer.parseInt(tokens[8]);
 
             } catch (Exception e) {
-                // the data was in the wrong format, empty everything out
+                // the gearDeliveryData was in the wrong format, empty everything out
                 matchNo = blue1 = blue2 = blue3 = red1 = red2 = red3 = 0;
                 blueScore = redScore = -1;
             }
@@ -111,7 +111,7 @@ public class MatchSchedule implements Serializable {
 
     /**
      * A costructor that parses the schedule as deliveryStatus by TheBlueAlliance.
-     * @param jsonSchedule the match schedule data as returned by thebluealliance.com
+     * @param jsonSchedule the match schedule gearDeliveryData as returned by thebluealliance.com
      */
     public MatchSchedule(String jsonSchedule) {
         super();
@@ -193,7 +193,7 @@ public class MatchSchedule implements Serializable {
 
         } catch(JSONException e) {
             // something went wrong
-            Log.e("MCMergeManager", "Failed to parse the match schedule from thebluealliance. Maybe the data is not valid json?");
+            Log.e("MCMergeManager", "Failed to parse the match schedule from thebluealliance. Maybe the gearDeliveryData is not valid json?");
             return;
         }
     }

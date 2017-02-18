@@ -165,7 +165,7 @@ public class JsonUtils {
         try {
             RequestQueue requestQueue = Volley.newRequestQueue(context);
             String URL = "http://...";
-            // Prepares POST data...
+            // Prepares POST gearDeliveryData...
             JSONObject jsonBody = new JSONObject();
             jsonBody.put("TakeoffID", "2");
             jsonBody.put("ViewPhoto1", "image base64 content");
