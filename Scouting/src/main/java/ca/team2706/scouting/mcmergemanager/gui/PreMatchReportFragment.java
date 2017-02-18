@@ -54,7 +54,7 @@ public class PreMatchReportFragment extends Fragment {
         // Inflate the layout for this fragment
         m_view =  inflater.inflate(R.layout.fragment_pre_match_report, container, false);
 
-        // stick all the data on the screen
+        // stick all the gearDeliveryData on the screen
 
         // by the way PrimaryTab is written, m_match.matchNo will always be populated
         ((TextView) m_view.findViewById(R.id.titleTV) ).setText("Pre-Match Report for Match #" + m_match.getMatchNo());
