@@ -273,8 +273,6 @@ public Context context;
                 try {
                     teamNumber = Integer.parseInt(enterATeamNumberPopup.inputResult);
                 } catch (NumberFormatException e) {
-                    // TODO: should probably pop up a toast or something. There seems to be some threading issue with
-                    // doing that from here.
 
                     Log.e(getResources().getString(R.string.app_name), e.toString());
                     return;

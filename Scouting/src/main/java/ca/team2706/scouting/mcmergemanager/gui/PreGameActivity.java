@@ -25,8 +25,6 @@ public class PreGameActivity extends AppCompatActivity {
         if (matchNo != -1)
             ((EditText) findViewById(R.id.match_num_field)).setText(""+matchNo);
 
-        // TODO if I have time, come back and generate some radio button to replace the Team # entry box, when I have the schedule available
-
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -53,7 +51,7 @@ public class PreGameActivity extends AppCompatActivity {
 
 
         Intent intent = new Intent(this,AutoScouting.class);
-        intent.putExtra("PreGameData",new PreGameObject(teamNumInt, matchNumInt)); //TODO TEAM NUMBERS
+        intent.putExtra("PreGameData",new PreGameObject(teamNumInt, matchNumInt));
         startActivity(intent);
     }
 

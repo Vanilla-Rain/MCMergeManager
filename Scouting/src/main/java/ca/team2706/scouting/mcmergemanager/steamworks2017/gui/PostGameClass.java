@@ -49,7 +49,7 @@ public class PostGameClass extends AppCompatActivity {
             }
 
             public void onStartTrackingTouch(SeekBar seekBar) {
-                // TODO Auto-generated method stub
+                // Not used by anything, just need to override it in the thing
             }
 
             public void onStopTrackingTouch(SeekBar seekBar) {
@@ -69,7 +69,7 @@ public class PostGameClass extends AppCompatActivity {
             }
 
             public void onStartTrackingTouch(SeekBar seekBar) {
-                // TODO Auto-generated method stub
+                // Not used by anything, just need to override it in the thing
             }
 
             public void onStopTrackingTouch(SeekBar seekBar) {

@@ -16,11 +16,6 @@ public class CyclesDisplayActivity extends AppCompatActivity {
         setContentView(R.layout.cycles_display_activity);
 
 
-
-        // TODO: instead of fake data, unpack the TeamStatsReport from the intent
-        // and display real data.
-
-
         LinearLayout mainLayout = (LinearLayout) findViewById(R.id.cycles_display_main_layout);
 
         // in the real app, get this from the team's data.

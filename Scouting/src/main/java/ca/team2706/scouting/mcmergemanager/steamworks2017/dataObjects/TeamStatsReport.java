@@ -49,13 +49,6 @@ public class TeamStatsReport implements Serializable {
      */
     public ArrayList<Cycle> cycles = new ArrayList<>();
 
-
-
-    // TODO -- we'll come back to the pin map later
-        public List<BallShot> missedTeleopShots;         // to draw pins on map
-        public List<BallShot> successfulTeleopHighShots; // to draw pins on map
-        public List<BallShot> successfulTeleopLowShots;  // to draw pins on map
-
     // Fuel pickups
     public double teleop_fuelGroundPickups_avgPerMatch;
     public double teleop_fuelWallPickups_avgPerMatch;
@@ -117,12 +110,5 @@ public class TeamStatsReport implements Serializable {
 
     public MatchSchedule teamMatcheSchedule;
     public MatchData teamMatchData;
-
-
-    public TeamStatsReport() {
-            missedTeleopShots = new ArrayList<>();
-            successfulTeleopHighShots = new ArrayList<>();
-            successfulTeleopLowShots = new ArrayList<>();
-    }
 
 }

@@ -27,8 +27,6 @@ public class MatchData implements Serializable {
             this.teleopScoutingObject = teleopScoutingObject;
         }
 
-        // TODO: this needs to be re-worked because MikeO changed around the data
-
         public JSONObject toJson() {
             JSONObject jsonObject = new JSONObject();
 

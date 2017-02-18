@@ -36,7 +36,7 @@ import ca.team2706.scouting.mcmergemanager.R;
 public class JsonUtils {
 
     private static JSONArray jsonArray;
-    private static JSONObject jsonObject; // TODO: figure out why I can't just create this variable in the method
+    private static JSONObject jsonObject;
     private static String fileName = "/sdcard/"+ App.getContext().getString(R.string.FILE_TOPLEVEL_DIR) + "/Team2706/matchData.txt";
 
     private static JSONArray[][] objects;
