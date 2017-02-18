@@ -118,6 +118,8 @@ public class MainActivity extends AppCompatActivity
         // fetch the match data from TheBlueAlliance to update the scores.
         BlueAllianceUtils.fetchMatchScheduleAndResults(this);
         m_matchData = mFileUtils.loadMatchDataFile();
+
+        FileUtils.updateFilePathStrings();
     }
 
     /**
