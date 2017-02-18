@@ -15,6 +15,8 @@ import android.widget.Toast;
 import ca.team2706.scouting.mcmergemanager.R;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.FuelShotEvent;
 
+import static ca.team2706.scouting.mcmergemanager.stronghold2016.gui.TeleopScouting.teleopScoutingObject;
+
 /**
  * Created by Merge on 2017-02-09.
  */
@@ -23,6 +25,7 @@ public class BallShootingFragment extends DialogFragment{
 
     SeekBar ballShootingSeekBar;
     public int pointsScored;
+    public Bundle fuelShootingData = new Bundle();
 
     // These are too assemble a string for the text view, not the most elegant solution but it works. -JustinT
     public String endingText = " balls were scored";
@@ -100,6 +103,9 @@ public class BallShootingFragment extends DialogFragment{
                     @Override
                     public void onClick(View v) {
                         ballsScored.numScored = pointsScored;
+                        fuelShootingData.putSerializable("FuelPickupEvent", ballsScored);
+                        listener.editNameDialogComplete(me, fuelShootingData);
+
                         Log.i(getClass().getName(), "quit");
                         listener.editNameDialogCancel(me);
                     }
@@ -110,6 +116,7 @@ public class BallShootingFragment extends DialogFragment{
     @Override
     public void onCancel(DialogInterface dialog) {
         super.onCancel(dialog);
+        teleopScoutingObject.add(ballsScored);
         listener.editNameDialogCancel(this);
     }
 
