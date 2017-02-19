@@ -16,8 +16,8 @@
     <string name="title_activity_team_stats">Team Stats Page</string>
     <string name="title_activity_cycles_display">Cycles Display</string>
     <string name="title_activity_repair_time_collection">RepairTimeCollection</string>
-    <string name="matchScoutingDataFileName">matchScoutingData.csv</string>
-    <string name="matchScoutingDataFileNameUNSYNCHED">matchScoutingData_UNSYNCHED.csv</string>
+    <string name="matchScoutingDataFileName">matchScoutingData.json</string>
+    <string name="matchScoutingDataFileNameUNSYNCHED">matchScoutingData_UNSYNCHED.json</string>
     <string name="teamDataFileName">teamData.json</string>
     <string name="teamDataFileNameUNSYNCHED">teamData_UNSYNCHED.json</string>
     <string-array name="year_array">

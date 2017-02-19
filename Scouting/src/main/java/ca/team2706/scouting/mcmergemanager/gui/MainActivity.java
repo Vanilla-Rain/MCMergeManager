@@ -88,7 +88,6 @@ public class MainActivity extends AppCompatActivity
         updateDataSyncLabel();
 
         FileUtils.checkFileReadWritePermissions(this);
-        FileUtils.checkLocalFileStructure(this);
     }
 
     @Override
@@ -102,6 +101,9 @@ public class MainActivity extends AppCompatActivity
         BlueAllianceUtils.checkInternetPermissions(this);
         BlueAllianceUtils.fetchTeamsRegisteredAtEvent(this);
         BlueAllianceUtils.fetchMatchScheduleAndResults(this);
+
+        // Make sure all files are there, and visible to the USB Media Scanner.
+        FileUtils.checkLocalFileStructure(this);
 
         // In case the schedule is empty, make sure we pass along the list of teams registered at event
         // that we fetched at the beginning.
@@ -291,7 +293,7 @@ public class MainActivity extends AppCompatActivity
 
                 Uri teamPhotoUri = FileUtils.getNameForNewPhoto(teamNumber);
                 String teamPhotoPath = teamPhotoUri.getPath();
-                Log.e(getResources().getString(R.string.app_name), "Saving to \""+teamPhotoPath+"\"");
+                Log.i(getResources().getString(R.string.app_name), "Saving to \""+teamPhotoPath+"\"");
 
                 TakePicture pic = new TakePicture(teamPhotoPath, me);
                 pic.capturePicture();
