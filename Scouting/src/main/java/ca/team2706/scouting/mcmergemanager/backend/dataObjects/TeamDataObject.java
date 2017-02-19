@@ -11,7 +11,7 @@ import ca.team2706.scouting.mcmergemanager.R;
 import ca.team2706.scouting.mcmergemanager.backend.App;
 
 /**
- * Generic container object for data about a team that's not match data.
+ * Generic container object for gearDeliveryData about a team that's not match gearDeliveryData.
  *
  * Created by mike on 05/02/17.
  */

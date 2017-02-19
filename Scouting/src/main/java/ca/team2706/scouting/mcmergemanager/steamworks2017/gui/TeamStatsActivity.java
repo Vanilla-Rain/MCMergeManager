@@ -22,7 +22,7 @@ public class TeamStatsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.steamworks2017_activity_team_stats);
 
-        // unbundle the stats data from the intent
+        // unbundle the stats gearDeliveryData from the intent
         Intent intent = getIntent();
 
         try {

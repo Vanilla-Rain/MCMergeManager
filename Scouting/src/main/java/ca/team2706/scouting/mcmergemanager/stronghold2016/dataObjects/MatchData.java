@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- * A class to encapsulate all the data collected during a match so that it can be easily
+ * A class to encapsulate all the gearDeliveryData collected during a match so that it can be easily
  * passed around, saved to file, loaded from file, etc.
  *
  * Created by mike on 03/02/16.
@@ -39,7 +39,7 @@ public class MatchData implements Serializable {
 
 
 
-    /** An inner-class encapsulating the data from a single robot from a single match. **/
+    /** An inner-class encapsulating the gearDeliveryData from a single robot from a single match. **/
     public static class Match implements Serializable {
 
         public PreGameObject preGame;

@@ -68,7 +68,7 @@ public Context context;
 
         me = this;
 
-        // tell the user where they are syncing their data to
+        // tell the user where they are syncing their gearDeliveryData to
         updateDataSyncLabel();
 
         FileUtils.checkFileReadWritePermissions(this);
@@ -78,10 +78,10 @@ public Context context;
     protected void onResume() {
         super.onResume();
 
-        // tell the user where they are syncing their data to
+        // tell the user where they are syncing their gearDeliveryData to
         updateDataSyncLabel();
 
-        // fetch the match data from TheBlueAlliance to update the scores.
+        // fetch the match gearDeliveryData from TheBlueAlliance to update the scores.
         BlueAllianceUtils.checkInternetPermissions(this);
         BlueAllianceUtils.fetchTeamsRegisteredAtEvent(this);
         BlueAllianceUtils.fetchMatchScheduleAndResults(this);
@@ -153,7 +153,7 @@ public Context context;
     public void onShowScheduleClicked(View view) {
 
         if (sMatchSchedule != null) {
-            // bundle the match data into an intent
+            // bundle the match gearDeliveryData into an intent
             Intent intent = new Intent(this, MatchScheduleActivity.class);
             intent.putExtra(getResources().getString(R.string.EXTRA_MATCH_SCHEDULE), sMatchSchedule.toString());
             startActivity(intent);
@@ -299,7 +299,7 @@ public Context context;
                     return;
                 }
 
-                // bundle the match data into an intent and launch the schedule activity
+                // bundle the match gearDeliveryData into an intent and launch the schedule activity
                 Intent intent = new Intent(me, MatchScheduleActivity.class);
                 intent.putExtra(getResources().getString(R.string.EXTRA_MATCH_SCHEDULE), sMatchSchedule.toString());
                 intent.putExtra(getResources().getString(R.string.EXTRA_TEAM_NO), teamNumber);

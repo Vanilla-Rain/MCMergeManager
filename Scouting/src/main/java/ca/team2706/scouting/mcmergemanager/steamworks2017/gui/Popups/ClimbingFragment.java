@@ -18,6 +18,7 @@ import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.PostGameOb
 import ca.team2706.scouting.mcmergemanager.steamworks2017.gui.PostGameClass;
 
 import static ca.team2706.scouting.mcmergemanager.R.*;
+import static ca.team2706.scouting.mcmergemanager.stronghold2016.gui.TeleopScouting.teleopScoutingObject;
 
 /**
  * Created by Merge on 2017-02-12.
@@ -58,7 +59,7 @@ public class ClimbingFragment extends DialogFragment {
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         final DialogFragment me = this;
 
@@ -105,8 +106,7 @@ public class ClimbingFragment extends DialogFragment {
                         Log.i(getClass().getName(), "quit");
                         listener.editNameDialogCancel(me);
 
-                        Intent intent = new Intent(v.getContext(),PostGameClass.class);
-                        startActivity(intent);
+                        toPostGame(view);
 
                     }
                 }
@@ -121,8 +121,7 @@ public class ClimbingFragment extends DialogFragment {
                         Log.i(getClass().getName(), "quit");
                         listener.editNameDialogCancel(me);
 
-                        Intent intent = new Intent(v.getContext(),PostGameClass.class);
-                        startActivity(intent);
+                        toPostGame(view);
                     }
                 }
         );
@@ -134,5 +133,16 @@ public class ClimbingFragment extends DialogFragment {
         listener.editNameDialogCancel(this);
     }
 
+    public void toPostGame(View view) {
+
+        Intent intent = new Intent(view.getContext(),PostGameClass.class);
+        // Pass gearDeliveryData to PostGameClass.class
+        intent.putExtra("PreGameData", getActivity().getIntent().getSerializableExtra("PreGameData"));
+        intent.putExtra("AutoScoutingData", getActivity().getIntent().getSerializableExtra("AutoScoutingData"));
+        intent.putExtra("TeleopScoutingData", teleopScoutingObject);
+        intent.putExtra("PostGameData", postGameObject);
+
+        startActivity(intent);
+    }
 
 }

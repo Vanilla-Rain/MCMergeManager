@@ -38,7 +38,7 @@ import ca.team2706.scouting.mcmergemanager.backend.interfaces.PhotoRequester;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.MatchData;
 
 /**
- * This is a helper class to hold common code for accessing shared scouting data files.
+ * This is a helper class to hold common code for accessing shared scouting gearDeliveryData files.
  * This class takes care of keeping a local cache, syncing to the server, and (eventually) sharing with other bluetooth-connected devices also running the app.
  * <p/>
  * Created by Mike Ounsworth
@@ -51,7 +51,7 @@ public class FileUtils {
     public static String sLocalTeamPhotosFilePath;
 
     /* Static initializer */
-    {
+    static {
         // store string constants and preferences in member variables just for cleanliness
         // (since the strings are `static`, when any instances of FileUtils update these, all instances will get the updates)
         SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(App.getContext());
@@ -155,7 +155,7 @@ public class FileUtils {
     }
 
     /**
-     * Take one match of data and stick it at the end of the match data file.
+     * Take one match of gearDeliveryData and stick it at the end of the match gearDeliveryData file.
      *
      * Data format:
      * "matchNo<int>,teamNo<int>,isSpyBot<boolean>,reached<boolean>,{autoDefenseBreached<int>;...},{{autoBallShot_X<int>;autoBallShot_Y<int>;autoBallShot_time<.2double>;autoBallshot_which<int>}:...},{teleopDefenseBreached<int>;...},{{teleopBallShot_X<int>;teleopBallShot_Y<int>;teleopBallShot_time<.2double>;teleopBallshot_which<int>}:...},timeDefending<,2double>,{{ballPickup_selection<int>;ballPickup_time<,2double>}:...},{{scaling_time<.2double>;scaling_comelpted<int>}:...},notes<String>,challenged<boolean>,timeDead<int>"
@@ -171,7 +171,7 @@ public class FileUtils {
 
         String outFileName = sLocalEventFilePath +"/"+ App.getContext().getResources().getString(R.string.matchScoutingDataFileName);
 
-        Log.d(App.getContext().getResources().getString(R.string.app_name), "Saving match data to file: "+outFileName);
+        Log.d(App.getContext().getResources().getString(R.string.app_name), "Saving match gearDeliveryData to file: "+outFileName);
 
         File outfile = new File(outFileName);
         try {
@@ -186,7 +186,7 @@ public class FileUtils {
 
         outFileName = sLocalEventFilePath +"/"+ App.getContext().getResources().getString(R.string.matchScoutingDataFileNameUNSYNCHED);
 
-        Log.d(App.getContext().getResources().getString(R.string.app_name), "Saving match data to file: "+outFileName);
+        Log.d(App.getContext().getResources().getString(R.string.app_name), "Saving match gearDeliveryData to file: "+outFileName);
 
         outfile = new File(outFileName);
         try {
@@ -212,7 +212,7 @@ public class FileUtils {
     }
 
     /**
-     * Load the entire file of match data into Objects.
+     * Load the entire file of match gearDeliveryData into Objects.
      *
      * Data format:
      * "matchNo<int>,teamNo<int>,isSpyBot<boolean>,reached<boolean>,{autoDefenseBreached<int>;...},{{autoBallShot_X<int>;autoBallShot_Y<int>;autoBallShot_time<.2double>;autoBallshot_which<int>}:...},{teleopDefenseBreached<int>;...},{{teleopBallShot_X<int>;teleopBallShot_Y<int>;teleopBallShot_time<.2double>;teleopBallshot_which<int>}:...},timeDefending<,2double>,{{ballPickup_selection<int>;ballPickup_time<,2double>}:...},{{scaling_time<.2double>;scaling_comelpted<int>}:...},notes<String>,challenged<boolean>,timeDead<int>"
@@ -275,7 +275,7 @@ public class FileUtils {
             }
         }
         if (parseFailure) {
-            Toast.makeText(App.getContext(), "Warning: match data may be corrupted or malformed.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(App.getContext(), "Warning: match gearDeliveryData may be corrupted or malformed.", Toast.LENGTH_SHORT).show();
         }
 
         return matchData;
@@ -310,7 +310,7 @@ public class FileUtils {
 
         String outFileName = sLocalEventFilePath +"/"+ App.getContext().getResources().getString(R.string.teamDataFileName);
 
-        Log.d(App.getContext().getResources().getString(R.string.app_name), "Saving team data to file: "+outFileName);
+        Log.d(App.getContext().getResources().getString(R.string.app_name), "Saving team gearDeliveryData to file: "+outFileName);
 
         File outfile = new File(outFileName);
         try {
@@ -325,7 +325,7 @@ public class FileUtils {
 
         outFileName = sLocalEventFilePath +"/"+ App.getContext().getResources().getString(R.string.teamDataFileNameUNSYNCHED);
 
-        Log.d(App.getContext().getResources().getString(R.string.app_name), "Saving team data to file: "+outFileName);
+        Log.d(App.getContext().getResources().getString(R.string.app_name), "Saving team gearDeliveryData to file: "+outFileName);
 
         outfile = new File(outFileName);
         try {
@@ -339,14 +339,14 @@ public class FileUtils {
     }
 
     /**
-     * Load data from the teamDataFile.
+     * Load gearDeliveryData from the teamDataFile.
      */
     public static List<TeamDataObject> loadTeamDataFile() {
         return loadTeamDataFile(FileType.SYNCHED);
     }
 
         /**
-         * Load data from the teamDataFile.
+         * Load gearDeliveryData from the teamDataFile.
          */
     public static List<TeamDataObject> loadTeamDataFile(FileType fileType) {
         // TODO #90

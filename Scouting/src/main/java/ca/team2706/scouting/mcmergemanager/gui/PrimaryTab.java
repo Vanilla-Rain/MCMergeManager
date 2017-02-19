@@ -54,7 +54,7 @@ public class PrimaryTab extends Fragment {
                 try {
                     // this is a little convoluted, since we're sending the whole schedule, we could just send the match number rather than a copy of that match
 
-                    // bundle up the data it needs
+                    // bundle up the gearDeliveryData it needs
                     Bundle args = new Bundle();
                     MatchSchedule.Match match;
                     match = MainActivity.sMatchSchedule.getMatchNo(matchNo-1);
@@ -70,7 +70,7 @@ public class PrimaryTab extends Fragment {
                     getActivity().getFragmentManager().beginTransaction()
                             .replace(R.id.fragment_container1, fragment).commit();
                 } catch (Exception e) {
-                    // if we don't have the data, don't display it
+                    // if we don't have the gearDeliveryData, don't display it
                 }
 
                 return false;
