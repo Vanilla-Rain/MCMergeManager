@@ -43,7 +43,7 @@
         android:persistent="true"/>
 
     <CheckBoxPreference
-        android:key="@string/PROPERTY_FTPSyncOverWifi"
+        android:key="@string/PROPERTY_FTPSyncOnlyWifi"
         android:defaultValue="true"
         android:title="Only sync photos over WiFi?" />
 

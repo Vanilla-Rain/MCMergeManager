@@ -1,6 +1,9 @@
 package ca.team2706.scouting.mcmergemanager.gui;
 
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -10,7 +13,6 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import ca.team2706.scouting.mcmergemanager.R;
@@ -95,6 +97,28 @@ public class PrimaryTab extends Fragment {
         super.onResume();
 
         SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(App.getContext());
+
+
+        boolean ftpSyncOnlyWifi = SP.getBoolean(App.getContext().getResources().getString(R.string.PROPERTY_FTPSyncOnlyWifi), false);
+
+        // check if we have internet connectivity, and are on WiFi
+        ConnectivityManager cm = (ConnectivityManager) App.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+
+        if (activeNetwork == null ) {
+            // not connected to the internet
+            v.findViewById(R.id.syncButon).setEnabled(false);
+            return;
+        }
+        else if (ftpSyncOnlyWifi && activeNetwork.getType() != ConnectivityManager.TYPE_WIFI) {
+            // Settings require FTP sync only over WiFi
+            // and we not connected over WiFi.
+            v.findViewById(R.id.syncButon).setEnabled(false);
+            return;
+        }
+
+
+
         String ftpHostname = SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_FTPHostname), "");
         String ftpUsername = SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_FTPUsername), "");
         String ftpPassword = SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_FTPPassword), "");
