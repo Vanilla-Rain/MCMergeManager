@@ -51,7 +51,8 @@ public class MatchSchedule implements Serializable {
             String[] teamNos = jsonObj.getString(JSONKEP_teamListInt).split(",");
             for(String teamNoStr : teamNos) {
                 try {
-                    teamListInt.add(Integer.valueOf(teamNoStr));
+                    if(!teamListInt.contains(Integer.valueOf(teamNoStr)))
+                        teamListInt.add(Integer.valueOf(teamNoStr));
                 } catch (NumberFormatException e) {
                     // just pass
                 }

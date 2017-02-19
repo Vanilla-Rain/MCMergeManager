@@ -44,7 +44,6 @@ public class RepairTimeCollection extends AppCompatActivity {
         List<String> teams = matchSchedule.getTeamNumsAtEvent();
 
         for(String team: teams) {
-
             View row = generateRow(team);
             rowContainer.addView(row);
 
