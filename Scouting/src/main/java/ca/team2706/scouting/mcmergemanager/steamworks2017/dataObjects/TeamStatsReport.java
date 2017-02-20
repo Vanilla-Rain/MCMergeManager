@@ -47,7 +47,15 @@ public class TeamStatsReport implements Serializable {
     /**
      * For feeding the CycleDisplay window..
      */
-    public ArrayList<Cycle> cycles = new ArrayList<>();
+    public static class CyclesInAMatch {
+        public int matchNo;
+        public ArrayList<Cycle> cycles = new ArrayList<>();
+
+        public CyclesInAMatch(int matchNo) {
+            this.matchNo = matchNo;
+        }
+    }
+    public ArrayList<CyclesInAMatch> cycleMatches = new ArrayList<>();
 
     // Fuel pickups
     public double teleop_fuelGroundPickups_avgPerMatch;
