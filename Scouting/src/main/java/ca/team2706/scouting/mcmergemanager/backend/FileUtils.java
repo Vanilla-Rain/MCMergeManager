@@ -3,6 +3,7 @@ package ca.team2706.scouting.mcmergemanager.backend;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -47,7 +48,6 @@ import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.MatchData;
 public class FileUtils {
 
     public static String sLocalToplevelFilePath;
-    public static String sLocalTeamFilePath;
     public static String sLocalEventFilePath;
     public static String sLocalTeamPhotosFilePath;
 
@@ -62,10 +62,10 @@ public class FileUtils {
         // store string constants and preferences in member variables just for cleanliness
         // (since the strings are `static`, when any instances of FileUtils update these, all instances will get the updates)
         SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(App.getContext());
-        sLocalToplevelFilePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + App.getContext().getString(R.string.FILE_TOPLEVEL_DIR);
-        sLocalTeamFilePath = sLocalToplevelFilePath;
-        sLocalEventFilePath = sLocalTeamFilePath + "/" + SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_event), "<Not Set>");
-        sLocalTeamPhotosFilePath = sLocalTeamFilePath + "/" + "Team Photos";
+        sLocalToplevelFilePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).getAbsolutePath() + "/" + App.getContext().getString(R.string.FILE_TOPLEVEL_DIR);
+//        sLocalToplevelFilePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + App.getContext().getString(R.string.FILE_TOPLEVEL_DIR);
+        sLocalEventFilePath = sLocalToplevelFilePath + "/" + SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_event), "<Not Set>");
+        sLocalTeamPhotosFilePath = sLocalToplevelFilePath + "/" + "Team Photos";
 
         sRemoteTeamPhotosFilePath = "/" + App.getContext().getString(R.string.FILE_TOPLEVEL_DIR) + "/"  + "Team Photos";
     }
@@ -135,11 +135,49 @@ public class FileUtils {
             return;
 
         makeDirectory(sLocalToplevelFilePath);
-        makeDirectory(sLocalTeamFilePath);
         makeDirectory(sLocalEventFilePath);
         makeDirectory(sLocalTeamPhotosFilePath);
+
+        new Thread()
+        {
+            public void run() {
+                scanDirectoryTree(sLocalToplevelFilePath);
+            }
+        }.start();
     }
 
+
+    private static void scanDirectoryTree(String directoryPath) {
+
+        Log.d(App.getContext().getResources().getString(R.string.app_name), "Scanning directory: " + directoryPath);
+
+
+        File file = new File(directoryPath);
+        if (file.isDirectory()) {
+
+            // Call the system media scanner on each file inside
+            File[] files = file.listFiles();
+
+            for(File subFile : files) {
+                if(subFile.isDirectory()) {
+                    // Recurse!
+                    scanDirectoryTree(subFile.getAbsolutePath());
+                }
+                else {
+                    // Log.d(App.getContext().getResources().getString(R.string.app_name), "Media Scanning "+ subFile.toString());
+
+                    // Force the midea scanner to scan this file so it shows up from a PC over USB.
+                    App.getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(subFile)));
+                }
+            }
+        }
+        else {
+            // in case there's a regular file there with the same name
+            file.delete();
+            // create it
+            file.mkdirs();
+        }
+    }
 
     private static void makeDirectory(String directoryName) {
 
@@ -176,10 +214,16 @@ public class FileUtils {
 
         File outfile = new File(outFileName);
         try {
+            // create the file path, if it doesn't exist already.
+            (new File(outfile.getParent())).mkdirs();
+
             BufferedWriter bw = new BufferedWriter(new FileWriter(outfile, true));
             bw.append( match.toString() );
             bw.flush();
             bw.close();
+
+            // Force the midea scanner to scan this file so it shows up from a PC over USB.
+            App.getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(outfile)));
         } catch (IOException e) {
 
         }
@@ -308,12 +352,18 @@ public class FileUtils {
 
         File outfile = new File(outFileName);
         try {
+            // create the file path, if it doesn't exist already.
+            (new File(outfile.getParent())).mkdirs();
+
             BufferedWriter bw = new BufferedWriter(new FileWriter(outfile, true));
             bw.append( teamDataObject.toString() + "\n");
             bw.flush();
             bw.close();
-        } catch (IOException e) {
 
+            // Force the midea scanner to scan this file so it shows up from a PC over USB.
+            App.getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(outfile)));
+        } catch (IOException e) {
+            Log.e("MCMergeManager", "appendToTeamDataFile could not save file.", e);
         }
 
 
@@ -403,7 +453,6 @@ public class FileUtils {
             br.close();
         } catch (Exception e) {
             Log.e(App.getContext().getResources().getString(R.string.app_name), "loadTeamDataFile:: " + e.toString());
-            e.printStackTrace();
             return null;
         }
 
@@ -444,18 +493,12 @@ public class FileUtils {
     public static Uri getNameForNewPhoto(int teamNumber) {
         // check if a photo folder exists for this team, and create it if it does not.
         String dir = sLocalTeamPhotosFilePath + "/" + teamNumber + "/";
-        File file = new File(dir);
-
-        if (!file.isDirectory()) {
-            // in case there's a regular file there with the same name
-            file.delete();
-
-            // create it
-            file.mkdir();
-        }
+        scanDirectoryTree(dir);
 
         String fileName = dir + teamNumber + "_" + (new Date().getTime()) + ".jpg";
-        return Uri.fromFile(new File(fileName));
+        File file = new File(fileName);
+
+        return Uri.fromFile(file);
     }
 
 

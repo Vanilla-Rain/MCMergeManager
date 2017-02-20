@@ -463,6 +463,8 @@ public class StatsEngine implements Serializable{
 
             ArrayList<Event> events = match.teleopScoutingObject.getEvents();
 
+            TeamStatsReport.CyclesInAMatch cyclesInThisMatch = new TeamStatsReport.CyclesInAMatch(match.preGameObject.matchNumber);
+
             // state machine state vars
             boolean justScoredFuel=false;
             boolean inFuelCycle=false, inFuelGroundCycle=false, inFuelWallCycle=false, inFuelHopperCycle=false;
@@ -517,7 +519,7 @@ public class StatsEngine implements Serializable{
                                 teamStatsReport.teleop_fuelHigh_minCycleTime = cycleTime;
 
                             Cycle c = currFuelCycle.clone(Cycle.CycleType.HIGH_GOAL);
-                            teamStatsReport.cycles.add(c);
+                            cyclesInThisMatch.cycles.add(c);
                             numFuelHighCycles++;
                         }
 
@@ -530,7 +532,7 @@ public class StatsEngine implements Serializable{
                             if (cycleTime < teamStatsReport.teleop_fuelLow_minCycleTime)
                                 teamStatsReport.teleop_fuelLow_minCycleTime = cycleTime;
 
-                            teamStatsReport.cycles.add(currFuelCycle.clone(Cycle.CycleType.LOW_GOAL));
+                            cyclesInThisMatch.cycles.add(currFuelCycle.clone(Cycle.CycleType.LOW_GOAL));
                             numFuelLowCycles++;
                         }
 
@@ -675,7 +677,7 @@ public class StatsEngine implements Serializable{
                     }
 
 
-                    teamStatsReport.cycles.add(currGearCycle.clone());
+                    cyclesInThisMatch.cycles.add(currGearCycle.clone());
                 }
 
                 else if (event instanceof DefenseEvent) {
@@ -699,14 +701,14 @@ public class StatsEngine implements Serializable{
                     teamStatsReport.climbAttepmts++;
                     teamStatsReport.climb_avgTime += match.postGameObject.climb_time;
                     climbCycle.success = true;
-                    teamStatsReport.cycles.add(climbCycle);
+                    cyclesInThisMatch.cycles.add(climbCycle);
                     break;
                 case FAIL:
                     teamStatsReport.climbFailures++;
                     teamStatsReport.climbAttepmts++;
                     teamStatsReport.climb_avgTime += match.postGameObject.climb_time;
                     climbCycle.success = false;
-                    teamStatsReport.cycles.add(climbCycle);
+                    cyclesInThisMatch.cycles.add(climbCycle);
                     break;
                 case NO_CLIMB:
                     break;
@@ -723,11 +725,11 @@ public class StatsEngine implements Serializable{
 
                 if (inFuelHighCycle) {
                     Cycle c = currFuelCycle.clone(Cycle.CycleType.HIGH_GOAL);
-                    teamStatsReport.cycles.add(c);
+                    cyclesInThisMatch.cycles.add(c);
                 }
 
                 if (inFuelLowCycle) {
-                    teamStatsReport.cycles.add(currFuelCycle.clone(Cycle.CycleType.LOW_GOAL));
+                    cyclesInThisMatch.cycles.add(currFuelCycle.clone(Cycle.CycleType.LOW_GOAL));
                 }
             }
 
@@ -735,7 +737,7 @@ public class StatsEngine implements Serializable{
             if (inGearCycle) {
                 currGearCycle.endTime = 135;
                 currGearCycle.success = false;
-                teamStatsReport.cycles.add(currGearCycle);
+                cyclesInThisMatch.cycles.add(currGearCycle);
             }
 
             teamStatsReport.avgDeadness += match.postGameObject.time_dead;
@@ -745,6 +747,8 @@ public class StatsEngine implements Serializable{
 
 
             teamStatsReport.avgTimeSpentPlayingDef += match.postGameObject.time_defending;
+
+            teamStatsReport.cycleMatches.add(cyclesInThisMatch);
 
         } // for match
 
