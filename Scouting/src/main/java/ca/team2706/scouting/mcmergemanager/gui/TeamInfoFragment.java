@@ -208,19 +208,17 @@ public class TeamInfoFragment extends Fragment
 
         statsText += "W/L/T:\t\t " + m_teamStatsReport.wins + "/" + m_teamStatsReport.losses + "/" + m_teamStatsReport.ties + "\n";
         statsText += "OPR:\t\t " + String.format("%.2f",m_teamStatsReport.OPR) + "\n";
-        int gearCycles = 0;
+
         int fuelCycles = 0;
         for(Cycle cycle: m_teamStatsReport.cycles) {
             switch(cycle.cycleType) {
-                case GEAR:
-                    gearCycles++;
                 case LOW_GOAL:
                     fuelCycles++;
                 case HIGH_GOAL:
                     fuelCycles++;
             }
         }
-        if(gearCycles > fuelCycles) {
+        if(m_teamStatsReport.teleop_gearsDelivered_avgPerMatch) > fuelCycles) {
             statsText+= "Favoured cycle type: Gears\n";
 
             if(m_teamStatsReport.teleop_gearsPickupGround_avgPerMatch > m_teamStatsReport.teleop_gearsPickupWall_avgPerMatch) {
