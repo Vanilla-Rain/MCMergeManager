@@ -197,8 +197,7 @@ public class FTPClient {
                         changed += 1;
                         Downloaded += 1;
                         currentProgress += 1;
-                        String display = "test";
-                        requester.updateSyncBar("Downloading file " + currentProgress + "/" + maxDownProgress + ":\n" + display, (currentProgress*100) / maxDownProgress, activity, true);
+                        requester.updateSyncBar("Downloading file " + currentProgress + "/" + maxDownProgress, (currentProgress*100) / maxDownProgress, activity, true);
                     }
                     currentProgress = 0;
                     for (String fileToUpload : filesToUpload) {
@@ -207,8 +206,7 @@ public class FTPClient {
                         changed += 1;
                         Uploaded += 1;
                         currentProgress += 1;
-                        String display = newFile.split("MCMergeManager")[1];
-                        requester.updateSyncBar("Uploading file " + currentProgress + "/" + maxUpProgress + ":\n" + display, (currentProgress*100) / maxUpProgress, activity, true);
+                        requester.updateSyncBar("Uploading file " + currentProgress + "/" + maxUpProgress, (currentProgress*100) / maxUpProgress, activity, true);
                     }
                     requester.syncCallback(changed);
 
