@@ -60,7 +60,7 @@ public class TeamInfoFragment extends Fragment
 
         final Bundle args = getArguments();
 
-        if(args.get("teamNumber") !=null ) {
+        if(args.get("teamNumber") != null) {
             m_teamNumber = (int) args.get("teamNumber");
             FileUtils.getTeamPhotos(m_teamNumber, this);
 

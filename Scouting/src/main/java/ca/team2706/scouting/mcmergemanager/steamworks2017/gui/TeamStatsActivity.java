@@ -103,7 +103,7 @@ public class TeamStatsActivity extends AppCompatActivity {
         if (m_teamStatsReport.numMatchesPlayed != 0) {  // protects against divide-by-zero
 
 
-            ((TextView) findViewById(R.id.teleopHighGoalsTV)).setText(String.format("%d (%.2f)",
+            ((TextView) findViewById(R.id.teleopHighGoalsTV)).setText(String.format("%.2f (%.2f)",
                                                                             m_teamStatsReport.teleop_fuelScoredHigh_avgPerCycle,
                                                                             m_teamStatsReport.teleop_fuelScoredHigh_avgPerMatch));
 
@@ -112,7 +112,7 @@ public class TeamStatsActivity extends AppCompatActivity {
                                                                             m_teamStatsReport.teleop_fuelHigh_aveCycleTime) );
 
 
-            ((TextView) findViewById(R.id.teleopLowGoalsTV)).setText(String.format("%d / %d (%.2f)",
+            ((TextView) findViewById(R.id.teleopLowGoalsTV)).setText(String.format("%.2f / (%.2f)",
                                                                             m_teamStatsReport.teleop_fuelScoredLow_avgPerCycle,
                                                                             m_teamStatsReport.teleop_fuelScoredLow_avgPerMatch));
 
@@ -122,29 +122,29 @@ public class TeamStatsActivity extends AppCompatActivity {
 
 
 
-            ((TextView) findViewById(R.id.highMissedShots)).setText(String.format("%d",
+            ((TextView) findViewById(R.id.highMissedShots)).setText(String.format("%.2f",
                                                                             m_teamStatsReport.teleop_fuelMissedHigh_avgPerMatch));
 
-            ((TextView) findViewById(R.id.lowMissedShots)).setText(String.format("%d",
+            ((TextView) findViewById(R.id.lowMissedShots)).setText(String.format("%.2f",
                                                                             m_teamStatsReport.teleop_fuelMissedLow_avgPerMatch));
 
 
-            ((TextView) findViewById(R.id.hopperPickupsTV)).setText(String.format("%d",
+            ((TextView) findViewById(R.id.hopperPickupsTV)).setText(String.format("%.2f",
                     m_teamStatsReport.teleop_fuelHopperPickups_avgPerMatch));
 
-            ((TextView) findViewById(R.id.chutePickupsTV)).setText(String.format("%d",
+            ((TextView) findViewById(R.id.chutePickupsTV)).setText(String.format("%.2f",
                     m_teamStatsReport.teleop_fuelWallPickups_avgPerMatch));
 
-            ((TextView) findViewById(R.id.teleopGroundPickupsTV)).setText(String.format("%d",
+            ((TextView) findViewById(R.id.teleopGroundPickupsTV)).setText(String.format("%.2f",
                     m_teamStatsReport.teleop_fuelGroundPickups_avgPerMatch));
 
             ((TextView) findViewById(R.id.teleopTimePlayingDTV)).setText(String.format("\t%.1f s",
                                                                             m_teamStatsReport.avgTimeSpentPlayingDef) );
 
-            ((TextView) findViewById(R.id.avgDeadnessTV)).setText(String.format("%d%%",
+            ((TextView) findViewById(R.id.avgDeadnessTV)).setText(String.format("%.2f%%",
                                                                             m_teamStatsReport.avgDeadness) );
 
-            ((TextView) findViewById(R.id.highestDeadnessTV)).setText(String.format("\t%d%%",
+            ((TextView) findViewById(R.id.highestDeadnessTV)).setText(String.format("\t%.2f%%",
                                                                             m_teamStatsReport.highestDeadness) );
 
             ((TextView) findViewById(R.id.climbsTV)).setText(String.format("%d / %d (%.2f)",
