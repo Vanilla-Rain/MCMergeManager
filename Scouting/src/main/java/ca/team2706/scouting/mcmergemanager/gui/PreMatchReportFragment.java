@@ -14,6 +14,7 @@ import java.util.Map;
 import ca.team2706.scouting.mcmergemanager.R;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.StatsEngine;
 import ca.team2706.scouting.mcmergemanager.backend.dataObjects.MatchSchedule;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.TeamStatsReport;
 
 public class PreMatchReportFragment extends Fragment {
     // the fragment initialization parameters
@@ -88,7 +89,42 @@ public class PreMatchReportFragment extends Fragment {
             displayOprPredection();
         }
 
-        
+
+        TeamStatsReport blue1TSR = m_statsEngine.getTeamStatsReport(m_match.getBlue1());
+        TeamStatsReport blue2TSR = m_statsEngine.getTeamStatsReport(m_match.getBlue2());
+        TeamStatsReport blue3TSR = m_statsEngine.getTeamStatsReport(m_match.getBlue3());
+        TeamStatsReport red1TSR = m_statsEngine.getTeamStatsReport(m_match.getRed1());
+        TeamStatsReport red2TSR = m_statsEngine.getTeamStatsReport(m_match.getRed2());
+        TeamStatsReport red3TSR = m_statsEngine.getTeamStatsReport(m_match.getRed3());
+
+
+        double bluegearsavg = blue1TSR.teleop_gearsDelivered_avgPerMatch +
+                blue2TSR.teleop_gearsDelivered_avgPerMatch + blue3TSR.teleop_gearsDelivered_avgPerMatch;
+        double redgearsavg = red1TSR.teleop_gearsDelivered_avgPerMatch +
+                red2TSR.teleop_gearsDelivered_avgPerMatch + red3TSR.teleop_gearsDelivered_avgPerMatch;
+        double bluefuelavg = blue1TSR.teleop_fuelScoredHigh_avgPerMatch + blue1TSR.teleop_fuelScoredLow_avgPerMatch +
+                blue2TSR.teleop_fuelScoredHigh_avgPerMatch + blue2TSR.teleop_fuelScoredLow_avgPerMatch +
+                blue3TSR.teleop_fuelScoredHigh_avgPerMatch + blue3TSR.teleop_fuelScoredLow_avgPerMatch;
+        double redfuelavg = red1TSR.teleop_fuelScoredHigh_avgPerMatch + red1TSR.teleop_fuelScoredLow_avgPerMatch +
+                red2TSR.teleop_fuelScoredHigh_avgPerMatch + red3TSR.teleop_fuelScoredLow_avgPerMatch +
+                red3TSR.teleop_fuelScoredHigh_avgPerMatch + red3TSR.teleop_fuelScoredLow_avgPerMatch;
+        double blueclimbsavg = blue1TSR.climbSuccesses + blue2TSR.climbSuccesses + blue3TSR.climbSuccesses;
+        double redclimbsavg = red1TSR.climbSuccesses + red2TSR.climbSuccesses + red3TSR.climbSuccesses;
+
+        bluegearsavg/= 3;
+        redgearsavg/= 3;
+        bluefuelavg/= 3;
+        redfuelavg/= 3;
+        blueclimbsavg/= 3;
+        redclimbsavg/= 3;
+
+        ((TextView) m_view.findViewById(R.id.gearsBlueTV)).setText(Math.round(bluegearsavg) + "");
+        ((TextView) m_view.findViewById(R.id.gearsRedTV)).setText(Math.round(redgearsavg) + "");
+        ((TextView) m_view.findViewById(R.id.fuelBlueTV)).setText(Math.round(bluefuelavg) + "");
+        ((TextView) m_view.findViewById(R.id.fuelRedTV)).setText(Math.round(redfuelavg) + "");
+        ((TextView) m_view.findViewById(R.id.climbsBlueTV)).setText(Math.round(blueclimbsavg) + "");
+        ((TextView) m_view.findViewById(R.id.climbsRedTV)).setText(Math.round(redclimbsavg) + "");
+
         return m_view;
     }
 
