@@ -25,6 +25,7 @@ import ca.team2706.scouting.mcmergemanager.R;
 import ca.team2706.scouting.mcmergemanager.backend.BlueAllianceUtils;
 import ca.team2706.scouting.mcmergemanager.backend.FileUtils;
 import ca.team2706.scouting.mcmergemanager.backend.interfaces.PhotoRequester;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.Cycle;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.TeamStatsReport;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.gui.TeamStatsActivity;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.StatsEngine;
@@ -207,10 +208,45 @@ public class TeamInfoFragment extends Fragment
 
         statsText += "W/L/T:\t\t " + m_teamStatsReport.wins + "/" + m_teamStatsReport.losses + "/" + m_teamStatsReport.ties + "\n";
         statsText += "OPR:\t\t " + String.format("%.2f",m_teamStatsReport.OPR) + "\n";
-//        statsText += "High Goals:\t\t " + m_teamStatsReport.numSuccHighShotsInTeleop + "\n";
-//        statsText += "Low Goals:\t\t " + m_teamStatsReport.numSuccLowShotsInTeleop + "\n";
-//        statsText += "Missed shots:\t\t " + m_teamStatsReport.missedTeleopShots.size() + "\n";
-//        statsText += "Scales:\t\t " + m_teamStatsReport.numSuccessfulScales + "\n";
+        int gearCycles = 0;
+        int fuelCycles = 0;
+        for(Cycle cycle: m_teamStatsReport.cycles) {
+            switch(cycle.cycleType) {
+                case GEAR:
+                    gearCycles++;
+                case LOW_GOAL:
+                    fuelCycles++;
+                case HIGH_GOAL:
+                    fuelCycles++;
+            }
+        }
+        if(gearCycles > fuelCycles) {
+            statsText+= "Favoured cycle type: Gears\n";
+
+            if(m_teamStatsReport.teleop_gearsPickupGround_avgPerMatch > m_teamStatsReport.teleop_gearsPickupWall_avgPerMatch) {
+                statsText+= "Favoured gear pickup: Ground\n";
+            }
+            else if(m_teamStatsReport.teleop_gearsPickupWall_avgPerMatch > m_teamStatsReport.teleop_gearsPickupGround_avgPerMatch) {
+                statsText+= "Favoured gear pickup: Chute\n";
+            }
+            else {
+                statsText+= "Favoured gear pickup: Didn't pick up any\n";
+            }
+
+        }
+        else if(fuelCycles > gearCycles) {
+            statsText+= "Favoured cycle type: Fuel\n";
+
+            if(m_teamStatsReport.teleop_fuelGroundPickups_avgPerMatch > m_teamStatsReport.teleop_fuelHopperPickups_avgPerMatch &&
+                    m_teamStatsReport.teleop_fuelGroundPickups_avgPerMatch > m_teamStatsReport.teleop_fuelWallPickups_avgPerMatch) {
+                statsText+= "Favoured fuel pickup: Ground";
+            }
+            else if(m_teamStatsReport.teleop_fuelWallPickups_avgPerMatch)
+
+        }
+        else if(fuelCycles == 0 && gearCycles == 0) {
+            statsText+= "This team did no cycles";
+        }
 
         // comupte their favourite defense and ave breaches per match
 //        int max=0, fav=0, num=0;
