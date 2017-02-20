@@ -470,7 +470,7 @@ public class FileUtils {
             br.close();
         } catch (Exception e) {
             Log.e(App.getContext().getResources().getString(R.string.app_name), "loadTeamDataFile:: " + e.toString());
-            return null;
+            return teamDataObjects;
         }
 
         return teamDataObjects;
@@ -489,6 +489,9 @@ public class FileUtils {
     public static List<TeamDataObject> filterTeamDataByTeam(int teamNo, List<TeamDataObject> teamDataObjects) {
 
         List<TeamDataObject> toRet = new ArrayList<>();
+
+        if (teamDataObjects == null)
+            return  toRet;
 
         for(TeamDataObject teamDataObject : teamDataObjects)
             if (teamDataObject.getTeamNo() == teamNo)

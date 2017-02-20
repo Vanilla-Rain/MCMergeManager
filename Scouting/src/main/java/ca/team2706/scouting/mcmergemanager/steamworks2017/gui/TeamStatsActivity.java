@@ -77,10 +77,10 @@ public class TeamStatsActivity extends AppCompatActivity {
         if (m_teamStatsReport.numMatchesPlayed != 0) {  // protects against divide-by-zero
 
 
-            ((TextView) findViewById(R.id.autoHighGoalsTV)).setText(String.format("%d",
+            ((TextView) findViewById(R.id.autoHighGoalsTV)).setText(String.format("%.2f",
                                                                                 m_teamStatsReport.auto_avgNumFuelScoredHigh));
 
-            ((TextView) findViewById(R.id.autoLowGoalsTV)).setText(String.format("%d",
+            ((TextView) findViewById(R.id.autoLowGoalsTV)).setText(String.format("%.2f",
                                                                                 m_teamStatsReport.auto_avgNumFuelScoredLow));
 
 
@@ -166,16 +166,16 @@ public class TeamStatsActivity extends AppCompatActivity {
         /** Gears Stuff **/
         if(m_teamStatsReport.numMatchesPlayed != 0) { // protects against divide by zero exception
 
-            ((TextView) findViewById(R.id.teleopMissedGearsTV)).setText(String.format("%d",
+            ((TextView) findViewById(R.id.teleopMissedGearsTV)).setText(String.format("%.2f",
                     m_teamStatsReport.teleop_gearsDropped_avgPerMatch));
 
-            ((TextView) findViewById(R.id.gearsInstalled)).setText(String.format("%d",
+            ((TextView) findViewById(R.id.gearsInstalled)).setText(String.format("%.2f",
                                                                             m_teamStatsReport.teleop_gearsDelivered_avgPerMatch));
 
-            ((TextView) findViewById(R.id.teleopGearsChutePickupTV)).setText(String.format("%d",
+            ((TextView) findViewById(R.id.teleopGearsChutePickupTV)).setText(String.format("%.2f",
                     m_teamStatsReport.teleop_gearsPickupWall_avgPerMatch));
 
-            ((TextView) findViewById(R.id.teleopGearsFloorPickupTV)).setText(String.format("%d",
+            ((TextView) findViewById(R.id.teleopGearsFloorPickupTV)).setText(String.format("%.2f",
                     m_teamStatsReport.teleop_gearsPickupGround_avgPerMatch));
 
 
