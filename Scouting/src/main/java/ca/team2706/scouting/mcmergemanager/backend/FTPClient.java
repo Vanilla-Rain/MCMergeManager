@@ -182,9 +182,9 @@ public class FTPClient {
                             filesToDownload.add(remoteName);
                     }
                     for (String localName : localNames) {
-                        String usableName = localName.split(localPath.getAbsolutePath())[1];
+                        String usableName = remotePath + localName.split(localPath.getAbsolutePath())[1];
                         if(localName==localPath.getAbsolutePath()) continue;
-                        if (!remoteNames.contains("MCMergeManager" + usableName))
+                        if (!remoteNames.contains(usableName))
                             filesToUpload.add(localName);
                         else
                             Unchanged += 1;
@@ -225,6 +225,7 @@ public class FTPClient {
                 else
                     requester.updateSyncBar("Done!", 100, activity, false);
                 Log.d("FTPClient|INFO", "Sync done!");
+
 
             }
         });

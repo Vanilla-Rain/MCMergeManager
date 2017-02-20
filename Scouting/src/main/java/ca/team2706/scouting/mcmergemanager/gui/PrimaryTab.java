@@ -116,31 +116,5 @@ public class PrimaryTab extends Fragment {
             v.findViewById(R.id.syncButon).setEnabled(false);
             return;
         }
-
-
-
-        String ftpHostname = SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_FTPHostname), "");
-        String ftpUsername = SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_FTPUsername), "");
-        String ftpPassword = SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_FTPPassword), "");
-
-
-
-        if (MainActivity.sFtpClient == null) {
-            v.findViewById(R.id.syncButon).setEnabled(false);
-
-            if (ftpHostname != "" && ftpUsername != "" && ftpPassword != "") {
-                v.findViewById(R.id.syncButon).setEnabled(true);
-
-                MainActivity.sFtpClient = new FTPClient(ftpHostname, ftpUsername, ftpPassword, FileUtils.sLocalTeamPhotosFilePath, FileUtils.sRemoteTeamPhotosFilePath);
-                try {
-                    MainActivity.sFtpClient.connect();
-
-                    v.findViewById(R.id.syncButon).setEnabled(true);
-                } catch (Exception e) {
-                    Log.d("FTP|Connect", "Error while connecting");
-                    MainActivity.sFtpClient = null;
-                }
-            }
-        }
     }
 }
