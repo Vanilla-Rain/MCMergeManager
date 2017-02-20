@@ -50,6 +50,7 @@ import ca.team2706.scouting.mcmergemanager.backend.dataObjects.NoteObject;
 import ca.team2706.scouting.mcmergemanager.backend.dataObjects.RepairTimeObject;
 import ca.team2706.scouting.mcmergemanager.backend.dataObjects.TeamDataObject;
 import ca.team2706.scouting.mcmergemanager.backend.interfaces.PhotoRequester;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.FuelPickupEvent;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.MatchData;
 
 /**
@@ -693,7 +694,7 @@ public class FileUtils {
             JSONArray arr = new JSONArray();
             JSONObject obj = new JSONObject();
             obj.put("match_id", 99);
-            obj.put("objective_id", 14);
+            obj.put("objective_id", FuelPickupEvent.objectiveId);
             arr.put(obj);
             jsonBody.put("events", arr);
             final String mRequestBody = jsonBody.toString();
