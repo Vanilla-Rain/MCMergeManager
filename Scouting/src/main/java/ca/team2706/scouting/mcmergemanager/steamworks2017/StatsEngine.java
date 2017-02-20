@@ -855,6 +855,9 @@ public class StatsEngine implements Serializable{
 
         } // end averages
 
+        // Override number of matches from schedule
+        if (numMatchesPlayed != 0)
+            teamStatsReport.numMatchesPlayed = numMatchesPlayed;
     }
 
 }
