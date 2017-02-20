@@ -33,6 +33,7 @@ public class BallPickupFragment extends DialogFragment {
     public String pointsScoredString;
     public String textViewDisplayString;
 
+
     public BallPickupFragment() {
         // Empty constructor is required for DialogFragment
         // Make sure not to add arguments to the constructor
@@ -74,6 +75,7 @@ public class BallPickupFragment extends DialogFragment {
             public void onStopTrackingTouch(SeekBar seekBar) {
                 TextView tv = (TextView) getView().findViewById(R.id.ballsPickedUpTextView);
                 ballsPickedUp = progressChangedValue*5;
+                ballsHeld += ballsPickedUp;
                 pointsScoredString = String.valueOf(ballsPickedUp);
                 //textViewDisplayString;
                 textViewDisplayString = pointsScoredString + endingText;
@@ -100,7 +102,6 @@ public class BallPickupFragment extends DialogFragment {
                     public void onClick(View v) {
                         ballPickups.amount = ballsPickedUp;
                         ballPickups.pickupType = FuelPickupEvent.FuelPickupType.GROUND;
-
 
                         fuelPickupData.putSerializable("FuelPickupEvent", ballPickups);
                         listener.editNameDialogComplete(me, fuelPickupData);

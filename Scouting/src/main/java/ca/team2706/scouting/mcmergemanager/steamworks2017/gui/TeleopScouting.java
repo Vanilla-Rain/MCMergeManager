@@ -37,15 +37,39 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
 
     public void editNameDialogComplete(DialogFragment dialogFragment, Bundle data) {
         // Empty field is here because of interface.
-        GearDelivevryEvent gearDelivevryEvent = (GearDelivevryEvent) data.getSerializable("GearDeliveryEvent");
-        FuelPickupEvent fuelPickupEvent = (FuelPickupEvent) data.getSerializable("FuelPickupEvent");
-        GearPickupEvent gearPickupEvent = (GearPickupEvent) data.getSerializable("GearPickupEvent");
-        FuelShotEvent fuelShotEvent = (FuelShotEvent) data.getSerializable("FuelShotEvent");
 
-        teleopScoutingObject.add(fuelShotEvent);
-        teleopScoutingObject.add(gearDelivevryEvent);
-        teleopScoutingObject.add(fuelPickupEvent);
-        teleopScoutingObject.add(gearPickupEvent);
+
+        if (dialogFragment instanceof BallPickupFragment) {
+            FuelPickupEvent fuelPickupEvent = (FuelPickupEvent) data.getSerializable("FuelPickupEvent");
+
+            ballsHeld += fuelPickupEvent.amount;
+            TextView numberBallsHolding = (TextView) findViewById(R.id.numberBallsHolding);
+            numberBallsHolding.setText(String.valueOf(ballsHeld));
+
+            teleopScoutingObject.add(fuelPickupEvent);
+        }
+        else if (dialogFragment instanceof GearPickupFragment) {
+            GearPickupEvent gearPickupEvent = (GearPickupEvent) data.getSerializable("GearPickupEvent");
+
+            // TODO
+
+            teleopScoutingObject.add(gearPickupEvent);
+        }
+        else if (dialogFragment instanceof GearDeliveryFragment) {
+            GearDelivevryEvent gearDelivevryEvent = (GearDelivevryEvent) data.getSerializable("GearDeliveryEvent");
+
+            // TODO
+
+            teleopScoutingObject.add(gearDelivevryEvent);
+        }
+        else if (dialogFragment instanceof BallShootingFragment) {
+            FuelShotEvent fuelShotEvent = (FuelShotEvent) data.getSerializable("FuelShotEvent");
+
+            // TODO
+
+            teleopScoutingObject.add(fuelShotEvent);
+        }
+
     }
 
     Handler m_handler;
@@ -68,7 +92,6 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
         final TextView tvGameTime = (TextView) findViewById(R.id.textViewGameTime);
 
         TextView numberBallsHolding = (TextView) findViewById(R.id.numberBallsHolding);
-        ballsHeldString = String.valueOf(ballsHeld);
 
         numberBallsHolding.setText(ballsHeldString);
 
