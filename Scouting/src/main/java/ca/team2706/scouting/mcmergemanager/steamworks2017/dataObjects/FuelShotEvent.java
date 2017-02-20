@@ -6,6 +6,8 @@ package ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects;
 
 public class FuelShotEvent extends Event {
 
+    public static final int objectiveId = 20;
+
     public int numScored;
     public int numMissed;
     public boolean boiler; // true is high, false is low

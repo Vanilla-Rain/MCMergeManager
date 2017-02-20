@@ -6,6 +6,8 @@ package ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects;
 
 public class GearPickupEvent extends Event {
 
+    public static final int objectiveId = 23;
+
     public GearPickupEvent(){
 
     }

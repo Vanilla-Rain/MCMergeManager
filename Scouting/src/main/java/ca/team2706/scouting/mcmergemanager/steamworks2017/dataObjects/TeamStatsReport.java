@@ -47,7 +47,7 @@ public class TeamStatsReport implements Serializable {
     /**
      * For feeding the CycleDisplay window..
      */
-    public static class CyclesInAMatch {
+    public static class CyclesInAMatch implements Serializable {
         public int matchNo;
         public ArrayList<Cycle> cycles = new ArrayList<>();
 
@@ -56,6 +56,20 @@ public class TeamStatsReport implements Serializable {
         }
     }
     public ArrayList<CyclesInAMatch> cycleMatches = new ArrayList<>();
+
+    // No time for comments; here's a bunch of stuff
+    public int numFuelGroundCycles = 0;
+    public int numFuelWallCycles = 0;
+    public int numFuelHopperCycles = 0;
+    public int numFuelHighCycles = 0;
+    public int numFuelLowCycles = 0;
+    public int numGearGroundCycles = 0;
+    public int numGearWallCycles = 0;
+    public int numGearCycles = 0;
+    public int totalGroundCycles = 0;
+    public int totalWallCycles = 0;
+    public String favouriteCycleType = "(No Scouting Data)";
+    public String favouritePickupLocation = "(No Scouting Data)";
 
     // Fuel pickups
     public double teleop_fuelGroundPickups_avgPerMatch;

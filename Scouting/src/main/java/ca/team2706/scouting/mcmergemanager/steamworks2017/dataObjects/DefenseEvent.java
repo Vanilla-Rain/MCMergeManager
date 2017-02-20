@@ -6,6 +6,8 @@ package ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects;
 
 public class DefenseEvent extends Event {
 
+    public static final int objectiveId = 24;
+
     public int skill;
 
     public DefenseEvent(){
