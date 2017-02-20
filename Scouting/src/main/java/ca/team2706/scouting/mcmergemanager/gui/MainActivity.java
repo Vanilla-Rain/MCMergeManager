@@ -29,6 +29,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
 import org.apache.commons.net.ftp.FTPFile;
 
 import java.util.ArrayList;
@@ -41,7 +42,6 @@ import ca.team2706.scouting.mcmergemanager.backend.App;
 import ca.team2706.scouting.mcmergemanager.backend.BlueAllianceUtils;
 import ca.team2706.scouting.mcmergemanager.backend.FTPClient;
 import ca.team2706.scouting.mcmergemanager.backend.FileUtils;
-import ca.team2706.scouting.mcmergemanager.backend.JsonUtils;
 import ca.team2706.scouting.mcmergemanager.backend.TakePicture;
 import ca.team2706.scouting.mcmergemanager.backend.dataObjects.MatchSchedule;
 import ca.team2706.scouting.mcmergemanager.backend.dataObjects.TeamDataObject;
@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        FileUtils.checkLocalFileStructure(this);
         context = this;
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.activity_main);
@@ -391,7 +392,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void onClick(View v) {
-        JsonUtils.readJsonFile(this);
+        FileUtils.loadMatchDataFile(FileUtils.FileType.SYNCHED);
+//        FileUtils.postMatchToServer(this, 204);
+//        FileUtils.getMatchesFromServer(this);
     }
 
 }

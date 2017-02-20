@@ -1,5 +1,7 @@
 package ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects;
 
+import android.util.Log;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;

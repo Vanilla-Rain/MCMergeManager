@@ -108,6 +108,13 @@
             </LinearLayout>
 
             <Button
+                android:id="@+id/button10"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="onClick"
+                android:text="Button" />
+
+            <Button
                 android:text="Record Repair Time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

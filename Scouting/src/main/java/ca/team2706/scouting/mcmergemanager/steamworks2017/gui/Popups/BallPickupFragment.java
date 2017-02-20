@@ -12,16 +12,27 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
 import ca.team2706.scouting.mcmergemanager.R;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.FuelPickupEvent;
-
-import static ca.team2706.scouting.mcmergemanager.stronghold2016.gui.TeleopScouting.teleopScoutingObject;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.gui.TeleopScouting;
 
 public class BallPickupFragment extends DialogFragment {
     private FragmentListener listener;
+    SeekBar ballPickupSeekbar;
     private FuelPickupEvent ballPickups = new FuelPickupEvent();
     public Bundle fuelPickupData = new Bundle();
+    public int ballsPickedUp;
+
+    int ballsHeld;
+
+    // These are too assemble a string for the text view, not the most elegant solution but it works. -JustinT
+    public String endingText = " balls were picked up";
+    public String pointsScoredString;
+    public String textViewDisplayString;
+
 
     public BallPickupFragment() {
         // Empty constructor is required for DialogFragment
@@ -29,7 +40,7 @@ public class BallPickupFragment extends DialogFragment {
         // Use `newInstance` instead as shown below
     }
 
-    public static BallPickupFragment newInstance(String title, FragmentListener listener) {
+    public static BallPickupFragment newInstance(String title, FragmentListener listener, int ballsHeld) {
         BallPickupFragment frag = new BallPickupFragment();
         Bundle args = new Bundle();
         args.putString("title", title);
@@ -48,6 +59,32 @@ public class BallPickupFragment extends DialogFragment {
         super.onViewCreated(view, savedInstanceState);
         final DialogFragment me = this;
 
+        ballPickupSeekbar=(SeekBar)view.findViewById(R.id.numBallsPickupSeekBar);
+        // perform seek bar change listener event used for getting the progress value
+        ballPickupSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            int progressChangedValue = 0;
+
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                progressChangedValue = progress;
+            }
+
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                // TODO Auto-generated method stub
+            }
+
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                TextView tv = (TextView) getView().findViewById(R.id.ballsPickedUpTextView);
+                ballsPickedUp = progressChangedValue*5;
+                ballsHeld += ballsPickedUp;
+                pointsScoredString = String.valueOf(ballsPickedUp);
+                //textViewDisplayString;
+                textViewDisplayString = pointsScoredString + endingText;
+                tv.setText(textViewDisplayString);
+//              Toast.makeText(getActivity(), "Data saved!", Toast.LENGTH_LONG).show();
+            }
+
+        });
+
         view.findViewById(R.id.ball_pickup_cancel_button).setOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -58,14 +95,18 @@ public class BallPickupFragment extends DialogFragment {
                 }
         );
 
+
         view.findViewById(R.id.ground_ball_pickup_button).setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        ballPickups.amount = ballsPickedUp;
                         ballPickups.pickupType = FuelPickupEvent.FuelPickupType.GROUND;
 
                         fuelPickupData.putSerializable("FuelPickupEvent", ballPickups);
                         listener.editNameDialogComplete(me, fuelPickupData);
+
+
 
                         Log.i(getClass().getName(), "quit");
                         listener.editNameDialogCancel(me);
@@ -125,5 +166,4 @@ public class BallPickupFragment extends DialogFragment {
         super.onCancel(dialog);
         listener.editNameDialogCancel(this);
     }
-
 }

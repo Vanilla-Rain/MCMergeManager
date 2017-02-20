@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" android:fitsSystemWindows="true"
-    tools:context=".stronghold2016.gui.TeleopScouting">
+    tools:context=".steamworks2017.gui.TeleopScouting">
 
     <android.support.design.widget.AppBarLayout android:layout_height="wrap_content"
         android:layout_width="match_parent" android:theme="@style/AppTheme.AppBarOverlay">
@@ -15,7 +15,6 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/steamworks2017_content_teleop_scouting"
-        android:id="@+id/include2" />
+    <include layout="@layout/steamworks2017_content_teleop_scouting" />
 
 </android.support.design.widget.CoordinatorLayout>
