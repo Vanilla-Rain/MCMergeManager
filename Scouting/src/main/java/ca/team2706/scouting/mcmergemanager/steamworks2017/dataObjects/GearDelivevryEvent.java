@@ -6,6 +6,8 @@ package ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects;
 
 public class GearDelivevryEvent extends Event {
 
+    public static final int objectiveId = 22;
+
     public enum Lift {
         FEEDER_SIDE, CENTRE, BOILER_SIDE, NONE
     }

@@ -22,10 +22,11 @@ public class PostGameObject implements Serializable {
     // empty constructor
     public PostGameObject() {}
 
-    public PostGameObject(String notes, ClimbType climbType, double climb_time, double time_dead) {
+    public PostGameObject(String notes, ClimbType climbType, double climb_time, double time_dead, double time_defending) {
         this.climbType = climbType;
         this.notes = notes;
         this.climb_time = climb_time;
         this.time_dead = time_dead;
+        this.time_defending = time_defending;
     }
 }
