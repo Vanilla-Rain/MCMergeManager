@@ -47,7 +47,7 @@ public class TeamStatsReport implements Serializable {
     /**
      * For feeding the CycleDisplay window..
      */
-    public static class CyclesInAMatch {
+    public static class CyclesInAMatch implements Serializable {
         public int matchNo;
         public ArrayList<Cycle> cycles = new ArrayList<>();
 

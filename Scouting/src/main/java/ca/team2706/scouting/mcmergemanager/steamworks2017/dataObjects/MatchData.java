@@ -35,34 +35,37 @@ public class MatchData implements Serializable {
             teleopScoutingObject = new TeleopScoutingObject();
             autoScoutingObject = new AutoScoutingObject();
 
+            System.out.println(jsonObject.toString());
+
             try {
                 // pregame
                 preGameObject.teamNumber = jsonObject.getInt("team_number");
                 preGameObject.matchNumber = jsonObject.getInt("id");
 
                 // autonomous
-                autoScoutingObject.crossedBaseline = jsonObject.getBoolean("");
-                autoScoutingObject.start_fuel = jsonObject.getBoolean("");
-                autoScoutingObject.start_gear = jsonObject.getBoolean("");
-                autoScoutingObject.boiler_attempted = jsonObject.getInt("");
-                autoScoutingObject.gear_delivered = jsonObject.getInt("");
-                autoScoutingObject.numFuelScored = jsonObject.getInt("");
-                autoScoutingObject.open_hopper = jsonObject.getInt("");
+                autoScoutingObject.crossedBaseline = jsonObject.getBoolean("crossed_baseline");
+                autoScoutingObject.start_fuel = jsonObject.getBoolean("start_fuel");
+                autoScoutingObject.start_gear = jsonObject.getBoolean("start_gear");
+                autoScoutingObject.boiler_attempted = jsonObject.getInt("boiler_attempted");
+                autoScoutingObject.gear_delivered = jsonObject.getInt("gear_delivered");
+                autoScoutingObject.numFuelScored = jsonObject.getInt("num_fuel_scored");
+                autoScoutingObject.open_hopper = jsonObject.getInt("open_hopper");
 
                 // teleop
-                JSONArray arr = new JSONArray(jsonObject.getJSONArray("events"));
+                JSONArray arr = (JSONArray) jsonObject.get("events");
                 for(int i = 0; i < arr.length(); i++) {
                     JSONObject obj = new JSONObject(arr.get(i).toString());
                     Event event;
                     switch((int) obj.get("objective_id")) {
                         case FuelShotEvent.objectiveId:
-                            event = new FuelShotEvent((double) obj.get(""), (boolean) obj.get(""),
-                                    (int) obj.get(""), (int )obj.get(""), (int) obj.get(""), (int)obj.get(""));
+                            event = new FuelShotEvent((double) obj.get("timestamp"), (boolean) obj.get("boiler"),
+                                    (int) obj.get("fuel_scored"), (int )obj.get("fuel_missed"), (int) obj.get("position_x"), (int)obj.get("position_y"));
                             break;
                         case FuelPickupEvent.objectiveId:
                             try {
-                                event = new FuelPickupEvent((double) obj.get(""), FuelPickupEvent.FuelPickupType.valueOf((String) obj.get("")),
-                                        (int) obj.get(""));
+                                event = new FuelPickupEvent((double) obj.get("timestamp"),
+                                        FuelPickupEvent.FuelPickupType.valueOf((String) obj.get("type")),
+                                        (int) obj.get("fuel_amount"));
                             } catch(IllegalArgumentException e) {
                                 Log.d("FuelPickupType error", e.toString());
                                 event = new Event(); // should I change this to something else, such as a default pickup type?
@@ -70,9 +73,9 @@ public class MatchData implements Serializable {
                             break;
                         case GearDelivevryEvent.objectiveId:
                             try {
-                                event = new GearDelivevryEvent((double) obj.get(""),
-                                        GearDelivevryEvent.GearDeliveryStatus.valueOf((String) obj.get("")),
-                                        GearDelivevryEvent.Lift.valueOf((String) obj.get("")));
+                                event = new GearDelivevryEvent((double) obj.get("timestamp"),
+                                        GearDelivevryEvent.GearDeliveryStatus.valueOf((String) obj.get("gear_status")),
+                                        GearDelivevryEvent.Lift.valueOf((String) obj.get("lift")));
                             } catch(IllegalArgumentException e) {
                                 Log.d("GearDeliveryEvent error", e.toString());
                                 event = new Event();
@@ -80,16 +83,16 @@ public class MatchData implements Serializable {
                             break;
                         case GearPickupEvent.objectiveId:
                             try {
-                                event = new GearPickupEvent((double) obj.get(""),
-                                        GearPickupEvent.GearPickupType.valueOf((String) obj.get("")),
-                                        (boolean) obj.get(""));
+                                event = new GearPickupEvent((double) obj.get("timestamp"),
+                                        GearPickupEvent.GearPickupType.valueOf((String) obj.get("type")),
+                                        (boolean) obj.get("success"));
                             } catch (IllegalArgumentException e) {
                                 Log.d("GearPickupError", e.toString());
                                 event = new Event();
                             }
                             break;
                         case DefenseEvent.objectiveId:
-                            event = new DefenseEvent((double) obj.get(""), (int) obj.get(""));
+                            event = new DefenseEvent((double) obj.get("timestamp"), (int) obj.get("defense_skill"));
                             break;
                         default:
                             event = new Event();
@@ -99,13 +102,15 @@ public class MatchData implements Serializable {
                 }
 
                 // postgame
-                postGameObject.climb_time = jsonObject.getDouble("");
-                postGameObject.climbType = PostGameObject.ClimbType.valueOf(jsonObject.getString(""));
-                postGameObject.notes = jsonObject.getString("");
-                postGameObject.time_dead = jsonObject.getDouble("");
+                postGameObject.climb_time = jsonObject.getDouble("climb_time");
+                postGameObject.climbType = PostGameObject.ClimbType.valueOf(jsonObject.getString("climb_type"));
+                postGameObject.notes = jsonObject.getString("notes");
+                postGameObject.time_dead = jsonObject.getDouble("time_dead");
 
             } catch(JSONException e) {
                 Log.d("Error parsing json", e.toString());
+            } catch(IllegalArgumentException e) {
+                Log.d("enum failure", e.toString());
             }
 
         }
@@ -120,38 +125,41 @@ public class MatchData implements Serializable {
                 jsonObject.put("id", preGameObject.matchNumber);
 
                 // autonomous
-                jsonObject.put("", autoScoutingObject.start_fuel);
-                jsonObject.put("", autoScoutingObject.boiler_attempted);
-                jsonObject.put("", autoScoutingObject.numFuelScored);
-                jsonObject.put("", autoScoutingObject.start_gear);
+                jsonObject.put("start_fuel", autoScoutingObject.start_fuel);
+                jsonObject.put("boiler_attempted", autoScoutingObject.boiler_attempted);
+                jsonObject.put("numFuelScored", autoScoutingObject.numFuelScored);
+                jsonObject.put("start_gear", autoScoutingObject.start_gear);
+                jsonObject.put("crossed_baseline", autoScoutingObject.crossedBaseline);
+                jsonObject.put("gear_delivered", autoScoutingObject.gear_delivered);
+                jsonObject.put("open_hopper", autoScoutingObject.open_hopper);
 
                 // teleop
                 JSONArray arr = new JSONArray();
                 for(Event event : teleopScoutingObject.getEvents()) {
                     JSONObject obj = new JSONObject();
-                    obj.put("", event.timestamp);
+                    obj.put("timestamp", event.timestamp);
                     if(event instanceof FuelPickupEvent) {
                         FuelPickupEvent e = (FuelPickupEvent) event;
-                        obj.put("", e.amount);
-                        obj.put("", e.pickupType);
+                        obj.put("fuel_amount", e.amount);
+                        obj.put("type", e.pickupType);
                     } else if(event instanceof FuelShotEvent) {
                         FuelShotEvent e = (FuelShotEvent) event;
-                        obj.put("", e.numMissed);
-                        obj.put("", e.numScored);
-                        obj.put("", e.boiler);
-                        obj.put("", e.x);
-                        obj.put("", e.y);
+                        obj.put("fuel_scored", e.numMissed);
+                        obj.put("fuel_missed", e.numScored);
+                        obj.put("boiler", e.boiler);
+                        obj.put("position_x", e.x);
+                        obj.put("position_y", e.y);
                     } else if(event instanceof GearPickupEvent) {
                         GearPickupEvent e = (GearPickupEvent) event;
-                        obj.put("", e.pickupType);
-                        obj.put("", e.successful);
+                        obj.put("type", e.pickupType);
+                        obj.put("success", e.successful);
                     } else if(event instanceof GearDelivevryEvent) {
                         GearDelivevryEvent e = (GearDelivevryEvent) event;
-                        obj.put("", e.deliveryStatus);
-                        obj.put("", e.lift);
+                        obj.put("gear_status", e.deliveryStatus);
+                        obj.put("lift", e.lift);
                     } else if(event instanceof DefenseEvent) {
                         DefenseEvent e = (DefenseEvent) event;
-                        obj.put("", e.skill);
+                        obj.put("defense_skill", e.skill);
                     }
                 }
                 jsonObject.put("events", arr);

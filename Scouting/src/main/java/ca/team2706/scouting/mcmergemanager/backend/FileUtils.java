@@ -741,9 +741,11 @@ public class FileUtils {
             JSONArray arr = new JSONArray();
             JSONObject obj = new JSONObject();
             obj.put("match_id", 99);
+            obj.put("id", 121);
             obj.put("objective_id", FuelPickupEvent.objectiveId);
             arr.put(obj);
             jsonBody.put("events", arr);
+            System.out.println(jsonBody.toString());
             final String mRequestBody = jsonBody.toString();
             // Volley request...
             StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
