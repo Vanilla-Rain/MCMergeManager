@@ -818,6 +818,8 @@ public class StatsEngine implements Serializable{
 
         } // end averages
 
+        if (numMatchesPlayed > teamStatsReport.numMatchesPlayed)
+            teamStatsReport.numMatchesPlayed = numMatchesPlayed;
     }
 
 }
