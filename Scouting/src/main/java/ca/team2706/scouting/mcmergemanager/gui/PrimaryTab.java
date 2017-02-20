@@ -1,15 +1,22 @@
 package ca.team2706.scouting.mcmergemanager.gui;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import ca.team2706.scouting.mcmergemanager.R;
+import ca.team2706.scouting.mcmergemanager.backend.App;
+import ca.team2706.scouting.mcmergemanager.backend.FTPClient;
+import ca.team2706.scouting.mcmergemanager.backend.FileUtils;
 import ca.team2706.scouting.mcmergemanager.backend.dataObjects.MatchSchedule;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.StatsEngine;
 
@@ -18,6 +25,7 @@ public class PrimaryTab extends Fragment {
 
     private View v;
     private Bundle m_savedInstanceState;
+
 
     @Nullable
     @Override
@@ -54,7 +62,7 @@ public class PrimaryTab extends Fragment {
                 try {
                     // this is a little convoluted, since we're sending the whole schedule, we could just send the match number rather than a copy of that match
 
-                    // bundle up the data it needs
+                    // bundle up the gearDeliveryData it needs
                     Bundle args = new Bundle();
                     MatchSchedule.Match match;
                     match = MainActivity.sMatchSchedule.getMatchNo(matchNo-1);
@@ -70,7 +78,7 @@ public class PrimaryTab extends Fragment {
                     getActivity().getFragmentManager().beginTransaction()
                             .replace(R.id.fragment_container1, fragment).commit();
                 } catch (Exception e) {
-                    // if we don't have the data, don't display it
+                    // if we don't have the gearDeliveryData, don't display it
                 }
 
                 return false;
@@ -78,5 +86,37 @@ public class PrimaryTab extends Fragment {
         });
 
         return v;
+    }
+
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(App.getContext());
+        String ftpHostname = SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_FTPHostname), "");
+        String ftpUsername = SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_FTPUsername), "");
+        String ftpPassword = SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_FTPPassword), "");
+
+
+
+        if (MainActivity.sFtpClient == null) {
+            v.findViewById(R.id.syncButon).setEnabled(false);
+
+            if (ftpHostname != "" && ftpUsername != "" && ftpPassword != "") {
+                v.findViewById(R.id.syncButon).setEnabled(true);
+
+                MainActivity.sFtpClient = new FTPClient(ftpHostname, ftpUsername, ftpPassword, FileUtils.sLocalTeamPhotosFilePath, FileUtils.sRemoteTeamPhotosFilePath);
+                try {
+                    MainActivity.sFtpClient.connect();
+
+                    v.findViewById(R.id.syncButon).setEnabled(true);
+                } catch (Exception e) {
+                    Log.d("FTP|Connect", "Error while connecting");
+                    MainActivity.sFtpClient = null;
+                }
+            }
+        }
     }
 }

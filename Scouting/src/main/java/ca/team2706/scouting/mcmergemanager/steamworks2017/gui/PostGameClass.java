@@ -11,25 +11,30 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import ca.team2706.scouting.mcmergemanager.R;
+import ca.team2706.scouting.mcmergemanager.backend.FileUtils;
 import ca.team2706.scouting.mcmergemanager.gui.PreGameActivity;
 import ca.team2706.scouting.mcmergemanager.gui.PrimaryTab;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.AutoScoutingObject;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.DefenseEvent;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.MatchData;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.PostGameObject;
-import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.BallShot;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.PreGameObject;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.TeleopScoutingObject;
+
 
 /**
- * Created by Merge on 2017-02-12.
+ * Created by JustinT on 2017-02-12.
  */
 
 public class PostGameClass extends AppCompatActivity {
 
     public int timeDead;
     public int timeDefending;
+    public String woo = "Woo";
 
     private PostGameObject postGameObject = new PostGameObject();
     private DefenseEvent defenseEvent = new DefenseEvent();
 
-    public ArrayList<BallShot> ballsShot;
 
     SeekBar deadTimeSeekBar;
     SeekBar defenseSeekBar;
@@ -49,7 +54,7 @@ public class PostGameClass extends AppCompatActivity {
             }
 
             public void onStartTrackingTouch(SeekBar seekBar) {
-                // TODO Auto-generated method stub
+                // Not used by anything, just need to override it in the thing
             }
 
             public void onStopTrackingTouch(SeekBar seekBar) {
@@ -69,7 +74,7 @@ public class PostGameClass extends AppCompatActivity {
             }
 
             public void onStartTrackingTouch(SeekBar seekBar) {
-                // TODO Auto-generated method stub
+                // Not used by anything, just need to override it in the thing
             }
 
             public void onStopTrackingTouch(SeekBar seekBar) {
@@ -87,12 +92,38 @@ public class PostGameClass extends AppCompatActivity {
                 defenseEvent.skill = timeDefending;
                 postGameObject.time_dead = timeDead;
 
-                Intent intent = new Intent(view.getContext(),PreGameActivity.class);
-                startActivity(intent);
+
+               // MatchData.Match match = new MatchData.Match();
+
+               // FileUtils.appendToMatchDataFile(match);
+
+                returnHome(view);
             }
         });
     }
+
+        public void returnHome(View view ){
+            Intent thisIntent = getIntent();
+
+            PreGameObject pre = (PreGameObject) thisIntent.getSerializableExtra("PreGameData");
+            AutoScoutingObject a = (AutoScoutingObject) thisIntent.getSerializableExtra("AutoScoutingData");
+            TeleopScoutingObject t  = (TeleopScoutingObject) thisIntent.getSerializableExtra("TeleopScoutingData");
+            PostGameObject post = (PostGameObject) thisIntent.getSerializableExtra("PostGameData");  // climb was set in climbingFragment.
+            post.time_dead = timeDead;
+            post.time_defending = timeDefending;
+
+            //PostGameObject post = new PostGameObject(woo, PostGameObject.ClimbType.SUCCESS, timeDead, timeDefending);
+            Intent intent = new Intent(this,PreGameActivity.class);
+
+            MatchData.Match match = new MatchData.Match(pre, post, t, a);
+            FileUtils.checkLocalFileStructure(this);
+            FileUtils.appendToMatchDataFile(match);
+
+            startActivity(intent);
+
+    }
 }
+
 
 
 

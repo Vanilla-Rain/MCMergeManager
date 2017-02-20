@@ -9,8 +9,8 @@ import android.widget.EditText;
 
 import ca.team2706.scouting.mcmergemanager.R;
 import ca.team2706.scouting.mcmergemanager.backend.dataObjects.MatchSchedule;
-import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.PreGameObject;
-import ca.team2706.scouting.mcmergemanager.stronghold2016.gui.AutoScouting;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.PreGameObject;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.gui.AutoScouting;
 
 public class PreGameActivity extends AppCompatActivity {
     @Override
@@ -24,8 +24,6 @@ public class PreGameActivity extends AppCompatActivity {
 
         if (matchNo != -1)
             ((EditText) findViewById(R.id.match_num_field)).setText(""+matchNo);
-
-        // TODO if I have time, come back and generate some radio button to replace the Team # entry box, when I have the schedule available
 
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -53,7 +51,7 @@ public class PreGameActivity extends AppCompatActivity {
 
 
         Intent intent = new Intent(this,AutoScouting.class);
-        intent.putExtra("PreGameData",new PreGameObject(teamNumInt, matchNumInt)); //TODO TEAM NUMBERS
+        intent.putExtra("PreGameData",new PreGameObject(teamNumInt, matchNumInt));
         startActivity(intent);
     }
 

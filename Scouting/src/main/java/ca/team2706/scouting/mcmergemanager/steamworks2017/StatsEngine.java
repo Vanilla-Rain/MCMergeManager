@@ -4,11 +4,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import Jama.Matrix;
 
+import ca.team2706.scouting.mcmergemanager.backend.FileUtils;
 import ca.team2706.scouting.mcmergemanager.backend.dataObjects.RepairTimeObject;
+import ca.team2706.scouting.mcmergemanager.backend.dataObjects.TeamDataObject;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.AutoScoutingObject;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.Cycle;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.DefenseEvent;
@@ -30,7 +33,7 @@ public class StatsEngine implements Serializable{
 
     private MatchData matchData;
     private MatchSchedule matchSchedule;
-    private RepairTimeObject[] repairTimeObjects;
+    private List<TeamDataObject> repairTimeObjects;
 
 
     /**
@@ -44,7 +47,7 @@ public class StatsEngine implements Serializable{
      *
      * @param repairTimeObjects May be null
      **/
-    public StatsEngine(MatchData matchData, MatchSchedule matchSchedule, RepairTimeObject[] repairTimeObjects) {
+    public StatsEngine(MatchData matchData, MatchSchedule matchSchedule, List<TeamDataObject> repairTimeObjects) {
         this.matchData = matchData;
         this.matchSchedule = matchSchedule;
         this.repairTimeObjects = repairTimeObjects;
@@ -204,13 +207,13 @@ public class StatsEngine implements Serializable{
 
                 Matrix MatOPRs = M.transpose().times(M).inverse().times(M.transpose()).times(Y);
 
-                // now that we have the data, fill in the hashmap
+                // now that we have the gearDeliveryData, fill in the hashmap
                 OPRs = new HashMap<>();
                 for (int i = 0; i < teams.size(); i++) {
                     OPRs.put(teams.get(i), MatOPRs.get(i, 0));
                 }
             } catch (Exception e) {
-                // probably a Singular Matrix exception -- means we don't have enough data yet
+                // probably a Singular Matrix exception -- means we don't have enough gearDeliveryData yet
 
                 // we don't have scores for any match
                 OPRs = new HashMap<>();
@@ -412,10 +415,14 @@ public class StatsEngine implements Serializable{
 
         // Deal with RepairTimeObjects to see how much of the event teams spent
         // repairing their robot.
-        if(repairTimeObjects != null) {
+
+        List<TeamDataObject> teamRepairTimeObjects = FileUtils.filterTeamDataByTeam(teamNo, repairTimeObjects);
+
+        if(teamRepairTimeObjects != null) {
             int repairCount = 0;
             int workingCount = 0;
-            for (RepairTimeObject repairTimeObject : repairTimeObjects) {
+            for (TeamDataObject teamDataObject : teamRepairTimeObjects) {
+                RepairTimeObject repairTimeObject = (RepairTimeObject) teamDataObject;
                 switch (repairTimeObject.getRepairStatus()) {
                     case REPAIRING:
                         repairCount++;
@@ -425,11 +432,12 @@ public class StatsEngine implements Serializable{
                         break;
                 }
             }
-            teamStatsReport.repair_time_percent  = ((double) repairCount) / repairTimeObjects.length;
-            teamStatsReport.working_time_percent = ((double) workingCount) / repairTimeObjects.length;
+            teamStatsReport.repair_time_percent  = ((double) repairCount) / teamRepairTimeObjects.size() * 100;
+            teamStatsReport.working_time_percent = ((double) workingCount) / teamRepairTimeObjects.size() * 100;
+            teamStatsReport.repairTimeObjects = teamRepairTimeObjects;
         }
 
-        // TODO:
+        // TODO:  Do bad manners stuff
         //teamStatsReport.badManners = ?
 
     }
@@ -454,6 +462,8 @@ public class StatsEngine implements Serializable{
             // Process all the events during this match in a big state machine.
 
             ArrayList<Event> events = match.teleopScoutingObject.getEvents();
+
+            TeamStatsReport.CyclesInAMatch cyclesInThisMatch = new TeamStatsReport.CyclesInAMatch(match.preGameObject.matchNumber);
 
             // state machine state vars
             boolean justScoredFuel=false;
@@ -509,7 +519,7 @@ public class StatsEngine implements Serializable{
                                 teamStatsReport.teleop_fuelHigh_minCycleTime = cycleTime;
 
                             Cycle c = currFuelCycle.clone(Cycle.CycleType.HIGH_GOAL);
-                            teamStatsReport.cycles.add(c);
+                            cyclesInThisMatch.cycles.add(c);
                             numFuelHighCycles++;
                         }
 
@@ -522,7 +532,7 @@ public class StatsEngine implements Serializable{
                             if (cycleTime < teamStatsReport.teleop_fuelLow_minCycleTime)
                                 teamStatsReport.teleop_fuelLow_minCycleTime = cycleTime;
 
-                            teamStatsReport.cycles.add(currFuelCycle.clone(Cycle.CycleType.LOW_GOAL));
+                            cyclesInThisMatch.cycles.add(currFuelCycle.clone(Cycle.CycleType.LOW_GOAL));
                             numFuelLowCycles++;
                         }
 
@@ -667,7 +677,7 @@ public class StatsEngine implements Serializable{
                     }
 
 
-                    teamStatsReport.cycles.add(currGearCycle.clone());
+                    cyclesInThisMatch.cycles.add(currGearCycle.clone());
                 }
 
                 else if (event instanceof DefenseEvent) {
@@ -691,21 +701,21 @@ public class StatsEngine implements Serializable{
                     teamStatsReport.climbAttepmts++;
                     teamStatsReport.climb_avgTime += match.postGameObject.climb_time;
                     climbCycle.success = true;
-                    teamStatsReport.cycles.add(climbCycle);
+                    cyclesInThisMatch.cycles.add(climbCycle);
                     break;
                 case FAIL:
                     teamStatsReport.climbFailures++;
                     teamStatsReport.climbAttepmts++;
                     teamStatsReport.climb_avgTime += match.postGameObject.climb_time;
                     climbCycle.success = false;
-                    teamStatsReport.cycles.add(climbCycle);
+                    cyclesInThisMatch.cycles.add(climbCycle);
                     break;
                 case NO_CLIMB:
                     break;
             }
 
 
-            // Post match data
+            // Post match gearDeliveryData
 
             if (! match.postGameObject.notes.equals("") )
                 teamStatsReport.notes += "\t\t- " + match.postGameObject.notes + "\n";
@@ -715,11 +725,11 @@ public class StatsEngine implements Serializable{
 
                 if (inFuelHighCycle) {
                     Cycle c = currFuelCycle.clone(Cycle.CycleType.HIGH_GOAL);
-                    teamStatsReport.cycles.add(c);
+                    cyclesInThisMatch.cycles.add(c);
                 }
 
                 if (inFuelLowCycle) {
-                    teamStatsReport.cycles.add(currFuelCycle.clone(Cycle.CycleType.LOW_GOAL));
+                    cyclesInThisMatch.cycles.add(currFuelCycle.clone(Cycle.CycleType.LOW_GOAL));
                 }
             }
 
@@ -727,7 +737,7 @@ public class StatsEngine implements Serializable{
             if (inGearCycle) {
                 currGearCycle.endTime = 135;
                 currGearCycle.success = false;
-                teamStatsReport.cycles.add(currGearCycle);
+                cyclesInThisMatch.cycles.add(currGearCycle);
             }
 
             teamStatsReport.avgDeadness += match.postGameObject.time_dead;
@@ -735,6 +745,10 @@ public class StatsEngine implements Serializable{
             if(match.postGameObject.time_dead > teamStatsReport.highestDeadness)
                 teamStatsReport.highestDeadness = match.postGameObject.time_dead;
 
+
+            teamStatsReport.avgTimeSpentPlayingDef += match.postGameObject.time_defending;
+
+            teamStatsReport.cycleMatches.add(cyclesInThisMatch);
 
         } // for match
 
@@ -800,6 +814,7 @@ public class StatsEngine implements Serializable{
                 teamStatsReport.climb_avgTime /= teamStatsReport.climbAttepmts;
 
             teamStatsReport.avgDeadness /= numMatchesPlayed;
+            teamStatsReport.avgTimeSpentPlayingDef /= numMatchesPlayed;
 
         } // end averages
 

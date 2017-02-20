@@ -16,6 +16,7 @@ public class PostGameObject implements Serializable {
     public ClimbType climbType;
     public double climb_time;
     public double time_dead;
+    public double time_defending;
 
 
     // empty constructor

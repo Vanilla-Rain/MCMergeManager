@@ -6,6 +6,7 @@ import java.util.List;
 
 import ca.team2706.scouting.mcmergemanager.backend.dataObjects.MatchSchedule;
 import ca.team2706.scouting.mcmergemanager.backend.dataObjects.RepairTimeObject;
+import ca.team2706.scouting.mcmergemanager.backend.dataObjects.TeamDataObject;
 
 public class TeamStatsReport implements Serializable {
 
@@ -22,10 +23,10 @@ public class TeamStatsReport implements Serializable {
     public double scheduleToughness;    // Whether, on average, their opponents were stronger than their allies, or the other way around.
     // ie.: Are they seeded artificially high or artificially low by schedule luck?
 
-    public RepairTimeObject[] repairTimeObjects;
+    public List<TeamDataObject> repairTimeObjects;
     public double repair_time_percent;
     public double working_time_percent;
-    // To get the total number of data points, use repairTimeObjects.length
+    // To get the total number of gearDeliveryData points, use repairTimeObjects.length
 
     public boolean badManners; // TODO: I have no idea how we're capturing this
 
@@ -46,14 +47,15 @@ public class TeamStatsReport implements Serializable {
     /**
      * For feeding the CycleDisplay window..
      */
-    public ArrayList<Cycle> cycles = new ArrayList<>();
+    public static class CyclesInAMatch {
+        public int matchNo;
+        public ArrayList<Cycle> cycles = new ArrayList<>();
 
-
-
-    // TODO -- we'll come back to the pin map later
-        public List<BallShot> missedTeleopShots;         // to draw pins on map
-        public List<BallShot> successfulTeleopHighShots; // to draw pins on map
-        public List<BallShot> successfulTeleopLowShots;  // to draw pins on map
+        public CyclesInAMatch(int matchNo) {
+            this.matchNo = matchNo;
+        }
+    }
+    public ArrayList<CyclesInAMatch> cycleMatches = new ArrayList<>();
 
     // Fuel pickups
     public double teleop_fuelGroundPickups_avgPerMatch;
@@ -116,12 +118,5 @@ public class TeamStatsReport implements Serializable {
 
     public MatchSchedule teamMatcheSchedule;
     public MatchData teamMatchData;
-
-
-    public TeamStatsReport() {
-            missedTeleopShots = new ArrayList<>();
-            successfulTeleopHighShots = new ArrayList<>();
-            successfulTeleopLowShots = new ArrayList<>();
-    }
 
 }

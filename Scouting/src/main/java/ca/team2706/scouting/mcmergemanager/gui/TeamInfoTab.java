@@ -1,6 +1,7 @@
 package ca.team2706.scouting.mcmergemanager.gui;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,6 +10,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -237,7 +239,7 @@ public class TeamInfoTab extends Fragment {
         m_teamInfoFragment = new TeamInfoFragment();
         Bundle args = new Bundle();
         args.putInt("teamNumber", teamNumber);
-        StatsEngine statsEngine = new StatsEngine(MainActivity.sMatchData, MainActivity.sMatchSchedule);
+        StatsEngine statsEngine = new StatsEngine(MainActivity.sMatchData, MainActivity.sMatchSchedule, MainActivity.sRepairTimeObjects);
 
         TeamStatsReport teamStatsReport = statsEngine.getTeamStatsReport(teamNumber);  // just so I can look at it in bebug
         args.putSerializable(getString(R.string.EXTRA_TEAM_STATS_REPORT), teamStatsReport);
@@ -246,5 +248,10 @@ public class TeamInfoTab extends Fragment {
         // Add the fragment to the 'fragment_container' FrameLayout
         getActivity().getFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, m_teamInfoFragment).commit();
+
+
+        // Hide the keyboard
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
     }
 }

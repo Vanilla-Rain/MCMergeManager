@@ -11,7 +11,8 @@ import android.view.ViewGroup;
 
 import ca.team2706.scouting.mcmergemanager.R;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.GearDelivevryEvent;
-import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.GearPickupEvent;
+
+import static ca.team2706.scouting.mcmergemanager.stronghold2016.gui.TeleopScouting.teleopScoutingObject;
 
 /**
  * Created by JustinT on 2017-02-09.
@@ -21,6 +22,7 @@ public class GearDeliveryFragment extends DialogFragment {
 
     private FragmentListener listener;
     private GearDelivevryEvent gearDelivevryEvent = new GearDelivevryEvent();
+    public Bundle gearDeliveryData = new Bundle();
 
     public GearDeliveryFragment() {
         // Empty constructor is required for DialogFragment
@@ -62,6 +64,10 @@ public class GearDeliveryFragment extends DialogFragment {
                     @Override
                     public void onClick(View v) {
                         gearDelivevryEvent.lift = GearDelivevryEvent.Lift.BOILER_SIDE;
+
+                        gearDeliveryData.putSerializable("GearDeliveryEvent", gearDelivevryEvent);
+                        listener.editNameDialogComplete(me, gearDeliveryData);
+
                         Log.i(getClass().getName(), "quit");
                         listener.editNameDialogCancel(me);
                     }
@@ -73,6 +79,11 @@ public class GearDeliveryFragment extends DialogFragment {
                     @Override
                     public void onClick(View v) {
                         gearDelivevryEvent.lift = GearDelivevryEvent.Lift.CENTRE;
+
+                        gearDeliveryData.putSerializable("GearDeliveryEvent", gearDelivevryEvent);
+                        // this is the gearDeliveryData we want to hand back to the activity
+                        listener.editNameDialogComplete(me, gearDeliveryData);
+
                         Log.i(getClass().getName(), "quit");
                         listener.editNameDialogCancel(me);
                     }
@@ -84,8 +95,13 @@ public class GearDeliveryFragment extends DialogFragment {
                     @Override
                     public void onClick(View v) {
                         gearDelivevryEvent.lift = GearDelivevryEvent.Lift.FEEDER_SIDE;
+
+                        gearDeliveryData.putSerializable("GearDeliveryEvent", gearDelivevryEvent);
+                        listener.editNameDialogComplete(me, gearDeliveryData);
+
                         Log.i(getClass().getName(), "quit");
                         listener.editNameDialogCancel(me);
+
                     }
                 }
         );
@@ -96,4 +112,5 @@ public class GearDeliveryFragment extends DialogFragment {
         super.onCancel(dialog);
         listener.editNameDialogCancel(this);
     }
+
 }
