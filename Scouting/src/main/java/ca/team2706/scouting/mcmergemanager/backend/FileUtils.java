@@ -9,7 +9,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -64,6 +63,7 @@ public class FileUtils {
         // (since the strings are `static`, when any instances of FileUtils update these, all instances will get the updates)
         SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(App.getContext());
         sLocalToplevelFilePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).getAbsolutePath() + "/" + App.getContext().getString(R.string.FILE_TOPLEVEL_DIR);
+//        sLocalToplevelFilePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + App.getContext().getString(R.string.FILE_TOPLEVEL_DIR);
         sLocalEventFilePath = sLocalToplevelFilePath + "/" + SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_event), "<Not Set>");
         sLocalTeamPhotosFilePath = sLocalToplevelFilePath + "/" + "Team Photos";
 
@@ -134,18 +134,22 @@ public class FileUtils {
         if (!checkFileReadWritePermissions(activity))
             return;
 
+        makeDirectory(sLocalToplevelFilePath);
+        makeDirectory(sLocalEventFilePath);
+        makeDirectory(sLocalTeamPhotosFilePath);
+
         new Thread()
         {
             public void run() {
-                checkDirectoryTree(sLocalToplevelFilePath);
+                scanDirectoryTree(sLocalToplevelFilePath);
             }
         }.start();
     }
 
 
-    private static void checkDirectoryTree(String directoryPath) {
+    private static void scanDirectoryTree(String directoryPath) {
 
-        Log.d(App.getContext().getResources().getString(R.string.app_name), "Checking directory: " + directoryPath);
+        Log.d(App.getContext().getResources().getString(R.string.app_name), "Scanning directory: " + directoryPath);
 
 
         File file = new File(directoryPath);
@@ -157,7 +161,7 @@ public class FileUtils {
             for(File subFile : files) {
                 if(subFile.isDirectory()) {
                     // Recurse!
-                    checkDirectoryTree(subFile.getAbsolutePath());
+                    scanDirectoryTree(subFile.getAbsolutePath());
                 }
                 else {
                     // Log.d(App.getContext().getResources().getString(R.string.app_name), "Media Scanning "+ subFile.toString());
@@ -172,6 +176,20 @@ public class FileUtils {
             file.delete();
             // create it
             file.mkdirs();
+        }
+    }
+
+    private static void makeDirectory(String directoryName) {
+
+        Log.d(App.getContext().getResources().getString(R.string.app_name), "Making directory: " + directoryName);
+
+
+        File file = new File(directoryName);
+        if (!file.isDirectory()) {
+            // in case there's a regular file there with the same name
+            file.delete();
+            // create it
+            file.mkdir();
         }
     }
 
@@ -435,7 +453,6 @@ public class FileUtils {
             br.close();
         } catch (Exception e) {
             Log.e(App.getContext().getResources().getString(R.string.app_name), "loadTeamDataFile:: " + e.toString());
-            e.printStackTrace();
             return null;
         }
 
@@ -476,18 +493,10 @@ public class FileUtils {
     public static Uri getNameForNewPhoto(int teamNumber) {
         // check if a photo folder exists for this team, and create it if it does not.
         String dir = sLocalTeamPhotosFilePath + "/" + teamNumber + "/";
-        checkDirectoryTree(dir);
+        scanDirectoryTree(dir);
 
         String fileName = dir + teamNumber + "_" + (new Date().getTime()) + ".jpg";
         File file = new File(fileName);
-
-        try {
-            file.createNewFile();
-            App.getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
-        }
-        catch (IOException e) {
-            Log.e("MCMergeManager", "getNameForNewPhoto: could not create file: "+file.toString(), e);
-        }
 
         return Uri.fromFile(file);
     }
