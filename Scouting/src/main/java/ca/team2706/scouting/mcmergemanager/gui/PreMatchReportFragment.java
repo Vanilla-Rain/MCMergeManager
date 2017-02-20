@@ -84,9 +84,11 @@ public class PreMatchReportFragment extends Fragment {
             ((TextView) m_view.findViewById(R.id.blueScoreTV)).setText(m_match.getBlueScore()+"");
             ((TextView) m_view.findViewById(R.id.redScoreTV)).setText(m_match.getRedScore()+"");
             ((TextView) m_view.findViewById(R.id.predicted_finalTV)).setText("(final)");
+            ((TextView) m_view.findViewById(R.id.averagePerTeam)).setText("(post match average)");
         } else {
             // display the OPR-predicted score instead
             displayOprPredection();
+            ((TextView) m_view.findViewById(R.id.averagePerTeam)).setText("(pre match average)");
         }
 
 
