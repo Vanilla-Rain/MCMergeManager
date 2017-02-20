@@ -451,12 +451,6 @@ public class StatsEngine implements Serializable{
         if (matchData == null)
             throw new IllegalStateException("matchData is null");
 
-
-        int numFuelGroundCycles=0, numFuelWallCycles=0, numFuelHopperCycles=0;
-        int numFuelHighCycles=0, numFuelLowCycles=0;
-
-        int numGearCycles=0;
-
         for(MatchData.Match match : teamStatsReport.teamMatchData.matches) {
 
             // Process all the events during this match in a big state machine.
@@ -496,17 +490,17 @@ public class StatsEngine implements Serializable{
 
                         if(inFuelGroundCycle) {
                             teamStatsReport.teleop_fuelGroundPickups_avgCycleTime += cycleTime;
-                            numFuelGroundCycles++;
+                            teamStatsReport.numFuelGroundCycles++;
                         }
 
                         if (inFuelWallCycle) {
                             teamStatsReport.teleop_fuelWallPickups_avgCycleTime += cycleTime;
-                            numFuelWallCycles++;
+                            teamStatsReport.numFuelWallCycles++;
                         }
 
                         if (inFuelHopperCycle) {
                             teamStatsReport.teleop_fuelHopperPickups_avgCycleTime += cycleTime;
-                            numFuelHopperCycles++;
+                            teamStatsReport.numFuelHopperCycles++;
                         }
 
                         if (inFuelHighCycle) {
@@ -520,7 +514,7 @@ public class StatsEngine implements Serializable{
 
                             Cycle c = currFuelCycle.clone(Cycle.CycleType.HIGH_GOAL);
                             cyclesInThisMatch.cycles.add(c);
-                            numFuelHighCycles++;
+                            teamStatsReport.numFuelHighCycles++;
                         }
 
                         if (inFuelLowCycle) {
@@ -533,7 +527,7 @@ public class StatsEngine implements Serializable{
                                 teamStatsReport.teleop_fuelLow_minCycleTime = cycleTime;
 
                             cyclesInThisMatch.cycles.add(currFuelCycle.clone(Cycle.CycleType.LOW_GOAL));
-                            numFuelLowCycles++;
+                            teamStatsReport.numFuelLowCycles++;
                         }
 
                         // reset all the state vars
@@ -623,10 +617,13 @@ public class StatsEngine implements Serializable{
                         switch (gearPickupEvent.pickupType) {
                             case GROUND:
                                 teamStatsReport.teleop_gearsPickupGround_avgPerMatch++;
+                                teamStatsReport.numGearGroundCycles++;
                                 break;
 
                             case WALL:
+                                teamStatsReport.numGearWallCycles++;
                                 teamStatsReport.teleop_gearsPickupWall_avgPerMatch++;
+                                break;
                         }
                     }
                 } // instanceof GearPickupEvent
@@ -647,7 +644,7 @@ public class StatsEngine implements Serializable{
                         case DELIVERED:
                             teamStatsReport.teleop_gearsDelivered_avgPerMatch++;
                             teamStatsReport.teleop_gears_avgCycleTime += cycleTime;
-                            numGearCycles++;
+                            teamStatsReport.numGearCycles++;
 
                             if (cycleTime > teamStatsReport.teleop_gears_maxCycleTime)
                                 teamStatsReport.teleop_gears_maxCycleTime = cycleTime;
@@ -760,30 +757,30 @@ public class StatsEngine implements Serializable{
 
             // Fuel pickup
             teamStatsReport.teleop_fuelGroundPickups_avgPerMatch /= numMatchesPlayed;
-            teamStatsReport.teleop_fuelGroundPickups_avgCycleTime /= numFuelGroundCycles;
+            teamStatsReport.teleop_fuelGroundPickups_avgCycleTime /= teamStatsReport.numFuelGroundCycles;
             teamStatsReport.teleop_fuelWallPickups_avgPerMatch /= numMatchesPlayed;
-            teamStatsReport.teleop_fuelWallPickups_avgCycleTime /= numFuelWallCycles;
+            teamStatsReport.teleop_fuelWallPickups_avgCycleTime /= teamStatsReport.numFuelWallCycles;
             teamStatsReport.teleop_fuelHopperPickups_avgPerMatch /= numMatchesPlayed;
-            teamStatsReport.teleop_fuelHopperPickups_avgCycleTime /= numFuelHopperCycles;
+            teamStatsReport.teleop_fuelHopperPickups_avgCycleTime /= teamStatsReport.numFuelHopperCycles;
 
             // Fuel scoring
             teamStatsReport.teleop_fuelScoredHigh_avgPerMatch /= numMatchesPlayed;
-            teamStatsReport.teleop_fuelScoredHigh_avgPerCycle /= numFuelHighCycles;
+            teamStatsReport.teleop_fuelScoredHigh_avgPerCycle /= teamStatsReport.numFuelHighCycles;
             teamStatsReport.teleop_fuelMissedHigh_avgPerMatch /= numMatchesPlayed;
 
             teamStatsReport.teleop_fuelScoredLow_avgPerMatch /= numMatchesPlayed;
-            teamStatsReport.teleop_fuelScoredLow_avgPerCycle /= numFuelLowCycles;
+            teamStatsReport.teleop_fuelScoredLow_avgPerCycle /= teamStatsReport.numFuelLowCycles;
             teamStatsReport.teleop_fuelMissedLow_avgPerMatch /= numMatchesPlayed;
 
-            teamStatsReport.teleop_fuelHigh_aveCycleTime /= numFuelHighCycles;
-            teamStatsReport.teleop_fuelLow_aveCycleTime /= numFuelHighCycles;
+            teamStatsReport.teleop_fuelHigh_aveCycleTime /= teamStatsReport.numFuelHighCycles;
+            teamStatsReport.teleop_fuelLow_aveCycleTime /= teamStatsReport.numFuelHighCycles;
 
             // Gears
             teamStatsReport.teleop_gearsDropped_avgPerMatch /= numMatchesPlayed;
             teamStatsReport.teleop_gearsDelivered_avgPerMatch /= numMatchesPlayed;
             teamStatsReport.teleop_gearsPickupWall_avgPerMatch /= numMatchesPlayed;
             teamStatsReport.teleop_gearsPickupGround_avgPerMatch /= numMatchesPlayed;
-            teamStatsReport.teleop_gears_avgCycleTime /= numGearCycles;
+            teamStatsReport.teleop_gears_avgCycleTime /= teamStatsReport.numGearCycles;
 
             // figure out which lift they prefer
 
@@ -815,6 +812,46 @@ public class StatsEngine implements Serializable{
 
             teamStatsReport.avgDeadness /= numMatchesPlayed;
             teamStatsReport.avgTimeSpentPlayingDef /= numMatchesPlayed;
+
+            // Find favourite cycle type
+            if(teamStatsReport.numGearCycles > teamStatsReport.numFuelHighCycles &&
+                    teamStatsReport.numGearCycles > teamStatsReport.numFuelLowCycles) {
+                teamStatsReport.favouriteCycleType = "Gears";
+            }
+            else if(teamStatsReport.numFuelHighCycles > teamStatsReport.numGearCycles &&
+                    teamStatsReport.numFuelHighCycles > teamStatsReport.numFuelLowCycles) {
+                teamStatsReport.favouriteCycleType = "Fuel (High)";
+            }
+            else if(teamStatsReport.numFuelLowCycles > teamStatsReport.numGearCycles &&
+                    teamStatsReport.numFuelHighCycles > teamStatsReport.numFuelLowCycles) {
+                teamStatsReport.favouriteCycleType = "Fuel (Low)";
+            }
+            else {
+                teamStatsReport.favouriteCycleType = "(trying to be PC)";
+            }
+
+            teamStatsReport.totalGroundCycles = teamStatsReport.numFuelGroundCycles + teamStatsReport.numGearGroundCycles;
+            teamStatsReport.totalWallCycles= teamStatsReport.numFuelWallCycles + teamStatsReport.numGearWallCycles;
+
+
+            // Find favourite pickup location
+            if(teamStatsReport.totalGroundCycles > teamStatsReport.totalWallCycles &&
+                    teamStatsReport.totalGroundCycles > teamStatsReport.numFuelHopperCycles) {
+                teamStatsReport.favouritePickupLocation = "Ground";
+            }
+            else if(teamStatsReport.totalWallCycles > teamStatsReport.totalGroundCycles &&
+                    teamStatsReport.totalWallCycles > teamStatsReport.numFuelHopperCycles) {
+                teamStatsReport.favouritePickupLocation = "Chute";
+            }
+            else if(teamStatsReport.numFuelHopperCycles > teamStatsReport.totalGroundCycles &&
+                    teamStatsReport.numFuelHopperCycles > teamStatsReport.totalWallCycles) {
+                teamStatsReport.favouritePickupLocation = "Hopper";
+            }
+            else {
+                teamStatsReport.favouritePickupLocation = "(trying to be PC?)";
+            }
+
+
 
         } // end averages
 

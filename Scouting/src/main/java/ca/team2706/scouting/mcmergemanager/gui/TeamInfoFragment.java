@@ -28,8 +28,6 @@ import ca.team2706.scouting.mcmergemanager.backend.interfaces.PhotoRequester;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.Cycle;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.TeamStatsReport;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.gui.TeamStatsActivity;
-import ca.team2706.scouting.mcmergemanager.steamworks2017.StatsEngine;
-import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.TeleopScoutingObject;
 
 
 public class TeamInfoFragment extends Fragment
@@ -42,7 +40,7 @@ public class TeamInfoFragment extends Fragment
     public String name;
     public AlertDialog.Builder alert;
 
-    public TeamStatsReport m_teamStatsReport;
+    public TeamStatsReport mTeamStatsReport;
 
     public TeamInfoFragment() {
         // Required empty public constructor
@@ -94,8 +92,8 @@ public class TeamInfoFragment extends Fragment
             Thread getStuffThread = new Thread(getStuff);
             getStuffThread.start();
 
-            m_teamStatsReport = (TeamStatsReport) args.getSerializable(getString(R.string.EXTRA_TEAM_STATS_REPORT));
-            if (m_teamStatsReport != null) {
+            mTeamStatsReport = (TeamStatsReport) args.getSerializable(getString(R.string.EXTRA_TEAM_STATS_REPORT));
+            if (mTeamStatsReport != null) {
                 fillStatsData();
                 fillNotes();
                 m_view.findViewById(R.id.viewCyclesBtn).setEnabled(true);
@@ -110,7 +108,7 @@ public class TeamInfoFragment extends Fragment
                 //On click function
                 public void onClick(View view) {
                     Intent intent = new Intent(getActivity(), TeamStatsActivity.class);
-                    intent.putExtra(getString(R.string.EXTRA_TEAM_STATS_REPORT), m_teamStatsReport);
+                    intent.putExtra(getString(R.string.EXTRA_TEAM_STATS_REPORT), mTeamStatsReport);
                     startActivity(intent);
                 }
             });
@@ -121,7 +119,7 @@ public class TeamInfoFragment extends Fragment
                 //On click function
                 public void onClick(View view) {
                     Intent intent = new Intent(getActivity(), CyclesDisplayActivity.class);
-                    intent.putExtra(getString(R.string.EXTRA_TEAM_STATS_REPORT), m_teamStatsReport);
+                    intent.putExtra(getString(R.string.EXTRA_TEAM_STATS_REPORT), mTeamStatsReport);
                     startActivity(intent);
                 }
             });
@@ -206,61 +204,10 @@ public class TeamInfoFragment extends Fragment
     private void fillStatsData() {
         String statsText = "";
 
-        statsText += "W/L/T:\t\t " + m_teamStatsReport.wins + "/" + m_teamStatsReport.losses + "/" + m_teamStatsReport.ties + "\n";
-        statsText += "OPR:\t\t " + String.format("%.2f",m_teamStatsReport.OPR) + "\n";
-
-        int fuelCycles = 0;
-        for(Cycle cycle: m_teamStatsReport.cycles) {
-            switch(cycle.cycleType) {
-                case LOW_GOAL:
-                    fuelCycles++;
-                case HIGH_GOAL:
-                    fuelCycles++;
-            }
-        }
-        if(m_teamStatsReport.teleop_gearsDelivered_avgPerMatch) > fuelCycles) {
-            statsText+= "Favoured cycle type: Gears\n";
-
-            if(m_teamStatsReport.teleop_gearsPickupGround_avgPerMatch > m_teamStatsReport.teleop_gearsPickupWall_avgPerMatch) {
-                statsText+= "Favoured gear pickup: Ground\n";
-            }
-            else if(m_teamStatsReport.teleop_gearsPickupWall_avgPerMatch > m_teamStatsReport.teleop_gearsPickupGround_avgPerMatch) {
-                statsText+= "Favoured gear pickup: Chute\n";
-            }
-            else {
-                statsText+= "Favoured gear pickup: Didn't pick up any\n";
-            }
-
-        }
-        else if(fuelCycles > gearCycles) {
-            statsText+= "Favoured cycle type: Fuel\n";
-
-            if(m_teamStatsReport.teleop_fuelGroundPickups_avgPerMatch > m_teamStatsReport.teleop_fuelHopperPickups_avgPerMatch &&
-                    m_teamStatsReport.teleop_fuelGroundPickups_avgPerMatch > m_teamStatsReport.teleop_fuelWallPickups_avgPerMatch) {
-                statsText+= "Favoured fuel pickup: Ground";
-            }
-            else if(m_teamStatsReport.teleop_fuelWallPickups_avgPerMatch)
-
-        }
-        else if(fuelCycles == 0 && gearCycles == 0) {
-            statsText+= "This team did no cycles";
-        }
-
-        // comupte their favourite defense and ave breaches per match
-//        int max=0, fav=0, num=0;
-//        for(int i=1; i< TeleopScoutingObject.NUM_DEFENSES; i++) {
-//            if (m_teamStatsReport.defensesBreached[i] > max) {
-//                max = m_teamStatsReport.defensesBreached[i];
-//                fav = i;
-//            }
-//            num += m_teamStatsReport.defensesBreached[i];
-//        }
-//        statsText += "Fav Defense:\t\t " + TeleopScoutingObject.getDefenseName(fav) + "\n";
-
-//        if (m_teamStatsReport.numMatchesPlayed != 0)
-//            statsText += "Breaches per match:\t\t " + String.format("%.1f", (double) num / m_teamStatsReport.numMatchesPlayed);
-//        else
-//            statsText += "Breaches per match:\t\t 0";
+        statsText += "W/L/T:\t\t " + mTeamStatsReport.wins + "/" + mTeamStatsReport.losses + "/" + mTeamStatsReport.ties + "\n";
+        statsText += "OPR:\t\t " + String.format("%.2f", mTeamStatsReport.OPR) + "\n";
+        statsText += "Fav. cycle type: " + mTeamStatsReport.favouriteCycleType + "\n";
+        statsText += "Fav. pickup location: " + mTeamStatsReport.favouritePickupLocation + "\n";
 
         TextView statsTV = (TextView) m_view.findViewById(R.id.statsTV);
         statsTV.setText(statsText);
@@ -268,7 +215,7 @@ public class TeamInfoFragment extends Fragment
 
     private void fillNotes() {
         TextView notesTV = (TextView) m_view.findViewById(R.id.textViewNotes);
-        notesTV.setText(m_teamStatsReport.notes);
+        notesTV.setText(mTeamStatsReport.notes);
     }
 
     @Override
