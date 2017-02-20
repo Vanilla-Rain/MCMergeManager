@@ -13,6 +13,8 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 import ca.team2706.scouting.mcmergemanager.R;
@@ -95,10 +97,7 @@ public class PrimaryTab extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
         SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(App.getContext());
-
-
         boolean ftpSyncOnlyWifi = SP.getBoolean(App.getContext().getResources().getString(R.string.PROPERTY_FTPSyncOnlyWifi), false);
 
         // check if we have internet connectivity, and are on WiFi
