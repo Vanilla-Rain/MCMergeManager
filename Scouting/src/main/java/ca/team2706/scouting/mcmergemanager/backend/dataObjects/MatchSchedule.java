@@ -51,7 +51,8 @@ public class MatchSchedule implements Serializable {
             String[] teamNos = jsonObj.getString(JSONKEP_teamListInt).split(",");
             for(String teamNoStr : teamNos) {
                 try {
-                    teamListInt.add(Integer.valueOf(teamNoStr));
+                    if(!teamListInt.contains(Integer.valueOf(teamNoStr)))
+                        teamListInt.add(Integer.valueOf(teamNoStr));
                 } catch (NumberFormatException e) {
                     // just pass
                 }
@@ -218,7 +219,7 @@ public class MatchSchedule implements Serializable {
 
         } catch(JSONException e) {
             // something went wrong
-            Log.e("MCMergeManager", "Failed to parse the match schedule from thebluealliance. Maybe the data is not valid json?");
+            Log.e("MCMergeManager", "Failed to parse the match schedule from thebluealliance. Maybe the gearDeliveryData is not valid json?");
         }
     }
 
@@ -248,7 +249,7 @@ public class MatchSchedule implements Serializable {
 
         } catch(JSONException e) {
             // something went wrong
-            Log.e("MCMergeManager", "Failed to parse the match schedule from thebluealliance. Maybe the data is not valid json?");
+            Log.e("MCMergeManager", "Failed to parse the match schedule from thebluealliance. Maybe the gearDeliveryData is not valid json?");
         }
     }
 
@@ -268,7 +269,7 @@ public class MatchSchedule implements Serializable {
         private int redScore;
 
 
-        // getters - this is how other classes will access the data (they can read it, but not change it)
+        // getters - this is how other classes will access the gearDeliveryData (they can read it, but not change it)
         public int getMatchNo() { return matchNo; }
         public int getBlue1() { return blue1; }
         public int getBlue2() { return blue2; }
@@ -291,7 +292,7 @@ public class MatchSchedule implements Serializable {
             return arr;
         }
 
-        // setters - this is how other classes will update data, or make a Match if they only know a few fields
+        // setters - this is how other classes will update gearDeliveryData, or make a Match if they only know a few fields
         void setMatchNo(int matchNo) { this.matchNo = matchNo; }
         void setRed1(int red1) { this.red1 = red1; }
         void setRed2(int red2) { this.red2 = red2; }
@@ -323,7 +324,7 @@ public class MatchSchedule implements Serializable {
                 redScore = Integer.parseInt(tokens[8]);
 
             } catch (Exception e) {
-                // the data was in the wrong format, empty everything out
+                // the gearDeliveryData was in the wrong format, empty everything out
                 matchNo = blue1 = blue2 = blue3 = red1 = red2 = red3 = 0;
                 blueScore = redScore = -1;
             }

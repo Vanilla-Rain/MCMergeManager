@@ -2,9 +2,13 @@ package ca.team2706.scouting.mcmergemanager.gui;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import ca.team2706.scouting.mcmergemanager.R;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.Cycle;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.TeamStatsReport;
 
 
 public class CyclesDisplayActivity extends AppCompatActivity {
@@ -16,35 +20,33 @@ public class CyclesDisplayActivity extends AppCompatActivity {
         setContentView(R.layout.cycles_display_activity);
 
 
+        TeamStatsReport teamStatsReport = (TeamStatsReport) getIntent().getSerializableExtra(getString(R.string.EXTRA_TEAM_STATS_REPORT));
+        int teamNo = teamStatsReport.teamNo;
 
-        // TODO: instead of fake data, unpack the TeamStatsReport from the intent
-        // and display real data.
-
+        ((TextView) findViewById(R.id.cyclesDisplayTitleTv)).setText("Cycles by Team " + teamNo);
 
         LinearLayout mainLayout = (LinearLayout) findViewById(R.id.cycles_display_main_layout);
 
-        // in the real app, get this from the team's data.
-        int matchesPlayed = 20;
-
-        // populate the things with fake simulated data, just so it looks like something
-        int matchNoCounter = 1 + (int) (Math.random()*10);
-
-        for(int i=0; i< matchesPlayed; i++) {
-            // simulate the match number
-            matchNoCounter += 1 + (int) (Math.random()*10);
-
+        for(TeamStatsReport.CyclesInAMatch cyclesInAMatch : teamStatsReport.cycleMatches) {
 
             CycleDisplayLayout cycleDisplayLayout = (CycleDisplayLayout) getLayoutInflater()
                     .inflate(R.layout.cycles_display, null);
 
-            simulateMatchData(cycleDisplayLayout, matchNoCounter);
+            for (Cycle cycle : cyclesInAMatch.cycles) {
+                cycleDisplayLayout.addCycle(cycle);
+            }
+
 
             mainLayout.addView(cycleDisplayLayout);
 
         }
     }
 
-
+    /**
+     * Just a helper function for testing and debugging.
+     *
+     * I'll leave it here for posterity.
+     */
     private void simulateMatchData(CycleDisplayLayout cycleDisplayLayout, int matchNo) {
         // set the match number
         cycleDisplayLayout.setMatchNo(matchNo);

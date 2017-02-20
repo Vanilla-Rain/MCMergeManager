@@ -3,11 +3,13 @@ package ca.team2706.scouting.mcmergemanager.backend;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -50,6 +52,7 @@ import ca.team2706.scouting.mcmergemanager.backend.dataObjects.NoteObject;
 import ca.team2706.scouting.mcmergemanager.backend.dataObjects.RepairTimeObject;
 import ca.team2706.scouting.mcmergemanager.backend.dataObjects.TeamDataObject;
 import ca.team2706.scouting.mcmergemanager.backend.interfaces.PhotoRequester;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.FuelPickupEvent;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.MatchData;
 
 /**
@@ -61,19 +64,26 @@ import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.MatchData;
 public class FileUtils {
 
     public static String sLocalToplevelFilePath;
-    public static String sLocalTeamFilePath;
     public static String sLocalEventFilePath;
     public static String sLocalTeamPhotosFilePath;
 
+    public static String sRemoteTeamPhotosFilePath;
+
     /* Static initializer */
     static {
+        updateFilePathStrings();
+    }
+
+    public static void updateFilePathStrings() {
         // store string constants and preferences in member variables just for cleanliness
         // (since the strings are `static`, when any instances of FileUtils update these, all instances will get the updates)
         SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(App.getContext());
-        sLocalToplevelFilePath = "/sdcard/"+ App.getContext().getString(R.string.FILE_TOPLEVEL_DIR);
-        sLocalTeamFilePath = sLocalToplevelFilePath + "/" + SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_teamname), "<Not Set>");
-        sLocalEventFilePath = sLocalTeamFilePath + "/" + SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_event), "<Not Set>");
-        sLocalTeamPhotosFilePath = sLocalTeamFilePath + "/" + "Team Photos";
+        sLocalToplevelFilePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).getAbsolutePath() + "/" + App.getContext().getString(R.string.FILE_TOPLEVEL_DIR);
+//        sLocalToplevelFilePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + App.getContext().getString(R.string.FILE_TOPLEVEL_DIR);
+        sLocalEventFilePath = sLocalToplevelFilePath + "/" + SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_event), "<Not Set>");
+        sLocalTeamPhotosFilePath = sLocalToplevelFilePath + "/" + "Team Photos";
+
+        sRemoteTeamPhotosFilePath = "/" + App.getContext().getString(R.string.FILE_TOPLEVEL_DIR) + "/"  + "Team Photos";
     }
 
     public enum FileType {
@@ -131,15 +141,7 @@ public class FileUtils {
     /**
      * This checks the local file system for the appropriate files and folders, creating them if they
      * are missing.
-     * <p/>
-     * The file structure is:
-     * MCMergeManager/
-     *  - team_name/
-     *      - Team Photos/
-     *      - event/
-     *          - matchScoutingData.csv
      */
-    //TODO Update ^^^
     public static void checkLocalFileStructure(Activity activity) {
         if (activity == null)
             return;
@@ -149,11 +151,49 @@ public class FileUtils {
             return;
 
         makeDirectory(sLocalToplevelFilePath);
-        makeDirectory(sLocalTeamFilePath);
         makeDirectory(sLocalEventFilePath);
         makeDirectory(sLocalTeamPhotosFilePath);
+
+        new Thread()
+        {
+            public void run() {
+                scanDirectoryTree(sLocalToplevelFilePath);
+            }
+        }.start();
     }
 
+
+    private static void scanDirectoryTree(String directoryPath) {
+
+        Log.d(App.getContext().getResources().getString(R.string.app_name), "Scanning directory: " + directoryPath);
+
+
+        File file = new File(directoryPath);
+        if (file.isDirectory()) {
+
+            // Call the system media scanner on each file inside
+            File[] files = file.listFiles();
+
+            for(File subFile : files) {
+                if(subFile.isDirectory()) {
+                    // Recurse!
+                    scanDirectoryTree(subFile.getAbsolutePath());
+                }
+                else {
+                    // Log.d(App.getContext().getResources().getString(R.string.app_name), "Media Scanning "+ subFile.toString());
+
+                    // Force the midea scanner to scan this file so it shows up from a PC over USB.
+                    App.getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(subFile)));
+                }
+            }
+        }
+        else {
+            // in case there's a regular file there with the same name
+            file.delete();
+            // create it
+            file.mkdirs();
+        }
+    }
 
     private static void makeDirectory(String directoryName) {
 
@@ -189,10 +229,16 @@ public class FileUtils {
         File outfile = new File(outFileName);
         try {
             // converts match to json, and then uses json.toString method to save in file
+            // create the file path, if it doesn't exist already.
+            (new File(outfile.getParent())).mkdirs();
+
             BufferedWriter bw = new BufferedWriter(new FileWriter(outfile, true));
             bw.append( match.toJson().toString() );
             bw.flush();
             bw.close();
+
+            // Force the midea scanner to scan this file so it shows up from a PC over USB.
+            App.getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(outfile)));
         } catch (IOException e) {
 
         }
@@ -227,12 +273,6 @@ public class FileUtils {
 
     /**
      * Load the entire file of match data into Objects.
-     *
-     * Data format:
-     * "matchNo<int>,teamNo<int>,isSpyBot<boolean>,reached<boolean>,{autoDefenseBreached<int>;...},{{autoBallShot_X<int>;autoBallShot_Y<int>;autoBallShot_time<.2double>;autoBallshot_which<int>}:...},{teleopDefenseBreached<int>;...},{{teleopBallShot_X<int>;teleopBallShot_Y<int>;teleopBallShot_time<.2double>;teleopBallshot_which<int>}:...},timeDefending<,2double>,{{ballPickup_selection<int>;ballPickup_time<,2double>}:...},{{scaling_time<.2double>;scaling_comelpted<int>}:...},notes<String>,challenged<boolean>,timeDead<int>"
-     *
-     * Or, in printf / format strings:
-     * "%d,%d,%b,%b,{%d;...},{{%d:%d:%.2f:%d};...},{%d;...},{{%d:%d:%.2f:%d};...},%,2f,{{%d;%,2f}:...},{{%.2f;%d}:...},%s,%b,%d"
      */
     public static MatchData loadMatchDataFile() {
         return loadMatchDataFile(FileType.SYNCHED);
@@ -320,7 +360,6 @@ public class FileUtils {
 
 
     public static void appendToTeamDataFile(TeamDataObject teamDataObject) {
-        // TODO #90
 
         String outFileName = sLocalEventFilePath +"/"+ App.getContext().getResources().getString(R.string.teamDataFileName);
 
@@ -328,12 +367,18 @@ public class FileUtils {
 
         File outfile = new File(outFileName);
         try {
+            // create the file path, if it doesn't exist already.
+            (new File(outfile.getParent())).mkdirs();
+
             BufferedWriter bw = new BufferedWriter(new FileWriter(outfile, true));
-            bw.append( teamDataObject.toString() );
+            bw.append( teamDataObject.toString() + "\n");
             bw.flush();
             bw.close();
-        } catch (IOException e) {
 
+            // Force the midea scanner to scan this file so it shows up from a PC over USB.
+            App.getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(outfile)));
+        } catch (IOException e) {
+            Log.e("MCMergeManager", "appendToTeamDataFile could not save file.", e);
         }
 
 
@@ -352,6 +397,22 @@ public class FileUtils {
         }
     }
 
+    public static List<TeamDataObject> getRepairTimeObjects() {
+        List<TeamDataObject> teamDataObjects = loadTeamDataFile();
+
+        List<TeamDataObject> repairTimeObjectList = new ArrayList<>();
+
+        if(teamDataObjects != null) {
+            for(TeamDataObject teamDataObject: teamDataObjects) {
+                if(teamDataObject instanceof RepairTimeObject)
+                    repairTimeObjectList.add(teamDataObject);
+            }
+        }
+
+
+        return repairTimeObjectList;
+    }
+
     /**
      * Load data from the teamDataFile.
      */
@@ -363,7 +424,6 @@ public class FileUtils {
          * Load data from the teamDataFile.
          */
     public static List<TeamDataObject> loadTeamDataFile(FileType fileType) {
-        // TODO #90
 
         List<TeamDataObject> teamDataObjects = new ArrayList<>();
 
@@ -407,7 +467,7 @@ public class FileUtils {
             }
             br.close();
         } catch (Exception e) {
-            Log.e(App.getContext().getResources().getString(R.string.app_name), "loadMatchDataFile:: " + e.toString());
+            Log.e(App.getContext().getResources().getString(R.string.app_name), "loadTeamDataFile:: " + e.toString());
             return null;
         }
 
@@ -419,14 +479,12 @@ public class FileUtils {
      * This will reload the entire TeamDataFile from disk. If you already have a List<TeamDataObject>, then
      * it would be more efficient to pass it to filterTeamDataByTeam().
      */
-    public List<TeamDataObject> loadTeamDataForTeam(int teamNo) {
-        // TODO #90
+    public static List<TeamDataObject> loadTeamDataForTeam(int teamNo) {
 
         return filterTeamDataByTeam(teamNo, loadTeamDataFile());
     }
 
     public static List<TeamDataObject> filterTeamDataByTeam(int teamNo, List<TeamDataObject> teamDataObjects) {
-        // TODO #90
 
         List<TeamDataObject> toRet = new ArrayList<>();
 
@@ -450,18 +508,12 @@ public class FileUtils {
     public static Uri getNameForNewPhoto(int teamNumber) {
         // check if a photo folder exists for this team, and create it if it does not.
         String dir = sLocalTeamPhotosFilePath + "/" + teamNumber + "/";
-        File file = new File(dir);
-
-        if (!file.isDirectory()) {
-            // in case there's a regular file there with the same name
-            file.delete();
-
-            // create it
-            file.mkdir();
-        }
+        scanDirectoryTree(dir);
 
         String fileName = dir + teamNumber + "_" + (new Date().getTime()) + ".jpg";
-        return Uri.fromFile(new File(fileName));
+        File file = new File(fileName);
+
+        return Uri.fromFile(file);
     }
 
 
@@ -511,10 +563,6 @@ public class FileUtils {
             // else: if it's not a file, then what is it???? .... skip I guess
         }
         requester.updatePhotos(arrBitmaps.toArray(new Bitmap[arrBitmaps.size()]));
-
-
-        /* This used to sync with Google Drive, now we need something different */
-        // TODO
 
     }
 
@@ -693,7 +741,7 @@ public class FileUtils {
             JSONArray arr = new JSONArray();
             JSONObject obj = new JSONObject();
             obj.put("match_id", 99);
-            obj.put("objective_id", 14);
+            obj.put("objective_id", FuelPickupEvent.objectiveId);
             arr.put(obj);
             jsonBody.put("events", arr);
             final String mRequestBody = jsonBody.toString();
