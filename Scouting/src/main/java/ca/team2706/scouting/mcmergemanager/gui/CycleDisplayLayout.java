@@ -6,6 +6,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import ca.team2706.scouting.mcmergemanager.R;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.Cycle;
 
 /**
  * Created by mike on 23/01/17.
@@ -59,5 +60,25 @@ public class CycleDisplayLayout extends LinearLayout {
     }
 
 
+    public void addCycle(Cycle cycle) {
+        switch(cycle.cycleType) {
+            case GEAR:
+                addCycle(GEAR_CYCLE, cycle.startTime, cycle.endTime, cycle.success);
+                break;
+            case LOW_GOAL:
+                addCycle(LOW_FUEL_CYCLE, cycle.startTime, cycle.endTime, cycle.success);
+                break;
+            case HIGH_GOAL:
+                addCycle(HIGH_FUEL_CYCLE, cycle.startTime, cycle.endTime, cycle.success);
+                break;
+            case CLIMB:
+                addCycle(CLIMB_CYCLE, cycle.startTime, cycle.endTime, cycle.success);
+                break;
+            case DEFENSE:
+                addCycle(DEFENSE_CYCLE, cycle.startTime, cycle.endTime, cycle.success);
+                break;
+        }
+
+    }
 
 }

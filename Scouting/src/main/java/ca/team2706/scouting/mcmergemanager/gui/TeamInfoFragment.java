@@ -27,8 +27,6 @@ import ca.team2706.scouting.mcmergemanager.backend.FileUtils;
 import ca.team2706.scouting.mcmergemanager.backend.interfaces.PhotoRequester;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.TeamStatsReport;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.gui.TeamStatsActivity;
-import ca.team2706.scouting.mcmergemanager.steamworks2017.StatsEngine;
-import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.TeleopScoutingObject;
 
 
 public class TeamInfoFragment extends Fragment
@@ -41,7 +39,7 @@ public class TeamInfoFragment extends Fragment
     public String name;
     public AlertDialog.Builder alert;
 
-    public TeamStatsReport m_teamStatsReport;
+    public TeamStatsReport mTeamStatsReport;
 
     public TeamInfoFragment() {
         // Required empty public constructor
@@ -93,8 +91,8 @@ public class TeamInfoFragment extends Fragment
             Thread getStuffThread = new Thread(getStuff);
             getStuffThread.start();
 
-            m_teamStatsReport = (TeamStatsReport) args.getSerializable(getString(R.string.EXTRA_TEAM_STATS_REPORT));
-            if (m_teamStatsReport != null) {
+            mTeamStatsReport = (TeamStatsReport) args.getSerializable(getString(R.string.EXTRA_TEAM_STATS_REPORT));
+            if (mTeamStatsReport != null) {
                 fillStatsData();
                 fillNotes();
                 m_view.findViewById(R.id.viewCyclesBtn).setEnabled(true);
@@ -109,7 +107,7 @@ public class TeamInfoFragment extends Fragment
                 //On click function
                 public void onClick(View view) {
                     Intent intent = new Intent(getActivity(), TeamStatsActivity.class);
-                    intent.putExtra(getString(R.string.EXTRA_TEAM_STATS_REPORT), m_teamStatsReport);
+                    intent.putExtra(getString(R.string.EXTRA_TEAM_STATS_REPORT), mTeamStatsReport);
                     startActivity(intent);
                 }
             });
@@ -120,7 +118,7 @@ public class TeamInfoFragment extends Fragment
                 //On click function
                 public void onClick(View view) {
                     Intent intent = new Intent(getActivity(), CyclesDisplayActivity.class);
-                    intent.putExtra(getString(R.string.EXTRA_TEAM_STATS_REPORT), m_teamStatsReport);
+                    intent.putExtra(getString(R.string.EXTRA_TEAM_STATS_REPORT), mTeamStatsReport);
                     startActivity(intent);
                 }
             });
@@ -205,8 +203,8 @@ public class TeamInfoFragment extends Fragment
     private void fillStatsData() {
         String statsText = "";
 
-        statsText += "W/L/T:\t\t " + m_teamStatsReport.wins + "/" + m_teamStatsReport.losses + "/" + m_teamStatsReport.ties + "\n";
-        statsText += "OPR:\t\t " + String.format("%.2f",m_teamStatsReport.OPR) + "\n";
+        statsText += "W/L/T:\t\t " + mTeamStatsReport.wins + "/" + mTeamStatsReport.losses + "/" + mTeamStatsReport.ties + "\n";
+        statsText += "OPR:\t\t " + String.format("%.2f", mTeamStatsReport.OPR) + "\n";
 
         TextView statsTV = (TextView) m_view.findViewById(R.id.statsTV);
         statsTV.setText(statsText);
@@ -214,7 +212,7 @@ public class TeamInfoFragment extends Fragment
 
     private void fillNotes() {
         TextView notesTV = (TextView) m_view.findViewById(R.id.textViewNotes);
-        notesTV.setText(m_teamStatsReport.notes);
+        notesTV.setText(mTeamStatsReport.notes);
     }
 
     @Override
