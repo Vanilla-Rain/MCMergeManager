@@ -32,6 +32,8 @@ public class CyclesDisplayActivity extends AppCompatActivity {
             CycleDisplayLayout cycleDisplayLayout = (CycleDisplayLayout) getLayoutInflater()
                     .inflate(R.layout.cycles_display, null);
 
+            cycleDisplayLayout.setMatchNo(cyclesInAMatch.matchNo);
+
             for (Cycle cycle : cyclesInAMatch.cycles) {
                 cycleDisplayLayout.addCycle(cycle);
             }
