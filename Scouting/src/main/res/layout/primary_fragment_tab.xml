@@ -38,7 +38,11 @@
                     android:onClick="onShowScheduleClicked"
                     android:clickable="false" />
             </LinearLayout>
-
+            <LinearLayout
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:layout_width="0px"
+                android:layout_height="0px"/>
             <EditText
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"

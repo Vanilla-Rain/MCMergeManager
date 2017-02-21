@@ -185,7 +185,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             bindPreferenceSummaryToValue(findPreference(getResources().getString(R.string.PROPERTY_FTPHostname)));
             bindPreferenceSummaryToValue(findPreference(getResources().getString(R.string.PROPERTY_FTPUsername)));
             bindPreferenceSummaryToValue(findPreference(getResources().getString(R.string.PROPERTY_FTPPassword)));
-            bindPreferenceSummaryToValue(findPreference(getResources().getString(R.string.PROPERTY_FTPSyncOverWifi)));
+            bindPreferenceSummaryToValue(findPreference(getResources().getString(R.string.PROPERTY_FTPSyncOnlyWifi)));
             bindPreferenceSummaryToValue(findPreference(getResources().getString(R.string.PROPERTY_event)));
         }
 
