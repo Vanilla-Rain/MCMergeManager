@@ -2,11 +2,13 @@ package ca.team2706.scouting.mcmergemanager.backend;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Path;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import org.apache.commons.net.ftp.FTPFile;
@@ -23,6 +25,7 @@ import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import ca.team2706.scouting.mcmergemanager.R;
 import ca.team2706.scouting.mcmergemanager.backend.interfaces.FTPRequester;
 
 import static java.lang.System.in;
@@ -48,6 +51,7 @@ public class FTPClient {
     private Object connectedThreadLock = new Object();
     private boolean connected = false;
     private boolean syncing = false;
+    private boolean initilized = false;
 
 
     /**
@@ -65,6 +69,11 @@ public class FTPClient {
         this.remotePath = remotePath;
         this.port = 21;
         Log.d("FTPClient|init", "Local Path: " + localPath + "\nRemote Path: " + remotePath);
+        this.initilized = true;
+    }
+    public FTPClient (String localPath){
+        this.localPath = new File(localPath);
+        this.initilized = false;
     }
 
     /**
@@ -82,6 +91,7 @@ public class FTPClient {
         this.localPath = new File(localPath);
         this.port = port;
         Log.d("FTPClient|init", "Local Path: " + localPath + "\nRemote Path: " + remotePath);
+        this.initilized = true;
     }
 
     /**
@@ -100,7 +110,7 @@ public class FTPClient {
      * @throws ConnectException
      */
     public void connect() throws ConnectException {
-
+        if(!initilized) return;
         ConnectivityManager cm = (ConnectivityManager) App.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         if (activeNetwork == null) { // not connected to the internet
@@ -139,6 +149,7 @@ public class FTPClient {
      */
 
     public void syncAllFiles(final FTPRequester requester, final Activity activity)throws ConnectException{
+        if(!initilized) return;
       synchronized (connectedThreadLock){
             if(!connected){
                 throw new ConnectException("You cannot sync files if you're not connected!");
@@ -231,6 +242,7 @@ public class FTPClient {
         });
     }
     private void uploadSync(String filename){
+        if(!initilized) return;
         String RemotePath = filename.split("MCMergeManager")[1];
         RemotePath = "/MCMergeManager" + RemotePath;
         Log.i("FTPClient|uploadSync", "\nUploading: " + filename + "\nTo: " + RemotePath);
@@ -244,6 +256,7 @@ public class FTPClient {
         }
     }
     private void downloadSync(String RemotePath){
+        if(!initilized) return;
         String filename = localPath.getAbsolutePath() + RemotePath.split("Team Photos")[1];
         Log.i("FTPClient|downloadSync", "\nDownloading: " + RemotePath + "\nTo: " + filename);
         try {
@@ -313,6 +326,7 @@ public class FTPClient {
         return filenames;
     }
     public ArrayList<String> getRemoteDir(String parentDir, String currentDir, int level) throws IOException {
+        if(!initilized) return new ArrayList<String>();
         ArrayList<String> filenames = new ArrayList<>();
         String dirToList = parentDir;
         if (!currentDir.equals("")) {
@@ -368,6 +382,8 @@ public class FTPClient {
             }
             return false;
         }else {
+
+            if(!initilized) return false;
             File file = new File(filename);
             if(filename==localPath.getAbsolutePath()){
                 return file.mkdirs();
@@ -379,5 +395,25 @@ public class FTPClient {
                 return true;
             }
         }
+    }
+    public boolean nukeLocalFiles(boolean AreYouSure, boolean AreYouREALLYSure, boolean AreYou100PercentCertain){
+        if(!(AreYouSure&&AreYouREALLYSure&&AreYou100PercentCertain)) return false;
+        deleteRecursive(localPath);
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(App.getContext());
+        SharedPreferences.Editor editor1 = settings.edit();
+        editor1.putString(App.getContext().getString(R.string.PROPERTY_FTPNukeLocalFile),"Replace with 'Yes' to nuke");
+        editor1.commit();
+        return true;
+    }
+    void deleteRecursive(File fileOrDirectory) {
+        if (fileOrDirectory.isDirectory())
+            for (File child : fileOrDirectory.listFiles()){
+                Log.d("FTPClient|NUKE", "Nuking folder: " + child.getAbsolutePath());
+                deleteRecursive(child);
+            }
+
+
+
+        fileOrDirectory.delete();
     }
 }

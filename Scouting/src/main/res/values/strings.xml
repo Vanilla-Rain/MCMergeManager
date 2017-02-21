@@ -40,6 +40,7 @@
     <string name="PROPERTY_FTPHostname_default">ftp.team2706.ca</string>
     <string name="PROPERTY_FTPUsername">ca.team2706.scouting.username</string>
     <string name="PROPERTY_FTPUsername_default">scout</string>
+    <string name="PROPERTY_FTPNukeLocalFile">ca.team2706.nukeLocalFiles</string>
     <string name="PROPERTY_FTPPassword">ca.team2706.scouting.password</string>
     <string name="PROPERTY_DBHostname">ca.team2706.scouting.dbhostname</string>
     <string name="PROPERTY_DBHostname_default">ftp.team2706.ca</string>
