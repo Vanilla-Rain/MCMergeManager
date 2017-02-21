@@ -12,20 +12,16 @@ public class FuelShotEvent extends Event {
     public int numMissed;
     public boolean boiler; // true is high, false is low
 
-    public int x;
-    public int y;
 
     public FuelShotEvent() {
 
     }
 
-    public FuelShotEvent(double timestamp, boolean boiler, int numScored, int numMissed, int x, int y){
+    public FuelShotEvent(double timestamp, boolean boiler, int numScored, int numMissed){
         super(timestamp);
 
         this.boiler = boiler;
         this.numScored = numScored;
         this.numMissed = numMissed;
-        this.x = x;
-        this.y = y;
     }
 }
