@@ -17,7 +17,8 @@ import android.widget.TextView;
 
 import ca.team2706.scouting.mcmergemanager.R;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.FuelPickupEvent;
-import ca.team2706.scouting.mcmergemanager.steamworks2017.gui.TeleopScouting;
+
+import static ca.team2706.scouting.mcmergemanager.steamworks2017.gui.TeleopScouting.FUEL_PICKUP_EVENT_STRING;
 
 public class BallPickupFragment extends DialogFragment {
     private FragmentListener listener;
@@ -103,7 +104,7 @@ public class BallPickupFragment extends DialogFragment {
                         ballPickups.amount = ballsPickedUp;
                         ballPickups.pickupType = FuelPickupEvent.FuelPickupType.GROUND;
 
-                        fuelPickupData.putSerializable("FuelPickupEvent", ballPickups);
+                        fuelPickupData.putSerializable(FUEL_PICKUP_EVENT_STRING, ballPickups);
                         listener.editNameDialogComplete(me, fuelPickupData);
 
 
@@ -119,8 +120,9 @@ public class BallPickupFragment extends DialogFragment {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        ballPickups.amount = ballsPickedUp;
                         ballPickups.pickupType = FuelPickupEvent.FuelPickupType.GROUND;
-                        fuelPickupData.putSerializable("FuelPickupEvent", ballPickups);
+                        fuelPickupData.putSerializable(FUEL_PICKUP_EVENT_STRING, ballPickups);
                         listener.editNameDialogComplete(me, fuelPickupData);
 
                         Log.i(getClass().getName(), "quit");
@@ -134,8 +136,9 @@ public class BallPickupFragment extends DialogFragment {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        ballPickups.amount = ballsPickedUp;
                         ballPickups.pickupType = FuelPickupEvent.FuelPickupType.HOPPER;
-                        fuelPickupData.putSerializable("FuelPickupEvent", ballPickups);
+                        fuelPickupData.putSerializable(FUEL_PICKUP_EVENT_STRING, ballPickups);
                         listener.editNameDialogComplete(me, fuelPickupData);
 
                         Log.i(getClass().getName(), "quit");
@@ -149,8 +152,9 @@ public class BallPickupFragment extends DialogFragment {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        ballPickups.amount = ballsPickedUp;
                         ballPickups.pickupType = FuelPickupEvent.FuelPickupType.WALL;
-                        fuelPickupData.putSerializable("FuelPickupEvent", ballPickups);
+                        fuelPickupData.putSerializable(FUEL_PICKUP_EVENT_STRING, ballPickups);
                         listener.editNameDialogComplete(me, fuelPickupData);
 
                         Log.i(getClass().getName(), "quit");

@@ -11,9 +11,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import ca.team2706.scouting.mcmergemanager.R;
 import ca.team2706.scouting.mcmergemanager.gui.PreGameActivity;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.FuelPickupEvent;
@@ -28,11 +25,15 @@ import ca.team2706.scouting.mcmergemanager.steamworks2017.gui.Popups.ClimbingFra
 import ca.team2706.scouting.mcmergemanager.steamworks2017.gui.Popups.FragmentListener;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.gui.Popups.GearDeliveryFragment;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.gui.Popups.GearPickupFragment;
-import ca.team2706.scouting.mcmergemanager.steamworks2017.gui.PostGameClass;
-import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.BallPickup;
-import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.BallShot;
 
 public class TeleopScouting extends AppCompatActivity implements FragmentListener {
+
+    // Data strings
+
+    public static final String FUEL_PICKUP_EVENT_STRING = "FuelPickupEvent";
+    public static final String GEAR_PICKUP_EVENT_STRING = "GearPickupEvent";
+    public static final String GEAR_DELIVERY_EVENT_STRING = "FuelPickupEvent";
+    public static final String FUEL_SHOT_EVENT_STRING = "FuelShotEvent";
 
 
     public void editNameDialogComplete(DialogFragment dialogFragment, Bundle data) {
@@ -40,7 +41,7 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
 
 
         if (dialogFragment instanceof BallPickupFragment) {
-            FuelPickupEvent fuelPickupEvent = (FuelPickupEvent) data.getSerializable("FuelPickupEvent");
+            FuelPickupEvent fuelPickupEvent = (FuelPickupEvent) data.getSerializable(FUEL_PICKUP_EVENT_STRING);
 
             ballsHeld += fuelPickupEvent.amount;
             TextView numberBallsHolding = (TextView) findViewById(R.id.numberBallsHolding);
@@ -49,28 +50,33 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
             teleopScoutingObject.add(fuelPickupEvent);
         }
         else if (dialogFragment instanceof GearPickupFragment) {
-            GearPickupEvent gearPickupEvent = (GearPickupEvent) data.getSerializable("GearPickupEvent");
+            GearPickupEvent gearPickupEvent = (GearPickupEvent) data.getSerializable(GEAR_PICKUP_EVENT_STRING);
 
             // TODO
 
             teleopScoutingObject.add(gearPickupEvent);
         }
         else if (dialogFragment instanceof GearDeliveryFragment) {
-            GearDelivevryEvent gearDelivevryEvent = (GearDelivevryEvent) data.getSerializable("GearDeliveryEvent");
+            GearDelivevryEvent gearDelivevryEvent = (GearDelivevryEvent) data.getSerializable(GEAR_DELIVERY_EVENT_STRING);
 
             // TODO
 
             teleopScoutingObject.add(gearDelivevryEvent);
         }
         else if (dialogFragment instanceof BallShootingFragment) {
-            FuelShotEvent fuelShotEvent = (FuelShotEvent) data.getSerializable("FuelShotEvent");
+            FuelShotEvent fuelShotEvent = (FuelShotEvent) data.getSerializable(FUEL_SHOT_EVENT_STRING);
 
-            // TODO
+            ballsHeld -= fuelShotEvent.numScored;
+            TextView numberBallsHolding = (TextView) findViewById(R.id.numberBallsHolding);
+            numberBallsHolding.setText(String.valueOf(ballsHeld));
 
             teleopScoutingObject.add(fuelShotEvent);
         }
 
     }
+
+
+
 
     Handler m_handler;
     Runnable m_handlerTask;
@@ -176,7 +182,8 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
 
     private void showBallScoring() {
         FragmentManager fm = getFragmentManager();
-        BallShootingFragment ballShootingFragment = BallShootingFragment.newInstance("Subscribe", this);
+
+        BallShootingFragment ballShootingFragment = BallShootingFragment.newInstance("Subscribe", this, ballsHeld);
         ballShootingFragment.show(fm, "fragment_edit_name");
     }
 

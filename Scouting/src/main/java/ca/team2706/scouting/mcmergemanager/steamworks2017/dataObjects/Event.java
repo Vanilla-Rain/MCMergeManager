@@ -9,6 +9,7 @@ import java.io.Serializable;
  */
 public class Event implements Comparable<Event>, Serializable {
 
+    /** Number of seconds since teleop started **/
     public double timestamp;
 
     public Event(){
