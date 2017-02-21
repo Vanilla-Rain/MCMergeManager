@@ -14,7 +14,7 @@ import android.widget.TextView;
 import ca.team2706.scouting.mcmergemanager.R;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.FuelShotEvent;
 
-import static ca.team2706.scouting.mcmergemanager.steamworks2017.gui.TeleopScouting.teleopScoutingObject;
+import static ca.team2706.scouting.mcmergemanager.steamworks2017.gui.TeleopScouting.FUEL_SHOT_EVENT_STRING;
 
 /**
  * Created by Merge on 2017-02-09.
@@ -24,6 +24,7 @@ public class BallShootingFragment extends DialogFragment{
 
     SeekBar ballShootingSeekBar;
     public int pointsScored;
+    private int ballsHeld;
     public Bundle fuelShootingData = new Bundle();
 
     // These are too assemble a string for the text view, not the most elegant solution but it works. -JustinT
@@ -42,18 +43,25 @@ public class BallShootingFragment extends DialogFragment{
         // Use `newInstance` instead as shown below
     }
 
-    public static BallShootingFragment newInstance(String title, FragmentListener listener) {
+    public static BallShootingFragment newInstance(String title, FragmentListener listener, int ballsHeld) {
         BallShootingFragment frag = new BallShootingFragment();
         Bundle args = new Bundle();
         args.putString("title", title);
         frag.setArguments(args);
         frag.listener = listener;
+        frag.ballsHeld = ballsHeld;
         return frag;
     }
 
     @Override
    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_ball_scoring, container);
+        View v = inflater.inflate(R.layout.fragment_ball_scoring, container);
+
+        SeekBar seekBar = (SeekBar) v.findViewById(R.id.teleopBallsScoredSeekBar);
+        seekBar.setMax(ballsHeld);
+        seekBar.setProgress(ballsHeld);
+
+        return v;
     }
 
     @Override
@@ -102,11 +110,14 @@ public class BallShootingFragment extends DialogFragment{
                     @Override
                     public void onClick(View v) {
                         ballsScored.numScored = pointsScored;
-                        fuelShootingData.putSerializable("FuelShootingEvent", ballsScored);
+                        fuelShootingData.putSerializable(FUEL_SHOT_EVENT_STRING, ballsScored);
                         listener.editNameDialogComplete(me, fuelShootingData);
+//                        teleopScoutingObject.add(ballsScored);
 
                         Log.i(getClass().getName(), "quit");
                         listener.editNameDialogCancel(me);
+
+
                     }
                 }
         );
@@ -115,8 +126,7 @@ public class BallShootingFragment extends DialogFragment{
     @Override
     public void onCancel(DialogInterface dialog) {
         super.onCancel(dialog);
-        teleopScoutingObject.add(ballsScored);
-        listener.editNameDialogCancel(this);
+//        listener.editNameDialogCancel(this);
     }
 
 

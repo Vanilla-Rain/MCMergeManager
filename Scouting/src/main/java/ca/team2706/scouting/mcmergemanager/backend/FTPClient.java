@@ -25,6 +25,7 @@ import java.util.Arrays;
 
 import ca.team2706.scouting.mcmergemanager.backend.interfaces.FTPRequester;
 
+import static java.lang.System.in;
 import static java.lang.Thread.sleep;
 
 public class FTPClient {
@@ -41,6 +42,7 @@ public class FTPClient {
     //Local and remote directory on device for files being downloaded.
     private File localPath;
     private String remotePath;
+    private String DocumentsPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).getAbsolutePath();
 
     //Is the client connected?
     private Object connectedThreadLock = new Object();
@@ -175,12 +177,12 @@ public class FTPClient {
                 Log.i("FTPClient|INFO", "Local Path: " + localPath.toString() + "/");
                 try {
                     for (String remoteName : remoteNames) {
-                        String usableName = localPath.getAbsolutePath() + remoteName;
+                        String usableName = DocumentsPath + remoteName;
                         if (!localNames.contains(usableName))
                             filesToDownload.add(remoteName);
                     }
                     for (String localName : localNames) {
-                        String usableName = localName.split(localPath.getAbsolutePath())[1];
+                        String usableName = remotePath + localName.split(localPath.getAbsolutePath())[1];
                         if(localName==localPath.getAbsolutePath()) continue;
                         if (!remoteNames.contains(usableName))
                             filesToUpload.add(localName);
@@ -195,8 +197,7 @@ public class FTPClient {
                         changed += 1;
                         Downloaded += 1;
                         currentProgress += 1;
-                        String display = "test";
-                        requester.updateSyncBar("Downloading file " + currentProgress + "/" + maxDownProgress + ":\n" + display, (currentProgress*100) / maxDownProgress, activity, true);
+                        requester.updateSyncBar("Downloading file " + currentProgress + "/" + maxDownProgress, (currentProgress*100) / maxDownProgress, activity, true);
                     }
                     currentProgress = 0;
                     for (String fileToUpload : filesToUpload) {
@@ -205,8 +206,7 @@ public class FTPClient {
                         changed += 1;
                         Uploaded += 1;
                         currentProgress += 1;
-                        String display = newFile.split("MCMergeManager")[1];
-                        requester.updateSyncBar("Uploading file " + currentProgress + "/" + maxUpProgress + ":\n" + display, (currentProgress*100) / maxUpProgress, activity, true);
+                        requester.updateSyncBar("Uploading file " + currentProgress + "/" + maxUpProgress, (currentProgress*100) / maxUpProgress, activity, true);
                     }
                     requester.syncCallback(changed);
 
@@ -226,6 +226,7 @@ public class FTPClient {
                     requester.updateSyncBar("Done!", 100, activity, false);
                 Log.d("FTPClient|INFO", "Sync done!");
 
+
             }
         });
     }
@@ -234,7 +235,7 @@ public class FTPClient {
         RemotePath = "/MCMergeManager" + RemotePath;
         Log.i("FTPClient|uploadSync", "\nUploading: " + filename + "\nTo: " + RemotePath);
         try {
-            checkFilepath(filename + "/", true);
+            Log.d("FTPClient|uploadSync", String.valueOf(checkFilepath(RemotePath, true)));
             InputStream is = new FileInputStream(filename);
             ftpClient.storeFile(RemotePath, is);
         }catch(Exception e) {
@@ -243,7 +244,7 @@ public class FTPClient {
         }
     }
     private void downloadSync(String RemotePath){
-        String filename = localPath.getAbsolutePath() + RemotePath.split("MCMergeManager")[1];
+        String filename = localPath.getAbsolutePath() + RemotePath.split("Team Photos")[1];
         Log.i("FTPClient|downloadSync", "\nDownloading: " + RemotePath + "\nTo: " + filename);
         try {
             boolean temp = checkFilepath(filename, false);
@@ -324,7 +325,7 @@ public class FTPClient {
             return filenames;
         }
 
-        Log.d("FTPClient", ftpClient.getReplyString() + "(" + ftpClient.getReply() + ")");
+       // Log.d("FTPClient", ftpClient.getReplyString() + "(" + ftpClient.getReply() + ")");
         FTPFile[] subFiles = ftpClient.listFiles();
         if (subFiles != null && subFiles.length > 0) {
             for (FTPFile aFile : subFiles) {
@@ -348,14 +349,20 @@ public class FTPClient {
 
     private boolean checkFilepath(String filename, boolean isFTP){
         if(isFTP){
-//            ArrayList<String> directorys = new ArrayList<>();
-//            filename = filename.split("MCMergeManager")[1];
-//            filename = "/MCMergeManager" + filename;
             String parentDir = new File(filename).getParent();
             Log.d("FTPClient|checkFilePath", filename);
             Log.d("FTPClient|checkFilePath", "Checking for: " + parentDir);
             try{
-                return ftpClient.makeDirectory(parentDir + "/");
+                ftpClient.changeWorkingDirectory("/");
+                String[] CDs = parentDir.split("/");
+                for(String CD : CDs){
+                    if (CD.equals("")) continue;
+
+                    if(!ftpClient.changeWorkingDirectory(CD)){
+                        ftpClient.makeDirectory(CD);
+                        ftpClient.changeWorkingDirectory(CD);
+                    }
+                }
             }catch(Exception e){
                 Log.e("FTPClient|checkFilePath", e.toString());
             }
