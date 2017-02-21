@@ -165,7 +165,7 @@ public class FileUtils {
 
     private static void scanDirectoryTree(String directoryPath) {
 
-        Log.d(App.getContext().getResources().getString(R.string.app_name), "Scanning directory: " + directoryPath);
+//        Log.d(App.getContext().getResources().getString(R.string.app_name), "Scanning directory: " + directoryPath);
 
 
         File file = new File(directoryPath);
@@ -233,14 +233,14 @@ public class FileUtils {
             (new File(outfile.getParent())).mkdirs();
 
             BufferedWriter bw = new BufferedWriter(new FileWriter(outfile, true));
-            bw.append( match.toJson().toString() );
+            bw.append( match.toJson().toString() + "\n" );
             bw.flush();
             bw.close();
 
             // Force the midea scanner to scan this file so it shows up from a PC over USB.
             App.getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(outfile)));
         } catch (IOException e) {
-
+            Log.d("synced file", e.toString());
         }
 
 
@@ -255,8 +255,9 @@ public class FileUtils {
             bw.flush();
             bw.close();
         } catch (IOException e) {
-
+            Log.d("unsynced file", e.toString());
         }
+
     }
 
 

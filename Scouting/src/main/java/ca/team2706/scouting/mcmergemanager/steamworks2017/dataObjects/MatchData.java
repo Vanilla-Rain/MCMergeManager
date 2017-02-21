@@ -59,7 +59,7 @@ public class MatchData implements Serializable {
                     switch((int) obj.get("objective_id")) {
                         case FuelShotEvent.objectiveId:
                             event = new FuelShotEvent((double) obj.get("timestamp"), (boolean) obj.get("boiler"),
-                                    (int) obj.get("fuel_scored"), (int )obj.get("fuel_missed"), (int) obj.get("position_x"), (int)obj.get("position_y"));
+                                    (int) obj.get("fuel_scored"), (int )obj.get("fuel_missed"));
                             break;
                         case FuelPickupEvent.objectiveId:
                             try {
@@ -141,39 +141,40 @@ public class MatchData implements Serializable {
                     if(event instanceof FuelPickupEvent) {
                         FuelPickupEvent e = (FuelPickupEvent) event;
                         obj.put("fuel_amount", e.amount);
-                        obj.put("type", e.pickupType);
+                        obj.put("type", e.pickupType.toString());
                     } else if(event instanceof FuelShotEvent) {
                         FuelShotEvent e = (FuelShotEvent) event;
                         obj.put("fuel_scored", e.numMissed);
                         obj.put("fuel_missed", e.numScored);
                         obj.put("boiler", e.boiler);
-                        obj.put("position_x", e.x);
-                        obj.put("position_y", e.y);
                     } else if(event instanceof GearPickupEvent) {
                         GearPickupEvent e = (GearPickupEvent) event;
-                        obj.put("type", e.pickupType);
+                        obj.put("type", e.pickupType.toString());
                         obj.put("success", e.successful);
                     } else if(event instanceof GearDelivevryEvent) {
                         GearDelivevryEvent e = (GearDelivevryEvent) event;
-                        obj.put("gear_status", e.deliveryStatus);
-                        obj.put("lift", e.lift);
+                        obj.put("gear_status", e.deliveryStatus.toString());
+                        obj.put("lift", e.lift.toString());
                     } else if(event instanceof DefenseEvent) {
                         DefenseEvent e = (DefenseEvent) event;
                         obj.put("defense_skill", e.skill);
                     }
+                    arr.put(obj);
                 }
                 jsonObject.put("events", arr);
 
                 // post game
-                jsonObject.put("", postGameObject.climb_time);
-                jsonObject.put("", postGameObject.climbType);
-                jsonObject.put("", postGameObject.notes);
-                jsonObject.put("", postGameObject.time_dead);
+                jsonObject.put("climb_time", postGameObject.climb_time);
+                jsonObject.put("climb_type", postGameObject.climbType.toString());
+                jsonObject.put("notes", postGameObject.notes);
+                jsonObject.put("time_dead", postGameObject.time_dead);
 
             } catch (JSONException e) {
                 Log.d("JSON error :( - ", e.toString());
             }
 
+
+            System.out.println(jsonObject.toString());
             return jsonObject;
         }
 //
