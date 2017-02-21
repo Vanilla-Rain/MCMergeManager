@@ -60,6 +60,8 @@ public class BallShootingFragment extends DialogFragment{
         SeekBar seekBar = (SeekBar) v.findViewById(R.id.teleopBallsScoredSeekBar);
         seekBar.setMax(ballsHeld);
         seekBar.setProgress(ballsHeld);
+        TextView tv = (TextView) getView().findViewById(R.id.teleopBallScoredTextView);
+        tv.setText(ballsHeld);
 
         return v;
     }
@@ -96,7 +98,7 @@ public class BallShootingFragment extends DialogFragment{
 
             public void onStopTrackingTouch(SeekBar seekBar) {
                 TextView tv = (TextView) getView().findViewById(R.id.teleopBallScoredTextView);
-                pointsScored = progressChangedValue*5;
+                pointsScored = progressChangedValue;
                 pointsScoredString = String.valueOf(pointsScored);
                 //textViewDisplayString;
                 textViewDisplayString = pointsScoredString + endingText;
