@@ -4,7 +4,9 @@ package ca.team2706.scouting.mcmergemanager.gui;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
@@ -15,11 +17,15 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
+import android.util.Log;
 import android.view.MenuItem;
 
 import java.util.List;
 
 import ca.team2706.scouting.mcmergemanager.R;
+import ca.team2706.scouting.mcmergemanager.backend.App;
+import ca.team2706.scouting.mcmergemanager.backend.FTPClient;
+import ca.team2706.scouting.mcmergemanager.backend.FileUtils;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
@@ -99,7 +105,16 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         @Override
         public boolean onPreferenceChange(Preference preference, Object value) {
             String stringValue = value.toString();
+            final FTPClient temp = new FTPClient(FileUtils.sLocalTeamPhotosFilePath);
+            if(preference.getSharedPreferences().getString(App.getContext().getString(R.string.PROPERTY_FTPNukeLocalFile), "no").toLowerCase().equals("yes")){
+                AsyncTask.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        temp.nukeLocalFiles(true, true, true);
+                    }
+                });
 
+            }
             if (preference instanceof ListPreference) {
                 // For list preferences, look up the correct display value in
                 // the preference's 'entries' list.
@@ -185,8 +200,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             bindPreferenceSummaryToValue(findPreference(getResources().getString(R.string.PROPERTY_FTPHostname)));
             bindPreferenceSummaryToValue(findPreference(getResources().getString(R.string.PROPERTY_FTPUsername)));
             bindPreferenceSummaryToValue(findPreference(getResources().getString(R.string.PROPERTY_FTPPassword)));
-            bindPreferenceSummaryToValue(findPreference(getResources().getString(R.string.PROPERTY_FTPSyncOverWifi)));
+            bindPreferenceSummaryToValue(findPreference(getResources().getString(R.string.PROPERTY_FTPSyncOnlyWifi)));
             bindPreferenceSummaryToValue(findPreference(getResources().getString(R.string.PROPERTY_event)));
+            bindPreferenceSummaryToValue(findPreference(getResources().getString(R.string.PROPERTY_FTPNukeLocalFile)));
         }
 
         @Override

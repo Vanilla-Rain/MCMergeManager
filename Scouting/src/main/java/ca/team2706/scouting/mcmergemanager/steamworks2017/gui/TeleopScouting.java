@@ -1,4 +1,4 @@
-package ca.team2706.scouting.mcmergemanager.stronghold2016.gui;
+package ca.team2706.scouting.mcmergemanager.steamworks2017.gui;
 
 import android.app.DialogFragment;
 import android.app.FragmentManager;
@@ -11,12 +11,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import ca.team2706.scouting.mcmergemanager.R;
 import ca.team2706.scouting.mcmergemanager.gui.PreGameActivity;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.FuelPickupEvent;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.FuelShotEvent;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.GearDelivevryEvent;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.GearPickupEvent;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.PostGameObject;
@@ -27,35 +25,68 @@ import ca.team2706.scouting.mcmergemanager.steamworks2017.gui.Popups.ClimbingFra
 import ca.team2706.scouting.mcmergemanager.steamworks2017.gui.Popups.FragmentListener;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.gui.Popups.GearDeliveryFragment;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.gui.Popups.GearPickupFragment;
-import ca.team2706.scouting.mcmergemanager.steamworks2017.gui.PostGameClass;
-import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.BallPickup;
-import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.BallShot;
 
 public class TeleopScouting extends AppCompatActivity implements FragmentListener {
+
+    // Data strings
+
+    public static final String FUEL_PICKUP_EVENT_STRING = "FuelPickupEvent";
+    public static final String GEAR_PICKUP_EVENT_STRING = "GearPickupEvent";
+    public static final String GEAR_DELIVERY_EVENT_STRING = "FuelPickupEvent";
+    public static final String FUEL_SHOT_EVENT_STRING = "FuelShotEvent";
 
 
     public void editNameDialogComplete(DialogFragment dialogFragment, Bundle data) {
         // Empty field is here because of interface.
-        GearDelivevryEvent gearDelivevryEvent = (GearDelivevryEvent) data.getSerializable("GearDeliveryEvent");
-        FuelPickupEvent fuelPickupEvent = (FuelPickupEvent) data.getBinder("FuelPickupEvent");
 
-        teleopScoutingObject.add(gearDelivevryEvent);
-        teleopScoutingObject.add(fuelPickupEvent);
+
+        if (dialogFragment instanceof BallPickupFragment) {
+            FuelPickupEvent fuelPickupEvent = (FuelPickupEvent) data.getSerializable(FUEL_PICKUP_EVENT_STRING);
+
+            ballsHeld += fuelPickupEvent.amount;
+            TextView numberBallsHolding = (TextView) findViewById(R.id.numberBallsHolding);
+            numberBallsHolding.setText(String.valueOf(ballsHeld));
+
+            teleopScoutingObject.add(fuelPickupEvent);
+        }
+        else if (dialogFragment instanceof GearPickupFragment) {
+            GearPickupEvent gearPickupEvent = (GearPickupEvent) data.getSerializable(GEAR_PICKUP_EVENT_STRING);
+
+            // TODO
+
+            teleopScoutingObject.add(gearPickupEvent);
+        }
+        else if (dialogFragment instanceof GearDeliveryFragment) {
+            GearDelivevryEvent gearDelivevryEvent = (GearDelivevryEvent) data.getSerializable(GEAR_DELIVERY_EVENT_STRING);
+
+            // TODO
+
+            teleopScoutingObject.add(gearDelivevryEvent);
+        }
+        else if (dialogFragment instanceof BallShootingFragment) {
+            FuelShotEvent fuelShotEvent = (FuelShotEvent) data.getSerializable(FUEL_SHOT_EVENT_STRING);
+
+            ballsHeld -= fuelShotEvent.numScored;
+            TextView numberBallsHolding = (TextView) findViewById(R.id.numberBallsHolding);
+            numberBallsHolding.setText(String.valueOf(ballsHeld));
+
+            teleopScoutingObject.add(fuelShotEvent);
+        }
+
     }
+
+
+
 
     Handler m_handler;
     Runnable m_handlerTask;
-    Handler m_handlerDefending;
-    Runnable m_handlerTaskDefending;
     private int remainTime = 135;
-    private FragmentListener listener;
-    public ArrayList<Integer> defensesBreached;
-    public ArrayList<BallShot> ballsShot;
-    public ArrayList<BallPickup> ballPickups;
-    // TODO Needs to be made private.
+    public int ballsHeld;
+    public String ballsHeldString;
+
     public static TeleopScoutingObject teleopScoutingObject;
 
-    private PostGameObject postGameObject= new PostGameObject();
+    private PostGameObject postGameObject = new PostGameObject();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +97,9 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
         //final Spinner spinner = (Spinner) findViewById(R.id.defense_spinner);
         final TextView tvGameTime = (TextView) findViewById(R.id.textViewGameTime);
 
+        TextView numberBallsHolding = (TextView) findViewById(R.id.numberBallsHolding);
+
+        numberBallsHolding.setText(ballsHeldString);
 
         Button fab = (Button) findViewById(R.id.ballPickupButton);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -141,13 +175,15 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
 
     private void showEditDialog() {
         FragmentManager fm = getFragmentManager();
-        BallPickupFragment ballPickupFragment = BallPickupFragment.newInstance("Subscribe", this);
+
+        BallPickupFragment ballPickupFragment = BallPickupFragment.newInstance("Subscribe", this, ballsHeld);
         ballPickupFragment.show(fm, "fragment_edit_name");
     }
 
     private void showBallScoring() {
         FragmentManager fm = getFragmentManager();
-        BallShootingFragment ballShootingFragment = BallShootingFragment.newInstance("Subscribe", this);
+
+        BallShootingFragment ballShootingFragment = BallShootingFragment.newInstance("Subscribe", this, ballsHeld);
         ballShootingFragment.show(fm, "fragment_edit_name");
     }
 

@@ -6,10 +6,6 @@
 
     <Space
         android:layout_width="match_parent"
-        android:layout_height="26dp" />
-
-    <Space
-        android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <TextView
@@ -21,7 +17,24 @@
 
     <Space
         android:layout_width="match_parent"
-        android:layout_height="18dp" />
+        android:layout_height="11dp" />
+
+    <SeekBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/numBallsPickupSeekBar"
+        android:max="40"
+        android:progress="0" />
+
+    <TextView
+        android:text="0 balls picked up"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/ballsPickedUpTextView" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="11dp" />
 
     <Button
         android:text="Ground"

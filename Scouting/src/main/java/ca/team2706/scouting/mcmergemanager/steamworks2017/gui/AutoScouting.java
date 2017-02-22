@@ -3,32 +3,16 @@ package ca.team2706.scouting.mcmergemanager.steamworks2017.gui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.SeekBar;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.SeekBar.OnSeekBarChangeListener;
-import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import ca.team2706.scouting.mcmergemanager.R;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.AutoScoutingObject;
 import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.BallShot;
-import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.PreGameObject;
-import ca.team2706.scouting.mcmergemanager.stronghold2016.gui.TeleopScouting;
-import ca.team2706.scouting.mcmergemanager.stronghold2016.gui.TeleopTimerAlertDialog;
 
 public class AutoScouting extends AppCompatActivity {
 
@@ -100,20 +84,4 @@ public class AutoScouting extends AppCompatActivity {
     }
 
 
-    // Still here from 2016, have not really touched it.
-    class CheckVar extends TimerTask {
-        public int x;
-        public int y;
-        public TeleopTimerAlertDialog t;
-
-        public void run() {
-            if (t.canceled >= 0) {
-                if (t.canceled == BallShot.MISS) // I'm using this as a cancel button
-                    this.cancel();
-
-                ballsShot.add(new BallShot(x, y, t.upTimer.currentTime(), t.canceled));
-                this.cancel();
-            }
-        }
-    }
 }

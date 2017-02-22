@@ -12,8 +12,8 @@ import android.view.ViewGroup;
 import ca.team2706.scouting.mcmergemanager.R;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.GearPickupEvent;
 
-import static ca.team2706.scouting.mcmergemanager.stronghold2016.gui.TeleopScouting.teleopScoutingObject;
-
+import static ca.team2706.scouting.mcmergemanager.steamworks2017.gui.TeleopScouting.teleopScoutingObject;
+import static ca.team2706.scouting.mcmergemanager.steamworks2017.gui.TeleopScouting.GEAR_PICKUP_EVENT_STRING;
 /**
  * Created by Merge on 2017-02-11.
  */
@@ -65,7 +65,7 @@ public class GearPickupFragment extends DialogFragment {
                     public void onClick(View v) {
                         gearPickupEvent.pickupType = GearPickupEvent.GearPickupType.GROUND;
 
-                        gearPickupData.putSerializable("FuelPickupEvent", gearPickupEvent);
+                        gearPickupData.putSerializable(GEAR_PICKUP_EVENT_STRING, gearPickupEvent);
                         listener.editNameDialogComplete(me, gearPickupData);
 
                         Log.i(getClass().getName(), "quit");
@@ -79,7 +79,7 @@ public class GearPickupFragment extends DialogFragment {
                     public void onClick(View v) {
                         gearPickupEvent.pickupType = GearPickupEvent.GearPickupType.WALL;
 
-                        gearPickupData.putSerializable("FuelPickupEvent", gearPickupEvent);
+                        gearPickupData.putSerializable(GEAR_PICKUP_EVENT_STRING, gearPickupEvent);
                         listener.editNameDialogComplete(me, gearPickupData);
 
                         Log.i(getClass().getName(), "quit");
@@ -94,7 +94,7 @@ public class GearPickupFragment extends DialogFragment {
                     public void onClick(View v) {
                         gearPickupEvent.pickupType = GearPickupEvent.GearPickupType.GROUND;
 
-                        gearPickupData.putSerializable("FuelPickupEvent", gearPickupEvent);
+                        gearPickupData.putSerializable(GEAR_PICKUP_EVENT_STRING, gearPickupEvent);
                         listener.editNameDialogComplete(me, gearPickupData);
 
                         Log.i(getClass().getName(), "quit");
