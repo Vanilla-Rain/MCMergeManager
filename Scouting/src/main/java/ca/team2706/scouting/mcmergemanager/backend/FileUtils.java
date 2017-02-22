@@ -620,7 +620,7 @@ public class FileUtils {
     public static void getMatchesFromServer(final Context context) {
         RequestQueue queue = Volley.newRequestQueue(context);
         SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(App.getContext());
-        final String url = "http://ftp.team2706.ca:3000/competitions/" + SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_event), "<Not Set>") + "/matches.json";
+        final String url = SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_FTPHostname), "<Not Set>") + "/competitions/" + SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_event), "<Not Set>") + "/matches.json";
 
         // prepare the Request
         JsonArrayRequest getRequest = new JsonArrayRequest(Request.Method.GET, url, null,
@@ -688,7 +688,7 @@ public class FileUtils {
     public static void postMatchToServer(final Context context/*, JSONObject jsonBody*/) {
         SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(App.getContext());
 
-        final String url = "http://ftp.team2706.ca:3000/competitions/" + SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_event), "<Not Set>") + ".json";
+        final String url = SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_FTPHostname), "<Not Set>") + "/competitions/" + SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_event), "<Not Set>") + ".json";
         RequestQueue queue = Volley.newRequestQueue(context);
 
         try {
@@ -734,7 +734,8 @@ public class FileUtils {
     }
 
     public static void postMatchToServer(final Context context, int compID) {
-        final String url = "http://ftp.team2706.ca:3000/competitions/" + compID + "/matches.json";
+        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(App.getContext());
+        final String url = SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_FTPHostname), "<Not Set>") + "/competitions/" + compID + "/matches.json";
         RequestQueue queue = Volley.newRequestQueue(context);
 
         try {

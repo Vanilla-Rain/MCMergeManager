@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import ca.team2706.scouting.mcmergemanager.R;
 import ca.team2706.scouting.mcmergemanager.gui.PreGameActivity;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.Event;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.FuelPickupEvent;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.FuelShotEvent;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.GearDelivevryEvent;
@@ -82,7 +83,9 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
     Runnable m_handlerTask;
     private int remainTime = 135;
     public int ballsHeld;
+    public int gearHeld;
     public String ballsHeldString;
+    public Event event = new Event();
 
     public static TeleopScoutingObject teleopScoutingObject;
 
@@ -105,6 +108,7 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                event.timestamp = 135 - remainTime;
                 showEditDialog();
             }
 
@@ -123,6 +127,7 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
             openGearDeliveryFrag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                event.timestamp = 135 - remainTime;
                 showGearDelivery();
             }
         });
@@ -131,6 +136,7 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
         openClimbingFrag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                event.timestamp = 135 - remainTime;
                 showClimbing();
             }
         });
@@ -138,6 +144,7 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
         openGearPickupFrag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                event.timestamp = 135 - remainTime;
                 showGearPickup();}
         });
 
@@ -176,7 +183,7 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
     private void showEditDialog() {
         FragmentManager fm = getFragmentManager();
 
-        BallPickupFragment ballPickupFragment = BallPickupFragment.newInstance("Subscribe", this, ballsHeld);
+        BallPickupFragment ballPickupFragment = BallPickupFragment.newInstance("Subscribe", this);
         ballPickupFragment.show(fm, "fragment_edit_name");
     }
 
@@ -195,7 +202,7 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
 
     private void showGearPickup() {
         FragmentManager fm = getFragmentManager();
-        GearPickupFragment gearPickupFragment = GearPickupFragment.newInstance("Subscribe", this);
+        GearPickupFragment gearPickupFragment = GearPickupFragment.newInstance("Subscribe", this, gearHeld);
         gearPickupFragment.show(fm, "fragment_edit_name");
     }
 
