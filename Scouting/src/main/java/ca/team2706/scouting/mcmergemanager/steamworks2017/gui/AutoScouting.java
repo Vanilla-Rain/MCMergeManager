@@ -7,18 +7,13 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.SeekBar;
 import android.widget.TextView;
-
-import java.util.ArrayList;
-
 import ca.team2706.scouting.mcmergemanager.R;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.AutoScoutingObject;
-import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.BallShot;
 
 public class AutoScouting extends AppCompatActivity {
 
     private AutoScoutingObject autoScoutingObject2017 = new AutoScoutingObject();
     public int pointsScored;
-    public ArrayList<BallShot> ballsShot;
 
     SeekBar simpleSeekBar;
     @Override
