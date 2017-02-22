@@ -83,6 +83,7 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
     Runnable m_handlerTask;
     private int remainTime = 135;
     public int ballsHeld;
+    public int gearHeld;
     public String ballsHeldString;
     public Event event = new Event();
 
@@ -182,7 +183,7 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
     private void showEditDialog() {
         FragmentManager fm = getFragmentManager();
 
-        BallPickupFragment ballPickupFragment = BallPickupFragment.newInstance("Subscribe", this, ballsHeld);
+        BallPickupFragment ballPickupFragment = BallPickupFragment.newInstance("Subscribe", this);
         ballPickupFragment.show(fm, "fragment_edit_name");
     }
 
@@ -201,7 +202,7 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
 
     private void showGearPickup() {
         FragmentManager fm = getFragmentManager();
-        GearPickupFragment gearPickupFragment = GearPickupFragment.newInstance("Subscribe", this);
+        GearPickupFragment gearPickupFragment = GearPickupFragment.newInstance("Subscribe", this, gearHeld);
         gearPickupFragment.show(fm, "fragment_edit_name");
     }
 

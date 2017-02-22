@@ -41,7 +41,7 @@ public class BallPickupFragment extends DialogFragment {
         // Use `newInstance` instead as shown below
     }
 
-    public static BallPickupFragment newInstance(String title, FragmentListener listener, int ballsHeld) {
+    public static BallPickupFragment newInstance(String title, FragmentListener listener) {
         BallPickupFragment frag = new BallPickupFragment();
         Bundle args = new Bundle();
         args.putString("title", title);

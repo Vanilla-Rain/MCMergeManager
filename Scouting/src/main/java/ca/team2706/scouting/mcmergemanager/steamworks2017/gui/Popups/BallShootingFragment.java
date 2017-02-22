@@ -60,7 +60,7 @@ public class BallShootingFragment extends DialogFragment{
         SeekBar seekBar = (SeekBar) v.findViewById(R.id.teleopBallsScoredSeekBar);
         seekBar.setMax(ballsHeld);
         seekBar.setProgress(ballsHeld);
-
+        pointsScored = ballsHeld;
 
         return v;
     }
@@ -85,7 +85,7 @@ public class BallShootingFragment extends DialogFragment{
         ballShootingSeekBar=(SeekBar)view.findViewById(R.id.teleopBallsScoredSeekBar);
         // perform seek bar change listener event used for getting the progress value
         ballShootingSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            int progressChangedValue = 0;
+            int progressChangedValue = ballsHeld;
 
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 progressChangedValue = progress;
