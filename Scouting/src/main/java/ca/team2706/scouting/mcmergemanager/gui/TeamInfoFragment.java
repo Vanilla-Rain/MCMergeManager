@@ -1,5 +1,6 @@
 package ca.team2706.scouting.mcmergemanager.gui;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -69,23 +70,26 @@ public class TeamInfoFragment extends Fragment
                 public void run() {
                     BlueAllianceUtils blueAllianceUtils = new BlueAllianceUtils(getActivity());
                     textViewPerformanceString =  blueAllianceUtils.getBlueAllianceDataForTeam(m_teamNumber);
-                    ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-                    NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-                    if (activeNetwork != null) { // not connected to the internet
-                        nicknameString = BlueAllianceUtils.getBlueAllianceData("nickname", "https://www.thebluealliance.com/api/v2/team/frc" + m_teamNumber + "?X-TBA-App-Id=frc2706:mergemanager:v01/");
-                    }
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            //stuff that updates ui
-                            TextView textViewPerformance = (TextView) m_view.findViewById(R.id.textViewPerformance);
-                            textViewPerformance.setText(textViewPerformanceString);
-
-                            TextView nicknameTV = (TextView) m_view.findViewById(R.id.nicknameTV);
-                            nicknameTV.setText(nicknameString);
-
+                    Activity activity = getActivity();
+                    if(activity != null) {
+                        ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+                        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+                        if (activeNetwork != null) { // not connected to the internet
+                            nicknameString = BlueAllianceUtils.getBlueAllianceData("nickname", "https://www.thebluealliance.com/api/v2/team/frc" + m_teamNumber + "?X-TBA-App-Id=frc2706:mergemanager:v01/");
                         }
-                    });
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                //stuff that updates ui
+                                TextView textViewPerformance = (TextView) m_view.findViewById(R.id.textViewPerformance);
+                                textViewPerformance.setText(textViewPerformanceString);
+
+                                TextView nicknameTV = (TextView) m_view.findViewById(R.id.nicknameTV);
+                                nicknameTV.setText(nicknameString);
+
+                            }
+                        });
+                    }
 
                 }
             };
