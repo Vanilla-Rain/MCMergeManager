@@ -4,13 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.CheckBox;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import ca.team2706.scouting.mcmergemanager.R;
-import ca.team2706.scouting.mcmergemanager.steamworks2017.StatsEngine;
-import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.BallShot;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.TeamStatsReport;
 
 public class TeamStatsActivity extends AppCompatActivity {
