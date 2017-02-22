@@ -72,7 +72,6 @@ public class MatchData implements Serializable {
                         case GearDelivevryEvent.objectiveId:
                             try {
                                 event = new GearDelivevryEvent(obj.getDouble("timestamp"),
-                                        GearDelivevryEvent.GearDeliveryStatus.valueOf((String) obj.get("gear_status")),
                                         GearDelivevryEvent.Lift.valueOf((String) obj.get("lift")));
                             } catch(IllegalArgumentException e) {
                                 Log.d("GearDeliveryEvent error", e.toString());
@@ -154,7 +153,6 @@ public class MatchData implements Serializable {
                         obj.put("objective_id", GearPickupEvent.objectiveId);
                     } else if(event instanceof GearDelivevryEvent) {
                         GearDelivevryEvent e = (GearDelivevryEvent) event;
-                        obj.put("gear_status", e.deliveryStatus.toString());
                         obj.put("lift", e.lift.toString());
                         obj.put("objective_id", GearDelivevryEvent.objectiveId);
                     } else if(event instanceof DefenseEvent) {
