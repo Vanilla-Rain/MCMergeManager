@@ -164,6 +164,10 @@ public class MainActivity extends AppCompatActivity
                 intent = new Intent(this, AboutActivity.class);
                 startActivity(intent);
                 return true;
+            case R.id.action_search:
+                Intent launchBrowser = new Intent(Intent.ACTION_VIEW, Uri.parse("http://team2706.ca"));
+                startActivity(launchBrowser);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
 
