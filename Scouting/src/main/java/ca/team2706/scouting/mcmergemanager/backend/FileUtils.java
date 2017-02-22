@@ -324,7 +324,7 @@ public class FileUtils {
                 MatchData.Match match = new MatchData.Match(obj);
                 matchData.addMatch(match);
             } catch (Exception e) {
-                Log.e(App.getContext().getResources().getString(R.string.app_name), "loadMatchDataFile:: "+e.toString());
+                Log.e(App.getContext().getResources().getString(R.string.app_name), "loadMatchDataFile:: ",e);
                 parseFailure = true;
                 continue;
             }
