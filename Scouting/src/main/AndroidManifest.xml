@@ -33,8 +33,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".steamworks2017.gui.PostGameClass"
+            android:label="@string/app_name">
+        </activity>
         <activity
-            android:name=".stronghold2016.gui.TeleopScouting"
+            android:name=".steamworks2017.gui.TeleopScouting"
             android:label="@string/title_activity_new_teleop_scouting"
             android:parentActivityName=".gui.MainActivity"
             android:screenOrientation="portrait"
@@ -43,11 +46,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ca.team2706.scouting.mcmergemanager.gui.MainActivity" />
         </activity>
-        <activity
-            android:name=".stronghold2016.gui.PostGameActivity"
-            android:label="@string/title_activity_post_game"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
         <activity
             android:name=".gui.PreGameActivity"
             android:label="@string/title_activity_pre_game"
@@ -58,16 +56,12 @@
                 android:value=".gui.MainActivity" />
         </activity>
         <activity
-            android:name=".stronghold2016.gui.AutoScouting"
+            android:name=".steamworks2017.gui.AutoScouting"
             android:label="@string/title_activity_new_auto_scouting"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".gui.AboutActivity"
             android:label="About"
-            android:theme="@style/AppTheme" />
-        <activity
-            android:name=".gui.HelpActivity"
-            android:label="Help"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".gui.SettingsActivity"
@@ -78,7 +72,7 @@
             android:label="Schedule"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".stronghold2016.gui.TeamStatsActivity"
+            android:name=".steamworks2017.gui.TeamStatsActivity"
             android:label="@string/title_activity_team_stats"
             android:parentActivityName=".gui.MainActivity"
             android:theme="@style/AppTheme">
@@ -86,6 +80,25 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ca.team2706.scouting.mcmergemanager.gui.MainActivity" />
         </activity>
-    </application>
 
+        <activity
+            android:name=".gui.CyclesDisplayActivity"
+            android:label="@string/title_activity_cycles_display"
+            android:parentActivityName=".gui.MainActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ca.team2706.scouting.mcmergemanager.gui.MainActivity" />
+        </activity>
+  
+      <activity
+            android:name=".gui.RepairTimeCollection"
+            android:label="@string/title_activity_repair_time_collection"
+            android:parentActivityName=".gui.MainActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ca.team2706.scouting.mcmergemanager.gui.MainActivity" />
+        </activity>
+    </application>
 </manifest>

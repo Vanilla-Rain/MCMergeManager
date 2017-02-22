@@ -2,20 +2,20 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
 <item android:title="MC Merge Manager"
-    android:icon="@drawable/icon"/>
+    android:icon="@drawable/merge_icon"/>
 
     <item android:title="Teams"> <menu>
         <item android:title="Team 2994"
             android:id="@+id/nav_item_inbox"/>
-        <!--          android:icon="@drawable/inbox"-->
+        <!--          android:merge_icon="@drawable/inbox"-->
 
         <item android:title="Team 2706"
             android:id="@+id/nav_item_sent"/>
-        <!--   android:icon="@drawable/sent"-->
+        <!--   android:merge_icon="@drawable/sent"-->
 
         <item android:title="Team 1114"
             android:id="@+id/nav_item_draft"/>
-        <!-- android:icon="@drawable/draft"-->
+        <!-- android:merge_icon="@drawable/draft"-->
     </menu>
     </item>
 
@@ -27,10 +27,10 @@
                 <item
                     android:title="Betting"
                     android:id="@+id/betting"/>
-                <!-- android:icon="@drawable/spam"-->
+                <!-- android:merge_icon="@drawable/spam"-->
                 <!--            <item
                                 android:title="Bin"
-                                android:icon="@drawable/bin"/>-->
+                                android:merge_icon="@drawable/bin"/>-->
             </menu>
         </item>
 

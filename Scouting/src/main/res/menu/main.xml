@@ -11,16 +11,12 @@
         android:id="@+id/action_search"
         android:title="picture"
         android:orderInCategory="100"
-        android:icon="@drawable/icon"
+        android:icon="@drawable/merge_icon"
         app:showAsAction="ifRoom" />
 
 
     <item android:id="@+id/action_about"
         android:title="About"
         android:orderInCategory="200"
-        app:showAsAction="never" />
-    <item android:id="@+id/action_help"
-        android:title="Help"
-        android:orderInCategory="250"
         app:showAsAction="never" />
 </menu>

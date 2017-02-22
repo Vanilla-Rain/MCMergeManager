@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:text="####"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/teamNumber"
+        android:textAppearance="@android:style/TextAppearance.Material.Medium" />
+
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:text="N/A"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/notAvaiable"
+            android:layout_weight="1"
+            android:checked="false" />
+
+        <Space
+            android:layout_width="32dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <RadioButton
+            android:text="Y"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/yes"
+            android:layout_weight="1"
+            android:checked="false" />
+
+        <Space
+            android:layout_width="32dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <RadioButton
+            android:text="N"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/no"
+            android:layout_weight="1"
+            android:checked="false" />
+
+        <Space
+            android:layout_width="32dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+    </RadioGroup>
+
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_weight="1" />
+
+</LinearLayout>

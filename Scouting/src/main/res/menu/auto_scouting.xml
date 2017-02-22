@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="ca.team2706.scouting.mcmergemanager.stronghold2016.gui.AutoScouting" >
+    tools:context="ca.team2706.scouting.mcmergemanager.steamworks2017.gui.AutoScouting" >
     
     <item android:id="@+id/action_settings"
         android:title="@string/action_settings"
@@ -11,6 +11,6 @@
         android:id="@+id/action_search"
         android:title="picture"
         android:orderInCategory="100"
-        android:icon="@drawable/icon"
+        android:icon="@drawable/merge_icon"
         app:showAsAction="ifRoom" />
 </menu>

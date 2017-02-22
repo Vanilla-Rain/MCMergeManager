@@ -171,362 +171,145 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Defenses to Select:"
-        android:id="@+id/defenseReportHeaderTV"
-        android:textStyle="bold"
-        android:textSize="22sp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="(By total number of breaches by opposing alliance)"
-        android:id="@+id/textView2" />
+        android:text="(null)"
+        android:id="@+id/averagePerTeam"
+        android:layout_gravity="center_horizontal"
+        android:textStyle="bold"
+        android:textSize="16sp" />
 
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="20dp" />
-
-    <TextView
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Blue Should Select:"
-        android:id="@+id/textView4"
-        android:textSize="20sp"
-        android:textColor="@color/blue_alliance"
-        android:textStyle="bold" />
+        android:layout_gravity="center_horizontal">
 
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="20dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="  Gears: "
+            android:id="@+id/gearsBlue"
+            android:textColor="@color/blue_alliance"
+            android:textStyle="bold"
+            android:textSize="24sp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="0"
+            android:id="@+id/gearsBlueTV"
+            android:textColor="@color/blue_alliance"
+            android:textStyle="bold"
+            android:textSize="24sp" />
 
-    <TableLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="  Fuel: "
+            android:id="@+id/fuelBlue"
+            android:textColor="@color/blue_alliance"
+            android:textStyle="bold"
+            android:textSize="24sp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="0"
+            android:id="@+id/fuelBlueTV"
+            android:textColor="@color/blue_alliance"
+            android:textStyle="bold"
+            android:textSize="24sp" />
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/headers">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="  Climbs: "
+            android:id="@+id/climbsBlue"
+            android:textColor="@color/blue_alliance"
+            android:textStyle="bold"
+            android:textSize="24sp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="0"
+            android:id="@+id/climbsBlueTV"
+            android:textColor="@color/blue_alliance"
+            android:textStyle="bold"
+            android:textSize="24sp" />
 
+    </LinearLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="Category A"
-                    android:id="@+id/textView10"
-                    android:textSize="18sp"
-                    android:layout_weight="0.5"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="Category B"
-                    android:id="@+id/textView13"
-                    android:textSize="18sp"
-                    android:layout_weight="0.5"/>
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Portcullis"
-                android:id="@+id/bluePortcullisTV"
-                android:textSize="18sp"
-                android:layout_weight="0.5" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Moat"
-                android:id="@+id/blueMoatTV"
-                android:textSize="18sp"
-                android:layout_column="1"
-                android:layout_weight="0.5" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Chevale-de-frise"
-                android:id="@+id/blueChevaleTV"
-                android:textSize="18sp"
-                android:layout_weight="0.5" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Rampart"
-                android:id="@+id/blueRampartTV"
-                android:textSize="18sp"
-                android:layout_column="1"
-                android:layout_weight="0.5" />
-        </TableRow>
-
-        <Space
-            android:layout_width="20px"
-            android:layout_height="20dp" />
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/tableRow" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Category C"
-                android:id="@+id/textView15"
-                android:textSize="18sp"
-                android:layout_weight="0.5" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Category D"
-                android:id="@+id/textView16"
-                android:textSize="18sp"
-                android:layout_weight="0.5" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Drawbridge"
-                android:id="@+id/blueDrawbridgeTV"
-                android:textSize="18sp"
-                android:layout_weight="0.5" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Rock Wall"
-                android:id="@+id/blueRockwallTV"
-                android:textSize="18sp"
-                android:layout_column="1"
-                android:layout_weight="0.5" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Sally Port"
-                android:id="@+id/blueSallyportTV"
-                android:textSize="18sp"
-                android:layout_weight="0.5" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Rough Terrain"
-                android:id="@+id/blueRoughTV"
-                android:textSize="18sp"
-                android:layout_column="1"
-                android:layout_weight="0.5" />
-        </TableRow>
-    </TableLayout>
-
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="30dp" />
-
-    <TextView
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Red Should Select:"
-        android:id="@+id/textView17"
-        android:textSize="20sp"
-        android:textColor="@color/red_alliance"
-        android:textStyle="bold" />
+        android:layout_gravity="center_horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="  Gears: "
+            android:id="@+id/gearsRed"
+            android:textColor="@color/red_alliance"
+            android:textStyle="bold"
+            android:textSize="24sp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="0"
+            android:id="@+id/gearsRedTV"
+            android:textColor="@color/red_alliance"
+            android:textStyle="bold"
+            android:textSize="24sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="  Fuel: "
+            android:id="@+id/fuelRed"
+            android:textColor="@color/red_alliance"
+            android:textStyle="bold"
+            android:textSize="24sp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="0"
+            android:id="@+id/fuelRedTV"
+            android:textColor="@color/red_alliance"
+            android:textStyle="bold"
+            android:textSize="24sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="  Climbs: "
+            android:id="@+id/climbsRed"
+            android:textColor="@color/red_alliance"
+            android:textStyle="bold"
+            android:textSize="24sp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="0"
+            android:id="@+id/climbsRedTV"
+            android:textColor="@color/red_alliance"
+            android:textStyle="bold"
+            android:textSize="24sp" />
+
+    </LinearLayout>
 
     <Space
         android:layout_width="match_parent"
-        android:layout_height="20dp" />
-
-    <TableLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/tableRow2" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Category A"
-                android:id="@+id/textView18"
-                android:textSize="18sp"
-                android:layout_weight="0.5" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Category B"
-                android:id="@+id/textView19"
-                android:textSize="18sp"
-                android:layout_weight="0.5" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Portcullis"
-                android:id="@+id/redPortcullisTV"
-                android:textSize="18sp"
-                android:layout_weight="0.5" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Moat"
-                android:id="@+id/redMoatTV"
-                android:textSize="18sp"
-                android:layout_column="1"
-                android:layout_weight="0.5" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Chevale-de-frise"
-                android:id="@+id/redChevaleTV"
-                android:textSize="18sp"
-                android:layout_weight="0.5" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Rampart"
-                android:id="@+id/redRampartTV"
-                android:textSize="18sp"
-                android:layout_column="1"
-                android:layout_weight="0.5" />
-        </TableRow>
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="20dp" />
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/tableRow3" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Category C"
-                android:id="@+id/textView24"
-                android:textSize="18sp"
-                android:layout_weight="0.5" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Category D"
-                android:id="@+id/textView25"
-                android:textSize="18sp"
-                android:layout_weight="0.5" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Drawbridge"
-                android:id="@+id/redDrawbridgeTV"
-                android:textSize="18sp"
-                android:layout_weight="0.5" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Rock Wall"
-                android:id="@+id/redRockwallTV"
-                android:textSize="18sp"
-                android:layout_column="1"
-                android:layout_weight="0.5" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Sally Port"
-                android:id="@+id/redSallyportTV"
-                android:textSize="18sp"
-                android:layout_weight="0.5" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Rough Terrain"
-                android:id="@+id/redRoughTV"
-                android:textSize="18sp"
-                android:layout_column="1"
-                android:layout_weight="0.5" />
-        </TableRow>
-
-    </TableLayout>
+        android:layout_height="40dp" />
 
 </LinearLayout>

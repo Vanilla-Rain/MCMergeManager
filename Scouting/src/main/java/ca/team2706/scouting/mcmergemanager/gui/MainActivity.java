@@ -2,6 +2,7 @@ package ca.team2706.scouting.mcmergemanager.gui;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,93 +13,106 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
+import org.apache.commons.net.ftp.FTPFile;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import ca.team2706.scouting.mcmergemanager.R;
+import ca.team2706.scouting.mcmergemanager.backend.App;
 import ca.team2706.scouting.mcmergemanager.backend.BlueAllianceUtils;
+import ca.team2706.scouting.mcmergemanager.backend.FTPClient;
 import ca.team2706.scouting.mcmergemanager.backend.FileUtils;
 import ca.team2706.scouting.mcmergemanager.backend.TakePicture;
+import ca.team2706.scouting.mcmergemanager.backend.dataObjects.MatchSchedule;
+import ca.team2706.scouting.mcmergemanager.backend.dataObjects.TeamDataObject;
 import ca.team2706.scouting.mcmergemanager.backend.interfaces.DataRequester;
-import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.MatchData;
-import ca.team2706.scouting.mcmergemanager.stronghold2016.dataObjects.MatchSchedule;
+import ca.team2706.scouting.mcmergemanager.backend.interfaces.FTPRequester;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.MatchData;
 
 @TargetApi(21)
 public class MainActivity extends AppCompatActivity
-                implements DataRequester, PreMatchReportFragment.OnFragmentInteractionListener {
+        implements DataRequester, PreMatchReportFragment.OnFragmentInteractionListener,
+                    FTPRequester {
+
+    public Context context;
 
     public int teamColour = Color.rgb(102, 51, 153);
 
-    Intent globalIntent;
-    MainActivity me;
 
-    DrawerLayout mDrawerLayout;
-    NavigationView mNavigationView;
+    Intent globalIntent;
+    static MainActivity me;
+
     FragmentManager mFragmentManager;
     FragmentTransaction mFragmentTransaction;
 
-    public static MatchData m_matchData;
-    public static MatchSchedule m_matchSchedule;
-
-    FileUtils mFileUtils;
-
-    /** A flag so that onResume() knows to sync photos for a particular team when we're returning from the camera app */
-    boolean lauchedPhotoApp = false;
+    public static MatchData sMatchData = new MatchData();
+    public static MatchSchedule sMatchSchedule = new MatchSchedule();
+    public static List<TeamDataObject> sRepairTimeObjects = new ArrayList<>();
+    public static TeamInfoTab mTeamInfoTab;
+    SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(App.getContext());
+    public static FTPClient sFtpClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        FileUtils.checkLocalFileStructure(this);
+        context = this;
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.activity_main);
         setNavDrawer();
+
+        context = this;
 
         globalIntent = new Intent();
 
         me = this;
 
-        mFileUtils = new FileUtils(this);
-        FileUtils.canWriteToStorage();
+        // tell the user where they are syncing their gearDeliveryData to
+        updateDataSyncLabel();
+
+        FileUtils.checkFileReadWritePermissions(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        //  This used to be needed for Google Drive, might not serve any purpose now...
-        if (mFileUtils == null) {
-            mFileUtils = new FileUtils(this);
-        }
-
-        if (lauchedPhotoApp) {
-            // TODO
-            // This used to call Google Drive. This need to be replaced with something else
-            //mGoogleDriveUtils.syncOneTeamsPhotos(enterATeamNumberPopup.getTeamNumber());
-
-            lauchedPhotoApp = false;
-        }
-
-        // tell the user where they are syncing their dada to
+        // tell the user where they are syncing their gearDeliveryData to
         updateDataSyncLabel();
 
-        // fetch the match data from TheBlueAlliance to update the scores.
+        // fetch the match gearDeliveryData from TheBlueAlliance to update the scores.
+        BlueAllianceUtils.checkInternetPermissions(this);
+        BlueAllianceUtils.fetchTeamsRegisteredAtEvent(this);
         BlueAllianceUtils.fetchMatchScheduleAndResults(this);
-        m_matchData = mFileUtils.loadMatchDataFile();
+
+        // Make sure all files are there, and visible to the USB Media Scanner.
+        FileUtils.checkLocalFileStructure(this);
+
+        // In case the schedule is empty, make sure we pass along the list of teams registered at event
+        // that we fetched at the beginning.
+        sMatchData = FileUtils.loadMatchDataFile();
+        if(sMatchData == null) sMatchData = new MatchData();
+
+        sRepairTimeObjects = FileUtils.getRepairTimeObjects();
     }
 
     /**
@@ -124,7 +138,7 @@ public class MainActivity extends AppCompatActivity
 
         Intent intent = new Intent(this, PreGameActivity.class);
         intent.putExtra( getString(R.string.EXTRA_MATCH_NO), matchNo);
-        intent.putExtra( getString(R.string.EXTRA_MATCH_SCHEDULE), m_matchSchedule);
+        intent.putExtra( getString(R.string.EXTRA_MATCH_SCHEDULE), sMatchSchedule);
         startActivity(intent);
     }
 
@@ -150,9 +164,9 @@ public class MainActivity extends AppCompatActivity
                 intent = new Intent(this, AboutActivity.class);
                 startActivity(intent);
                 return true;
-            case R.id.action_help:
-                intent = new Intent(this, HelpActivity.class);
-                startActivity(intent);
+            case R.id.action_search:
+                Intent launchBrowser = new Intent(Intent.ACTION_VIEW, Uri.parse("http://team2706.ca"));
+                startActivity(launchBrowser);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -165,23 +179,22 @@ public class MainActivity extends AppCompatActivity
      */
     public void onShowScheduleClicked(View view) {
 
-        if (m_matchSchedule != null) {
-            // bundle the match data into an intent
+        if (sMatchSchedule != null) {
+            // bundle the match gearDeliveryData into an intent
             Intent intent = new Intent(this, MatchScheduleActivity.class);
-            intent.putExtra(getResources().getString(R.string.EXTRA_MATCH_SCHEDULE), m_matchSchedule.toString());
+            intent.putExtra(getResources().getString(R.string.EXTRA_MATCH_SCHEDULE), sMatchSchedule.toString());
             startActivity(intent);
         } else {
             ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
             if (activeNetwork == null) { // not connected to the internet
                 Toast.makeText(this, "No Schedule Data to show. No Internet?", Toast.LENGTH_LONG).show();
-                return;
             }
         }
     }
 
     public void onShowTeamScheduleClicked(View view) {
-        if (m_matchSchedule == null) {
+        if (sMatchSchedule == null) {
             Toast.makeText(this, "No Schedule Data to show. No Internet?", Toast.LENGTH_LONG).show();
             return;
         }
@@ -192,38 +205,22 @@ public class MainActivity extends AppCompatActivity
         (new Timer()).schedule(new CheckSchedulePopupHasExited(), 250);
     }
 
+    public void onRepairTimeRecordClicked(View view) {
+        Intent intent = new Intent(this, RepairTimeCollection.class);
+        intent.putExtra(getResources().getString(R.string.EXTRA_MATCH_SCHEDULE), sMatchSchedule.toString());
+        startActivity(intent);
+    }
+
     private void setNavDrawer() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setBackgroundColor(teamColour);
 
-        if (toolbar != null) {
-            setSupportActionBar(toolbar);
-        }
+        setSupportActionBar(toolbar);
+
         //Set up drawer layout and navigation view
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
-        mNavigationView = (NavigationView) findViewById(R.id.navLayout);
         mFragmentManager = getSupportFragmentManager();
         mFragmentTransaction = mFragmentManager.beginTransaction();
         mFragmentTransaction.replace(R.id.containerView, new TabFragment()).commit();
-
-        /**
-         * Setup click events on the Navigation View Items.
-         */
-        mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(MenuItem menuItem) {
-                mDrawerLayout.closeDrawers();
-                return false;
-            }
-
-        });
-        android.support.v7.widget.Toolbar toolbar2 = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
-        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar2, R.string.app_name,
-                R.string.app_name);
-
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
-
-        mDrawerToggle.syncState();
     }
 
     public GetTeamNumberDialog enterATeamNumberPopup;
@@ -250,7 +247,16 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void updateMatchSchedule(MatchSchedule matchSchedule) {
-        m_matchSchedule = matchSchedule;
+
+        // In the case that the schedule is not published yet,
+        // make sure we preserve the list of teams registered at this event.
+        matchSchedule.addToListOfTeamsAtEvent(sMatchSchedule.getTeamNumsAtEvent());
+        sMatchSchedule = matchSchedule;
+
+        // Notify the TeamInfoTab that the list of teams at this event has updated.
+        if(mTeamInfoTab != null)
+            mTeamInfoTab.rebuildAutocompleteList();
+
     }
 
     /**
@@ -258,9 +264,16 @@ public class MainActivity extends AppCompatActivity
      */
     public void updateDataSyncLabel() {
         SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        String event = SP.getString(getResources().getString(R.string.PROPERTY_event), "<Not Set>");
+        String event_code = SP.getString(getResources().getString(R.string.PROPERTY_event), "<Not Set>");
 
-        String label = "Event:"+event;
+        // look up the human-readable event_name that matches this event_code.
+        String event_name = "";
+        String[] event_codes = getString(R.string.TBA_EVENT_CODES).split(":");
+        for(int i=0; i<event_codes.length; i++)
+            if(event_codes[i].equals(event_code))
+                event_name = getString(R.string.TBA_EVENT_NAMES).split(":")[i];
+
+        String label = "Event: "+event_name+" ["+event_code+"]";
 
         TextView tv = (TextView) findViewById(R.id.sync_settings_tv);
         tv.setText(label);
@@ -271,32 +284,26 @@ public class MainActivity extends AppCompatActivity
         // empty?
     }
 
+
     class CheckPicturePopupHasExited extends TimerTask {
         public void run() {
             if (enterATeamNumberPopup.accepted) {
-                if(enterATeamNumberPopup.accepted) {
-                    int teamNumber;
-                    try {
-                        teamNumber = Integer.parseInt(enterATeamNumberPopup.inputResult);
-                    } catch (NumberFormatException e) {
-                        // TODO: should probably pop up a toast or something. There seems to be some threading issue with
-                        // doing that from here.
+                int teamNumber;
+                try {
+                    teamNumber = Integer.parseInt(enterATeamNumberPopup.inputResult);
+                } catch (NumberFormatException e) {
 
-                        Log.e(me.getResources().getString(R.string.app_name), e.toString());
-                        return;
-                    }
-
-                    FileUtils fileUtils = new FileUtils(me);
-
-                    Uri teamPhotoUri = fileUtils.getNameForNewPhoto(teamNumber);
-                    String teamPhotoPath = teamPhotoUri.getPath();
-                    Log.e(me.getResources().getString(R.string.app_name), "Saving to \""+teamPhotoPath+"\"");
-
-                    TakePicture pic = new TakePicture(teamPhotoPath, me);
-                    pic.capturePicture();
-                    DisplayAlertDialog.accepted = false;
+                    Log.e(getResources().getString(R.string.app_name), e.toString());
+                    return;
                 }
 
+                Uri teamPhotoUri = FileUtils.getNameForNewPhoto(teamNumber);
+                String teamPhotoPath = teamPhotoUri.getPath();
+                Log.i(getResources().getString(R.string.app_name), "Saving to \""+teamPhotoPath+"\"");
+
+                TakePicture pic = new TakePicture(teamPhotoPath, me);
+                pic.capturePicture();
+                DisplayAlertDialog.accepted = false;
             }
             else if (!enterATeamNumberPopup.canceled) {
                 // schedule me to run again
@@ -308,25 +315,22 @@ public class MainActivity extends AppCompatActivity
     class CheckSchedulePopupHasExited extends TimerTask {
         public void run() {
             if (enterATeamNumberPopup.accepted) {
-                if(enterATeamNumberPopup.accepted) {
-                    int teamNumber;
-                    try {
-                        teamNumber = Integer.parseInt(enterATeamNumberPopup.inputResult);
-                    } catch (NumberFormatException e) {
-                        Log.d(me.getResources().getString(R.string.app_name),
-                                e.toString());
-                        return;
-                    }
-
-                    // bundle the match data into an intent and launch the schedule activity
-                    Intent intent = new Intent(me, MatchScheduleActivity.class);
-                    intent.putExtra(getResources().getString(R.string.EXTRA_MATCH_SCHEDULE), m_matchSchedule.toString());
-                    intent.putExtra(getResources().getString(R.string.EXTRA_TEAM_NO), teamNumber);
-                    startActivity(intent);
-
-                    DisplayAlertDialog.accepted = false;
+                int teamNumber;
+                try {
+                    teamNumber = Integer.parseInt(enterATeamNumberPopup.inputResult);
+                } catch (NumberFormatException e) {
+                    Log.d(me.getResources().getString(R.string.app_name),
+                            e.toString());
+                    return;
                 }
 
+                // bundle the match gearDeliveryData into an intent and launch the schedule activity
+                Intent intent = new Intent(me, MatchScheduleActivity.class);
+                intent.putExtra(getResources().getString(R.string.EXTRA_MATCH_SCHEDULE), sMatchSchedule.toString());
+                intent.putExtra(getResources().getString(R.string.EXTRA_TEAM_NO), teamNumber);
+                startActivity(intent);
+
+                DisplayAlertDialog.accepted = false;
             }
             else if (!enterATeamNumberPopup.canceled) {
                 // schedule me to run again
@@ -334,4 +338,67 @@ public class MainActivity extends AppCompatActivity
             }
         }
     }
+
+
+    public void downloadFileCallback(String localFilename, String remoteFilename){
+        //Here in case we need it later
+    }
+    public void uploadFileCallback(String localFilename, String remoteFilename){
+        //Here in case we need it later
+    }
+    public void syncCallback(int changedFiles){
+        //Here in case we need it later
+    }
+    public void dirCallback(FTPFile[] listing){
+        //Here in case we need it later
+    }
+    public void updateSyncBar(String Caption, int Progress, Activity activity, boolean isRunning){
+        final String caption = Caption;
+        final int progress = Progress;
+        final Activity activ = activity;
+        final boolean isRunningf = isRunning;
+        activity.runOnUiThread(new Runnable(){
+            public void run(){
+                TextView tv =(TextView)activ.findViewById(R.id.syncCaption);
+                ProgressBar pb = (ProgressBar)activ.findViewById(R.id.syncBar);
+                Button bu = (Button)activ.findViewById(R.id.syncButon);
+                if(isRunningf){
+                    bu.setText("syncing...");
+                }else{
+                    bu.setText("Sync Photos");
+                }
+                if(caption.startsWith("^")){
+                    pb.setIndeterminate(true);
+                    tv.setText("Getting File Listing...");
+                }else{
+                    pb.setIndeterminate(false);
+                    tv.setText(caption);
+                }
+                pb.setProgress(progress);
+            }
+        });
+    }
+    public void syncPhotos(View v){
+        try{
+
+            String ftpHostname = SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_FTPHostname), null);
+            String ftpUsername = SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_FTPUsername), null);
+            String ftpPassword = SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_FTPPassword), null);
+            if(ftpUsername==null||ftpHostname==null||ftpPassword==null) return;
+            sFtpClient = new FTPClient(ftpHostname, ftpUsername, ftpPassword, FileUtils.sLocalTeamPhotosFilePath, FileUtils.sRemoteTeamPhotosFilePath);
+            sFtpClient.connect();
+            sFtpClient.syncAllFiles(this, this);
+        }catch(Exception e){
+            // empty
+            Log.e("MCMergeManager: ","", e);
+        }
+
+    }
+
+    public void onClick(View v) {
+//        FileUtils.loadMatchDataFile(FileUtils.FileType.SYNCHED);
+        FileUtils.postMatchToServer(this, 204);
+//        FileUtils.getMatchesFromServer(this);
+    }
+
 }
