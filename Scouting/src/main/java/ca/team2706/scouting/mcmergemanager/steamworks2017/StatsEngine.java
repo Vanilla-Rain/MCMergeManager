@@ -640,38 +640,38 @@ public class StatsEngine implements Serializable{
                     currGearCycle.endTime = gearDelivevryEvent.timestamp;
                     double cycleTime = currGearCycle.endTime - currGearCycle.startTime;
 
-                    switch (gearDelivevryEvent.deliveryStatus) {
-                        case DELIVERED:
-                            teamStatsReport.teleop_gearsDelivered_avgPerMatch++;
-                            teamStatsReport.teleop_gears_avgCycleTime += cycleTime;
-                            teamStatsReport.numGearCycles++;
-
-                            if (cycleTime > teamStatsReport.teleop_gears_maxCycleTime)
-                                teamStatsReport.teleop_gears_maxCycleTime = cycleTime;
-
-                            if (cycleTime < teamStatsReport.teleop_gears_minCycleTime)
-                                teamStatsReport.teleop_gears_minCycleTime = cycleTime;
-
-                            switch (gearDelivevryEvent.lift) {
-                                case FEEDER_SIDE:
-                                    teamStatsReport.teleop_gearsScored_feederSide++;
-                                    break;
-                                case CENTRE:
-                                    teamStatsReport.teleop_gearsScored_centre++;
-                                    break;
-                                case BOILER_SIDE:
-                                    teamStatsReport.teleop_gearsScored_boilerSide++;
-                                    break;
-                            }
-
-                            break;
-                        case DROPPED_DELIVERING:
-                        case DROPPED_MOVING:
-                            // I'm just lumping these together because I'm not sure it's relevant. ... could split this out later if we want.
-                            teamStatsReport.teleop_gearsDropped_avgPerMatch++;
-                            currGearCycle.success = false;
-                            break;
-                    }
+//                    switch (gearDelivevryEvent.deliveryStatus) {
+//                        case DELIVERED:
+//                            teamStatsReport.teleop_gearsDelivered_avgPerMatch++;
+//                            teamStatsReport.teleop_gears_avgCycleTime += cycleTime;
+//                            teamStatsReport.numGearCycles++;
+//
+//                            if (cycleTime > teamStatsReport.teleop_gears_maxCycleTime)
+//                                teamStatsReport.teleop_gears_maxCycleTime = cycleTime;
+//
+//                            if (cycleTime < teamStatsReport.teleop_gears_minCycleTime)
+//                                teamStatsReport.teleop_gears_minCycleTime = cycleTime;
+//
+//                            switch (gearDelivevryEvent.lift) {
+//                                case FEEDER_SIDE:
+//                                    teamStatsReport.teleop_gearsScored_feederSide++;
+//                                    break;
+//                                case CENTRE:
+//                                    teamStatsReport.teleop_gearsScored_centre++;
+//                                    break;
+//                                case BOILER_SIDE:
+//                                    teamStatsReport.teleop_gearsScored_boilerSide++;
+//                                    break;
+//                            }
+//
+//                            break;
+//                        case DROPPED_DELIVERING:
+//                        case DROPPED_MOVING:
+//                            // I'm just lumping these together because I'm not sure it's relevant. ... could split this out later if we want.
+//                            teamStatsReport.teleop_gearsDropped_avgPerMatch++;
+//                            currGearCycle.success = false;
+//                            break;
+//                    }
 
 
                     cyclesInThisMatch.cycles.add(currGearCycle.clone());
@@ -856,7 +856,7 @@ public class StatsEngine implements Serializable{
         } // end averages
 
         // Override number of matches from schedule
-        if (numMatchesPlayed != 0)
+        if (numMatchesPlayed > teamStatsReport.numMatchesPlayed)
             teamStatsReport.numMatchesPlayed = numMatchesPlayed;
     }
 

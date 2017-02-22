@@ -396,8 +396,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void onClick(View v) {
-        FileUtils.loadMatchDataFile(FileUtils.FileType.SYNCHED);
-//        FileUtils.postMatchToServer(this, 204);
+//        FileUtils.loadMatchDataFile(FileUtils.FileType.SYNCHED);
+        FileUtils.postMatchToServer(this, 204);
 //        FileUtils.getMatchesFromServer(this);
     }
 

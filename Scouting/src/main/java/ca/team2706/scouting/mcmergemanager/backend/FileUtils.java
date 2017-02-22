@@ -165,7 +165,7 @@ public class FileUtils {
 
     private static void scanDirectoryTree(String directoryPath) {
 
-        Log.d(App.getContext().getResources().getString(R.string.app_name), "Scanning directory: " + directoryPath);
+//        Log.d(App.getContext().getResources().getString(R.string.app_name), "Scanning directory: " + directoryPath);
 
 
         File file = new File(directoryPath);
@@ -233,14 +233,14 @@ public class FileUtils {
             (new File(outfile.getParent())).mkdirs();
 
             BufferedWriter bw = new BufferedWriter(new FileWriter(outfile, true));
-            bw.append( match.toJson().toString() );
+            bw.append( match.toJson().toString() + "\n" );
             bw.flush();
             bw.close();
 
             // Force the midea scanner to scan this file so it shows up from a PC over USB.
             App.getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(outfile)));
         } catch (IOException e) {
-
+            Log.d("synced file", e.toString());
         }
 
 
@@ -255,8 +255,9 @@ public class FileUtils {
             bw.flush();
             bw.close();
         } catch (IOException e) {
-
+            Log.d("unsynced file", e.toString());
         }
+
     }
 
 
@@ -323,7 +324,7 @@ public class FileUtils {
                 MatchData.Match match = new MatchData.Match(obj);
                 matchData.addMatch(match);
             } catch (Exception e) {
-                Log.e(App.getContext().getResources().getString(R.string.app_name), "loadMatchDataFile:: "+e.toString());
+                Log.e(App.getContext().getResources().getString(R.string.app_name), "loadMatchDataFile:: ",e);
                 parseFailure = true;
                 continue;
             }
@@ -331,6 +332,8 @@ public class FileUtils {
         if (parseFailure) {
             Toast.makeText(App.getContext(), "Warning: match data may be corrupted or malformed.", Toast.LENGTH_SHORT).show();
         }
+
+
 
         return matchData;
     }
