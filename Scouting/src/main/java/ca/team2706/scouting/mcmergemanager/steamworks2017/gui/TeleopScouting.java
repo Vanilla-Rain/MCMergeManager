@@ -108,7 +108,7 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
 
     Handler m_handler;
     Runnable m_handlerTask;
-    private int remainTime = 30;
+    private int remainTime = 135;
     public int ballsHeld;
     public boolean gearHeld = false;
     public String ballsHeldString;
