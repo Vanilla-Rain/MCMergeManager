@@ -9,7 +9,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import ca.team2706.scouting.mcmergemanager.R;
 import ca.team2706.scouting.mcmergemanager.gui.PreGameActivity;
@@ -38,8 +40,9 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
 
 
     public void editNameDialogComplete(DialogFragment dialogFragment, Bundle data) {
-        // Empty field is here because of interface.
 
+
+        ImageView gearImage = (ImageView) findViewById(R.id.gearImageView);
 
         if (dialogFragment instanceof BallPickupFragment) {
             FuelPickupEvent fuelPickupEvent = (FuelPickupEvent) data.getSerializable(FUEL_PICKUP_EVENT_STRING);
@@ -53,14 +56,38 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
         else if (dialogFragment instanceof GearPickupFragment) {
             GearPickupEvent gearPickupEvent = (GearPickupEvent) data.getSerializable(GEAR_PICKUP_EVENT_STRING);
 
-            // TODO
+            switch (gearPickupEvent.pickupType) {
+                case WALL:
+                    gearHeld = true;
+                    gearImage.setVisibility(View.VISIBLE);
+                    break;
+                case GROUND:
+                    gearHeld = true;
+                    gearImage.setVisibility(View.VISIBLE);
+                    break;
+
+            }
 
             teleopScoutingObject.add(gearPickupEvent);
         }
         else if (dialogFragment instanceof GearDeliveryFragment) {
             GearDelivevryEvent gearDelivevryEvent = (GearDelivevryEvent) data.getSerializable(GEAR_DELIVERY_EVENT_STRING);
 
-            // TODO
+            switch (gearDelivevryEvent.lift){
+                case BOILER_SIDE:
+                    gearHeld = false;
+                    gearImage.setVisibility(View.INVISIBLE);
+                    break;
+                case CENTRE:
+                    gearHeld = false;
+                    gearImage.setVisibility(View.INVISIBLE);
+                    break;
+                case FEEDER_SIDE:
+                    gearHeld = false;
+                    gearImage.setVisibility(View.INVISIBLE);
+                    break;
+
+            }
 
             teleopScoutingObject.add(gearDelivevryEvent);
         }
@@ -81,9 +108,9 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
 
     Handler m_handler;
     Runnable m_handlerTask;
-    private int remainTime = 135;
+    private int remainTime = 30;
     public int ballsHeld;
-    public int gearHeld;
+    public boolean gearHeld = false;
     public String ballsHeldString;
     public Event event = new Event();
 
@@ -99,6 +126,11 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
         Toolbar tb = (Toolbar) findViewById(R.id.toolbar);
         //final Spinner spinner = (Spinner) findViewById(R.id.defense_spinner);
         final TextView tvGameTime = (TextView) findViewById(R.id.textViewGameTime);
+
+
+        // This is so the gear image starts out invisible.
+        ImageView gearImage = (ImageView) findViewById(R.id.gearImageView);
+        gearImage.setVisibility(View.INVISIBLE);
 
         TextView numberBallsHolding = (TextView) findViewById(R.id.numberBallsHolding);
 
@@ -119,6 +151,7 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
         openBallScoringFrag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                event.timestamp = 135 - remainTime;
                 showBallScoring();
             }
         });
@@ -195,9 +228,15 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
     }
 
     private void showGearDelivery() {
-        FragmentManager fm = getFragmentManager();
-        GearDeliveryFragment gearDeliveryFragment = GearDeliveryFragment.newInstance("Subscribe", this);
-        gearDeliveryFragment.show(fm, "fragment_edit_name");
+
+        if (gearHeld) {
+            FragmentManager fm = getFragmentManager();
+            GearDeliveryFragment gearDeliveryFragment = GearDeliveryFragment.newInstance("Subscribe", this);
+            gearDeliveryFragment.show(fm, "fragment_edit_name");
+        }
+        else {
+            Toast.makeText(this, "You are not holding a gear.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void showGearPickup() {
@@ -220,6 +259,14 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
     public void toPostGame (View view) {
         Intent intent = new Intent(this, PreGameActivity.class);
         startActivity(intent);
+    }
+
+
+
+
+    @Override
+    public void onStop(){
+        super.onStop();
     }
 
 }
