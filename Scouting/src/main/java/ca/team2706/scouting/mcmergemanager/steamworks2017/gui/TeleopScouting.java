@@ -7,12 +7,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import ca.team2706.scouting.mcmergemanager.R;
-import ca.team2706.scouting.mcmergemanager.gui.PreGameActivity;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.Event;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.FuelPickupEvent;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.FuelShotEvent;
@@ -35,7 +35,6 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
     public static final String GEAR_PICKUP_EVENT_STRING = "GearPickupEvent";
     public static final String GEAR_DELIVERY_EVENT_STRING = "FuelPickupEvent";
     public static final String FUEL_SHOT_EVENT_STRING = "FuelShotEvent";
-
 
     public void editNameDialogComplete(DialogFragment dialogFragment, Bundle data) {
         // Empty field is here because of interface.
@@ -73,14 +72,18 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
 
             teleopScoutingObject.add(fuelShotEvent);
         }
+        else if (dialogFragment instanceof ClimbingFragment) {
+            this.postGameObject = (PostGameObject) data.getSerializable(ClimbingFragment.CLIMB_POST_GAME_OBJECT_STRING);
+            toPostGame();
+        }
 
     }
 
 
 
-
-    Handler m_handler;
-    Runnable m_handlerTask;
+    private Handler m_handler;
+    private Runnable m_handlerTask;
+    private volatile boolean stopTimer;
     private int remainTime = 135;
     public int ballsHeld;
     public int gearHeld;
@@ -88,7 +91,6 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
     public Event event = new Event();
 
     public static TeleopScoutingObject teleopScoutingObject;
-
     private PostGameObject postGameObject = new PostGameObject();
 
     @Override
@@ -153,15 +155,14 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
         m_handlerTask = new Runnable() {
             @Override
             public void run() {
+                Log.d("MCMergeManager","timer: "+remainTime);
+
                 if (remainTime == 0) {
                     tvGameTime.setText("Game Over! Please Save and Return");
                     postGameObject.climbType = postGameObject.climbType.NO_CLIMB;
 
-                    Intent i=new Intent(getApplicationContext(), PostGameClass.class);
-                    i.putExtra("PreGameData", getIntent().getSerializableExtra("PreGameData"));
-                    i.putExtra("AutoScoutingData", getIntent().getSerializableExtra("AutoScoutingData"));
-                    i.putExtra("TeleopScoutingData", getIntent().getSerializableExtra("TeleopScoutingObject"));
-                    startActivity(i);
+                    if(!stopTimer)
+                        toPostGame();
                 } else {
                     remainTime--;
                     int minuets = remainTime / 60;
@@ -173,11 +174,21 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
                         remainSecString = remainSec + "";
 
                     tvGameTime.setText(minuets + ":" + remainSecString);
-                    m_handler.postDelayed(m_handlerTask, 1000);  // 1 second delay
+
+                    // set an alarm to run this again in 1 second
+                    if(!stopTimer)
+                        m_handler.postDelayed(m_handlerTask, 1000);  // 1 second delay
                 }
             }
         };
         m_handlerTask.run();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        stopTimer = true;
+        m_handler.removeCallbacks(m_handlerTask);
     }
 
     private void showEditDialog() {
@@ -217,8 +228,18 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
         dialogFragment.dismiss();
     }
 
-    public void toPostGame (View view) {
-        Intent intent = new Intent(this, PreGameActivity.class);
+    public void toPostGame() {
+
+        stopTimer = true;
+        m_handler.removeCallbacks(m_handlerTask);
+
+        Intent intent = new Intent(this,PostGameClass.class);
+        // Pass gearDeliveryData to PostGameClass.class
+        intent.putExtra("PreGameData", getIntent().getSerializableExtra("PreGameData"));
+        intent.putExtra("AutoScoutingData", getIntent().getSerializableExtra("AutoScoutingData"));
+        intent.putExtra("TeleopScoutingData", teleopScoutingObject);
+        intent.putExtra("PostGameData", postGameObject);
+
         startActivity(intent);
     }
 
