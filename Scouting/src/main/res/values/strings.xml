@@ -37,7 +37,7 @@
 
     <!-- Strings related to properties from the Settings page -->
     <string name="PROPERTY_FTPHostname">ca.team2706.scouting.hostname</string>
-    <string name="PROPERTY_FTPHostname_default">ftp.team2706.ca</string>
+    <string name="PROPERTY_FTPHostname_default">http://ftp.team2706.ca</string>
     <string name="PROPERTY_FTPUsername">ca.team2706.scouting.username</string>
     <string name="PROPERTY_FTPUsername_default">scout</string>
     <string name="PROPERTY_FTPNukeLocalFile">ca.team2706.nukeLocalFiles</string>
