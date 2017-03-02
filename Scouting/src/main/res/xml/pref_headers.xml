@@ -5,10 +5,5 @@
         android:title="Team Settings"
         android:icon="@drawable/ic_sync_black_24dp" />
 
-    <header
-        android:fragment="ca.team2706.scouting.mcmergemanager.gui.SettingsActivity$NotificationPreferenceFragment"
-        android:title="Notifications"
-        android:icon="@drawable/ic_notifications_black_24dp" />
-
 
 </preference-headers>
