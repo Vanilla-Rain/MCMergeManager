@@ -22,7 +22,8 @@
         android:id="@+id/textViewGameTime"
 
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="480dp" />
+        android:layout_marginTop="480dp"
+        android:visibility="invisible" />
 
    <!--Button
         android:layout_width="match_parent"
