@@ -8,11 +8,16 @@ public class GearDelivevryEvent extends Event {
 
     public static final int objectiveId = 22;
 
+    public enum GearDeliveryStatus {
+        DELIVERED, DROPPED_MOVING, DROPPED_DELIVERING;
+    }
+
     public enum Lift {
         FEEDER_SIDE, CENTRE, BOILER_SIDE, NONE
     }
 
     public Lift lift;
+    public GearDeliveryStatus deliveryStatus;
 
     public GearDelivevryEvent(){
 
