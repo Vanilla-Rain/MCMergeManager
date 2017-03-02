@@ -141,6 +141,23 @@ public class BallShootingFragment extends DialogFragment{
                     }
                 }
         );
+
+        view.findViewById(R.id.ballShootFail).setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ballsScored.numMissed = pointsScored;
+                        fuelShootingData.putSerializable(FUEL_SHOT_EVENT_STRING, ballsScored);
+                        listener.editNameDialogComplete(me, fuelShootingData);
+//                        teleopScoutingObject.add(ballsScored);
+
+                        Log.i(getClass().getName(), "quit");
+                        listener.editNameDialogCancel(me);
+
+
+                    }
+                }
+        );
     }
 
     @Override

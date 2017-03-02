@@ -12,7 +12,12 @@ public class GearDelivevryEvent extends Event {
         FEEDER_SIDE, CENTRE, BOILER_SIDE, NONE
     }
 
+    public enum GearDeliveryStatus {
+        DELIVERED, DROPPED_MOVING, DROPPED_DELIVERING;
+    }
+
     public Lift lift;
+    public GearDeliveryStatus deliveryStatus;
 
     public GearDelivevryEvent(){
 
