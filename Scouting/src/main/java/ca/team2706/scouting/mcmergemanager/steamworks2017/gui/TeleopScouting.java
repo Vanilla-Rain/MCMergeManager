@@ -47,6 +47,9 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
         if (dialogFragment instanceof BallPickupFragment) {
             FuelPickupEvent fuelPickupEvent = (FuelPickupEvent) data.getSerializable(FUEL_PICKUP_EVENT_STRING);
 
+            // Add the timestamp of when the popup was opened
+            fuelPickupEvent.timestamp = event.timestamp;
+
             ballsHeld += fuelPickupEvent.amount;
             TextView numberBallsHolding = (TextView) findViewById(R.id.numberBallsHolding);
             numberBallsHolding.setText(String.valueOf(ballsHeld));
@@ -55,6 +58,9 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
         }
         else if (dialogFragment instanceof GearPickupFragment) {
             GearPickupEvent gearPickupEvent = (GearPickupEvent) data.getSerializable(GEAR_PICKUP_EVENT_STRING);
+
+            // Add the timestamp of when the popup was opened
+            gearPickupEvent.timestamp = event.timestamp;
 
             switch (gearPickupEvent.pickupType) {
                 case WALL:
@@ -75,6 +81,9 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
         else if (dialogFragment instanceof GearDeliveryFragment) {
             GearDelivevryEvent gearDelivevryEvent = (GearDelivevryEvent) data.getSerializable(GEAR_DELIVERY_EVENT_STRING);
 
+            // Add the timestamp of when the popup was opened
+            gearDelivevryEvent.timestamp = event.timestamp;
+
             gearDropped = ((GearDeliveryFragment) dialogFragment).gearDropped;
 
 
@@ -94,14 +103,15 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
                     gearImage.setVisibility(View.INVISIBLE);
                     gearFail.setVisibility(View.INVISIBLE);
                     break;
-
             }
-
 
             teleopScoutingObject.add(gearDelivevryEvent);
         }
         else if (dialogFragment instanceof BallShootingFragment) {
             FuelShotEvent fuelShotEvent = (FuelShotEvent) data.getSerializable(FUEL_SHOT_EVENT_STRING);
+
+            // Add the timestamp of when the popup was opened
+            fuelShotEvent.timestamp = event.timestamp;
 
             ballsHeld -= fuelShotEvent.numScored;
             ballsHeld -= fuelShotEvent.numMissed;
@@ -111,7 +121,7 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
             teleopScoutingObject.add(fuelShotEvent);
         }
         else if (dialogFragment instanceof ClimbingFragment) {
-            this.postGameObject = (PostGameObject) data.getSerializable(ClimbingFragment.CLIMB_POST_GAME_OBJECT_STRING);
+            postGameObject = (PostGameObject) data.getSerializable(ClimbingFragment.CLIMB_POST_GAME_OBJECT_STRING);
             toPostGame();
         }
 
@@ -221,7 +231,6 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
         m_handlerTask = new Runnable() {
             @Override
             public void run() {
-                Log.d("MCMergeManager","timer: "+remainTime);
 
                 if (remainTime == 0) {
                     tvGameTime.setText("Game Over! Please Save and Return");
@@ -298,13 +307,20 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
     @Override
     public void editNameDialogCancel(DialogFragment dialogFragment) {
         dialogFragment.dismiss();
-  
-      
-    @Override
-    public void onStop(){
-        super.onStop();
+    }
 
-    
+    public void toPostGame() {
+        stopTimer = true;
+        m_handler.removeCallbacks(m_handlerTask);
+
+        Intent intent = new Intent(this,PostGameClass.class);
+        // Pass gearDeliveryData to PostGameClass.class
+        intent.putExtra("PreGameData", getIntent().getSerializableExtra("PreGameData"));
+        intent.putExtra("AutoScoutingData", getIntent().getSerializableExtra("AutoScoutingData"));
+        intent.putExtra("TeleopScoutingData", teleopScoutingObject);
+        intent.putExtra("PostGameData", postGameObject);
+
+        startActivity(intent);
     }
 
 }

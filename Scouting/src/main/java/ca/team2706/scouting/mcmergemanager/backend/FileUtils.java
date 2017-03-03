@@ -282,15 +282,9 @@ public class FileUtils {
 
     public static MatchData loadMatchDataFile(FileType fileType) {
 
-        //TODO: #76
-        //TODO: Redo this to read the file in JSON format
-
-
         MatchData matchData = new MatchData();
         List<JSONObject> matchJson = new ArrayList<>();
 
-        // TODO: Do we even need to look at the matches in unsynched, since they should have all been save in synced
-        // read the file
         String inFileName;
         switch (fileType) {
             case UNSYNCHED:
