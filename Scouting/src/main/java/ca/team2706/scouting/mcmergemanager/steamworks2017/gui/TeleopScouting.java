@@ -39,6 +39,7 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
     public static final String FUEL_SHOT_EVENT_STRING = "FuelShotEvent";
 
 
+
     public void editNameDialogComplete(DialogFragment dialogFragment, Bundle data) {
 
 
@@ -105,6 +106,7 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
             FuelShotEvent fuelShotEvent = (FuelShotEvent) data.getSerializable(FUEL_SHOT_EVENT_STRING);
 
             ballsHeld -= fuelShotEvent.numScored;
+            ballsHeld -= fuelShotEvent.numMissed;
             TextView numberBallsHolding = (TextView) findViewById(R.id.numberBallsHolding);
             numberBallsHolding.setText(String.valueOf(ballsHeld));
 
@@ -222,11 +224,6 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
                     tvGameTime.setText("Game Over! Please Save and Return");
                     postGameObject.climbType = postGameObject.climbType.NO_CLIMB;
 
-                    Intent i=new Intent(getApplicationContext(), PostGameClass.class);
-                    i.putExtra("PreGameData", getIntent().getSerializableExtra("PreGameData"));
-                    i.putExtra("AutoScoutingData", getIntent().getSerializableExtra("AutoScoutingData"));
-                    i.putExtra("TeleopScoutingData", getIntent().getSerializableExtra("TeleopScoutingObject"));
-                    startActivity(i);
                 } else {
                     remainTime--;
                     int minuets = remainTime / 60;
