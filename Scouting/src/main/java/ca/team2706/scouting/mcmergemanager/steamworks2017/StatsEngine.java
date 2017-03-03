@@ -787,7 +787,6 @@ public class StatsEngine implements Serializable{
             // None -- they have never scored a gear.
             if (teamStatsReport.teleop_gearsScored_feederSide == 0 && teamStatsReport.teleop_gearsScored_centre == 0 &&
                     teamStatsReport.teleop_gearsScored_boilerSide == 0)
-
                 teamStatsReport.teleop_gears_preferedLift = GearDelivevryEvent.Lift.NONE;
 
             // Feeder Side

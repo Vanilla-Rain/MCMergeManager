@@ -22,7 +22,8 @@
         android:id="@+id/textViewGameTime"
 
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="480dp" />
+        android:layout_marginTop="480dp"
+        android:visibility="invisible" />
 
    <!--Button
         android:layout_width="match_parent"
@@ -90,17 +91,5 @@
         android:layout_marginBottom="45dp"
         android:layout_alignBottom="@+id/textViewGameTime"
         android:layout_alignParentStart="true" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textMultiLine"
-        android:ems="10"
-        android:layout_below="@+id/autoBallScoredTextView"
-        android:layout_alignEnd="@+id/startingGearCheckBox"
-        android:layout_marginEnd="50dp"
-        android:layout_marginTop="17dp"
-        android:id="@+id/editText2"
-        android:contentDescription="Notes..." />
 
 </RelativeLayout>
