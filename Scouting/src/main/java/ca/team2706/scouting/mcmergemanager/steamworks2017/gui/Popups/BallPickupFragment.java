@@ -81,7 +81,6 @@ public class BallPickupFragment extends DialogFragment {
                 //textViewDisplayString;
                 textViewDisplayString = pointsScoredString + endingText;
                 tv.setText(textViewDisplayString);
-//              Toast.makeText(getActivity(), "Data saved!", Toast.LENGTH_LONG).show();
             }
 
         });
@@ -147,6 +146,7 @@ public class BallPickupFragment extends DialogFragment {
                     }
                 }
         );
+
 
         view.findViewById(R.id.feeder_ball_pickup_button).setOnClickListener(
                 new View.OnClickListener() {

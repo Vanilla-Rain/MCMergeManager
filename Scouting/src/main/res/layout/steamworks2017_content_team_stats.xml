@@ -188,7 +188,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Teleop Mode:"
+                android:text="Teleop Mode (avgs):"
                 android:id="@+id/teleopTitleTV" />
 
             <TextView
@@ -382,7 +382,7 @@
             android:layout_weight="0.07">
 
             <TextView
-                android:text="Gears"
+                android:text="Gears (avgs)"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/gearsTitle"
@@ -467,7 +467,7 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:text="Low Goal"
+                android:text="Low Goal (avgs)"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/lowTitle"
@@ -554,7 +554,7 @@
             android:layout_height="match_parent" >
 
             <TextView
-                android:text="High Goal"
+                android:text="High Goal (avgs)"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/highTitle"
