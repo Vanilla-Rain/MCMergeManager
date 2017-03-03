@@ -256,6 +256,7 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
     }
 
     private void showEditDialog() {
+
         FragmentManager fm = getFragmentManager();
 
         BallPickupFragment ballPickupFragment = BallPickupFragment.newInstance("Subscribe", this);
@@ -263,6 +264,7 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
     }
 
     private void showBallScoring() {
+        event.timestamp = 135 - remainTime;
         FragmentManager fm = getFragmentManager();
 
         BallShootingFragment ballShootingFragment = BallShootingFragment.newInstance("Subscribe", this, ballsHeld);
