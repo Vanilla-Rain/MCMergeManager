@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -14,7 +15,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import ca.team2706.scouting.mcmergemanager.R;
-import ca.team2706.scouting.mcmergemanager.gui.PreGameActivity;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.Event;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.FuelPickupEvent;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.FuelShotEvent;
@@ -37,8 +37,6 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
     public static final String GEAR_PICKUP_EVENT_STRING = "GearPickupEvent";
     public static final String GEAR_DELIVERY_EVENT_STRING = "FuelPickupEvent";
     public static final String FUEL_SHOT_EVENT_STRING = "FuelShotEvent";
-
-
 
     public void editNameDialogComplete(DialogFragment dialogFragment, Bundle data) {
 
@@ -112,14 +110,18 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
 
             teleopScoutingObject.add(fuelShotEvent);
         }
+        else if (dialogFragment instanceof ClimbingFragment) {
+            this.postGameObject = (PostGameObject) data.getSerializable(ClimbingFragment.CLIMB_POST_GAME_OBJECT_STRING);
+            toPostGame();
+        }
 
     }
 
 
 
-
-    Handler m_handler;
-    Runnable m_handlerTask;
+    private Handler m_handler;
+    private Runnable m_handlerTask;
+    private volatile boolean stopTimer;
     private int remainTime = 135;
     public int ballsHeld;
     public boolean gearHeld = false;
@@ -128,7 +130,6 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
     public Event event = new Event();
 
     public static TeleopScoutingObject teleopScoutingObject;
-
     private PostGameObject postGameObject = new PostGameObject();
     private GearDelivevryEvent gearDelivevryEvent = new GearDelivevryEvent();
 
@@ -220,6 +221,8 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
         m_handlerTask = new Runnable() {
             @Override
             public void run() {
+                Log.d("MCMergeManager","timer: "+remainTime);
+
                 if (remainTime == 0) {
                     tvGameTime.setText("Game Over! Please Save and Return");
                     postGameObject.climbType = postGameObject.climbType.NO_CLIMB;
@@ -235,11 +238,21 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
                         remainSecString = remainSec + "";
 
                     tvGameTime.setText(minuets + ":" + remainSecString);
-                    m_handler.postDelayed(m_handlerTask, 1000);  // 1 second delay
+
+                    // set an alarm to run this again in 1 second
+                    if(!stopTimer)
+                        m_handler.postDelayed(m_handlerTask, 1000);  // 1 second delay
                 }
             }
         };
         m_handlerTask.run();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        stopTimer = true;
+        m_handler.removeCallbacks(m_handlerTask);
     }
 
     private void showEditDialog() {
@@ -283,12 +296,13 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
     @Override
     public void editNameDialogCancel(DialogFragment dialogFragment) {
         dialogFragment.dismiss();
-    }
-
-
+  
+      
     @Override
     public void onStop(){
         super.onStop();
+
+    
     }
 
 }

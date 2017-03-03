@@ -24,6 +24,10 @@ import static ca.team2706.scouting.mcmergemanager.steamworks2017.gui.TeleopScout
 
 public class ClimbingFragment extends DialogFragment {
 
+    // Data strings
+
+    public static final String CLIMB_POST_GAME_OBJECT_STRING = "PostGameObject";
+
     SeekBar climbTimeSeekBar;
     public int pointsScored;
 
@@ -71,7 +75,6 @@ public class ClimbingFragment extends DialogFragment {
                 }
         );
 
-// ballsScored.numScored
         // initiate  views
         climbTimeSeekBar=(SeekBar)view.findViewById(id.climbingTimeSeekBar);
         // perform seek bar change listener event used for getting the progress value
@@ -92,7 +95,6 @@ public class ClimbingFragment extends DialogFragment {
                 pointsScoredString = String.valueOf(pointsScored);
                 textViewDisplayString = pointsScoredString + test;
                 tvd.setText(textViewDisplayString);
-//              Toast.makeText(getActivity(), "Data saved!", Toast.LENGTH_LONG).show();
             }
 
         });
@@ -104,8 +106,12 @@ public class ClimbingFragment extends DialogFragment {
                         Log.i(getClass().getName(), "quit");
                         listener.editNameDialogCancel(me);
 
-                        toPostGame(view);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable(CLIMB_POST_GAME_OBJECT_STRING, postGameObject);
+                        listener.editNameDialogComplete(me, bundle);
 
+                        Log.i(getClass().getName(), "quit");
+                        listener.editNameDialogCancel(me);
                     }
                 }
         );
@@ -116,10 +122,13 @@ public class ClimbingFragment extends DialogFragment {
                     public void onClick(View v) {
                         postGameObject.climbType = PostGameObject.ClimbType.SUCCESS;
                         postGameObject.climb_time = pointsScored;
+
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable(CLIMB_POST_GAME_OBJECT_STRING, postGameObject);
+                        listener.editNameDialogComplete(me, bundle);
+
                         Log.i(getClass().getName(), "quit");
                         listener.editNameDialogCancel(me);
-
-                        toPostGame(view);
                     }
                 }
         );
@@ -130,17 +139,4 @@ public class ClimbingFragment extends DialogFragment {
         super.onCancel(dialog);
         listener.editNameDialogCancel(this);
     }
-
-    public void toPostGame(View view) {
-
-        Intent intent = new Intent(view.getContext(),PostGameClass.class);
-        // Pass gearDeliveryData to PostGameClass.class
-        intent.putExtra("PreGameData", getActivity().getIntent().getSerializableExtra("PreGameData"));
-        intent.putExtra("AutoScoutingData", getActivity().getIntent().getSerializableExtra("AutoScoutingData"));
-        intent.putExtra("TeleopScoutingData", teleopScoutingObject);
-        intent.putExtra("PostGameData", postGameObject);
-
-        startActivity(intent);
-    }
-
 }
