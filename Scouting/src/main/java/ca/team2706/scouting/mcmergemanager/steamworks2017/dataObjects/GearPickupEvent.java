@@ -17,12 +17,10 @@ public class GearPickupEvent extends Event {
     }
 
     public GearPickupType pickupType; // true is from wall, false is from ground
-    public boolean successful; // true if no difficulty, false if had some difficulty
 
-    public GearPickupEvent(double timestamp, GearPickupType pickupType, boolean successful) {
+    public GearPickupEvent(double timestamp, GearPickupType pickupType) {
         super(timestamp);
 
         this.pickupType = pickupType;
-        this.successful = successful;
     }
 }

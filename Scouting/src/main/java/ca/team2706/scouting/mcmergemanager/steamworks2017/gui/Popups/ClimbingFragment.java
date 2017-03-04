@@ -103,8 +103,22 @@ public class ClimbingFragment extends DialogFragment {
                     @Override
                     public void onClick(View v) {
                         postGameObject.climbType = PostGameObject.ClimbType.FAIL;
+
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable(CLIMB_POST_GAME_OBJECT_STRING, postGameObject);
+                        listener.editNameDialogComplete(me, bundle);
+
                         Log.i(getClass().getName(), "quit");
                         listener.editNameDialogCancel(me);
+                    }
+                }
+        );
+
+        view.findViewById(id.noClimbButton).setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        postGameObject.climbType = PostGameObject.ClimbType.NO_CLIMB;
 
                         Bundle bundle = new Bundle();
                         bundle.putSerializable(CLIMB_POST_GAME_OBJECT_STRING, postGameObject);

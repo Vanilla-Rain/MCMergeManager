@@ -81,8 +81,7 @@ public class MatchData implements Serializable {
                         case GearPickupEvent.objectiveId:
                             try {
                                 event = new GearPickupEvent(obj.getDouble("timestamp"),
-                                        GearPickupEvent.GearPickupType.valueOf((String) obj.get("type")),
-                                        (boolean) obj.get("success"));
+                                        GearPickupEvent.GearPickupType.valueOf((String) obj.get("type")));
                             } catch (IllegalArgumentException e) {
                                 Log.d("GearPickupError", e.toString());
                                 event = new Event(GearPickupEvent.objectiveId);
@@ -109,7 +108,6 @@ public class MatchData implements Serializable {
             } catch(IllegalArgumentException e) {
                 Log.d("enum failure", e.toString());
             }
-
         }
 
 
@@ -149,7 +147,6 @@ public class MatchData implements Serializable {
                     } else if(event instanceof GearPickupEvent) {
                         GearPickupEvent e = (GearPickupEvent) event;
                         obj.put("type", e.pickupType.toString());
-                        obj.put("success", e.successful);
                         obj.put("objective_id", GearPickupEvent.objectiveId);
                     } else if(event instanceof GearDelivevryEvent) {
                         GearDelivevryEvent e = (GearDelivevryEvent) event;

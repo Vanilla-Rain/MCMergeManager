@@ -602,29 +602,23 @@ public class StatsEngine implements Serializable{
 
                     // Since you can only hold one gear at a time, the logic for completing a cycle is _much_ simpler. Phew.
 
-                    if (!gearPickupEvent.successful) {
-                        teamStatsReport.teleop_gearsDropped_avgPerMatch++;
-                        // don't update inGearCycle, leave it as it was before
+                    // if we're already in a gear cycle, don't update the cycle start time
+                    if (!inGearCycle) {
+                        currGearCycle.startTime = gearPickupEvent.timestamp;
                     }
-                    else {
-                        // if we're already in a gear cycle, don't update the cycle start time
-                        if (!inGearCycle) {
-                            currGearCycle.startTime = gearPickupEvent.timestamp;
-                        }
 
-                        inGearCycle = true;
+                    inGearCycle = true;
 
-                        switch (gearPickupEvent.pickupType) {
-                            case GROUND:
-                                teamStatsReport.teleop_gearsPickupGround_avgPerMatch++;
-                                teamStatsReport.numGearGroundCycles++;
-                                break;
+                    switch (gearPickupEvent.pickupType) {
+                        case GROUND:
+                            teamStatsReport.teleop_gearsPickupGround_avgPerMatch++;
+                            teamStatsReport.numGearGroundCycles++;
+                            break;
 
-                            case WALL:
-                                teamStatsReport.numGearWallCycles++;
-                                teamStatsReport.teleop_gearsPickupWall_avgPerMatch++;
-                                break;
-                        }
+                        case WALL:
+                            teamStatsReport.numGearWallCycles++;
+                            teamStatsReport.teleop_gearsPickupWall_avgPerMatch++;
+                            break;
                     }
                 } // instanceof GearPickupEvent
 
@@ -640,39 +634,27 @@ public class StatsEngine implements Serializable{
                     currGearCycle.endTime = gearDelivevryEvent.timestamp;
                     double cycleTime = currGearCycle.endTime - currGearCycle.startTime;
 
-//                    switch (gearDelivevryEvent.deliveryStatus) {
-//                        case DELIVERED:
-//                            teamStatsReport.teleop_gearsDelivered_avgPerMatch++;
-//                            teamStatsReport.teleop_gears_avgCycleTime += cycleTime;
-//                            teamStatsReport.numGearCycles++;
-//
-//                            if (cycleTime > teamStatsReport.teleop_gears_maxCycleTime)
-//                                teamStatsReport.teleop_gears_maxCycleTime = cycleTime;
-//
-//                            if (cycleTime < teamStatsReport.teleop_gears_minCycleTime)
-//                                teamStatsReport.teleop_gears_minCycleTime = cycleTime;
-//
-//                            switch (gearDelivevryEvent.lift) {
-//                                case FEEDER_SIDE:
-//                                    teamStatsReport.teleop_gearsScored_feederSide++;
-//                                    break;
-//                                case CENTRE:
-//                                    teamStatsReport.teleop_gearsScored_centre++;
-//                                    break;
-//                                case BOILER_SIDE:
-//                                    teamStatsReport.teleop_gearsScored_boilerSide++;
-//                                    break;
-//                            }
-//
-//                            break;
-//                        case DROPPED_DELIVERING:
-//                        case DROPPED_MOVING:
-//                            // I'm just lumping these together because I'm not sure it's relevant. ... could split this out later if we want.
-//                            teamStatsReport.teleop_gearsDropped_avgPerMatch++;
-//                            currGearCycle.success = false;
-//                            break;
-//                    }
+                    teamStatsReport.teleop_gearsDelivered_avgPerMatch++;
+                    teamStatsReport.teleop_gears_avgCycleTime += cycleTime;
+                    teamStatsReport.numGearCycles++;
 
+                    if (cycleTime > teamStatsReport.teleop_gears_maxCycleTime)
+                        teamStatsReport.teleop_gears_maxCycleTime = cycleTime;
+
+                    if (cycleTime < teamStatsReport.teleop_gears_minCycleTime)
+                        teamStatsReport.teleop_gears_minCycleTime = cycleTime;
+
+                    switch (gearDelivevryEvent.lift) {
+                        case FEEDER_SIDE:
+                            teamStatsReport.teleop_gearsScored_feederSide++;
+                            break;
+                        case CENTRE:
+                            teamStatsReport.teleop_gearsScored_centre++;
+                            break;
+                        case BOILER_SIDE:
+                            teamStatsReport.teleop_gearsScored_boilerSide++;
+                            break;
+                    }
 
                     cyclesInThisMatch.cycles.add(currGearCycle.clone());
                 }
@@ -689,7 +671,7 @@ public class StatsEngine implements Serializable{
 
             // Climb
             Cycle climbCycle = new Cycle(Cycle.CycleType.CLIMB);
-            climbCycle.startTime = match.postGameObject.climb_time;
+            climbCycle.startTime = 135 - match.postGameObject.climb_time;
             climbCycle.endTime = 135;
 
             switch (match.postGameObject.climbType) {
