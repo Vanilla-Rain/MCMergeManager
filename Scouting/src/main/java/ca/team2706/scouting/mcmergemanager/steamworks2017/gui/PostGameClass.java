@@ -29,7 +29,8 @@ public class PostGameClass extends AppCompatActivity {
     private PostGameObject postGameObject;
     private DefenseEvent defenseEvent = new DefenseEvent();
 
-
+    public String notesText;
+    public String noEntry = "Notes...";
     SeekBar deadTimeSeekBar;
     SeekBar defenseSeekBar;
 
@@ -37,6 +38,16 @@ public class PostGameClass extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.steamworks2017_activity_post_game);
+
+
+        // Using this  onClickListener so the text disappears when clicked.
+        final EditText notes = (EditText) findViewById(R.id.postGameNotes);
+        notes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                notes.setText("");
+            }
+        });
 
 
         postGameObject = (PostGameObject) getIntent().getSerializableExtra("PostGameData");  // climb was set in climbingFragment.
@@ -58,7 +69,7 @@ public class PostGameClass extends AppCompatActivity {
             public void onStopTrackingTouch(SeekBar seekBar) {
                 TextView tv = (TextView) findViewById(R.id.time_dead_text_view);
                 tv.setText(progressChangedValue * 5 + " seconds dead");
-                postGameObject.time_dead = progressChangedValue*5;
+                postGameObject.time_dead = progressChangedValue * 5;
             }
         });
 
@@ -78,7 +89,7 @@ public class PostGameClass extends AppCompatActivity {
             public void onStopTrackingTouch(SeekBar seekBar) {
                 TextView tv = (TextView) findViewById(R.id.time_defending_text_view);
                 tv.setText(progressChangedValue * 5 + " seconds defending");
-                postGameObject.time_defending = progressChangedValue*5;
+                postGameObject.time_defending = progressChangedValue * 5;
 
             }
         });
@@ -87,12 +98,24 @@ public class PostGameClass extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                notesText = notes.getText().toString();
+                if (!notesText.equals(noEntry)) {
+                    postGameObject.notes = notes.getText().toString();
+
+                }
+
                 returnHome();
             }
         });
 
-        EditText notes = (EditText) findViewById(R.id.postGameNotes);
-        postGameObject.notes = notes.getText().toString();
+
+
+        notesText = notes.getText().toString();
+        if (!notesText.equals(noEntry)) {
+            postGameObject.notes = notes.getText().toString();
+
+        }
     }
 
         public void returnHome(){
