@@ -298,13 +298,16 @@ public class TeleopScouting extends AppCompatActivity implements FragmentListene
     @Override
     public void editNameDialogCancel(DialogFragment dialogFragment) {
         dialogFragment.dismiss();
-  
-      
+
+    }
+
     @Override
-    public void onStop(){
-        super.onStop();
+    public void onStop() {
+            super.onStop();
+        }
 
     
     }
 
-}
+
+
