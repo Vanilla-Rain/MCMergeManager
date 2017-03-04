@@ -39,6 +39,17 @@ public class PostGameClass extends AppCompatActivity {
         setContentView(R.layout.steamworks2017_activity_post_game);
 
 
+        // Using this  onClickListener so the text disappears when clicked.
+        final EditText notes = (EditText) findViewById(R.id.postGameNotes);
+        notes.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    notes.setText("");
+                }
+            });
+
+
+
         postGameObject = (PostGameObject) getIntent().getSerializableExtra("PostGameData");  // climb was set in climbingFragment.
 
         // initiate  views
@@ -91,7 +102,6 @@ public class PostGameClass extends AppCompatActivity {
             }
         });
 
-        EditText notes = (EditText) findViewById(R.id.postGameNotes);
         postGameObject.notes = notes.getText().toString();
     }
 
