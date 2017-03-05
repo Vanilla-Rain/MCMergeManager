@@ -91,11 +91,26 @@
                     android:layout_height="match_parent"
                     android:weightSum="1">
 
-                    <ProgressBar
-                        style="?android:attr/progressBarStyleHorizontal"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/syncBar"
-                        android:layout_width="match_parent" />
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ProgressBar
+                            style="?android:attr/progressBarStyleHorizontal"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/syncBar"
+                            android:layout_width="match_parent"
+                            android:layout_weight="1" />
+
+                        <TextView
+                            android:layout_height="match_parent"
+                            android:id="@+id/textView"
+                            android:layout_weight="1"
+                            android:visibility="visible"
+                            android:layout_width="10dp"
+                            android:textColor="@android:color/background_light" />
+                    </LinearLayout>
 
                     <TextView
                         android:text="Start a sync here"

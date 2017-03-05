@@ -367,9 +367,9 @@ public class MainActivity extends AppCompatActivity
                 }else{
                     bu.setText("Sync Photos");
                 }
-                if(caption.startsWith("^")){
+                if(caption.startsWith("_")){
                     pb.setIndeterminate(true);
-                    tv.setText("Getting File Listing...");
+                    tv.setText(caption.split("_")[1]);
                 }else{
                     pb.setIndeterminate(false);
                     tv.setText(caption);
@@ -386,7 +386,6 @@ public class MainActivity extends AppCompatActivity
             String ftpPassword = SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_FTPPassword), null);
             if(ftpUsername==null||ftpHostname==null||ftpPassword==null) return;
             sFtpClient = new FTPClient(ftpHostname, ftpUsername, ftpPassword, FileUtils.sLocalTeamPhotosFilePath, FileUtils.sRemoteTeamPhotosFilePath);
-            sFtpClient.connect();
             sFtpClient.syncAllFiles(this, this);
         }catch(Exception e){
             // empty
