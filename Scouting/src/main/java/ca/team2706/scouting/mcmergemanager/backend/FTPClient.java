@@ -104,6 +104,7 @@ public class FTPClient {
             return connected;
         }
     }
+
     /**
      * Tries to connect to a server with the parameters supplied with constructor
      *
@@ -116,18 +117,20 @@ public class FTPClient {
         if (activeNetwork == null) { // not connected to the internet
             return;
         }
-
+        //his.nukeLocalFiles(true, true, true); //JUST HERE FOR DEBUGGING!!! if things arn't working, remove this line.
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
                 synchronized (connectedThreadLock) {
                     try {
+                        String tolog = "";
                         ftpClient.connect(hostname, port);
-                        Log.i("FTPClient|INFO", ftpClient.getReplyString());
+                        tolog += ftpClient.getReplyString();
                         ftpClient.enterLocalPassiveMode();
                         ftpClient.login(username, password);
-                        Log.i("FTPClient|INFO", ftpClient.getReplyString());
+                        tolog += ftpClient.getReplyString();
                         connected = true;
+                        Log.i("FTPClient|connect", tolog);
                     } catch (Exception e) {
                         Log.e("FTPClient|connect", e.toString());
                         connected = false;
@@ -141,29 +144,28 @@ public class FTPClient {
             // do nothing.
         }
     }
+
     /**
      * Downloads all missing files on device from the server, and
      * uploads all missing files on server from device.
      * @param requester: Callback for thread
      * @throws ConnectException
      */
-
     public void syncAllFiles(final FTPRequester requester, final Activity activity)throws ConnectException{
         if(!initilized) return;
-      synchronized (connectedThreadLock){
-            if(!connected){
-                throw new ConnectException("You cannot sync files if you're not connected!");
-            }
-        }
+      synchronized (connectedThreadLock){}
         if(syncing){
             Log.e("FTPClient|INFO", "A sync is already in progress!");
             return;
+        }else{
+            requester.updateSyncBar("_Connecting...", 0, activity, true);
+            connect();
         }
         AsyncTask.execute(new Runnable() {
             @Override
             public void run(){
                 Log.i("FTPClient|INFO", "Starting SYNC");
-                requester.updateSyncBar("^checking for differences...", 0, activity, true);
+                requester.updateSyncBar("_Finding differences...", 0, activity, true);
                 int currentProgress = 0;
                 int maxUpProgress = 0;
                 int maxDownProgress = 0;
@@ -172,9 +174,6 @@ public class FTPClient {
                 ArrayList<String> filesToUpload = new ArrayList<String>();
                 ArrayList<String> filesToDownload = new ArrayList<String>();
                 int changed = 0;
-                int Uploaded = 0;
-                int Downloaded = 0;
-                int Unchanged = 0;
                 localNames = getLocalDir();
                 try{
                     checkFilepath(remotePath, true);
@@ -197,8 +196,6 @@ public class FTPClient {
                         if(localName==localPath.getAbsolutePath()) continue;
                         if (!remoteNames.contains(usableName))
                             filesToUpload.add(localName);
-                        else
-                            Unchanged += 1;
                     }
                     maxDownProgress = filesToDownload.size();
                     maxUpProgress = filesToUpload.size();
@@ -206,7 +203,6 @@ public class FTPClient {
                         String newFile = fileToDownload;
                         downloadSync(fileToDownload);
                         changed += 1;
-                        Downloaded += 1;
                         currentProgress += 1;
                         requester.updateSyncBar("Downloading file " + currentProgress + "/" + maxDownProgress, (currentProgress*100) / maxDownProgress, activity, true);
                     }
@@ -215,7 +211,6 @@ public class FTPClient {
                         String newFile = fileToUpload;
                         uploadSync(fileToUpload);
                         changed += 1;
-                        Uploaded += 1;
                         currentProgress += 1;
                         requester.updateSyncBar("Uploading file " + currentProgress + "/" + maxUpProgress, (currentProgress*100) / maxUpProgress, activity, true);
                     }
@@ -225,76 +220,74 @@ public class FTPClient {
                     Log.e("FTPClient|sync", e.toString());
                     changed = -1;
                 }
-                String up = String.valueOf(Uploaded);
-                String down = String.valueOf(Downloaded);
-                String unchanged = String.valueOf(Unchanged);
                 if(changed<1)
                     if(changed==0)
-                        requester.updateSyncBar("Done!", 100, activity, false);
+                        requester.updateSyncBar("You're up to date!", 100, activity, false);
                     else
                         requester.updateSyncBar("ERROR", 100, activity, false);
                 else
                     requester.updateSyncBar("Done!", 100, activity, false);
                 Log.d("FTPClient|INFO", "Sync done!");
-
+                try{ftpClient.disconnect();}catch(Exception e){Log.e("FTPClient|Disconnect", "failed to disconnect", e);}
 
             }
         });
     }
+
+    /**
+     * Upload a file synchronomously
+     * @param filename: local file to upload
+     */
     private void uploadSync(String filename){
         if(!initilized) return;
         String RemotePath = filename.split("MCMergeManager")[1];
         RemotePath = "/MCMergeManager" + RemotePath;
-        Log.i("FTPClient|uploadSync", "\nUploading: " + filename + "\nTo: " + RemotePath);
+        File file = new File(filename);
+        Log.i("FTPClient|Upload",   "Filepath: " + filename +
+                                    "\nFilesize: "+(file.length()) + " bytes"+
+                                    "\nParent Dir check: " + String.valueOf(checkFilepath(RemotePath, true))+
+                                    "\n"
+                                    );
         try {
-            Log.d("FTPClient|uploadSync", String.valueOf(checkFilepath(RemotePath, true)));
             InputStream is = new FileInputStream(filename);
             ftpClient.storeFile(RemotePath, is);
         }catch(Exception e) {
-            Log.e("FTPClient|uploadSync", e.toString());
+            Log.e("FTPClient|Upload", e.toString());
             return;
         }
     }
+
+    /**
+     * Download a file synchronomously
+     * @param RemotePath: remote file to download
+     */
     private void downloadSync(String RemotePath){
         if(!initilized) return;
         String filename = localPath.getAbsolutePath() + RemotePath.split("Team Photos")[1];
-        Log.i("FTPClient|downloadSync", "\nDownloading: " + RemotePath + "\nTo: " + filename);
+        String sizeinbytes = "";
+        try{
+            ftpClient.changeWorkingDirectory("/");
+            sizeinbytes = Long.toString(ftpClient.mlistFile(RemotePath).getSize());
+        }catch(Exception e){
+            sizeinbytes = "[error]";
+        }
+        Log.i("FTPClient|Download", "Filepath: " + RemotePath +
+                                    "\nFile size: "+sizeinbytes+" bytes"+
+                                    "\nParent Dir check: " + String.valueOf(checkFilepath(filename, false))+
+                                    "\n"
+                                    );
         try {
-            boolean temp = checkFilepath(filename, false);
-            Log.d("FTPClient|CreatedDir?", String.valueOf(temp));
             OutputStream os = new FileOutputStream(filename);
             ftpClient.retrieveFile(RemotePath, os);
         }catch(Exception e){
-            Log.e("FTPClient|downloadSync", e.toString());
+            Log.e("FTPClient|Download", e.toString());
             return;
         }
     }
 
-
-    /**
-     * WARNING!!!
-     * Everything below this is still being
-     * created and it may not work.
-     * don't use it.
-
-
-    public Boolean checkNetwork(){
-        final ConnectivityManager connMgr = (ConnectivityManager)
-                this.getSystemService(Context.CONNECTIVITY_SERVICE);
-        final android.net.NetworkInfo wifi = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        final android.net.NetworkInfo mobile = connMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-        if (wifi.isConnectedOrConnecting ()) {
-            return true;
-        } else if (mobile.isConnectedOrConnecting ()) {
-            return false;
-        } else {
-            return false;
-        }
-    }
-    */
-
     /**
      * Method for retrieving an array of files on the local device.
+     * localDirSlave() is also a part of this.
      * @return
      */
     public ArrayList<String> getLocalDir(){
@@ -313,6 +306,12 @@ public class FTPClient {
         }
         return filenames;
     }
+
+    /**
+     * Slave to getLocalDir() for recursiveness.
+     * @param currentPath: the path to list
+     * @return: files in current path and all subfolders
+     */
     private ArrayList<String> localDirSlave(String currentPath){
         ArrayList<String> filenames = new ArrayList<>();
         File newLevel = new File(currentPath);
@@ -325,6 +324,15 @@ public class FTPClient {
         }
         return filenames;
     }
+
+    /**
+     *  Gets a list of all filenaes of files on the FTP Server
+     * @param parentDir: to peice together the dir() command
+     * @param currentDir: to peice together the dir() command
+     * @param level: used for determining when to stop
+     * @return The string array of all filenames on the server
+     * @throws IOException
+     */
     public ArrayList<String> getRemoteDir(String parentDir, String currentDir, int level) throws IOException {
         if(!initilized) return new ArrayList<String>();
         ArrayList<String> filenames = new ArrayList<>();
@@ -360,7 +368,14 @@ public class FTPClient {
         return filenames;
     }
 
-
+    /**
+     *  Checks the specified path for existance on either
+     *   the FTP Server or the local device.
+     * @param filename: the filename to check
+     * @param isFTP: if the filename should be checked remotely or locally
+     * @return: false is path does not exist, and was failed to create or
+     *          true if it already exists or was created sucsessfully.
+     */
     private boolean checkFilepath(String filename, boolean isFTP){
         if(isFTP){
             String parentDir = new File(filename).getParent();
@@ -374,7 +389,9 @@ public class FTPClient {
 
                     if(!ftpClient.changeWorkingDirectory(CD)){
                         ftpClient.makeDirectory(CD);
-                        ftpClient.changeWorkingDirectory(CD);
+                        return ftpClient.changeWorkingDirectory(CD);
+                    }else{
+                        return true;
                     }
                 }
             }catch(Exception e){
@@ -389,31 +406,42 @@ public class FTPClient {
                 return file.mkdirs();
             }
             File parentDir = file.getParentFile();
-            if (!parentDir.exists()) {
-                return parentDir.mkdirs();
-            } else {
+            if (parentDir.exists()) {
                 return true;
+            } else {
+                return parentDir.mkdirs();
             }
         }
     }
+
+    /**
+     * Pretty self explanitory, prepares your device for a new year.
+     * @param AreYouSure
+     * @param AreYouREALLYSure
+     * @param AreYou100PercentCertain
+     * All parameters should be pretty self explanitory aswell.
+     * @return: if files were nuked properly (should always be true)
+     */
     public boolean nukeLocalFiles(boolean AreYouSure, boolean AreYouREALLYSure, boolean AreYou100PercentCertain){
         if(!(AreYouSure&&AreYouREALLYSure&&AreYou100PercentCertain)) return false;
         deleteRecursive(localPath);
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(App.getContext());
         SharedPreferences.Editor editor1 = settings.edit();
-        editor1.putString(App.getContext().getString(R.string.PROPERTY_FTPNukeLocalFile),"Replace with 'Yes' to nuke");
+        editor1.putString(App.getContext().getString(R.string.PROPERTY_FTPNukeLocalFile),"Replace with 'Yes', then reload the page");
         editor1.commit();
         return true;
     }
+
+    /**
+     * helper for the nukeLocalFiles() method
+     * @param fileOrDirectory: fileOrDirectory to remove
+     */
     void deleteRecursive(File fileOrDirectory) {
         if (fileOrDirectory.isDirectory())
             for (File child : fileOrDirectory.listFiles()){
-                Log.d("FTPClient|NUKE", "Nuking folder: " + child.getAbsolutePath());
+                Log.d("FTPClient|NUKE", "Removing folder: " + child.getAbsolutePath());
                 deleteRecursive(child);
             }
-
-
-
         fileOrDirectory.delete();
     }
 }
