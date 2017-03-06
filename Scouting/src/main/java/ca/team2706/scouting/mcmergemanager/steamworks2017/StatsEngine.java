@@ -351,17 +351,17 @@ public class StatsEngine implements Serializable{
             }
 
 
-            switch (autoData.boiler_attempted) {
-                case (AutoScoutingObject.LOW_BOILER_ATTEPMTED):
-                    teamStatsReport.auto_numLowGoalAttempts += 1;
-                    teamStatsReport.auto_avgNumFuelScoredLow += autoData.numFuelScored;
-                    break;
-
-                case (AutoScoutingObject.HIGH_BOILER_ATTEMPTED):
-                    teamStatsReport.auto_numHighGoalAttempts += 1;
-                    teamStatsReport.auto_avgNumFuelScoredHigh += autoData.numFuelScored;
-                    break;
-            }
+//            switch (autoData.boiler_attempted) {
+//                case (AutoScoutingObject.LOW_BOILER_ATTEPMTED):
+//                    teamStatsReport.auto_numLowGoalAttempts += 1;
+//                    teamStatsReport.auto_avgNumFuelScoredLow += autoData.numFuelScored;
+//                    break;
+//
+//                case (AutoScoutingObject.HIGH_BOILER_ATTEMPTED):
+//                    teamStatsReport.auto_numHighGoalAttempts += 1;
+//                    teamStatsReport.auto_avgNumFuelScoredHigh += autoData.numFuelScored;
+//                    break;
+//            }
         }
 
 

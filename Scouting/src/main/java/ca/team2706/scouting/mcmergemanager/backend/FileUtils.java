@@ -673,10 +673,20 @@ public class FileUtils {
         switch(fileType) {
             case UNSYNCHED:
                 file = new File(sLocalEventFilePath + "/" + App.getContext().getResources().getString(R.string.matchScoutingDataFileNameUNSYNCHED));
-                return file.delete();
+                try {
+                    file.createNewFile();
+                } catch(IOException e) {
+                    Log.d("Creating new file err", e.toString());
+                }
+                break;
             case SYNCHED:
                 file = new File(sLocalEventFilePath + "/" + App.getContext().getResources().getString(R.string.matchScoutingDataFileName));
-                return file.delete();
+                try {
+                    file.createNewFile();
+                } catch(IOException e) {
+                    Log.d("Creating new file err", e.toString());
+                }
+                break;
         }
         return false;
     }
@@ -685,20 +695,18 @@ public class FileUtils {
         Takes the selected event that you are at
         TODO: get JSOn body uncommentedable
      */
-    public static void postMatchToServer(final Context context/*, JSONObject jsonBody*/) {
+    public static void postMatchToServer(final Context context, JSONObject jsonBody) {
         SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(App.getContext());
 
-        final String url = SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_FTPHostname), "<Not Set>") + "/competitions/" + SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_event), "<Not Set>") + ".json";
+        final String url = "http://ftp.team2706.ca:3000/competitions/" + SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_event), "<Not Set>") + "/matches.json";
         RequestQueue queue = Volley.newRequestQueue(context);
 
         try {
             RequestQueue requestQueue = Volley.newRequestQueue(context);
             // Prepares POST data...
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("competition_id",SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_event), "<Not Set"));
-            jsonObject.put("number", 7);
-            jsonObject.put("team_id", 7);
-            final String mRequestBody = jsonObject.toString();
+            jsonBody.put("competition_id",SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_event), "<Not Set"));
+            final String mRequestBody = jsonBody.toString();
+            System.out.println(jsonBody.toString());
             // Volley request...
             StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                 @Override
@@ -747,8 +755,6 @@ public class FileUtils {
             jsonBody.put("team_number", 1);
             JSONArray arr = new JSONArray();
             JSONObject obj = new JSONObject();
-            obj.put("match_id", 99);
-            obj.put("id", 121);
             obj.put("objective_id", FuelPickupEvent.objectiveId);
             arr.put(obj);
             jsonBody.put("events", arr);
@@ -786,6 +792,17 @@ public class FileUtils {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void syncUnsyncedFile(Context context) {
+        MatchData matchData = loadMatchDataFile(FileType.UNSYNCHED);
+
+        // probably need to throw some sort of error catching magic
+        for (MatchData.Match match : matchData.matches) {
+            postMatchToServer(context, match.toJson());
+        }
+
+        clearTeamDataFile(FileType.UNSYNCHED);
     }
 
 }

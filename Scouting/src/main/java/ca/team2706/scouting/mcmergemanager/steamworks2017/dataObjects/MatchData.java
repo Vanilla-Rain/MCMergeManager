@@ -11,6 +11,16 @@ import java.util.ArrayList;
 
 public class MatchData implements Serializable {
 
+    // objective ids
+    public static final int startFuelID = 25;
+    public static final int startGearID = 26;
+    public static final int crossedBaselineID = 27;
+    public static final int gearDeliveredID = 28;
+    public static final int boilerAttemptedID = 29;
+    public static final int openHopperID = 31;
+    public static final int climbID = 32;
+
+
 
     public static class Match implements Serializable {
 
@@ -38,30 +48,30 @@ public class MatchData implements Serializable {
             try {
                 // pregame
                 preGameObject.teamNumber = jsonObject.getInt("team_number");
-                preGameObject.matchNumber = jsonObject.getInt("id");
+                preGameObject.matchNumber = jsonObject.getInt("number");
 
                 // autonomous
+
                 autoScoutingObject.crossedBaseline = jsonObject.getBoolean("crossed_baseline");
                 autoScoutingObject.start_fuel = jsonObject.getBoolean("start_fuel");
                 autoScoutingObject.start_gear = jsonObject.getBoolean("start_gear");
                 autoScoutingObject.boiler_attempted = jsonObject.getInt("boiler_attempted");
                 autoScoutingObject.gear_delivered = jsonObject.getInt("gear_delivered");
-                autoScoutingObject.numFuelScored = jsonObject.getInt("num_Fuel_Scored");
                 autoScoutingObject.open_hopper = jsonObject.getInt("open_hopper");
 
                 // teleop
-                JSONArray arr = (JSONArray) jsonObject.get("events");
-                for(int i = 0; i < arr.length(); i++) {
-                    JSONObject obj = new JSONObject(arr.get(i).toString());
+                JSONArray arrEve = (JSONArray) jsonObject.get("events");
+                for(int i = 0; i < arrEve.length(); i++) {
+                    JSONObject obj = new JSONObject(arrEve.get(i).toString());
                     Event event;
                     switch((int) obj.get("objective_id")) {
                         case FuelShotEvent.objectiveId:
-                            event = new FuelShotEvent(obj.getDouble("timestamp"), (boolean) obj.get("boiler"),
+                            event = new FuelShotEvent(obj.getDouble("start_time"), (boolean) obj.get("boiler"),
                                     (int) obj.get("fuel_scored"), (int )obj.get("fuel_missed"));
                             break;
                         case FuelPickupEvent.objectiveId:
                             try {
-                                event = new FuelPickupEvent(obj.getDouble("timestamp"),
+                                event = new FuelPickupEvent(obj.getDouble("start_time"),
                                         FuelPickupEvent.FuelPickupType.valueOf((String) obj.get("type")),
                                         (int) obj.get("fuel_amount"));
                             } catch(IllegalArgumentException e) {
@@ -71,7 +81,7 @@ public class MatchData implements Serializable {
                             break;
                         case GearDelivevryEvent.objectiveId:
                             try {
-                                event = new GearDelivevryEvent(obj.getDouble("timestamp"),
+                                event = new GearDelivevryEvent(obj.getDouble("start_time"),
                                         GearDelivevryEvent.Lift.valueOf((String) obj.get("lift")));
                             } catch(IllegalArgumentException e) {
                                 Log.d("GearDeliveryEvent error", e.toString());
@@ -80,7 +90,7 @@ public class MatchData implements Serializable {
                             break;
                         case GearPickupEvent.objectiveId:
                             try {
-                                event = new GearPickupEvent(obj.getDouble("timestamp"),
+                                event = new GearPickupEvent(obj.getDouble("start_time"),
                                         GearPickupEvent.GearPickupType.valueOf((String) obj.get("type")),
                                         (boolean) obj.get("success"));
                             } catch (IllegalArgumentException e) {
@@ -89,7 +99,7 @@ public class MatchData implements Serializable {
                             }
                             break;
                         case DefenseEvent.objectiveId:
-                            event = new DefenseEvent(obj.getDouble("timestamp"), (int) obj.get("defense_skill"));
+                            event = new DefenseEvent(obj.getDouble("start_time"), (int) obj.get("defense_skill"));
                             break;
                         default:
                             event = new Event(DefenseEvent.objectiveId);
@@ -101,7 +111,7 @@ public class MatchData implements Serializable {
                 // postgame
                 postGameObject.climb_time = jsonObject.getDouble("climb_time");
                 postGameObject.climbType = PostGameObject.ClimbType.valueOf(jsonObject.getString("climb_type"));
-                postGameObject.notes = jsonObject.getString("notes");
+                postGameObject.notes = jsonObject.getString("general_notes");
                 postGameObject.time_dead = jsonObject.getDouble("time_dead");
 
             } catch(JSONException e) {
@@ -119,22 +129,53 @@ public class MatchData implements Serializable {
             try {
                 // pregame
                 jsonObject.put("team_number", preGameObject.teamNumber);
-                jsonObject.put("id", preGameObject.matchNumber);
+                jsonObject.put("number", preGameObject.matchNumber);
 
                 // autonomous
-                jsonObject.put("start_fuel", autoScoutingObject.start_fuel);
-                jsonObject.put("boiler_attempted", autoScoutingObject.boiler_attempted);
-                jsonObject.put("num_Fuel_Scored", autoScoutingObject.numFuelScored);
-                jsonObject.put("start_gear", autoScoutingObject.start_gear);
-                jsonObject.put("crossed_baseline", autoScoutingObject.crossedBaseline);
-                jsonObject.put("gear_delivered", autoScoutingObject.gear_delivered);
-                jsonObject.put("open_hopper", autoScoutingObject.open_hopper);
+                JSONArray arrAuto = new JSONArray();
+                {
+                    JSONObject obj = new JSONObject();
+                    obj.put("objective_id", startFuelID);
+                    obj.put("success", autoScoutingObject.start_fuel);
+                    arrAuto.put(obj);
+                }
+                {
+                    JSONObject obj = new JSONObject();
+                    obj.put("objective_id", startGearID);
+                    obj.put("success", autoScoutingObject.start_gear);
+                    arrAuto.put(obj);
+                }
+                {
+                    JSONObject obj = new JSONObject();
+                    obj.put("objective_id", boilerAttemptedID);
+                    obj.put("success", autoScoutingObject.boiler_attempted);
+                    arrAuto.put(obj);
+                }
+                {
+                    JSONObject obj = new JSONObject();
+                    obj.put("objective_id", crossedBaselineID);
+                    obj.put("success", autoScoutingObject.crossedBaseline);
+                    arrAuto.put(obj);
+                }
+                {
+                    JSONObject obj = new JSONObject();
+                    obj.put("objective_id", gearDeliveredID);
+                    obj.put("success", autoScoutingObject.gear_delivered);
+                    arrAuto.put(obj);
+                }
+                {
+                    JSONObject obj = new JSONObject();
+                    obj.put("objective_id", openHopperID);
+                    obj.put("success", autoScoutingObject.open_hopper);
+                    arrAuto.put(obj);
+                }
+                jsonObject.put("autonomies", arrAuto);
 
                 // teleop
                 JSONArray arr = new JSONArray();
                 for(Event event : teleopScoutingObject.getEvents()) {
                     JSONObject obj = new JSONObject();
-                    obj.put("timestamp", event.timestamp);
+                    obj.put("start_time", event.timestamp);
                     if(event instanceof FuelPickupEvent) {
                         FuelPickupEvent e = (FuelPickupEvent) event;
                         obj.put("fuel_amount", e.amount);
@@ -162,13 +203,25 @@ public class MatchData implements Serializable {
                     }
                     arr.put(obj);
                 }
-                jsonObject.put("events", arr);
 
                 // post game
-                jsonObject.put("climb_time", postGameObject.climb_time);
-                jsonObject.put("climb_type", postGameObject.climbType.toString());
-                jsonObject.put("notes", postGameObject.notes);
+                JSONObject obj = new JSONObject();
+                obj.put("objective_id", climbID);
+                obj.put("timestamp", postGameObject.climb_time);
+                // TODO make it so there is an option for no climb
+                if (postGameObject.climbType == PostGameObject.ClimbType.SUCCESS) {
+                    obj.put("success", true);
+                } else if (postGameObject.climbType == PostGameObject.ClimbType.FAIL){
+                    obj.put("success", false);
+                } else {
+                    obj.put("success", null);
+                }
+                arr.put(obj);
+
+                jsonObject.put("general_notes", postGameObject.notes);
                 jsonObject.put("time_dead", postGameObject.time_dead);
+
+                jsonObject.put("events", arr);
 
             } catch (JSONException e) {
                 Log.d("JSON error :( - ", e.toString());

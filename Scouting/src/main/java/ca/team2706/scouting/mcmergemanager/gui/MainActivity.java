@@ -113,6 +113,10 @@ public class MainActivity extends AppCompatActivity
         if(sMatchData == null) sMatchData = new MatchData();
 
         sRepairTimeObjects = FileUtils.getRepairTimeObjects();
+
+        // server stuff for match files
+//        FileUtils.checkLocalFileStructure(this);
+//        FileUtils.syncUnsyncedFile(this);
     }
 
     /**

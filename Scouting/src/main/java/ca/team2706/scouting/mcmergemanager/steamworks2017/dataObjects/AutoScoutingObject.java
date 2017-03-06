@@ -15,7 +15,6 @@ public class AutoScoutingObject implements Serializable {
     public static final int BOILER_NOT_ATTEPMTED  = 0;
     public static final int LOW_BOILER_ATTEPMTED  = 1;
     public static final int HIGH_BOILER_ATTEMPTED = 2;
-    public int numFuelScored; // slider(seek bar) for numFuelScored of fuel delivery
 
     public int open_hopper; // 0 if none, 1+ store how many opened
 
