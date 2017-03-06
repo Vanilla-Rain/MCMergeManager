@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -25,14 +26,11 @@ import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.TeleopScou
 
 public class PostGameClass extends AppCompatActivity {
 
-    public int timeDead;
-    public int timeDefending;
-    public String woo = "Woo";
-
-    private PostGameObject postGameObject = new PostGameObject();
+    private PostGameObject postGameObject;
     private DefenseEvent defenseEvent = new DefenseEvent();
 
-
+    public String notesText;
+    public String noEntry = "Notes...";
     SeekBar deadTimeSeekBar;
     SeekBar defenseSeekBar;
 
@@ -40,6 +38,20 @@ public class PostGameClass extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.steamworks2017_activity_post_game);
+
+
+        // Using this  onClickListener so the text disappears when clicked.
+        final EditText notes = (EditText) findViewById(R.id.postGameNotes);
+        notes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                notes.setText("");
+            }
+        });
+
+
+        postGameObject = (PostGameObject) getIntent().getSerializableExtra("PostGameData");  // climb was set in climbingFragment.
+
         // initiate  views
         deadTimeSeekBar = (SeekBar) findViewById(R.id.timeDeadSeekBar);
         // perform seek bar change listener event used for getting the progress value
@@ -57,7 +69,7 @@ public class PostGameClass extends AppCompatActivity {
             public void onStopTrackingTouch(SeekBar seekBar) {
                 TextView tv = (TextView) findViewById(R.id.time_dead_text_view);
                 tv.setText(progressChangedValue * 5 + " seconds dead");
-                timeDead = progressChangedValue*5;
+                postGameObject.time_dead = progressChangedValue * 5;
             }
         });
 
@@ -71,13 +83,13 @@ public class PostGameClass extends AppCompatActivity {
             }
 
             public void onStartTrackingTouch(SeekBar seekBar) {
-                // Not used by anything, just need to override it in the thing
+                // Not used by anything, just need to override it in the thing.
             }
 
             public void onStopTrackingTouch(SeekBar seekBar) {
                 TextView tv = (TextView) findViewById(R.id.time_defending_text_view);
                 tv.setText(progressChangedValue * 5 + " seconds defending");
-                timeDefending = progressChangedValue*5;
+                postGameObject.time_defending = progressChangedValue * 5;
 
             }
         });
@@ -86,33 +98,36 @@ public class PostGameClass extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                defenseEvent.skill = timeDefending;
-                postGameObject.time_dead = timeDead;
 
+                notesText = notes.getText().toString();
+                if (!notesText.equals(noEntry)) {
+                    postGameObject.notes = notes.getText().toString();
 
-               // MatchData.Match match = new MatchData.Match();
+                }
 
-               // FileUtils.appendToMatchDataFile(match);
-
-                returnHome(view);
+                returnHome();
             }
         });
+
+
+
+        notesText = notes.getText().toString();
+        if (!notesText.equals(noEntry)) {
+            postGameObject.notes = notes.getText().toString();
+
+        }
     }
 
-        public void returnHome(View view ){
+        public void returnHome(){
             Intent thisIntent = getIntent();
 
             PreGameObject pre = (PreGameObject) thisIntent.getSerializableExtra("PreGameData");
             AutoScoutingObject a = (AutoScoutingObject) thisIntent.getSerializableExtra("AutoScoutingData");
             TeleopScoutingObject t  = (TeleopScoutingObject) thisIntent.getSerializableExtra("TeleopScoutingData");
-            PostGameObject post = (PostGameObject) thisIntent.getSerializableExtra("PostGameData");  // climb was set in climbingFragment.
-            post.time_dead = timeDead;
-            post.time_defending = timeDefending;
 
-            //PostGameObject post = new PostGameObject(woo, PostGameObject.ClimbType.SUCCESS, timeDead, timeDefending);
             Intent intent = new Intent(this,PreGameActivity.class);
 
-            MatchData.Match match = new MatchData.Match(pre, post, t, a);
+            MatchData.Match match = new MatchData.Match(pre, postGameObject, t, a);
             FileUtils.checkLocalFileStructure(this);
             FileUtils.appendToMatchDataFile(match);
 
