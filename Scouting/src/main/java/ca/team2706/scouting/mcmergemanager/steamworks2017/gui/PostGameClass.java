@@ -130,7 +130,8 @@ public class PostGameClass extends AppCompatActivity {
             MatchData.Match match = new MatchData.Match(pre, postGameObject, t, a);
 
             FileUtils.checkLocalFileStructure(this);
-//            FileUtils.appendToMatchDataFile(match);
+            // save the file to the synced file, if posting fails save to unsynced as well
+            FileUtils.appendToMatchDataFile(match, FileUtils.FileType.SYNCHED);
             FileUtils.postMatchToServer(this, match.toJson());
 
             startActivity(intent);

@@ -218,44 +218,47 @@ public class FileUtils {
      * Or, in printf / format strings:
      * "%d,%d,%b,%b,{%d;...},{{%d:%d:%.2f:%d};...},{%d;...},{{%d:%d:%.2f:%d};...},%,2f,{{%d;%,2f}:...},{{%.2f;%d}:...},%s,%b,%d"
      */
-    public static void appendToMatchDataFile(MatchData.Match match) {
+    public static void appendToMatchDataFile(MatchData.Match match, FileType fileType) {
 
         //TODO: #76, make sure this actually works
 
-        String outFileName = sLocalEventFilePath +"/"+ App.getContext().getResources().getString(R.string.matchScoutingDataFileName);
+        String outFileName;
+        File outfile;
+        if(fileType == FileType.SYNCHED) {
+            outFileName = sLocalEventFilePath + "/" + App.getContext().getResources().getString(R.string.matchScoutingDataFileName);
 
-        Log.d(App.getContext().getResources().getString(R.string.app_name), "Saving match data to file: "+outFileName);
+            Log.d(App.getContext().getResources().getString(R.string.app_name), "Saving match data to file: " + outFileName);
 
-        File outfile = new File(outFileName);
-        try {
-            // converts match to json, and then uses json.toString method to save in file
-            // create the file path, if it doesn't exist already.
-            (new File(outfile.getParent())).mkdirs();
+            outfile = new File(outFileName);
+            try {
+                // converts match to json, and then uses json.toString method to save in file
+                // create the file path, if it doesn't exist already.
+                (new File(outfile.getParent())).mkdirs();
 
-            BufferedWriter bw = new BufferedWriter(new FileWriter(outfile, true));
-            bw.append( match.toJson().toString() + "\n" );
-            bw.flush();
-            bw.close();
+                BufferedWriter bw = new BufferedWriter(new FileWriter(outfile, true));
+                bw.append(match.toJson().toString() + "\n");
+                bw.flush();
+                bw.close();
 
-            // Force the midea scanner to scan this file so it shows up from a PC over USB.
-            App.getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(outfile)));
-        } catch (IOException e) {
-            Log.d("synced file", e.toString());
-        }
+                // Force the midea scanner to scan this file so it shows up from a PC over USB.
+                App.getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(outfile)));
+            } catch (IOException e) {
+                Log.d("synced file", e.toString());
+            }
+        } else if(fileType == FileType.UNSYNCHED) {
+            outFileName = sLocalEventFilePath + "/" + App.getContext().getResources().getString(R.string.matchScoutingDataFileNameUNSYNCHED);
 
+            Log.d(App.getContext().getResources().getString(R.string.app_name), "Saving match data to file: " + outFileName);
 
-        outFileName = sLocalEventFilePath +"/"+ App.getContext().getResources().getString(R.string.matchScoutingDataFileNameUNSYNCHED);
-
-        Log.d(App.getContext().getResources().getString(R.string.app_name), "Saving match data to file: "+outFileName);
-
-        outfile = new File(outFileName);
-        try {
-            BufferedWriter bw = new BufferedWriter(new FileWriter(outfile, true));
-            bw.append( match.toJson().toString() );
-            bw.flush();
-            bw.close();
-        } catch (IOException e) {
-            Log.d("unsynced file", e.toString());
+            outfile = new File(outFileName);
+            try {
+                BufferedWriter bw = new BufferedWriter(new FileWriter(outfile, true));
+                bw.append(match.toJson().toString() + "\n");
+                bw.flush();
+                bw.close();
+            } catch (IOException e) {
+                Log.d("unsynced file", e.toString());
+            }
         }
 
     }
@@ -709,7 +712,7 @@ public class FileUtils {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.e("VOLLEY error from: " + url + " - ", error.toString());
-                    FileUtils.appendToMatchDataFile(new MatchData.Match(jsonBody));
+                    FileUtils.appendToMatchDataFile(new MatchData.Match(jsonBody), FileType.UNSYNCHED);
                 }
             }) {
                 @Override

@@ -131,13 +131,13 @@ public class MatchData implements Serializable {
                             GearDelivevryEvent.GearDeliveryStatus gearDeliveryStatus1 = null;
                             switch(obj.getInt("position_x")) {
                                 case 0:
-                                    gearDeliveryStatus = GearDelivevryEvent.GearDeliveryStatus.DELIVERED;
+                                    gearDeliveryStatus1 = GearDelivevryEvent.GearDeliveryStatus.DELIVERED;
                                     break;
                                 case 1:
-                                    gearDeliveryStatus = GearDelivevryEvent.GearDeliveryStatus.DROPPED_DELIVERING;
+                                    gearDeliveryStatus1 = GearDelivevryEvent.GearDeliveryStatus.DROPPED_DELIVERING;
                                     break;
                                 case 2:
-                                    gearDeliveryStatus = GearDelivevryEvent.GearDeliveryStatus.DROPPED_MOVING;
+                                    gearDeliveryStatus1 = GearDelivevryEvent.GearDeliveryStatus.DROPPED_MOVING;
                                     break;
                             }
                             event = new GearDelivevryEvent(obj.getDouble("start_time"),
@@ -147,13 +147,13 @@ public class MatchData implements Serializable {
                             GearDelivevryEvent.GearDeliveryStatus gearDeliveryStatus2 = null;
                             switch(obj.getInt("position_x")) {
                                 case 0:
-                                    gearDeliveryStatus = GearDelivevryEvent.GearDeliveryStatus.DELIVERED;
+                                    gearDeliveryStatus2 = GearDelivevryEvent.GearDeliveryStatus.DELIVERED;
                                     break;
                                 case 1:
-                                    gearDeliveryStatus = GearDelivevryEvent.GearDeliveryStatus.DROPPED_DELIVERING;
+                                    gearDeliveryStatus2 = GearDelivevryEvent.GearDeliveryStatus.DROPPED_DELIVERING;
                                     break;
                                 case 2:
-                                    gearDeliveryStatus = GearDelivevryEvent.GearDeliveryStatus.DROPPED_MOVING;
+                                    gearDeliveryStatus2 = GearDelivevryEvent.GearDeliveryStatus.DROPPED_MOVING;
                                     break;
                             }
                             event = new GearDelivevryEvent(obj.getDouble("start_time"), GearDelivevryEvent.Lift.FEEDER_SIDE,
@@ -173,8 +173,12 @@ public class MatchData implements Serializable {
                                 postGameObject.climbType = PostGameObject.ClimbType.SUCCESS;
                             else if (obj.getBoolean("success") == false)
                                 postGameObject.climbType = PostGameObject.ClimbType.FAIL;
-                            else
-                                postGameObject.climbType = PostGameObject.ClimbType.NO_CLIMB;
+                            event = new Event();
+                            break;
+                        case noClimbID:
+                            postGameObject.climbType = PostGameObject.ClimbType.NO_CLIMB;
+                            event = new Event();
+                            break;
                         default:
                             event = new Event(DefenseEvent.objectiveId);
                             break;
@@ -261,8 +265,9 @@ public class MatchData implements Serializable {
                             case WALL:
                                 obj.put("objective_id", wallFuelPickupID);
                                 break;
+                            default:
+                                obj.put("objective_id", groundFuelPickupID);
                         }
-                        obj.put("objective_id", FuelPickupEvent.objectiveId);
                     } else if(event instanceof FuelShotEvent) {
                         FuelShotEvent e = (FuelShotEvent) event;
                         obj.put("position_x", e.numScored);
@@ -281,7 +286,7 @@ public class MatchData implements Serializable {
                                 obj.put("objective_id", wallGearPickupID);
                                 break;
                             default:
-                                obj.put("objective_id", null);
+                                obj.put("objective_id", groundGearPickupID);
                         }
                     } else if(event instanceof GearDelivevryEvent) {
                         GearDelivevryEvent e = (GearDelivevryEvent) event;
@@ -308,6 +313,8 @@ public class MatchData implements Serializable {
                             case DROPPED_MOVING:
                                 obj.put("position_x", 2);
                                 break;
+                            default:
+                                obj.put("position_x", 0);
                         }
                     }
                     arr.put(obj);
@@ -320,15 +327,14 @@ public class MatchData implements Serializable {
                 if (postGameObject.climbType == PostGameObject.ClimbType.SUCCESS) {
                     obj.put("objective_id", climbID);
                     obj.put("success", true);
-                    arr.put(obj);
                 } else if (postGameObject.climbType == PostGameObject.ClimbType.FAIL){
                     obj.put("objective_id", climbID);
                     obj.put("success", false);
-                    arr.put(obj);
                 } else {
                     obj.put("objective_id", noClimbID);
                     obj.put("success", false);
                 }
+                arr.put(obj);
                 jsonObject.put("events", arr);
 
                 jsonObject.put("general_notes", postGameObject.notes);
