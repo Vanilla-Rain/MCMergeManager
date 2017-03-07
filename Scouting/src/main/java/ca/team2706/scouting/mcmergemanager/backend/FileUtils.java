@@ -678,7 +678,7 @@ public class FileUtils {
                 } catch(IOException e) {
                     Log.d("Creating new file err", e.toString());
                 }
-                break;git 
+                break;
             case SYNCHED:
                 file = new File(sLocalEventFilePath + "/" + App.getContext().getResources().getString(R.string.matchScoutingDataFileName));
                 try {

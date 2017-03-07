@@ -679,23 +679,25 @@ public class StatsEngine implements Serializable{
             climbCycle.startTime = 135 - match.postGameObject.climb_time;
             climbCycle.endTime = 135;
 
-            switch (match.postGameObject.climbType) {
-                case SUCCESS:
-                    teamStatsReport.climbSuccesses++;
-                    teamStatsReport.climbAttepmts++;
-                    teamStatsReport.climb_avgTime += match.postGameObject.climb_time;
-                    climbCycle.success = true;
-                    cyclesInThisMatch.cycles.add(climbCycle);
-                    break;
-                case FAIL:
-                    teamStatsReport.climbFailures++;
-                    teamStatsReport.climbAttepmts++;
-                    teamStatsReport.climb_avgTime += match.postGameObject.climb_time;
-                    climbCycle.success = false;
-                    cyclesInThisMatch.cycles.add(climbCycle);
-                    break;
-                case NO_CLIMB:
-                    break;
+            if(match.postGameObject.climbType != null) {
+                switch (match.postGameObject.climbType) {
+                    case SUCCESS:
+                        teamStatsReport.climbSuccesses++;
+                        teamStatsReport.climbAttepmts++;
+                        teamStatsReport.climb_avgTime += match.postGameObject.climb_time;
+                        climbCycle.success = true;
+                        cyclesInThisMatch.cycles.add(climbCycle);
+                        break;
+                    case FAIL:
+                        teamStatsReport.climbFailures++;
+                        teamStatsReport.climbAttepmts++;
+                        teamStatsReport.climb_avgTime += match.postGameObject.climb_time;
+                        climbCycle.success = false;
+                        cyclesInThisMatch.cycles.add(climbCycle);
+                        break;
+                    case NO_CLIMB:
+                        break;
+                }
             }
 
 

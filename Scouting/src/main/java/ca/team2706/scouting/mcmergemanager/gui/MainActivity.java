@@ -400,6 +400,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void onClick(View v) {
+        FileUtils.checkLocalFileStructure(this);
         FileUtils.syncFiles(this);
     }
 

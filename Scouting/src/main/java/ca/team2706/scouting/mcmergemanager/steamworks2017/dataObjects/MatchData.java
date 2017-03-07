@@ -191,7 +191,6 @@ public class MatchData implements Serializable {
 
             } catch(JSONException e) {
                 Log.d("Error parsing json", e.toString());
-                e.printStackTrace();
             } catch(IllegalArgumentException e) {
                 Log.d("enum failure", e.toString());
             }
