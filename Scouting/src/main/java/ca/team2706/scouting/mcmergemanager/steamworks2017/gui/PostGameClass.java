@@ -128,8 +128,10 @@ public class PostGameClass extends AppCompatActivity {
             Intent intent = new Intent(this,PreGameActivity.class);
 
             MatchData.Match match = new MatchData.Match(pre, postGameObject, t, a);
+
             FileUtils.checkLocalFileStructure(this);
-            FileUtils.appendToMatchDataFile(match);
+//            FileUtils.appendToMatchDataFile(match);
+            FileUtils.postMatchToServer(this, match.toJson());
 
             startActivity(intent);
 

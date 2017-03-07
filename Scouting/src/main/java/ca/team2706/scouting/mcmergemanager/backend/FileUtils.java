@@ -687,7 +687,7 @@ public class FileUtils {
         Takes the selected event that you are at
         TODO: get JSOn body uncommentedable
      */
-    public static void postMatchToServer(final Context context, JSONObject jsonBody) {
+    public static void postMatchToServer(final Context context, final JSONObject jsonBody) {
         SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(App.getContext());
 
         final String url = "http://ftp.team2706.ca:3000/competitions/" + SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_event), "<Not Set>") + "/matches.json";
@@ -709,6 +709,7 @@ public class FileUtils {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.e("VOLLEY error from: " + url + " - ", error.toString());
+                    FileUtils.appendToMatchDataFile(new MatchData.Match(jsonBody));
                 }
             }) {
                 @Override
@@ -762,6 +763,7 @@ public class FileUtils {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.e("VOLLEY error from: " + url + " - ", error.toString());
+                    error.printStackTrace();
                 }
             }) {
                 @Override
