@@ -615,7 +615,9 @@ public class FileUtils {
     public static void getMatchesFromServer(final Context context) {
         RequestQueue queue = Volley.newRequestQueue(context);
         SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(App.getContext());
-        final String url = SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_FTPHostname), "<Not Set>") + "/competitions/" + SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_event), "<Not Set>") + "/matches.json";
+        final String url = "http://ftp.team2706.ca:3000/competitions/" + SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_event), "<Not Set>") + "/matches.json";
+
+        System.out.println(url);
 
         // prepare the Request
         JsonArrayRequest getRequest = new JsonArrayRequest(Request.Method.GET, url, null,
@@ -631,6 +633,7 @@ public class FileUtils {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.d("Error.Response", error.toString());
+                        error.printStackTrace();
                     }
                 }
         );
@@ -669,15 +672,19 @@ public class FileUtils {
             case UNSYNCHED:
                 file = new File(sLocalEventFilePath + "/" + App.getContext().getResources().getString(R.string.matchScoutingDataFileNameUNSYNCHED));
                 try {
+                    file.delete();
                     file.createNewFile();
+                    return true;
                 } catch(IOException e) {
                     Log.d("Creating new file err", e.toString());
                 }
-                break;
+                break;git 
             case SYNCHED:
                 file = new File(sLocalEventFilePath + "/" + App.getContext().getResources().getString(R.string.matchScoutingDataFileName));
                 try {
+                    file.delete();
                     file.createNewFile();
+                    return true;
                 } catch(IOException e) {
                     Log.d("Creating new file err", e.toString());
                 }
@@ -791,15 +798,18 @@ public class FileUtils {
         }
     }
 
-    public static void syncUnsyncedFile(Context context) {
+    public static void syncFiles(Context context) {
         MatchData matchData = loadMatchDataFile(FileType.UNSYNCHED);
+        clearTeamDataFile(FileType.UNSYNCHED);
 
         // probably need to throw some sort of error catching magic
-        for (MatchData.Match match : matchData.matches) {
-            postMatchToServer(context, match.toJson());
-        }
+        if(matchData.matches != null)
+            for (MatchData.Match match : matchData.matches) {
+                postMatchToServer(context, match.toJson());
+            }
 
-        clearTeamDataFile(FileType.UNSYNCHED);
+        // delete file on phone and redownload
+        getMatchesFromServer(context);
     }
 
 }
