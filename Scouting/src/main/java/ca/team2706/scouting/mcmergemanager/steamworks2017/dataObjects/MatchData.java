@@ -173,10 +173,12 @@ public class MatchData implements Serializable {
                                 postGameObject.climbType = PostGameObject.ClimbType.SUCCESS;
                             else if (obj.getBoolean("success") == false)
                                 postGameObject.climbType = PostGameObject.ClimbType.FAIL;
+                            postGameObject.climb_time = obj.getDouble("start_time");
                             event = new Event();
                             break;
                         case noClimbID:
                             postGameObject.climbType = PostGameObject.ClimbType.NO_CLIMB;
+                            postGameObject.climb_time = obj.getDouble("start_time");
                             event = new Event();
                             break;
                         default:
@@ -315,6 +317,10 @@ public class MatchData implements Serializable {
                             default:
                                 obj.put("position_x", 0);
                         }
+                    } else {
+                        // somehow an event is getting initialized without anything therefore give
+                        // default objective id, so doesn't fail to post
+                        obj.put("objective_id", DefenseEvent.objectiveId);
                     }
                     arr.put(obj);
                 }
