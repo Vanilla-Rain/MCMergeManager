@@ -77,17 +77,6 @@
             android:layout_centerHorizontal="true"
             />
 
-        <TextView
-            android:text="GEARS"
-            android:layout_width="500dp"
-            android:layout_height="30dp"
-            android:id="@+id/gearsTextView"
-            android:textAppearance="@android:style/TextAppearance.Large"
-            android:layout_alignParentTop="true"
-            android:layout_alignStart="@+id/textViewGameTime"
-            android:layout_marginStart="8dp"
-            android:textColor="@android:color/holo_purple"/>
-
         <Button
             android:text="STARTED CLIMBING"
             android:id="@+id/startedClimbingButton"
@@ -107,15 +96,6 @@
             android:textColor="@android:color/holo_purple"
             android:layout_below="@+id/gearImageView"
             android:layout_alignStart="@+id/gearPickupButton" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@mipmap/ic_fuel"
-            android:layout_above="@+id/ballPickupButton"
-            android:layout_alignStart="@+id/ballShootingButton"
-            android:layout_marginStart="10dp"
-            android:id="@+id/imageView3" />
 
         <TextView
             android:text="0"
@@ -152,8 +132,26 @@
             android:id="@+id/ballTextView"
             android:textAppearance="@android:style/TextAppearance.Large"
             android:textColor="@android:color/holo_purple"
-            android:layout_alignTop="@+id/gearFailButton"
-            android:layout_alignStart="@+id/gearsTextView" />
+            android:layout_alignBottom="@+id/numberBallsHolding"
+            android:layout_alignStart="@+id/ropeClimbingTextview" />
+
+        <TextView
+            android:text="GEARS"
+            android:layout_width="500dp"
+            android:layout_height="30dp"
+            android:id="@+id/gearsTextView"
+            android:textAppearance="@android:style/TextAppearance.Large"
+            android:textColor="@android:color/holo_purple"
+            android:layout_alignParentTop="true"
+            android:layout_alignStart="@+id/ballTextView" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_fuel"
+            android:id="@+id/imageView3"
+            android:layout_below="@+id/gearDeliveryButton"
+            android:layout_toEndOf="@+id/startedClimbingButton" />
 
     </RelativeLayout>
 </ScrollView>

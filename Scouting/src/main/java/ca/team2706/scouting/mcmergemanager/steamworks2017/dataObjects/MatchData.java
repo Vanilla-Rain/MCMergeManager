@@ -72,7 +72,8 @@ public class MatchData implements Serializable {
                         case GearDelivevryEvent.objectiveId:
                             try {
                                 event = new GearDelivevryEvent(obj.getDouble("timestamp"),
-                                        GearDelivevryEvent.Lift.valueOf((String) obj.get("lift")));
+                                        GearDelivevryEvent.Lift.valueOf((String) obj.get("lift")),
+                                        GearDelivevryEvent.GearDeliveryStatus.valueOf((String) obj.get("deliveryStatus")));
                             } catch(IllegalArgumentException e) {
                                 Log.d("GearDeliveryEvent error", e.toString());
                                 event = new Event(GearDelivevryEvent.objectiveId);
@@ -81,8 +82,7 @@ public class MatchData implements Serializable {
                         case GearPickupEvent.objectiveId:
                             try {
                                 event = new GearPickupEvent(obj.getDouble("timestamp"),
-                                        GearPickupEvent.GearPickupType.valueOf((String) obj.get("type")),
-                                        (boolean) obj.get("success"));
+                                        GearPickupEvent.GearPickupType.valueOf((String) obj.get("type")));
                             } catch (IllegalArgumentException e) {
                                 Log.d("GearPickupError", e.toString());
                                 event = new Event(GearPickupEvent.objectiveId);
@@ -100,6 +100,10 @@ public class MatchData implements Serializable {
 
                 // postgame
                 postGameObject.climb_time = jsonObject.getDouble("climb_time");
+
+//DEBUG: REMOVE ME
+String s = jsonObject.getString("climb_type");
+
                 postGameObject.climbType = PostGameObject.ClimbType.valueOf(jsonObject.getString("climb_type"));
                 postGameObject.notes = jsonObject.getString("notes");
                 postGameObject.time_dead = jsonObject.getDouble("time_dead");
@@ -109,7 +113,6 @@ public class MatchData implements Serializable {
             } catch(IllegalArgumentException e) {
                 Log.d("enum failure", e.toString());
             }
-
         }
 
 
@@ -149,10 +152,10 @@ public class MatchData implements Serializable {
                     } else if(event instanceof GearPickupEvent) {
                         GearPickupEvent e = (GearPickupEvent) event;
                         obj.put("type", e.pickupType.toString());
-                        obj.put("success", e.successful);
                         obj.put("objective_id", GearPickupEvent.objectiveId);
                     } else if(event instanceof GearDelivevryEvent) {
                         GearDelivevryEvent e = (GearDelivevryEvent) event;
+                        obj.put("deliveryStatus", e.deliveryStatus.toString());
                         obj.put("lift", e.lift.toString());
                         obj.put("objective_id", GearDelivevryEvent.objectiveId);
                     } else if(event instanceof DefenseEvent) {
