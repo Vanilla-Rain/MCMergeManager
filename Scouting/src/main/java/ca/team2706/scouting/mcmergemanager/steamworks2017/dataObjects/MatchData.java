@@ -11,6 +11,26 @@ import java.util.ArrayList;
 
 public class MatchData implements Serializable {
 
+    // objective ids
+    public static final int startFuelID = 25;
+    public static final int startGearID = 26;
+    public static final int crossedBaselineID = 27;
+    public static final int gearDeliveredID = 28;
+    public static final int boilerAttemptedID = 29;
+    public static final int openHopperID = 31;
+    public static final int climbID = 44;
+    public static final int highBoilerID = 33;
+    public static final int lowBoilerID = 34;
+    public static final int groundFuelPickupID = 35;
+    public static final int wallFuelPickupID = 36;
+    public static final int hopperFuelPickupID = 37;
+    public static final int groundGearPickupID = 38;
+    public static final int wallGearPickupID = 39;
+    public static final int gearDelivBoilerID = 40;
+    public static final int gearDelivFeederID = 41;
+    public static final int gearDelivCenterID = 42;
+    public static final int noClimbID = 43;
+
 
     public static class Match implements Serializable {
 
@@ -38,74 +58,145 @@ public class MatchData implements Serializable {
             try {
                 // pregame
                 preGameObject.teamNumber = jsonObject.getInt("team_number");
-                preGameObject.matchNumber = jsonObject.getInt("id");
+                preGameObject.matchNumber = jsonObject.getInt("number");
 
                 // autonomous
-                autoScoutingObject.crossedBaseline = jsonObject.getBoolean("crossed_baseline");
-                autoScoutingObject.start_fuel = jsonObject.getBoolean("start_fuel");
-                autoScoutingObject.start_gear = jsonObject.getBoolean("start_gear");
-                autoScoutingObject.boiler_attempted = jsonObject.getInt("boiler_attempted");
-                autoScoutingObject.gear_delivered = jsonObject.getInt("gear_delivered");
-                autoScoutingObject.numFuelScored = jsonObject.getInt("num_Fuel_Scored");
-                autoScoutingObject.open_hopper = jsonObject.getInt("open_hopper");
-
+                JSONArray autonomies = (JSONArray)jsonObject.get("autonomies");
+                for(int i = 0; i < autonomies.length();i++) {
+                    JSONObject obj = (JSONObject) autonomies.get(i);
+                    switch(obj.getInt("objective_id")) {
+                        case startFuelID:
+                            autoScoutingObject.start_fuel = obj.getBoolean("success");
+                            break;
+                        case startGearID:
+                            autoScoutingObject.start_gear = obj.getBoolean("success");
+                            break;
+                        case crossedBaselineID:
+                            autoScoutingObject.crossedBaseline = obj.getBoolean("success");
+                            break;
+                        case openHopperID:
+                            autoScoutingObject.open_hopper = obj.getInt("duration");
+                            break;
+                        case gearDeliveredID:
+                            autoScoutingObject.gear_delivered = obj.getInt("duration");
+                            break;
+                        case boilerAttemptedID:
+                            autoScoutingObject.boiler_attempted = obj.getInt("duration");
+                            break;
+                    }
+                }
                 // teleop
-                JSONArray arr = (JSONArray) jsonObject.get("events");
-                for(int i = 0; i < arr.length(); i++) {
-                    JSONObject obj = new JSONObject(arr.get(i).toString());
+                JSONArray arrEve = (JSONArray) jsonObject.get("events");
+                for(int i = 0; i < arrEve.length(); i++) {
+                    JSONObject obj = new JSONObject(arrEve.get(i).toString());
                     Event event;
-                    switch((int) obj.get("objective_id")) {
-                        case FuelShotEvent.objectiveId:
-                            event = new FuelShotEvent(obj.getDouble("timestamp"), (boolean) obj.get("boiler"),
-                                    (int) obj.get("fuel_scored"), (int )obj.get("fuel_missed"));
+                    switch ((int) obj.get("objective_id")) {
+                        case highBoilerID:
+                            event = new FuelShotEvent(obj.getDouble("start_time"), true,
+                                    (int) obj.get("position_x"), (int) obj.get("position_y"));
+                            teleopScoutingObject.add(event);
                             break;
-                        case FuelPickupEvent.objectiveId:
-                            try {
-                                event = new FuelPickupEvent(obj.getDouble("timestamp"),
-                                        FuelPickupEvent.FuelPickupType.valueOf((String) obj.get("type")),
-                                        (int) obj.get("fuel_amount"));
-                            } catch(IllegalArgumentException e) {
-                                Log.d("FuelPickupType error", e.toString());
-                                event = new Event(FuelPickupEvent.objectiveId); // should I change this to something else, such as a default pickup type?
-                            }
+                        case lowBoilerID:
+                            event = new FuelShotEvent(obj.getDouble("start_time"), false,
+                                    (int) obj.get("position_x"), (int) obj.get("position_y"));
+                            teleopScoutingObject.add(event);
                             break;
-                        case GearDelivevryEvent.objectiveId:
-                            try {
-                                event = new GearDelivevryEvent(obj.getDouble("timestamp"),
-                                        GearDelivevryEvent.Lift.valueOf((String) obj.get("lift")),
-                                        GearDelivevryEvent.GearDeliveryStatus.valueOf((String) obj.get("deliveryStatus")));
-                            } catch(IllegalArgumentException e) {
-                                Log.d("GearDeliveryEvent error", e.toString());
-                                event = new Event(GearDelivevryEvent.objectiveId);
-                            }
+                        case groundFuelPickupID:
+                            event = new FuelPickupEvent(obj.getDouble("start_time"), FuelPickupEvent.FuelPickupType.GROUND,
+                                    (int) obj.get("position_x"));
+                            teleopScoutingObject.add(event);
                             break;
-                        case GearPickupEvent.objectiveId:
-                            try {
-                                event = new GearPickupEvent(obj.getDouble("timestamp"),
-                                        GearPickupEvent.GearPickupType.valueOf((String) obj.get("type")));
-                            } catch (IllegalArgumentException e) {
-                                Log.d("GearPickupError", e.toString());
-                                event = new Event(GearPickupEvent.objectiveId);
+                        case hopperFuelPickupID:
+                            event = new FuelPickupEvent(obj.getDouble("start_time"), FuelPickupEvent.FuelPickupType.HOPPER,
+                                    (int) obj.get("position_x"));
+                            teleopScoutingObject.add(event);
+                            break;
+                        case wallFuelPickupID:
+                            event = new FuelPickupEvent(obj.getDouble("start_time"), FuelPickupEvent.FuelPickupType.WALL,
+                                    (int) obj.get("position_x"));
+                            teleopScoutingObject.add(event);
+                            break;
+                        case gearDelivBoilerID:
+                            GearDelivevryEvent.GearDeliveryStatus gearDeliveryStatus = null;
+                            switch(obj.getInt("position_x")) {
+                                case 0:
+                                    gearDeliveryStatus = GearDelivevryEvent.GearDeliveryStatus.DELIVERED;
+                                    break;
+                                case 1:
+                                    gearDeliveryStatus = GearDelivevryEvent.GearDeliveryStatus.DROPPED_DELIVERING;
+                                    break;
+                                case 2:
+                                    gearDeliveryStatus = GearDelivevryEvent.GearDeliveryStatus.DROPPED_MOVING;
+                                    break;
                             }
+                            event = new GearDelivevryEvent(obj.getDouble("start_time"), GearDelivevryEvent.Lift.BOILER_SIDE,
+                                    gearDeliveryStatus);
+                            teleopScoutingObject.add(event);
+                            break;
+                        case gearDelivCenterID:
+                            GearDelivevryEvent.GearDeliveryStatus gearDeliveryStatus1 = null;
+                            switch(obj.getInt("position_x")) {
+                                case 0:
+                                    gearDeliveryStatus1 = GearDelivevryEvent.GearDeliveryStatus.DELIVERED;
+                                    break;
+                                case 1:
+                                    gearDeliveryStatus1 = GearDelivevryEvent.GearDeliveryStatus.DROPPED_DELIVERING;
+                                    break;
+                                case 2:
+                                    gearDeliveryStatus1 = GearDelivevryEvent.GearDeliveryStatus.DROPPED_MOVING;
+                                    break;
+                            }
+                            event = new GearDelivevryEvent(obj.getDouble("start_time"),
+                                    GearDelivevryEvent.Lift.CENTRE, gearDeliveryStatus1);
+                            teleopScoutingObject.add(event);
+                            break;
+                        case gearDelivFeederID:
+                            GearDelivevryEvent.GearDeliveryStatus gearDeliveryStatus2 = null;
+                            switch(obj.getInt("position_x")) {
+                                case 0:
+                                    gearDeliveryStatus2 = GearDelivevryEvent.GearDeliveryStatus.DELIVERED;
+                                    break;
+                                case 1:
+                                    gearDeliveryStatus2 = GearDelivevryEvent.GearDeliveryStatus.DROPPED_DELIVERING;
+                                    break;
+                                case 2:
+                                    gearDeliveryStatus2 = GearDelivevryEvent.GearDeliveryStatus.DROPPED_MOVING;
+                                    break;
+                            }
+                            event = new GearDelivevryEvent(obj.getDouble("start_time"), GearDelivevryEvent.Lift.FEEDER_SIDE,
+                                    gearDeliveryStatus2);
+                            teleopScoutingObject.add(event);
+                            break;
+                        case groundGearPickupID:
+                            event = new GearPickupEvent(obj.getDouble("start_time"), GearPickupEvent.GearPickupType.GROUND);
+                            teleopScoutingObject.add(event);
+                            break;
+                        case wallGearPickupID:
+                            event = new GearPickupEvent(obj.getDouble("start_time"), GearPickupEvent.GearPickupType.WALL);
+                            teleopScoutingObject.add(event);
                             break;
                         case DefenseEvent.objectiveId:
-                            event = new DefenseEvent(obj.getDouble("timestamp"), (int) obj.get("defense_skill"));
+                            event = new DefenseEvent(obj.getDouble("start_time"), (int) obj.get("defense_skill"));
+                            teleopScoutingObject.add(event);
+                            break;
+                        case climbID:
+                            if (obj.getBoolean("success") == true)
+                                postGameObject.climbType = PostGameObject.ClimbType.SUCCESS;
+                            else if (obj.getBoolean("success") == false)
+                                postGameObject.climbType = PostGameObject.ClimbType.FAIL;
+                            postGameObject.climb_time = obj.getDouble("start_time");
+                            break;
+                        case noClimbID:
+                            postGameObject.climbType = PostGameObject.ClimbType.NO_CLIMB;
+                            postGameObject.climb_time = obj.getDouble("start_time");
                             break;
                         default:
                             event = new Event(DefenseEvent.objectiveId);
                             break;
-                    }
-                    teleopScoutingObject.add(event);
+                        }
                 }
 
-                // postgame
-                postGameObject.climb_time = jsonObject.getDouble("climb_time");
-
-//DEBUG: REMOVE ME
-String s = jsonObject.getString("climb_type");
-
-                postGameObject.climbType = PostGameObject.ClimbType.valueOf(jsonObject.getString("climb_type"));
-                postGameObject.notes = jsonObject.getString("notes");
+                postGameObject.notes = jsonObject.getString("general_notes");
                 postGameObject.time_dead = jsonObject.getDouble("time_dead");
 
             } catch(JSONException e) {
@@ -122,55 +213,144 @@ String s = jsonObject.getString("climb_type");
             try {
                 // pregame
                 jsonObject.put("team_number", preGameObject.teamNumber);
-                jsonObject.put("id", preGameObject.matchNumber);
+                jsonObject.put("number", preGameObject.matchNumber);
 
                 // autonomous
-                jsonObject.put("start_fuel", autoScoutingObject.start_fuel);
-                jsonObject.put("boiler_attempted", autoScoutingObject.boiler_attempted);
-                jsonObject.put("num_Fuel_Scored", autoScoutingObject.numFuelScored);
-                jsonObject.put("start_gear", autoScoutingObject.start_gear);
-                jsonObject.put("crossed_baseline", autoScoutingObject.crossedBaseline);
-                jsonObject.put("gear_delivered", autoScoutingObject.gear_delivered);
-                jsonObject.put("open_hopper", autoScoutingObject.open_hopper);
+                JSONArray arrAuto = new JSONArray();
+                {
+                    JSONObject obj = new JSONObject();
+                    obj.put("objective_id", crossedBaselineID);
+                    obj.put("success", autoScoutingObject.crossedBaseline);
+                    arrAuto.put(obj);
+                }
+                {
+                    JSONObject obj = new JSONObject();
+                    obj.put("objective_id", startFuelID);
+                    obj.put("success", autoScoutingObject.start_fuel);
+                    arrAuto.put(obj);
+                }
+                {
+                    JSONObject obj = new JSONObject();
+                    obj.put("objective_id", startGearID);
+                    obj.put("success", autoScoutingObject.start_gear);
+                    arrAuto.put(obj);
+                }
+                {
+                    JSONObject obj = new JSONObject();
+                    obj.put("objective_id", boilerAttemptedID);
+                    obj.put("duration", autoScoutingObject.boiler_attempted);
+                    arrAuto.put(obj);
+                }
+                {
+                    JSONObject obj = new JSONObject();
+                    obj.put("objective_id", gearDeliveredID);
+                    obj.put("duration", autoScoutingObject.gear_delivered);
+                    arrAuto.put(obj);
+                }
+                {
+                    JSONObject obj = new JSONObject();
+                    obj.put("objective_id", openHopperID);
+                    // TODO
+                    obj.put("duration", autoScoutingObject.open_hopper);
+                    arrAuto.put(obj);
+                }
+                jsonObject.put("autonomies", arrAuto);
 
                 // teleop
                 JSONArray arr = new JSONArray();
                 for(Event event : teleopScoutingObject.getEvents()) {
                     JSONObject obj = new JSONObject();
-                    obj.put("timestamp", event.timestamp);
+                    obj.put("start_time", event.timestamp);
                     if(event instanceof FuelPickupEvent) {
                         FuelPickupEvent e = (FuelPickupEvent) event;
-                        obj.put("fuel_amount", e.amount);
-                        obj.put("type", e.pickupType.toString());
-                        obj.put("objective_id", FuelPickupEvent.objectiveId);
+                        obj.put("position_x", e.amount);
+                        switch(e.pickupType) {
+                            case GROUND:
+                                obj.put("objective_id", groundFuelPickupID);
+                                break;
+                            case HOPPER:
+                                obj.put("objective_id", hopperFuelPickupID);
+                                break;
+                            case WALL:
+                                obj.put("objective_id", wallFuelPickupID);
+                                break;
+                            default:
+                                obj.put("objective_id", groundFuelPickupID);
+                        }
                     } else if(event instanceof FuelShotEvent) {
                         FuelShotEvent e = (FuelShotEvent) event;
-                        obj.put("fuel_scored", e.numMissed);
-                        obj.put("fuel_missed", e.numScored);
-                        obj.put("boiler", e.boiler);
-                        obj.put("objective_id", FuelShotEvent.objectiveId);
+                        obj.put("position_x", e.numScored);
+                        obj.put("position_y", e.numMissed);
+                        if(e.boiler)
+                            obj.put("objective_id", highBoilerID);
+                        else
+                            obj.put("objective_id", lowBoilerID);
                     } else if(event instanceof GearPickupEvent) {
                         GearPickupEvent e = (GearPickupEvent) event;
-                        obj.put("type", e.pickupType.toString());
-                        obj.put("objective_id", GearPickupEvent.objectiveId);
+                        switch(e.pickupType) {
+                            case GROUND:
+                                obj.put("objective_id", groundGearPickupID);
+                                break;
+                            case WALL:
+                                obj.put("objective_id", wallGearPickupID);
+                                break;
+                            default:
+                                obj.put("objective_id", groundGearPickupID);
+                        }
                     } else if(event instanceof GearDelivevryEvent) {
                         GearDelivevryEvent e = (GearDelivevryEvent) event;
-                        obj.put("deliveryStatus", e.deliveryStatus.toString());
-                        obj.put("lift", e.lift.toString());
-                        obj.put("objective_id", GearDelivevryEvent.objectiveId);
-                    } else if(event instanceof DefenseEvent) {
-                        DefenseEvent e = (DefenseEvent) event;
-                        obj.put("defense_skill", e.skill);
-                        obj.put("objective_id", DefenseEvent.objectiveId);
+                        switch(e.lift) {
+                            case BOILER_SIDE:
+                                obj.put("objective_id", gearDelivBoilerID);
+                                break;
+                            case CENTRE:
+                                obj.put("objective_id", gearDelivCenterID);
+                                break;
+                            case FEEDER_SIDE:
+                                obj.put("objective_id", gearDelivFeederID);
+                                break;
+                            default:
+                                obj.put("objective_id", gearDeliveredID);
+                        }
+                        switch(e.deliveryStatus) {
+                            case DELIVERED:
+                                obj.put("position_x", 0);
+                                break;
+                            case DROPPED_DELIVERING:
+                                obj.put("position_x", 1);
+                                break;
+                            case DROPPED_MOVING:
+                                obj.put("position_x", 2);
+                                break;
+                            default:
+                                obj.put("position_x", 0);
+                        }
+                    } else {
+                        // somehow an event is getting initialized without anything therefore give
+                        // default objective id, so doesn't fail to post
+                        obj.put("objective_id", 0);
                     }
                     arr.put(obj);
                 }
-                jsonObject.put("events", arr);
 
                 // post game
-                jsonObject.put("climb_time", postGameObject.climb_time);
-                jsonObject.put("climb_type", postGameObject.climbType.toString());
-                jsonObject.put("notes", postGameObject.notes);
+                JSONObject obj = new JSONObject();
+                obj.put("start_time", postGameObject.climb_time);
+                // TODO make it so there is an option for no climb
+                if (postGameObject.climbType == PostGameObject.ClimbType.SUCCESS) {
+                    obj.put("objective_id", climbID);
+                    obj.put("success", true);
+                } else if (postGameObject.climbType == PostGameObject.ClimbType.FAIL){
+                    obj.put("objective_id", climbID);
+                    obj.put("success", false);
+                } else {
+                    obj.put("objective_id", noClimbID);
+                    obj.put("success", false);
+                }
+                arr.put(obj);
+                jsonObject.put("events", arr);
+
+                jsonObject.put("general_notes", postGameObject.notes);
                 jsonObject.put("time_dead", postGameObject.time_dead);
 
             } catch (JSONException e) {
@@ -179,170 +359,7 @@ String s = jsonObject.getString("climb_type");
 
             return jsonObject;
         }
-//
-//    @Override
-//    public String toString() {
-//        StringBuilder sb = new StringBuilder();
-//
-//        // pre game
-//        sb.append( String.format("%d,%d,", preGameObject.matchNumber, preGameObject.teamNumber));
-//
-//        // autonomous mode
-//        sb.append( String.format("%b,%b,%d,%b,%d,%d,", autoScoutingObject.start_gear, autoScoutingObject.start_fuel,
-//                autoScoutingObject.gear_delivered, autoScoutingObject.boiler, autoScoutingObject.numScored,
-//                autoScoutingObject.open_hopper));
-//
-//        // teleop mode
-//
-//        // fuel
-//        //cycle time
-//        sb.append(teleopScoutingObject.fuelCycleTime + ",");
-//
-//        // fuel-pickup cycles
-//        sb.append("{");
-//        for(int i = 0; i < teleopScoutingObject.fuelPickups.size(); i++) {
-//            FuelPickupEvent fuelPickup = teleopScoutingObject.fuelPickups.get(i);
-//
-//            sb.append(String.format("{%.2f;%.2f;%d;%d}", fuelPickup.timestamp, fuelPickup.endTime,
-//                    fuelPickup.pickupType, fuelPickup.amount));
-//
-//            if(i < teleopScoutingObject.fuelPickups.size())
-//                sb.append(":");
-//        }
-//        sb.append("},");
-//
-//        // fuel-shot cycles
-//        sb.append("{");
-//        for(int i = 0; i < teleopScoutingObject.fuelShots.size(); i++) {
-//            FuelShotEvent fuelShot = teleopScoutingObject.fuelShots.get(i);
-//
-//            sb.append(String.format("{%.2f;%.2f;%b;%d;%d;%d}", fuelShot.timestamp, fuelShot.endTime,
-//                    fuelShot.boiler, fuelShot.accuracy, fuelShot.x, fuelShot.y));
-//
-//            if(i < teleopScoutingObject.fuelShots.size())
-//                sb.append(":");
-//        }
-//        sb.append("},");
-//
-//
-//
-//        // gears
-//        // cycle time
-//        sb.append(teleopScoutingObject.gearCycleTime + ",");
-//
-//        // gear-pickup cycles
-//        sb.append("{");
-//        for(int i = 0; i < teleopScoutingObject.gearPickups.size(); i++) {
-//            GearPickupEvent gearPickup = teleopScoutingObject.gearPickups.get(i);
-//
-//            sb.append(String.format("{%.2f;%.2f;%b;%b}", gearPickup.timestamp, gearPickup.endTime, gearPickup.pickupLocation, gearPickup.successful));
-//
-//            if(i < teleopScoutingObject.gearPickups.size())
-//                sb.append(":");
-//        }
-//        sb.append("},");
-//
-//        // gear-delivery cycles
-//        sb.append("{");
-//        for(int i = 0; i < teleopScoutingObject.gearDelivevries.size(); i++) {
-//            GearDelivevryEvent gearDelivevry = teleopScoutingObject.gearDelivevries.get(i);
-//
-//            sb.append(String.format("{%.2f;%.2f;%d;%d}", gearDelivevry.timestamp, gearDelivevry.endTime, gearDelivevry.deliveryStatus, gearDelivevry.lift));
-//
-//            if(i < teleopScoutingObject.gearDelivevries.size())
-//                sb.append(":");
-//        }
-//        sb.append("},");
-//
-//
-//        // post game stuff
-//        sb.append(String.format("%b,%d,%d,", postGameObject.climb, postGameObject.climb_time, postGameObject.time_dead));
-//
-//        // since commas, semi-colons, braces, and <enter> are all special characters for the text file, let's rip those out just to be safe.
-//        String cleanedNotes = postGameObject.notes.replaceAll(",","").replaceAll(";","").replaceAll("\\{","")
-//                .replaceAll("\\}","").replaceAll("\n","");
-//        sb.append(cleanedNotes+",");
-//
-//        // new line for next match
-//        sb.append("\n");
-//
-//        return sb.toString();
-//    }
-//
-//        public Match(String str) {
-//        preGameObject = new PreGameObject();
-//        autoScoutingObject = new AutoScoutingObject();
-//        teleopScoutingObject = new TeleopScoutingObject();
-//        postGameObject = new PostGameObject();
-//
-//        String[] tokens = str.split(",");
-//
-//        // pre-game
-//        preGameObject.matchNumber = Integer.valueOf(tokens[0]);
-//        preGameObject.teamNumber = Integer.valueOf(tokens[1]);
-//
-//        // automode
-//        autoScoutingObject.start_gear = Boolean.valueOf(tokens[2]);
-//        autoScoutingObject.start_fuel = Boolean.valueOf(tokens[3]);
-//        autoScoutingObject.gear_delivered = Integer.valueOf(tokens[4]);
-//        autoScoutingObject.boiler = Boolean.valueOf(tokens[5]);
-//        autoScoutingObject.numFuelScored = Integer.valueOf(tokens[6]);
-//        autoScoutingObject.open_hopper = Integer.valueOf(tokens[7]);
-//
-//        // teleopmode
-//
-//        // fuelpickup
-//        teleopScoutingObject.fuelCycleTime = Double.valueOf(tokens[8]);
-//        if(!tokens[9].equals("")) {
-//            String[] fuelPickups = tokens[9].split(":");
-//            for(String s : fuelPickups) {
-//                String[] fuelPickupTokens = s.split(";");
-//                teleopScoutingObject.fuelPickups.add(new FuelPickupEvent(Double.valueOf(fuelPickupTokens[0]),
-//                        Double.valueOf(fuelPickupTokens[1]), Integer.valueOf(fuelPickupTokens[2]),
-//                        Integer.valueOf(fuelPickupTokens[3])));
-//            }
-//        }
-//        //fuelshot
-//        if(!tokens[10].equals("")) {
-//            String[] fuelShots = tokens[10].split(":");
-//            for(String s : fuelShots) {
-//                String[] fuelPickupTokens = s.split(";");
-//                teleopScoutingObject.fuelShots.add(new FuelShotEvent(Double.valueOf(fuelPickupTokens[0]),
-//                        Double.valueOf(fuelPickupTokens[1]), Boolean.valueOf(fuelPickupTokens[2]),
-//                        Integer.valueOf(fuelPickupTokens[3]), Integer.valueOf(fuelPickupTokens[4]),
-//                        Integer.valueOf(fuelPickupTokens[5])));
-//            }
-//        }
-//
-//        // gears-pickups
-//        teleopScoutingObject.gearCycleTime = Double.valueOf(tokens[11]);
-//        if(!tokens[12].equals("")) {
-//            String[] gearPickups = tokens[12].split(":");
-//            for (String s : gearPickups) {
-//                String[] gearPickupTokens = s.split(";");
-//                teleopScoutingObject.gearPickups.add(new GearPickupEvent(Double.valueOf(gearPickupTokens[0]),
-//                        Double.valueOf(gearPickupTokens[1]), Boolean.valueOf(gearPickupTokens[2]),
-//                        Boolean.valueOf(gearPickupTokens[3])));
-//            }
-//        }
-//        // gear delivery
-//        if(!tokens[13].equals("")) {
-//            String[] gearDelivery = tokens[13].split(":");
-//            for (String s : gearDelivery) {
-//                String[] gearDeliveryTokens = s.split(";");
-//                teleopScoutingObject.gearDelivevries.add(new GearDelivevryEvent(Double.valueOf(gearDeliveryTokens[0]),
-//                        Double.valueOf(gearDeliveryTokens[1]), Integer.valueOf(gearDeliveryTokens[2]),
-//                        Integer.valueOf(gearDeliveryTokens[3])));
-//            }
-//        }
-//
-//        // post game
-//        postGameObject.climb = Integer.valueOf(tokens[14]);
-//        postGameObject.climb_time = Double.valueOf(tokens[15]);
-//        postGameObject.time_dead = Integer.valueOf(tokens[16]);
-//
-//        postGameObject.notes = tokens[17];
-//        }
+
 
     }
 

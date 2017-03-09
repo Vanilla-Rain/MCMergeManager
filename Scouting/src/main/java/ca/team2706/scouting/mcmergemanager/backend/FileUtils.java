@@ -218,44 +218,47 @@ public class FileUtils {
      * Or, in printf / format strings:
      * "%d,%d,%b,%b,{%d;...},{{%d:%d:%.2f:%d};...},{%d;...},{{%d:%d:%.2f:%d};...},%,2f,{{%d;%,2f}:...},{{%.2f;%d}:...},%s,%b,%d"
      */
-    public static void appendToMatchDataFile(MatchData.Match match) {
+    public static void appendToMatchDataFile(MatchData.Match match, FileType fileType) {
 
         //TODO: #76, make sure this actually works
 
-        String outFileName = sLocalEventFilePath +"/"+ App.getContext().getResources().getString(R.string.matchScoutingDataFileName);
+        String outFileName;
+        File outfile;
+        if(fileType == FileType.SYNCHED) {
+            outFileName = sLocalEventFilePath + "/" + App.getContext().getResources().getString(R.string.matchScoutingDataFileName);
 
-        Log.d(App.getContext().getResources().getString(R.string.app_name), "Saving match data to file: "+outFileName);
+            Log.d(App.getContext().getResources().getString(R.string.app_name), "Saving match data to file: " + outFileName);
 
-        File outfile = new File(outFileName);
-        try {
-            // converts match to json, and then uses json.toString method to save in file
-            // create the file path, if it doesn't exist already.
-            (new File(outfile.getParent())).mkdirs();
+            outfile = new File(outFileName);
+            try {
+                // converts match to json, and then uses json.toString method to save in file
+                // create the file path, if it doesn't exist already.
+                (new File(outfile.getParent())).mkdirs();
 
-            BufferedWriter bw = new BufferedWriter(new FileWriter(outfile, true));
-            bw.append( match.toJson().toString() + "\n" );
-            bw.flush();
-            bw.close();
+                BufferedWriter bw = new BufferedWriter(new FileWriter(outfile, true));
+                bw.append(match.toJson().toString() + "\n");
+                bw.flush();
+                bw.close();
 
-            // Force the midea scanner to scan this file so it shows up from a PC over USB.
-            App.getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(outfile)));
-        } catch (IOException e) {
-            Log.d("synced file", e.toString());
-        }
+                // Force the midea scanner to scan this file so it shows up from a PC over USB.
+                App.getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(outfile)));
+            } catch (IOException e) {
+                Log.d("synced file", e.toString());
+            }
+        } else if(fileType == FileType.UNSYNCHED) {
+            outFileName = sLocalEventFilePath + "/" + App.getContext().getResources().getString(R.string.matchScoutingDataFileNameUNSYNCHED);
 
+            Log.d(App.getContext().getResources().getString(R.string.app_name), "Saving match data to file: " + outFileName);
 
-        outFileName = sLocalEventFilePath +"/"+ App.getContext().getResources().getString(R.string.matchScoutingDataFileNameUNSYNCHED);
-
-        Log.d(App.getContext().getResources().getString(R.string.app_name), "Saving match data to file: "+outFileName);
-
-        outfile = new File(outFileName);
-        try {
-            BufferedWriter bw = new BufferedWriter(new FileWriter(outfile, true));
-            bw.append( match.toJson().toString() );
-            bw.flush();
-            bw.close();
-        } catch (IOException e) {
-            Log.d("unsynced file", e.toString());
+            outfile = new File(outFileName);
+            try {
+                BufferedWriter bw = new BufferedWriter(new FileWriter(outfile, true));
+                bw.append(match.toJson().toString() + "\n");
+                bw.flush();
+                bw.close();
+            } catch (IOException e) {
+                Log.d("unsynced file", e.toString());
+            }
         }
 
     }
@@ -612,7 +615,9 @@ public class FileUtils {
     public static void getMatchesFromServer(final Context context) {
         RequestQueue queue = Volley.newRequestQueue(context);
         SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(App.getContext());
-        final String url = SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_FTPHostname), "<Not Set>") + "/competitions/" + SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_event), "<Not Set>") + "/matches.json";
+        final String url = "http://ftp.team2706.ca:3000/competitions/" + SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_event), "<Not Set>") + "/matches.json";
+
+        System.out.println(url);
 
         // prepare the Request
         JsonArrayRequest getRequest = new JsonArrayRequest(Request.Method.GET, url, null,
@@ -628,6 +633,7 @@ public class FileUtils {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.d("Error.Response", error.toString());
+                        error.printStackTrace();
                     }
                 }
         );
@@ -665,10 +671,24 @@ public class FileUtils {
         switch(fileType) {
             case UNSYNCHED:
                 file = new File(sLocalEventFilePath + "/" + App.getContext().getResources().getString(R.string.matchScoutingDataFileNameUNSYNCHED));
-                return file.delete();
+                try {
+                    file.delete();
+                    file.createNewFile();
+                    return true;
+                } catch(IOException e) {
+                    Log.d("Creating new file err", e.toString());
+                }
+                break;
             case SYNCHED:
                 file = new File(sLocalEventFilePath + "/" + App.getContext().getResources().getString(R.string.matchScoutingDataFileName));
-                return file.delete();
+                try {
+                    file.delete();
+                    file.createNewFile();
+                    return true;
+                } catch(IOException e) {
+                    Log.d("Creating new file err", e.toString());
+                }
+                break;
         }
         return false;
     }
@@ -677,20 +697,18 @@ public class FileUtils {
         Takes the selected event that you are at
         TODO: get JSOn body uncommentedable
      */
-    public static void postMatchToServer(final Context context/*, JSONObject jsonBody*/) {
+    public static void postMatchToServer(final Context context, final JSONObject jsonBody) {
         SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(App.getContext());
 
-        final String url = SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_FTPHostname), "<Not Set>") + "/competitions/" + SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_event), "<Not Set>") + ".json";
+        final String url = "http://ftp.team2706.ca:3000/competitions/" + SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_event), "<Not Set>") + "/matches.json";
         RequestQueue queue = Volley.newRequestQueue(context);
 
         try {
             RequestQueue requestQueue = Volley.newRequestQueue(context);
             // Prepares POST data...
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("competition_id",SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_event), "<Not Set"));
-            jsonObject.put("number", 7);
-            jsonObject.put("team_id", 7);
-            final String mRequestBody = jsonObject.toString();
+            jsonBody.put("competition_id",SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_event), "<Not Set"));
+            final String mRequestBody = jsonBody.toString();
+            System.out.println(jsonBody.toString());
             // Volley request...
             StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                 @Override
@@ -701,6 +719,8 @@ public class FileUtils {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.e("VOLLEY error from: " + url + " - ", error.toString());
+                    FileUtils.appendToMatchDataFile(new MatchData.Match(jsonBody), FileType.UNSYNCHED);
+                    error.printStackTrace();
                 }
             }) {
                 @Override
@@ -739,8 +759,6 @@ public class FileUtils {
             jsonBody.put("team_number", 1);
             JSONArray arr = new JSONArray();
             JSONObject obj = new JSONObject();
-            obj.put("match_id", 99);
-            obj.put("id", 121);
             obj.put("objective_id", FuelPickupEvent.objectiveId);
             arr.put(obj);
             jsonBody.put("events", arr);
@@ -756,6 +774,7 @@ public class FileUtils {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.e("VOLLEY error from: " + url + " - ", error.toString());
+                    error.printStackTrace();
                 }
             }) {
                 @Override
@@ -778,6 +797,20 @@ public class FileUtils {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void syncFiles(Context context) {
+        MatchData matchData = loadMatchDataFile(FileType.UNSYNCHED);
+        clearTeamDataFile(FileType.UNSYNCHED);
+
+        // probably need to throw some sort of error catching magic
+        if(matchData.matches != null)
+            for (MatchData.Match match : matchData.matches) {
+                postMatchToServer(context, match.toJson());
+            }
+
+        // delete file on phone and redownload
+        getMatchesFromServer(context);
     }
 
 }
