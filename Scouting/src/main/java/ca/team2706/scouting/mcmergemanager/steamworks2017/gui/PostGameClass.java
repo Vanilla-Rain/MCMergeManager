@@ -90,7 +90,6 @@ public class PostGameClass extends AppCompatActivity {
                 TextView tv = (TextView) findViewById(R.id.time_defending_text_view);
                 tv.setText(progressChangedValue * 5 + " seconds defending");
                 postGameObject.time_defending = progressChangedValue * 5;
-
             }
         });
 

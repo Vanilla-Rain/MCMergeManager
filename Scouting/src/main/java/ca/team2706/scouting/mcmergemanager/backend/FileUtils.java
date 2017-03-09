@@ -720,6 +720,7 @@ public class FileUtils {
                 public void onErrorResponse(VolleyError error) {
                     Log.e("VOLLEY error from: " + url + " - ", error.toString());
                     FileUtils.appendToMatchDataFile(new MatchData.Match(jsonBody), FileType.UNSYNCHED);
+                    error.printStackTrace();
                 }
             }) {
                 @Override

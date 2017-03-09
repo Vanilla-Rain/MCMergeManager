@@ -18,7 +18,7 @@ public class MatchData implements Serializable {
     public static final int gearDeliveredID = 28;
     public static final int boilerAttemptedID = 29;
     public static final int openHopperID = 31;
-    public static final int climbID = 32;
+    public static final int climbID = 44;
     public static final int highBoilerID = 33;
     public static final int lowBoilerID = 34;
     public static final int groundFuelPickupID = 35;
@@ -94,22 +94,27 @@ public class MatchData implements Serializable {
                         case highBoilerID:
                             event = new FuelShotEvent(obj.getDouble("start_time"), true,
                                     (int) obj.get("position_x"), (int) obj.get("position_y"));
+                            teleopScoutingObject.add(event);
                             break;
                         case lowBoilerID:
                             event = new FuelShotEvent(obj.getDouble("start_time"), false,
                                     (int) obj.get("position_x"), (int) obj.get("position_y"));
+                            teleopScoutingObject.add(event);
                             break;
                         case groundFuelPickupID:
                             event = new FuelPickupEvent(obj.getDouble("start_time"), FuelPickupEvent.FuelPickupType.GROUND,
                                     (int) obj.get("position_x"));
+                            teleopScoutingObject.add(event);
                             break;
                         case hopperFuelPickupID:
                             event = new FuelPickupEvent(obj.getDouble("start_time"), FuelPickupEvent.FuelPickupType.HOPPER,
                                     (int) obj.get("position_x"));
+                            teleopScoutingObject.add(event);
                             break;
                         case wallFuelPickupID:
                             event = new FuelPickupEvent(obj.getDouble("start_time"), FuelPickupEvent.FuelPickupType.WALL,
                                     (int) obj.get("position_x"));
+                            teleopScoutingObject.add(event);
                             break;
                         case gearDelivBoilerID:
                             GearDelivevryEvent.GearDeliveryStatus gearDeliveryStatus = null;
@@ -126,6 +131,7 @@ public class MatchData implements Serializable {
                             }
                             event = new GearDelivevryEvent(obj.getDouble("start_time"), GearDelivevryEvent.Lift.BOILER_SIDE,
                                     gearDeliveryStatus);
+                            teleopScoutingObject.add(event);
                             break;
                         case gearDelivCenterID:
                             GearDelivevryEvent.GearDeliveryStatus gearDeliveryStatus1 = null;
@@ -142,6 +148,7 @@ public class MatchData implements Serializable {
                             }
                             event = new GearDelivevryEvent(obj.getDouble("start_time"),
                                     GearDelivevryEvent.Lift.CENTRE, gearDeliveryStatus1);
+                            teleopScoutingObject.add(event);
                             break;
                         case gearDelivFeederID:
                             GearDelivevryEvent.GearDeliveryStatus gearDeliveryStatus2 = null;
@@ -158,15 +165,19 @@ public class MatchData implements Serializable {
                             }
                             event = new GearDelivevryEvent(obj.getDouble("start_time"), GearDelivevryEvent.Lift.FEEDER_SIDE,
                                     gearDeliveryStatus2);
+                            teleopScoutingObject.add(event);
                             break;
                         case groundGearPickupID:
                             event = new GearPickupEvent(obj.getDouble("start_time"), GearPickupEvent.GearPickupType.GROUND);
+                            teleopScoutingObject.add(event);
                             break;
                         case wallGearPickupID:
                             event = new GearPickupEvent(obj.getDouble("start_time"), GearPickupEvent.GearPickupType.WALL);
+                            teleopScoutingObject.add(event);
                             break;
                         case DefenseEvent.objectiveId:
                             event = new DefenseEvent(obj.getDouble("start_time"), (int) obj.get("defense_skill"));
+                            teleopScoutingObject.add(event);
                             break;
                         case climbID:
                             if (obj.getBoolean("success") == true)
@@ -174,18 +185,15 @@ public class MatchData implements Serializable {
                             else if (obj.getBoolean("success") == false)
                                 postGameObject.climbType = PostGameObject.ClimbType.FAIL;
                             postGameObject.climb_time = obj.getDouble("start_time");
-                            event = new Event();
                             break;
                         case noClimbID:
                             postGameObject.climbType = PostGameObject.ClimbType.NO_CLIMB;
                             postGameObject.climb_time = obj.getDouble("start_time");
-                            event = new Event();
                             break;
                         default:
                             event = new Event(DefenseEvent.objectiveId);
                             break;
                         }
-                    teleopScoutingObject.add(event);
                 }
 
                 postGameObject.notes = jsonObject.getString("general_notes");
@@ -320,7 +328,7 @@ public class MatchData implements Serializable {
                     } else {
                         // somehow an event is getting initialized without anything therefore give
                         // default objective id, so doesn't fail to post
-                        obj.put("objective_id", DefenseEvent.objectiveId);
+                        obj.put("objective_id", 0);
                     }
                     arr.put(obj);
                 }
