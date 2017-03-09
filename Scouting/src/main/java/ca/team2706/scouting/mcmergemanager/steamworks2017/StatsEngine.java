@@ -351,17 +351,17 @@ public class StatsEngine implements Serializable{
             }
 
 
-            switch (autoData.boiler_attempted) {
-                case (AutoScoutingObject.LOW_BOILER_ATTEPMTED):
-                    teamStatsReport.auto_numLowGoalAttempts += 1;
-                    teamStatsReport.auto_avgNumFuelScoredLow += autoData.numFuelScored;
-                    break;
-
-                case (AutoScoutingObject.HIGH_BOILER_ATTEMPTED):
-                    teamStatsReport.auto_numHighGoalAttempts += 1;
-                    teamStatsReport.auto_avgNumFuelScoredHigh += autoData.numFuelScored;
-                    break;
-            }
+//            switch (autoData.boiler_attempted) {
+//                case (AutoScoutingObject.LOW_BOILER_ATTEPMTED):
+//                    teamStatsReport.auto_numLowGoalAttempts += 1;
+//                    teamStatsReport.auto_avgNumFuelScoredLow += autoData.numFuelScored;
+//                    break;
+//
+//                case (AutoScoutingObject.HIGH_BOILER_ATTEMPTED):
+//                    teamStatsReport.auto_numHighGoalAttempts += 1;
+//                    teamStatsReport.auto_avgNumFuelScoredHigh += autoData.numFuelScored;
+//                    break;
+//            }
         }
 
 
@@ -679,23 +679,25 @@ public class StatsEngine implements Serializable{
             climbCycle.startTime = 135 - match.postGameObject.climb_time;
             climbCycle.endTime = 135;
 
-            switch (match.postGameObject.climbType) {
-                case SUCCESS:
-                    teamStatsReport.climbSuccesses++;
-                    teamStatsReport.climbAttepmts++;
-                    teamStatsReport.climb_avgTime += match.postGameObject.climb_time;
-                    climbCycle.success = true;
-                    cyclesInThisMatch.cycles.add(climbCycle);
-                    break;
-                case FAIL:
-                    teamStatsReport.climbFailures++;
-                    teamStatsReport.climbAttepmts++;
-                    teamStatsReport.climb_avgTime += match.postGameObject.climb_time;
-                    climbCycle.success = false;
-                    cyclesInThisMatch.cycles.add(climbCycle);
-                    break;
-                case NO_CLIMB:
-                    break;
+            if(match.postGameObject.climbType != null) {
+                switch (match.postGameObject.climbType) {
+                    case SUCCESS:
+                        teamStatsReport.climbSuccesses++;
+                        teamStatsReport.climbAttepmts++;
+                        teamStatsReport.climb_avgTime += match.postGameObject.climb_time;
+                        climbCycle.success = true;
+                        cyclesInThisMatch.cycles.add(climbCycle);
+                        break;
+                    case FAIL:
+                        teamStatsReport.climbFailures++;
+                        teamStatsReport.climbAttepmts++;
+                        teamStatsReport.climb_avgTime += match.postGameObject.climb_time;
+                        climbCycle.success = false;
+                        cyclesInThisMatch.cycles.add(climbCycle);
+                        break;
+                    case NO_CLIMB:
+                        break;
+                }
             }
 
 

@@ -113,6 +113,10 @@ public class MainActivity extends AppCompatActivity
         if(sMatchData == null) sMatchData = new MatchData();
 
         sRepairTimeObjects = FileUtils.getRepairTimeObjects();
+
+        // server stuff for match files
+//        FileUtils.checkLocalFileStructure(this);
+//        FileUtils.syncUnsyncedFile(this);
     }
 
     /**
@@ -396,9 +400,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void onClick(View v) {
-//        FileUtils.loadMatchDataFile(FileUtils.FileType.SYNCHED);
-        FileUtils.postMatchToServer(this, 204);
-//        FileUtils.getMatchesFromServer(this);
+        FileUtils.checkLocalFileStructure(this);
+        FileUtils.syncFiles(this);
     }
 
 }

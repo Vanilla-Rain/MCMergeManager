@@ -90,7 +90,6 @@ public class PostGameClass extends AppCompatActivity {
                 TextView tv = (TextView) findViewById(R.id.time_defending_text_view);
                 tv.setText(progressChangedValue * 5 + " seconds defending");
                 postGameObject.time_defending = progressChangedValue * 5;
-
             }
         });
 
@@ -128,8 +127,11 @@ public class PostGameClass extends AppCompatActivity {
             Intent intent = new Intent(this,PreGameActivity.class);
 
             MatchData.Match match = new MatchData.Match(pre, postGameObject, t, a);
+
             FileUtils.checkLocalFileStructure(this);
-            FileUtils.appendToMatchDataFile(match);
+            // save the file to the synced file, if posting fails save to unsynced as well
+            FileUtils.appendToMatchDataFile(match, FileUtils.FileType.SYNCHED);
+            FileUtils.postMatchToServer(this, match.toJson());
 
             startActivity(intent);
 
