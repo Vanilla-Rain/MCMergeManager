@@ -34,6 +34,8 @@ public class ClimbingFragment extends DialogFragment {
     public String test = " seconds to climb";
     public String pointsScoredString;
     public String textViewDisplayString;
+    private int ballsHeld;
+    private boolean gearHeld;
 
 
     private PostGameObject postGameObject = new PostGameObject();
