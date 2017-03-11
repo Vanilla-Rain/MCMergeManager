@@ -712,12 +712,25 @@ public class StatsEngine implements Serializable{
             if (inFuelCycle) {
 
                 if (inFuelHighCycle) {
-                    Cycle c = currFuelCycle.clone(Cycle.CycleType.HIGH_GOAL);
-                    cyclesInThisMatch.cycles.add(c);
+                    teamStatsReport.numFuelHighCycles++;
+                    cyclesInThisMatch.cycles.add(currFuelCycle.clone(Cycle.CycleType.HIGH_GOAL));
                 }
 
                 if (inFuelLowCycle) {
+                    teamStatsReport.numFuelLowCycles++;
                     cyclesInThisMatch.cycles.add(currFuelCycle.clone(Cycle.CycleType.LOW_GOAL));
+                }
+
+                if(inFuelGroundCycle) {
+                    teamStatsReport.numFuelGroundCycles++;
+                }
+
+                if (inFuelWallCycle) {
+                    teamStatsReport.numFuelWallCycles++;
+                }
+
+                if (inFuelHopperCycle) {
+                    teamStatsReport.numFuelHopperCycles++;
                 }
             }
 
