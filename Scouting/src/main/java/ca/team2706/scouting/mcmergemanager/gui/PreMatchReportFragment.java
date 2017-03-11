@@ -139,18 +139,21 @@ public class PreMatchReportFragment extends Fragment {
 
         float bluePredScore=0, redPredScore=0;
 
-        bluePredScore += oprs.get( m_match.getBlue1() );
+        try {
+            bluePredScore += oprs.get(m_match.getBlue1());
 
-        bluePredScore += oprs.get( m_match.getBlue2() );
+            bluePredScore += oprs.get(m_match.getBlue2());
 
-        bluePredScore += oprs.get( m_match.getBlue3() );
+            bluePredScore += oprs.get(m_match.getBlue3());
 
-        redPredScore += oprs.get( m_match.getRed1() );
+            redPredScore += oprs.get(m_match.getRed1());
 
-        redPredScore += oprs.get( m_match.getRed2() );
+            redPredScore += oprs.get(m_match.getRed2());
 
-        redPredScore += oprs.get(m_match.getRed3());
-
+            redPredScore += oprs.get(m_match.getRed3());
+        } catch (Exception e) {
+            // do nothing
+        }
 
         ((TextView) m_view.findViewById(R.id.blueScoreTV)).setText( (int)bluePredScore +"");
         ((TextView) m_view.findViewById(R.id.redScoreTV)).setText((int)redPredScore +"");
