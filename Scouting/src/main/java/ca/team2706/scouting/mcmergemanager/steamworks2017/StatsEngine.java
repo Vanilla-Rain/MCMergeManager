@@ -326,7 +326,7 @@ public class StatsEngine implements Serializable{
     private void fillInAutoStats(TeamStatsReport teamStatsReport) {
         // assumption: the teamStatsReport starts zeroed out.
 
-        if (matchData == null)
+        if (teamStatsReport.teamMatchData == null)
             throw new IllegalStateException("matchData is null");
 
         // loop over all matches that this team was in
@@ -584,7 +584,7 @@ public class StatsEngine implements Serializable{
 
                         inFuelHighCycle = true;
                     }
-                    else { // low
+                    else { // low and other
                         teamStatsReport.teleop_fuelScoredLow_total += fuelShotEvent.numScored;
                         teamStatsReport.teleop_fuelScoredLow_avgPerMatch += fuelShotEvent.numScored;
                         teamStatsReport.teleop_fuelScoredLow_avgPerCycle += fuelShotEvent.numScored;
@@ -592,6 +592,8 @@ public class StatsEngine implements Serializable{
 
                         inFuelLowCycle = true;
                     }
+
+                    justScoredFuel = true;
                 } // instanceof FuelShotEvent
 
 
@@ -710,12 +712,25 @@ public class StatsEngine implements Serializable{
             if (inFuelCycle) {
 
                 if (inFuelHighCycle) {
-                    Cycle c = currFuelCycle.clone(Cycle.CycleType.HIGH_GOAL);
-                    cyclesInThisMatch.cycles.add(c);
+                    teamStatsReport.numFuelHighCycles++;
+                    cyclesInThisMatch.cycles.add(currFuelCycle.clone(Cycle.CycleType.HIGH_GOAL));
                 }
 
                 if (inFuelLowCycle) {
+                    teamStatsReport.numFuelLowCycles++;
                     cyclesInThisMatch.cycles.add(currFuelCycle.clone(Cycle.CycleType.LOW_GOAL));
+                }
+
+                if(inFuelGroundCycle) {
+                    teamStatsReport.numFuelGroundCycles++;
+                }
+
+                if (inFuelWallCycle) {
+                    teamStatsReport.numFuelWallCycles++;
+                }
+
+                if (inFuelHopperCycle) {
+                    teamStatsReport.numFuelHopperCycles++;
                 }
             }
 
