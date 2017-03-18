@@ -636,6 +636,8 @@ public class FileUtils {
                         // display response
                         saveJsonFile(response);
                         System.out.println(response.toString() + "\nWriting should have gone well");
+
+                        loadMatchDataFile();
                     }
                 },
                 new Response.ErrorListener() {
