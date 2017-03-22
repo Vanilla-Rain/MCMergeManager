@@ -810,6 +810,7 @@ public class FileUtils {
     }
 
     public static void syncFiles(Context context) {
+
         MatchData matchData = loadMatchDataFile(FileType.UNSYNCHED);
         clearTeamDataFile(FileType.UNSYNCHED);
 
