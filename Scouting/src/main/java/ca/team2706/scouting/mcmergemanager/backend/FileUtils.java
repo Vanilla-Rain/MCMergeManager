@@ -158,17 +158,29 @@ public class FileUtils {
         new Thread()
         {
             public void run() {
-                scanDirectoryTree(sLocalToplevelFilePath);
+                if(!directoryTreeScanRunning) {
+                    directoryTreeScanRunning = true;
+                    scanDirectoryTree(sLocalToplevelFilePath);
+                    directoryTreeScanRunning = false;
+                }
             }
         }.start();
     }
 
-    /*
-        This scans the photos dir and adds them to the OS photos gallery.
-        This is needed to get the photos to show up over a USB connection
 
-        Also downsizes photos if they are over 640 pixels on the width
-        or the height.
+    /**
+     * A flag to make sure only one directory tree scan runs at a time.
+     * Note that the 'volatile' keyword is a cheap hack to make sure the value is sync'ed across
+     * multiple threads.
+     */
+    private static volatile boolean directoryTreeScanRunning = false;
+
+    /*
+     *  This scans the photos dir and adds them to the OS photos gallery.
+     *  This is needed to get the photos to show up over a USB connection
+     *
+     *  Also downsizes photos if they are over 640 pixels on the width
+     *  or the height.
      */
     private static void scanDirectoryTree(String directoryPath) {
 
@@ -186,48 +198,46 @@ public class FileUtils {
                     // Recurse!
                     scanDirectoryTree(subFile.getAbsolutePath());
                 } else {
-                    // Log.d(App.getContext().getResources().getString(R.string.app_name), "Media Scanning "+ subFile.toString());
+                    try {
+                        // TODO: 18/03/17 downsize images if too large
+                        BitmapFactory.Options options = new BitmapFactory.Options();
 
-                    // TODO: 18/03/17 downsize images if too large
-                    BitmapFactory.Options options = new BitmapFactory.Options();
-                    options.inJustDecodeBounds = true;
+                        //Returns null, sizes are in the options variable
+                        options.inJustDecodeBounds = true;  // only load image metadata, not the image itself
+                        BitmapFactory.decodeFile(subFile.getAbsolutePath(), options);
 
+                        final int height = options.outHeight;
+                        final int width = options.outWidth;
 
-                    //Returns null, sizes are in the options variable
-                    BitmapFactory.decodeFile(subFile.getAbsolutePath(), options);
+                        // if the size of the photo is too large, then downsize
+                        if(options != null && height > 640 && width > 640) {
+                            System.out.println("foto is too large" + subFile.getAbsolutePath());
+                            int inSampleSize = 1; // divides image resolution by this
 
-                    final int height = options.outHeight;
-                    final int width = options.outWidth;
+                            // increases the samplesize until the future resolution is under 640 pixels
+                            while((height / inSampleSize) > 640 &&
+                                    (width / inSampleSize) > 640){
+                                inSampleSize *= 2;
+                            }
 
-                    // if the size of the photo is too large, then downsize
-                    if(height > 640 && width > 640 && options != null) {
-                        System.out.println("foto is too large" + subFile.getAbsolutePath());
-                        int inSampleSize = 1; // divides image resolution by this
+                            options.inJustDecodeBounds = false;
 
-                        // increases the samplesize until the future resolution is under 640 pixels
-                        while((height / inSampleSize) >= 640 &&
-                                (width / inSampleSize) >= 640){
-                            inSampleSize *= 2;
-                        }
-
-                        options.inSampleSize = inSampleSize;
-                        options.inJustDecodeBounds = false;
-
-                        // tries to save the image that is downsized
-                        try {
-                            Bitmap b= BitmapFactory.decodeFile(subFile.getAbsolutePath(), options);
-                            Bitmap out = Bitmap.createScaledBitmap(b, b.getWidth(), b.getHeight(), false);
+                            // tries to save the image that is downsized
+                            Bitmap fullImg = BitmapFactory.decodeFile(subFile.getAbsolutePath());
+                            Bitmap out = Bitmap.createScaledBitmap(fullImg, fullImg.getWidth() / inSampleSize,
+                                    fullImg.getHeight() / inSampleSize, false);
 
                             File newFile = new File(subFile.getAbsolutePath());
                             FileOutputStream fOut = new FileOutputStream(newFile);
                             out.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
                             fOut.flush();
                             fOut.close();
-                            b.recycle();
+                            fullImg.recycle();
                             out.recycle();
-                        } catch(Exception e) {
-                            e.printStackTrace();
+
                         }
+                    } catch(Exception e) {
+                        Log.e("MCMergeManager","Error parsing or downsizing image:", e);
                     }
 
 
