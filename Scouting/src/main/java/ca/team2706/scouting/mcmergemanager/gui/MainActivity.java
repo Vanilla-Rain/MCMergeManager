@@ -114,9 +114,8 @@ public class MainActivity extends AppCompatActivity
 
         sRepairTimeObjects = FileUtils.getRepairTimeObjects();
 
-        // server stuff for match files
-//        FileUtils.checkLocalFileStructure(this);
-//        FileUtils.syncUnsyncedFile(this);
+        // syncs unposted matches and downloads matchdata for current competition
+        FileUtils.syncFiles(this);
     }
 
     /**
@@ -403,5 +402,6 @@ public class MainActivity extends AppCompatActivity
         FileUtils.checkLocalFileStructure(this);
         FileUtils.syncFiles(this);
     }
+
 
 }
