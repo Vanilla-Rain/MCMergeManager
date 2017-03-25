@@ -125,6 +125,7 @@ public class TeamStatsReport implements Serializable {
     public int      climbFailures;
     public int      climbAttepmts;
     public double   climb_avgTime;
+    public double   climb_minTime;  // Their single, fastest climb
 
 
     public String notes = "";
