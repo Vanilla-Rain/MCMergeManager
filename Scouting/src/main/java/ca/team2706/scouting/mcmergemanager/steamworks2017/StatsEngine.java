@@ -451,6 +451,8 @@ public class StatsEngine implements Serializable{
         if (matchData == null)
             throw new IllegalStateException("matchData is null");
 
+        teamStatsReport.climb_minTime = Double.MAX_VALUE;
+
         for(MatchData.Match match : teamStatsReport.teamMatchData.matches) {
 
             // Process all the events during this match in a big state machine.
@@ -467,6 +469,7 @@ public class StatsEngine implements Serializable{
 
             boolean inGearCycle=false;
             Cycle currGearCycle = new Cycle(Cycle.CycleType.GEAR);
+
 
             // Events in the list are already sorted in chronological order, so just loop over them!
             // loop over all events
@@ -689,6 +692,10 @@ public class StatsEngine implements Serializable{
                         teamStatsReport.climb_avgTime += match.postGameObject.climb_time;
                         climbCycle.success = true;
                         cyclesInThisMatch.cycles.add(climbCycle);
+
+                        if (match.postGameObject.climb_time < teamStatsReport.climb_minTime)
+                            teamStatsReport.climb_minTime = match.postGameObject.climb_time;
+
                         break;
                     case FAIL:
                         teamStatsReport.climbFailures++;
@@ -854,7 +861,8 @@ public class StatsEngine implements Serializable{
                 teamStatsReport.favouritePickupLocation = "(trying to be PC?)";
             }
 
-
+            if(teamStatsReport.climb_minTime == Double.MAX_VALUE)
+                teamStatsReport.climb_minTime = 0;
 
         } // end averages
 

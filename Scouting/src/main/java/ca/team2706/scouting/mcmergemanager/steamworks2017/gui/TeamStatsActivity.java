@@ -137,10 +137,10 @@ public class TeamStatsActivity extends AppCompatActivity {
             ((TextView) findViewById(R.id.teleopTimePlayingDTV)).setText(String.format("\t%.1f s",
                                                                             m_teamStatsReport.avgTimeSpentPlayingDef) );
 
-            ((TextView) findViewById(R.id.avgDeadnessTV)).setText(String.format("%.2f%%",
+            ((TextView) findViewById(R.id.avgDeadnessTV)).setText(String.format("%.2f s",
                                                                             m_teamStatsReport.avgDeadness) );
 
-            ((TextView) findViewById(R.id.highestDeadnessTV)).setText(String.format("\t%.2f%%",
+            ((TextView) findViewById(R.id.highestDeadnessTV)).setText(String.format("\t%.2f s",
                                                                             m_teamStatsReport.highestDeadness) );
 
             ((TextView) findViewById(R.id.climbsTV)).setText(String.format("%d / %d (%.2f)",
@@ -150,6 +150,9 @@ public class TeamStatsActivity extends AppCompatActivity {
 
             ((TextView) findViewById(R.id.climbTimeTV)).setText(String.format("\t%.1f s",
                                                                             m_teamStatsReport.climb_avgTime) );
+
+            ((TextView) findViewById(R.id.minClimbTimeTV)).setText(String.format("\t%.1f s",
+                    m_teamStatsReport.climb_minTime) );
 
             ((TextView) findViewById(R.id.failedClimbsTV)).setText(String.format("%d / %d (%.2f)",
                                                                             m_teamStatsReport.climbFailures,
