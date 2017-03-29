@@ -117,6 +117,7 @@ public class TeamStatsReport implements Serializable {
     // Defense and deadness
     public double avgTimeSpentPlayingDef;
     public double avgDeadness;      // an int representing % of match spent wich mech problems
+    public int numMatchesNoDeadness;
     public double highestDeadness;  // the highest % deadness in a single match.
 
 

@@ -140,8 +140,11 @@ public class TeamStatsActivity extends AppCompatActivity {
             ((TextView) findViewById(R.id.avgDeadnessTV)).setText(String.format("%.2f s",
                                                                             m_teamStatsReport.avgDeadness) );
 
-            ((TextView) findViewById(R.id.highestDeadnessTV)).setText(String.format("\t%.2f s",
+            ((TextView) findViewById(R.id.highestDeadnessTV)).setText(String.format("%.2f s",
                                                                             m_teamStatsReport.highestDeadness) );
+
+            ((TextView) findViewById(R.id.numDeadnessMatchesTV)).setText(String.format("%d",
+                    m_teamStatsReport.numMatchesNoDeadness) );
 
             ((TextView) findViewById(R.id.climbsTV)).setText(String.format("%d / %d (%.2f)",
                                                                             m_teamStatsReport.climbSuccesses,

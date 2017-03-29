@@ -748,11 +748,15 @@ public class StatsEngine implements Serializable{
                 cyclesInThisMatch.cycles.add(currGearCycle);
             }
 
-            teamStatsReport.avgDeadness += match.postGameObject.time_dead;
+            if (match.postGameObject.time_dead > 0) {
+                teamStatsReport.avgDeadness += match.postGameObject.time_dead;
 
-            if(match.postGameObject.time_dead > teamStatsReport.highestDeadness)
-                teamStatsReport.highestDeadness = match.postGameObject.time_dead;
-
+                if (match.postGameObject.time_dead > teamStatsReport.highestDeadness)
+                    teamStatsReport.highestDeadness = match.postGameObject.time_dead;
+            }
+            else {
+                teamStatsReport.numMatchesNoDeadness++;
+            }
 
             teamStatsReport.avgTimeSpentPlayingDef += match.postGameObject.time_defending;
 
