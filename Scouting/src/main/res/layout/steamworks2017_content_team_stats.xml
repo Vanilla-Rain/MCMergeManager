@@ -63,8 +63,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Schedule Toughness: 1.0"
-            android:id="@+id/schedToughnessTV" />
+            android:text="Schedule Toughness (by WLT): 1.0"
+            android:id="@+id/schedToughnessWltTV" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Schedule Toughness (by OPR): 1.0"
+            android:id="@+id/schedToughnessOprTV" />
 
         <CheckBox
             android:text="Bad Manners"

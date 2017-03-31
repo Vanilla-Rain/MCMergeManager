@@ -55,10 +55,16 @@ public class TeamStatsActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.OPRtv)).setText(String.format("OPR: %.2f", m_teamStatsReport.OPR));
         ((TextView) findViewById(R.id.DPRtv)).setText( String.format("DPR: %.2f", m_teamStatsReport.DPR) );
 
-        if (m_teamStatsReport.scheduleToughness < 1.0)
-            ((TextView) findViewById(R.id.schedToughnessTV)).setText( String.format("Schedule Toughness: %.2f (easy)", m_teamStatsReport.scheduleToughness) );
+        if (m_teamStatsReport.scheduleToughnessByWLT < 1.0)
+            ((TextView) findViewById(R.id.schedToughnessWltTV)).setText( String.format("Schedule Toughness (by WLT): %.2f (easy)", m_teamStatsReport.scheduleToughnessByWLT) );
         else
-            ((TextView) findViewById(R.id.schedToughnessTV)).setText( String.format("Schedule Toughness: %.2f (hard)", m_teamStatsReport.scheduleToughness) );
+            ((TextView) findViewById(R.id.schedToughnessWltTV)).setText( String.format("Schedule Toughness (by WLT): %.2f (hard)", m_teamStatsReport.scheduleToughnessByWLT) );
+
+        if (m_teamStatsReport.scheduleToughnessByOPR < 1.0)
+            ((TextView) findViewById(R.id.schedToughnessOprTV)).setText( String.format("Schedule Toughness (by OPR): %.2f (easy)", m_teamStatsReport.scheduleToughnessByOPR) );
+        else
+            ((TextView) findViewById(R.id.schedToughnessOprTV)).setText( String.format("Schedule Toughness (by OPR): %.2f (hard)", m_teamStatsReport.scheduleToughnessByOPR) );
+
 
         CheckBox badManners = (CheckBox) findViewById(R.id.badManners);
         badManners.setChecked(m_teamStatsReport.badManners);
