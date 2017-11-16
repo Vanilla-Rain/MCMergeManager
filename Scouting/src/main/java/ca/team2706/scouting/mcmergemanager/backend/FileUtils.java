@@ -576,6 +576,16 @@ public class FileUtils {
         return Uri.fromFile(file);
     }
 
+    public static Uri getNameForNewSponsorPhoto(int teamNumber) {
+        // check if a photo folder exists for this team, and create it if it does not.
+        String dir = sLocalTeamPhotosFilePath + "/" + "Sponsors" + "/";
+        scanDirectoryTree(dir);
+
+        String fileName = dir + teamNumber + "_" + (new Date().getTime()) + ".jpg";
+        File file = new File(fileName);
+
+        return Uri.fromFile(file);
+    }
 
     public static String getTeamPhotoPath(int teamNumber) {
         return sLocalTeamPhotosFilePath + "/" + teamNumber;

@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 
 import ca.team2706.scouting.mcmergemanager.R;
@@ -12,6 +13,7 @@ import ca.team2706.scouting.mcmergemanager.R;
 public class GetTeamNumberDialog {
     private Activity launchActivity;
     private EditText editText;
+    private CheckBox checkBox;
 
     private String title;
     private String inputHint;
@@ -32,6 +34,10 @@ public class GetTeamNumberDialog {
         return Integer.parseInt(inputResult);
     }
 
+    public boolean getSponsorChecked() {
+        return checkBox.isChecked();
+    }
+
     public void displayAlertDialog() {
         LayoutInflater inflater = launchActivity.getLayoutInflater();
         View alertLayout = inflater.inflate(R.layout.layout_custom_dialog, null);
@@ -44,6 +50,8 @@ public class GetTeamNumberDialog {
         editText =  (EditText) alertLayout.findViewById(R.id.inputHint);
         editText.setHint(inputHint);
 
+        // Sponsor button stuff
+        checkBox = (CheckBox) alertLayout.findViewById(R.id.sponsorCheckBox);
 
         alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override

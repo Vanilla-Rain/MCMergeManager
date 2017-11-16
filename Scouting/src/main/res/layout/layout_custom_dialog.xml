@@ -22,4 +22,10 @@
             android:inputType="number" />
     </LinearLayout>
 
+    <CheckBox
+        android:id="@+id/sponsorCheckBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sponsors" />
+
 </LinearLayout>

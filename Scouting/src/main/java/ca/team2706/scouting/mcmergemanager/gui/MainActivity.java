@@ -29,7 +29,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.File;
 import org.apache.commons.net.ftp.FTPFile;
 
 import java.util.ArrayList;
@@ -300,7 +299,12 @@ public class MainActivity extends AppCompatActivity
                     return;
                 }
 
-                Uri teamPhotoUri = FileUtils.getNameForNewPhoto(teamNumber);
+                Uri teamPhotoUri;
+                if(enterATeamNumberPopup.getSponsorChecked())
+                    teamPhotoUri = FileUtils.getNameForNewPhoto(teamNumber);
+                else
+                    teamPhotoUri = FileUtils.getNameForNewSponsorPhoto(teamNumber);
+
                 String teamPhotoPath = teamPhotoUri.getPath();
                 Log.i(getResources().getString(R.string.app_name), "Saving to \""+teamPhotoPath+"\"");
 
