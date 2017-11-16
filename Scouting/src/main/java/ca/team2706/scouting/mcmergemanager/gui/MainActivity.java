@@ -47,6 +47,7 @@ import ca.team2706.scouting.mcmergemanager.backend.dataObjects.MatchSchedule;
 import ca.team2706.scouting.mcmergemanager.backend.dataObjects.TeamDataObject;
 import ca.team2706.scouting.mcmergemanager.backend.interfaces.DataRequester;
 import ca.team2706.scouting.mcmergemanager.backend.interfaces.FTPRequester;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.CommentSingleton;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.MatchData;
 
 @TargetApi(21)
@@ -206,6 +207,31 @@ public class MainActivity extends AppCompatActivity
         enterATeamNumberPopup.displayAlertDialog();
 
         (new Timer()).schedule(new CheckSchedulePopupHasExited(), 250);
+    }
+
+
+    int teamNumber;
+    String comment;
+    public CommentTextEditor commentTextEditor;
+    public void onWriteCommentButtonClick (View v) {
+
+        // Get the comment
+        commentTextEditor = new CommentTextEditor("Write your comment.", "Comment", this);
+        commentTextEditor.displayAlertDialog();
+
+        // Get the team number (After for lazy layout reasons)
+        enterATeamNumberPopup = new GetTeamNumberDialog("Team Number", "Team Number", 1, this);
+        enterATeamNumberPopup.displayAlertDialog();
+
+
+        // Assign the team number and get the comment
+        teamNumber = enterATeamNumberPopup.getTeamNumber();
+        comment = commentTextEditor.getComment();
+
+        // Get the ONLY instance of the CommentSingleton and store it
+        CommentSingleton commentSingleton = CommentSingleton.getInstance();
+
+
     }
 
     public void onRepairTimeRecordClicked(View view) {
@@ -402,6 +428,8 @@ public class MainActivity extends AppCompatActivity
         FileUtils.checkLocalFileStructure(this);
         FileUtils.syncFiles(this);
     }
+
+
 
 
 }
