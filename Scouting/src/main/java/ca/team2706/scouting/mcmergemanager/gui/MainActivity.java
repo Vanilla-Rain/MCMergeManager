@@ -32,6 +32,7 @@ import android.widget.Toast;
 import java.io.File;
 import org.apache.commons.net.ftp.FTPFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -40,6 +41,7 @@ import java.util.TimerTask;
 import ca.team2706.scouting.mcmergemanager.R;
 import ca.team2706.scouting.mcmergemanager.backend.App;
 import ca.team2706.scouting.mcmergemanager.backend.BlueAllianceUtils;
+import ca.team2706.scouting.mcmergemanager.backend.BlueAllianceUtilsV3;
 import ca.team2706.scouting.mcmergemanager.backend.FTPClient;
 import ca.team2706.scouting.mcmergemanager.backend.FileUtils;
 import ca.team2706.scouting.mcmergemanager.backend.TakePicture;
@@ -96,6 +98,14 @@ public class MainActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
 
+        // TODO: Get rid of this
+
+        try {
+            BlueAllianceUtilsV3.test(this);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         // tell the user where they are syncing their gearDeliveryData to
         updateDataSyncLabel();
 
@@ -115,7 +125,8 @@ public class MainActivity extends AppCompatActivity
         sRepairTimeObjects = FileUtils.getRepairTimeObjects();
 
         // syncs unposted matches and downloads matchdata for current competition
-        FileUtils.syncFiles(this);
+        if(false)
+            FileUtils.syncFiles(this);
     }
 
     /**
