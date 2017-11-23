@@ -2,8 +2,6 @@ package ca.team2706.scouting.mcmergemanager.backend;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -20,6 +18,9 @@ import java.io.IOException;
 import ca.team2706.scouting.mcmergemanager.R;
 import ca.team2706.scouting.mcmergemanager.backend.dataObjects.MatchSchedule;
 import ca.team2706.scouting.mcmergemanager.backend.interfaces.DataRequester;
+
+import java.io.IOException;
+
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -31,7 +32,11 @@ import okhttp3.Response;
 
 public class BlueAllianceUtilsV3 {
 
+<<<<<<< HEAD
     public static final String BASEURL = "http://www.thebluealliance.com/api/v3/";
+=======
+    public static final String BASEURL = "https://www.thebluealliance.com/api/v3";
+>>>>>>> d7f88e4... finally got it working
     public static final String AUTHKEY = "8GLetjJXz2pNCZuY0NnwejAw0ULn9TzbsYeLkYyzeKwDeRsK9MiDnxEGgy6UksW1";
 
     private Activity mActivity;
@@ -65,7 +70,6 @@ public class BlueAllianceUtilsV3 {
         sPermissionsChecked = true;
         return sPermissionsChecked;
     }
-
 
     public static void fetchMatchScheduleAndResults(final DataRequester dataRequester) {
         // check if we have internet connectivity
@@ -162,4 +166,5 @@ public class BlueAllianceUtilsV3 {
             }
         }.start();
     }
+
 }

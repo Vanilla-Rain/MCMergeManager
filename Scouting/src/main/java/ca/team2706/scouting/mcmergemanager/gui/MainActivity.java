@@ -92,15 +92,14 @@ public class MainActivity extends AppCompatActivity
         updateDataSyncLabel();
 
         FileUtils.checkFileReadWritePermissions(this);
+
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        // TODO: Get rid of this
-
-//        BlueAllianceUtilsV3.test();
 
         // tell the user where they are syncing their gearDeliveryData to
         updateDataSyncLabel();
