@@ -3,30 +3,19 @@ package ca.team2706.scouting.mcmergemanager.backend;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
-import com.android.volley.NetworkResponse;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.JsonRequest;
-import com.android.volley.toolbox.Volley;
-
-import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 
-import ca.team2706.scouting.mcmergemanager.R;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 
 /**
@@ -71,30 +60,29 @@ public class BlueAllianceUtilsV3 {
     }
 
 
-    public static void test(Context context) throws IOException {
-        RequestQueue queue = Volley.newRequestQueue(context);
-        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(App.getContext());
-        final String url = BASEURL + "/status";
+    public static void test() {
+        new Thread() {
+            public void run() {
 
-        System.out.println(url);
+                OkHttpClient client = new OkHttpClient();
 
-        // prepare the Request
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                // display response
-                System.out.println(response.toString() + "\nWriting should have gone well");
+                // Build the request for the file
+                Request request = new Request.Builder()
+                        .url(BASEURL + "/status")
+                        .header("X-TBA-Auth-Key", AUTHKEY)
+                        .build();
+
+                try {
+                    // Send request
+                    Response response = client.newCall(request).execute();
+
+                    System.out.println(response.body().string());
+
+                    response.close();
+                } catch(IOException e) {
+                    Log.d("Error getting tbaV3", e.toString());
+                }
             }
-        },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d("Error.Response", error.toString());
-                        error.printStackTrace();
-                    }
-                });
-        // add it to the RequestQueue
-        queue.add(request);
+        }.start();
     }
 }

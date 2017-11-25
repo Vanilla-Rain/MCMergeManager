@@ -100,11 +100,7 @@ public class MainActivity extends AppCompatActivity
 
         // TODO: Get rid of this
 
-        try {
-            BlueAllianceUtilsV3.test(this);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        BlueAllianceUtilsV3.test();
 
         // tell the user where they are syncing their gearDeliveryData to
         updateDataSyncLabel();
