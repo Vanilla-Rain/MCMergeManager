@@ -225,31 +225,21 @@ public class MatchSchedule implements Serializable {
 
 
     private void parseTBATeamsList(String jsonTeamsList) {
-
         if(jsonTeamsList == null)
             return;
 
-        JSONArray jsonArr;
+        JSONArray jsonArray;
         try {
-            jsonArr = new JSONArray(jsonTeamsList);
+            jsonArray = new JSONArray(jsonTeamsList);
 
-            // loop over individual teams
-            for(int i=0;i<(jsonArr.length( ));i++)
-            {
-                JSONObject jsonTeam = jsonArr.getJSONObject(i);
-
-                try {
-                    teamListInt.add( Integer.valueOf(jsonTeam.getString("team_number")) );
-                } catch (JSONException e) {
-                    continue;
-                }
+            // Loop over each team
+            for(int i = 0; i < jsonArray.length(); i++) {
+                teamListInt.add(Integer.valueOf(jsonArray.get(i).toString().substring(3)));
             }
 
             Collections.sort(teamListInt);
-
         } catch(JSONException e) {
-            // something went wrong
-            Log.e("MCMergeManager", "Failed to parse the match schedule from thebluealliance. Maybe the gearDeliveryData is not valid json?");
+            Log.d("Error parsing json: ", e.toString());
         }
     }
 

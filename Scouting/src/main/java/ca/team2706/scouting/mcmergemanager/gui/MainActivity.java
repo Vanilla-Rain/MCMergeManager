@@ -100,15 +100,17 @@ public class MainActivity extends AppCompatActivity
 
         // TODO: Get rid of this
 
-        BlueAllianceUtilsV3.test();
+//        BlueAllianceUtilsV3.test();
 
         // tell the user where they are syncing their gearDeliveryData to
         updateDataSyncLabel();
 
         // fetch the match gearDeliveryData from TheBlueAlliance to update the scores.
+        // TODO: replace with tba v3
         BlueAllianceUtils.checkInternetPermissions(this);
-        BlueAllianceUtils.fetchTeamsRegisteredAtEvent(this);
-        BlueAllianceUtils.fetchMatchScheduleAndResults(this);
+//        BlueAllianceUtils.fetchTeamsRegisteredAtEvent(this);
+        BlueAllianceUtilsV3.fetchTeamsRegisteredAtEvent(this);
+        BlueAllianceUtilsV3.fetchMatchScheduleAndResults(this);
 
         // Make sure all files are there, and visible to the USB Media Scanner.
         FileUtils.checkLocalFileStructure(this);
