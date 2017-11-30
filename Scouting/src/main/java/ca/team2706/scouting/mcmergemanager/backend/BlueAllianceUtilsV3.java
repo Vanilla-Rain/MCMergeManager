@@ -3,13 +3,23 @@ package ca.team2706.scouting.mcmergemanager.backend;
 import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
+<<<<<<< Updated upstream
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
+=======
+<<<<<<< HEAD
+=======
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.preference.PreferenceManager;
+>>>>>>> 230d8de1081a3c3edc9da971df21366cba7cd5f5
+>>>>>>> Stashed changes
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
+<<<<<<< Updated upstream
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -18,9 +28,22 @@ import java.io.IOException;
 import ca.team2706.scouting.mcmergemanager.R;
 import ca.team2706.scouting.mcmergemanager.backend.dataObjects.MatchSchedule;
 import ca.team2706.scouting.mcmergemanager.backend.interfaces.DataRequester;
+=======
+<<<<<<< HEAD
+>>>>>>> Stashed changes
 
 import java.io.IOException;
 
+=======
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
+import ca.team2706.scouting.mcmergemanager.R;
+import ca.team2706.scouting.mcmergemanager.backend.dataObjects.MatchSchedule;
+import ca.team2706.scouting.mcmergemanager.backend.interfaces.DataRequester;
+>>>>>>> 230d8de1081a3c3edc9da971df21366cba7cd5f5
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -33,10 +56,17 @@ import okhttp3.Response;
 public class BlueAllianceUtilsV3 {
 
 <<<<<<< HEAD
+<<<<<<< Updated upstream
     public static final String BASEURL = "http://www.thebluealliance.com/api/v3/";
 =======
     public static final String BASEURL = "https://www.thebluealliance.com/api/v3";
 >>>>>>> d7f88e4... finally got it working
+=======
+    public static final String BASEURL = "https://www.thebluealliance.com/api/v3";
+=======
+    public static final String BASEURL = "http://www.thebluealliance.com/api/v3/";
+>>>>>>> 230d8de1081a3c3edc9da971df21366cba7cd5f5
+>>>>>>> Stashed changes
     public static final String AUTHKEY = "8GLetjJXz2pNCZuY0NnwejAw0ULn9TzbsYeLkYyzeKwDeRsK9MiDnxEGgy6UksW1";
 
     private Activity mActivity;
@@ -71,40 +101,6 @@ public class BlueAllianceUtilsV3 {
         return sPermissionsChecked;
     }
 
-    public static void fetchMatchScheduleAndResults(final DataRequester dataRequester) {
-        // check if we have internet connectivity
-        ConnectivityManager cm = (ConnectivityManager) App.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        if (activeNetwork == null) { // not connected to the internet
-            return;
-        }
-
-        new Thread() {
-            public void run() {
-                SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(App.getContext());
-                String TBA_event = SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_event), "<Not Set>");
-
-                Request request = new Request.Builder()
-                        .url(BASEURL + "event/" + TBA_event + "/matches")
-                        .header("X-TBA-Auth-Key", AUTHKEY)
-                        .build();
-                MatchSchedule schedule;
-
-                try {
-                    Response response = client.newCall(request).execute();
-
-                    schedule = MatchSchedule.newFromJsonSchedule(response.body().string());
-                } catch(IOException e) {
-                    Log.d("Error match scedule", e.toString());
-                    return;
-                }
-
-                System.out.println(schedule.toString());
-                dataRequester.updateMatchSchedule(schedule);
-            }
-        }.start();
-    }
-
     public static void fetchTeamsRegisteredAtEvent(final DataRequester requester) {
         // Check if device is connected to the internet
         ConnectivityManager cm = (ConnectivityManager) App.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -137,6 +133,41 @@ public class BlueAllianceUtilsV3 {
 
                 System.out.println(schedule.toString());
                 requester.updateMatchSchedule(schedule);
+            }
+        }.start();
+    }
+
+
+    public static void fetchMatchScheduleAndResults(final DataRequester dataRequester) {
+        // check if we have internet connectivity
+        ConnectivityManager cm = (ConnectivityManager) App.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        if (activeNetwork == null) { // not connected to the internet
+            return;
+        }
+
+        new Thread() {
+            public void run() {
+                SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(App.getContext());
+                String TBA_event = SP.getString(App.getContext().getResources().getString(R.string.PROPERTY_event), "<Not Set>");
+
+                Request request = new Request.Builder()
+                        .url(BASEURL + "event/" + TBA_event + "/matches")
+                        .header("X-TBA-Auth-Key", AUTHKEY)
+                        .build();
+                MatchSchedule schedule;
+
+                try {
+                    Response response = client.newCall(request).execute();
+
+                    schedule = MatchSchedule.newFromJsonSchedule(response.body().string());
+                } catch(IOException e) {
+                    Log.d("Error match scedule", e.toString());
+                    return;
+                }
+
+                System.out.println(schedule.toString());
+                dataRequester.updateMatchSchedule(schedule);
             }
         }.start();
     }

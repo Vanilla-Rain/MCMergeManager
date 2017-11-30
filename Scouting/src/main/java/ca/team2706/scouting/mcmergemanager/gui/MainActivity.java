@@ -100,7 +100,6 @@ public class MainActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
 
-
         // tell the user where they are syncing their gearDeliveryData to
         updateDataSyncLabel();
 
