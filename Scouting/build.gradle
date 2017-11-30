@@ -10,6 +10,10 @@ apply plugin: 'com.android.application'
 
 repositories {
     jcenter()
+    maven {
+        url 'https://maven.google.com/'
+        name 'Google'
+    }
 }
 
 android {

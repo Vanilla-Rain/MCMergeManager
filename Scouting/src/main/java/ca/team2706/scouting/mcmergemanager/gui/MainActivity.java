@@ -29,11 +29,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.File;
 import org.apache.commons.net.ftp.FTPFile;
 
+import java.io.Console;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -49,6 +50,9 @@ import ca.team2706.scouting.mcmergemanager.backend.interfaces.DataRequester;
 import ca.team2706.scouting.mcmergemanager.backend.interfaces.FTPRequester;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.CommentSingleton;
 import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.MatchData;
+import ca.team2706.scouting.mcmergemanager.steamworks2017.dataObjects.TeamNumber;
+
+import static android.widget.Toast.LENGTH_SHORT;
 
 @TargetApi(21)
 public class MainActivity extends AppCompatActivity
@@ -220,17 +224,34 @@ public class MainActivity extends AppCompatActivity
         commentTextEditor.displayAlertDialog();
 
         // Get the team number (After for lazy layout reasons)
-        enterATeamNumberPopup = new GetTeamNumberDialog("Team Number", "Team Number", 1, this);
-        enterATeamNumberPopup.displayAlertDialog();
+       enterATeamNumberPopup = new GetTeamNumberDialog("Team Number", "Team Number", 1, this);
+       enterATeamNumberPopup.displayAlertDialog();
+
+       TeamNumber teamNum = new TeamNumber();
 
 
         // Assign the team number and get the comment
         teamNumber = enterATeamNumberPopup.getTeamNumber();
         comment = commentTextEditor.getComment();
 
+        teamNum.setTeamNumber(teamNumber);
+        teamNum.setComment(comment);
+
+        Set<TeamNumber> set = null;
+
         // Get the ONLY instance of the CommentSingleton and store it
         CommentSingleton commentSingleton = CommentSingleton.getInstance();
 
+       set = commentSingleton.getTeamNumbers();
+        try {
+            set.add(teamNum);
+
+        } catch (Exception e){
+            Toast.makeText(context, e.getMessage(),
+                    Toast.LENGTH_LONG).show();
+        }
+
+        commentSingleton.addTeamNumber(teamNumber, set);
 
     }
 

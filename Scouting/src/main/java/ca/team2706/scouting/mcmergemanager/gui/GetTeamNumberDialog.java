@@ -40,7 +40,7 @@ public class GetTeamNumberDialog {
         alert.setTitle(title);
         alert.setView(alertLayout);
         alert.setCancelable(false);
-        //this stuff gets the edittext from the view and sets the hint and the inputtype
+
         editText =  (EditText) alertLayout.findViewById(R.id.inputHint);
         editText.setHint(inputHint);
 
