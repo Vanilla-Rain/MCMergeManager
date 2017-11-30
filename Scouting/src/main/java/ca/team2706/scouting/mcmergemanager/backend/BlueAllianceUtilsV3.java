@@ -2,48 +2,22 @@ package ca.team2706.scouting.mcmergemanager.backend;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-<<<<<<< Updated upstream
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
-=======
-<<<<<<< HEAD
-=======
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.preference.PreferenceManager;
->>>>>>> 230d8de1081a3c3edc9da971df21366cba7cd5f5
->>>>>>> Stashed changes
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
-<<<<<<< Updated upstream
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.IOException;
 
 import ca.team2706.scouting.mcmergemanager.R;
 import ca.team2706.scouting.mcmergemanager.backend.dataObjects.MatchSchedule;
 import ca.team2706.scouting.mcmergemanager.backend.interfaces.DataRequester;
-=======
-<<<<<<< HEAD
->>>>>>> Stashed changes
 
-import java.io.IOException;
-
-=======
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-
-import ca.team2706.scouting.mcmergemanager.R;
-import ca.team2706.scouting.mcmergemanager.backend.dataObjects.MatchSchedule;
-import ca.team2706.scouting.mcmergemanager.backend.interfaces.DataRequester;
->>>>>>> 230d8de1081a3c3edc9da971df21366cba7cd5f5
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -55,18 +29,7 @@ import okhttp3.Response;
 
 public class BlueAllianceUtilsV3 {
 
-<<<<<<< HEAD
-<<<<<<< Updated upstream
     public static final String BASEURL = "http://www.thebluealliance.com/api/v3/";
-=======
-    public static final String BASEURL = "https://www.thebluealliance.com/api/v3";
->>>>>>> d7f88e4... finally got it working
-=======
-    public static final String BASEURL = "https://www.thebluealliance.com/api/v3";
-=======
-    public static final String BASEURL = "http://www.thebluealliance.com/api/v3/";
->>>>>>> 230d8de1081a3c3edc9da971df21366cba7cd5f5
->>>>>>> Stashed changes
     public static final String AUTHKEY = "8GLetjJXz2pNCZuY0NnwejAw0ULn9TzbsYeLkYyzeKwDeRsK9MiDnxEGgy6UksW1";
 
     private Activity mActivity;

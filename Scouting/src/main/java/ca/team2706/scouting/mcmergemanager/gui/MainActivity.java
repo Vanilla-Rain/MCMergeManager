@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity
 
         // fetch the match gearDeliveryData from TheBlueAlliance to update the scores.
         // TODO: replace with tba v3
-        BlueAllianceUtils.checkInternetPermissions(this);
+        BlueAllianceUtilsV3.checkInternetPermissions(this);
 //        BlueAllianceUtils.fetchTeamsRegisteredAtEvent(this);
         BlueAllianceUtilsV3.fetchTeamsRegisteredAtEvent(this);
         BlueAllianceUtilsV3.fetchMatchScheduleAndResults(this);
