@@ -23,13 +23,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.io.File;
 import org.apache.commons.net.ftp.FTPFile;
 
 import java.util.ArrayList;
@@ -130,17 +126,7 @@ public class MainActivity extends AppCompatActivity
     /** Called when the user clicks the Scout Match button */
     public void scout(View view) {
 
-        // if they've entered a Match Number in the box, pass that along.
-        EditText matchNoET = (EditText) findViewById(R.id.matchNoET);
-        int matchNo;
-        try {
-            matchNo = Integer.parseInt(matchNoET.getText().toString());
-        } catch (NumberFormatException e) {
-            matchNo = -1;
-        }
-
         Intent intent = new Intent(this, PreGameActivity.class);
-        intent.putExtra( getString(R.string.EXTRA_MATCH_NO), matchNo);
         intent.putExtra( getString(R.string.EXTRA_MATCH_SCHEDULE), sMatchSchedule);
         startActivity(intent);
     }
@@ -364,12 +350,6 @@ public class MainActivity extends AppCompatActivity
             public void run(){
                 TextView tv =(TextView)activ.findViewById(R.id.syncCaption);
                 ProgressBar pb = (ProgressBar)activ.findViewById(R.id.syncBar);
-                Button bu = (Button)activ.findViewById(R.id.syncButon);
-                if(isRunningf){
-                    bu.setText("syncing...");
-                }else{
-                    bu.setText("Sync Photos");
-                }
                 if(caption.startsWith("^")){
                     pb.setIndeterminate(true);
                     tv.setText("Getting File Listing...");
