@@ -34,7 +34,7 @@
                     android:id="@+id/teamImage"
                     android:tag="image_tag"
                     android:layout_width="0dp"
-                    android:layout_height="100dp"
+                    android:layout_height="75dp"
                     android:layout_margin="5dp"
                     android:layout_weight="1"
                     android:src="@drawable/merge"/>
@@ -52,7 +52,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="24dp"
+                        android:layout_marginTop="10dp"
                         android:text="View Team Schedule"
                         android:textAppearance="?android:attr/textAppearanceLarge"/>
 
@@ -81,7 +81,7 @@
                 android:id="@+id/frcImage"
                 android:tag="image_tag"
                 android:layout_width="0dp"
-                android:layout_height="100dp"
+                android:layout_height="75dp"
                 android:layout_margin="5dp"
                 android:layout_weight="1"
                 android:src="@drawable/first"/>
@@ -99,7 +99,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginTop="10dp"
                     android:text="View Full Schedule"
                     android:textAppearance="?android:attr/textAppearanceLarge"/>
 
@@ -128,7 +128,7 @@
                 android:id="@+id/photoImage"
                 android:tag="image_tag"
                 android:layout_width="0dp"
-                android:layout_height="100dp"
+                android:layout_height="75dp"
                 android:layout_margin="5dp"
                 android:layout_weight="1"
                 android:src="@drawable/cameraicon"/>
@@ -146,7 +146,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginTop="10dp"
                     android:text="Take Photo"
                     android:textAppearance="?android:attr/textAppearanceLarge"/>
             </LinearLayout>
@@ -174,7 +174,7 @@
                 android:id="@+id/syncPhotosImage"
                 android:tag="image_tag"
                 android:layout_width="0dp"
-                android:layout_height="100dp"
+                android:layout_height="75dp"
                 android:layout_margin="5dp"
                 android:layout_weight="1"
                 android:src="@drawable/sync"/>
@@ -192,7 +192,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="15dp"
+                    android:layout_marginTop="5dp"
                     android:text="Sync Photos/Data"
                     android:textAppearance="?android:attr/textAppearanceLarge"/>
                 <ProgressBar
