@@ -252,7 +252,7 @@ public class MainActivity extends AppCompatActivity
      * Set the text for the label "Syncing Data To:" according to the saved preferences.
      */
     public void updateDataSyncLabel() {
-        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        /*SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         String event_code = SP.getString(getResources().getString(R.string.PROPERTY_event), "<Not Set>");
 
         // look up the human-readable event_name that matches this event_code.
@@ -265,7 +265,7 @@ public class MainActivity extends AppCompatActivity
         String label = "Event: "+event_name+" ["+event_code+"]";
 
         TextView tv = (TextView) findViewById(R.id.sync_settings_tv);
-        tv.setText(label);
+        tv.setText(label);*/
     }
 
     @Override

@@ -14,14 +14,17 @@
         android:layout_height="match_parent">
         <android.support.v7.widget.CardView
             android:id="@+id/teamScheduleCard"
+            card_view:cardPreventCornerOverlap="false"
+            card_view:cardMaxElevation="3dp"
+            card_view:cardElevation="3dp"
             android:onClick="onShowTeamScheduleClicked"
             xmlns:card_view="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             card_view:cardBackgroundColor="@color/white"
             card_view:cardCornerRadius="10dp"
-            card_view:cardElevation="5dp"
             android:paddingTop="0dp"
+            card_view:contentPadding="0dp"
             card_view:cardUseCompatPadding="true">
 
             <LinearLayout
@@ -63,12 +66,14 @@
         android:id="@+id/fullScheduleCard"
         android:layout_below="@id/teamScheduleCard"
         android:onClick="onShowScheduleClicked"
+        card_view:cardPreventCornerOverlap="false"
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         card_view:cardBackgroundColor="@color/white"
         card_view:cardCornerRadius="10dp"
-        card_view:cardElevation="5dp"
+        card_view:cardMaxElevation="3dp"
+        card_view:cardElevation="3dp"
         card_view:cardUseCompatPadding="true">
 
         <LinearLayout
@@ -109,13 +114,16 @@
     <android.support.v7.widget.CardView
         android:id="@+id/takePhoto"
         android:layout_below="@id/fullScheduleCard"
+        card_view:cardPreventCornerOverlap="false"
         android:onClick="takePicture"
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        card_view:contentPaddingTop="5dp"
         card_view:cardBackgroundColor="@color/white"
         card_view:cardCornerRadius="10dp"
-        card_view:cardElevation="5dp"
+        card_view:cardMaxElevation="3dp"
+        card_view:cardElevation="3dp"
         card_view:cardUseCompatPadding="true">
 
         <LinearLayout
@@ -156,12 +164,14 @@
         android:id="@+id/syncCard"
         android:layout_below="@id/takePhoto"
         android:onClick="syncPhotos"
+        card_view:cardPreventCornerOverlap="false"
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         card_view:cardBackgroundColor="@color/white"
         card_view:cardCornerRadius="10dp"
-        card_view:cardElevation="5dp"
+        card_view:cardMaxElevation="3dp"
+        card_view:cardElevation="3dp"
         card_view:cardUseCompatPadding="true">
 
         <LinearLayout
@@ -219,9 +229,11 @@
         android:layout_marginEnd="20dp"
         android:onClick="scout"
         fab:fab_colorNormal="@color/purple_pressed"
+        fab:elevation="20dp"
+        fab:borderWidth="0dp"
         fab:fab_colorPressed="@color/Purple2706"
         fab:fab_icon="@drawable/binoculars"
         fab:fab_labelsPosition="left"
-        android:elevation = "8dp"
+        android:elevation = "20dp"
         fab:fab_title="Scout Match" />
 </RelativeLayout>
